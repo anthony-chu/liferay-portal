@@ -146,7 +146,7 @@
 	<command name="addPGViaPanel">
 		<execute function="SelectFrame" locator1="IFrame#EDIT_ASSET" />
 		<execute function="Type" locator1="TextInput#TITLE" value1="${webContentTitle}" />
-		<execute function="Type#typeCKEditorWaitForCKEditor" locator1="CKEditor#IFRAME" value1="${webContentContent}" />
+		<execute function="Type#typeCKEditor" locator1="CKEditor#BODY_FIELD_LOCALIZED" value1="${webContentContent}" />
 		<execute function="AssertClick#assertTextClickAtCKEditor" locator1="Button#PUBLISH" value1="Publish" />
 		<execute function="SelectFrameTop" />
 	</command>
