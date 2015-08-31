@@ -265,7 +265,7 @@
 </tr>
 <tr>
 	<td>FOLDER</td>
-	<td>//ul[contains(@class,'dropdown-menu')]/li/a[contains(.,'Folder')]</td>
+	<td>//ul[contains(@class,'dropdown-menu')]/li/a[.='Folder'] | //a[@role='menuitem']//span[.=' Folder ']</td>			
 	<td></td>
 </tr>
 <tr>
