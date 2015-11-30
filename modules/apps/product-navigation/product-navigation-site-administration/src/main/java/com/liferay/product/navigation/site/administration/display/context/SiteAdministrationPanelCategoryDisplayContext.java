@@ -89,8 +89,9 @@ public class SiteAdministrationPanelCategoryDisplayContext {
 		if (_group.isControlPanel()) {
 			_group = latentGroup;
 		}
-		else if ((latentGroup != null) &&
-				 (_group.getGroupId() != latentGroup.getGroupId())) {
+		else if (((latentGroup != null) &&
+				  (_group.getGroupId() != latentGroup.getGroupId())) ||
+				 (latentGroup == null)) {
 
 			LatentGroupManagerUtil.setLatentGroup(session, _group);
 		}
