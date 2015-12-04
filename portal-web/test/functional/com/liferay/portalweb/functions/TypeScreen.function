@@ -1,5 +1,7 @@
 <definition default="typeScreen">
 	<command name="typeScreen">
 		<execute selenium="typeScreen" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

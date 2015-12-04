@@ -16,6 +16,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="uncheckNoError">
@@ -31,6 +33,8 @@
 		</if>
 
 		<execute function="AssertNotChecked#assertNotChecked" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="uncheckToggleSwitch">
@@ -50,5 +54,7 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

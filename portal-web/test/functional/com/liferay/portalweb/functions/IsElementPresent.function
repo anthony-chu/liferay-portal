@@ -1,10 +1,14 @@
 <definition default="isElementPresent">
 	<command name="isElementPresent">
 		<execute selenium="isElementPresent" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="isElementPresentAfterWait">
 		<execute selenium="isElementPresentAfterWait" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="isElementPresentClickNavigation">
@@ -13,26 +17,36 @@
 		<execute argument1="xPath=(//li[contains(@class,'lfr-nav-deletable')])[1]/a/span" selenium="waitForVisible" />
 
 		<execute selenium="isElementPresent" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="isElementPresentCPNavigation">
 
 		<execute function="IsElementPresent#isElementPresent" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="isVisible">
 		<execute selenium="isVisible" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="pauseIsElementPresent">
 		<execute argument1="1000" selenium="pause" />
 
 		<execute selenium="isElementPresent" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="waitForVisible">
 		<execute selenium="waitForVisible" />
 
 		<execute function="IsElementPresent#isVisible" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

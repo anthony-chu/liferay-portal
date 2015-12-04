@@ -5,6 +5,8 @@
 		<execute selenium="mouseOver" />
 
 		<execute selenium="click" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="makeVisibleClick">
@@ -13,11 +15,15 @@
 		<execute selenium="makeVisible" />
 
 		<execute selenium="click" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="pauseClick">
 		<execute argument1="1000" selenium="pause" />
 
 		<execute function="ClickNoError#click" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

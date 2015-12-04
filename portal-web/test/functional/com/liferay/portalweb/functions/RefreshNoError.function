@@ -1,5 +1,7 @@
 <definition default="refresh">
 	<command name="refresh">
 		<execute selenium="refresh" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

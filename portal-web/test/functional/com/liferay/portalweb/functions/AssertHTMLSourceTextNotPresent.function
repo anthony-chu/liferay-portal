@@ -1,5 +1,7 @@
 <definition default="assertHTMLSourceTextNotPresent">
 	<command name="assertHTMLSourceTextNotPresent">
 		<execute selenium="assertHTMLSourceTextNotPresent" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>
