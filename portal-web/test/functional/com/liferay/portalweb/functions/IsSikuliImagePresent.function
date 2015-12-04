@@ -1,5 +1,7 @@
 <definition default="isSikuliImagePresent">
 	<command name="isSikuliImagePresent">
 		<execute selenium="isSikuliImagePresent" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

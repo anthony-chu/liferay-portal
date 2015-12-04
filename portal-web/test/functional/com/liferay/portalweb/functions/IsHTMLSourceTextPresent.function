@@ -1,5 +1,7 @@
 <definition default="isHTMLSourceTextPresent">
 	<command name="isHTMLSourceTextPresent">
 		<execute selenium="isHTMLSourceTextPresent" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

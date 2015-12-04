@@ -1,0 +1,10 @@
+<definition default="waitForScript">
+	<command name="waitForScript">
+		<if>
+			<condition argument1="xpath=(//script)[last()]" selenium="isElementPresent" />
+			<then>
+				<execute function="WaitForScript#waitForScript" />
+			</then>
+		</if>
+	</command>
+</definition>

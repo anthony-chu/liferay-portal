@@ -17,6 +17,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="paste">
@@ -29,5 +31,7 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

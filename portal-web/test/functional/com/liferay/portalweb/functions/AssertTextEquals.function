@@ -15,6 +15,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="assertPartialText" summary="Assert that '${locator1}' contains the value '${value1}'">
@@ -27,6 +29,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="assertText">
@@ -39,6 +43,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="assertTextEquals">
@@ -51,6 +57,8 @@
 				<execute function="AssertTextEquals#assertText" />
 			</else>
 		</if>
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="assertTextWaitForCKEditor">
@@ -61,21 +69,18 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="assertTextWaitForInlineCKEditor">
-		<if>
-			<condition argument1="//div[contains(@class,'cke_editable_inline')]" selenium="isElementPresent" />
-			<then>
-				<execute argument1="//script[contains(@src,'http://localhost:8080/o/frontend-editors-web/ckeditor/plugins/wsc/lang/en.js')]" selenium="waitForElementPresent" />
-			</then>
-		</if>
-
 		<execute function="AssertTextEquals#assertText" />
 
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="assertValue">
@@ -88,5 +93,7 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

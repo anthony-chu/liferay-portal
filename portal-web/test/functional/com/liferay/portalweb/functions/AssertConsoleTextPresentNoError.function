@@ -1,5 +1,7 @@
 <definition default="assertConsoleTextPresent">
 	<command name="assertConsoleTextPresent">
 		<execute selenium="assertConsoleTextPresent" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

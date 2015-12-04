@@ -7,11 +7,15 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="keyPressNoError">
 		<execute selenium="mouseOver" />
 
 		<execute selenium="keyPress" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

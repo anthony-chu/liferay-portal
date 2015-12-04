@@ -3,5 +3,7 @@
 		<execute selenium="waitForVisible" />
 
 		<execute selenium="mouseOver" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

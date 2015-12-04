@@ -5,6 +5,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="dragAndDropPortletToObject">
@@ -35,6 +37,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="dragAndDropToObject">
@@ -53,6 +57,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="dragAndDropToObjectNotVisible">
@@ -67,5 +73,7 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>
