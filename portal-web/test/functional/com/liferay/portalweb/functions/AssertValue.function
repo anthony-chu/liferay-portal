@@ -5,5 +5,7 @@
 		<execute selenium="waitForValue" />
 
 		<execute selenium="assertValue" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

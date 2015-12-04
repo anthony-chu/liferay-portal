@@ -9,11 +9,15 @@
 				<execute selenium="isElementNotPresent" />
 			</else>
 		</if>
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="isNotVisible">
 		<execute selenium="waitForElementPresent" />
 
 		<execute selenium="isNotVisible" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

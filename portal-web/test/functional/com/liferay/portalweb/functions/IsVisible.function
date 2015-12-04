@@ -1,11 +1,15 @@
 <definition default="isVisible">
 	<command name="isVisible">
 		<execute selenium="isVisible" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="waitForVisible">
 		<execute selenium="waitForVisible" />
 
 		<execute function="IsVisible#isVisible" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

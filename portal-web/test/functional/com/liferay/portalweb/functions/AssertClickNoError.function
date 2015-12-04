@@ -9,6 +9,8 @@
 				<execute function="AssertClickNoError#assertTextClick" />
 			</else>
 		</if>
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="assertPartialTextClickAt">
@@ -17,6 +19,8 @@
 		<execute selenium="mouseOver" />
 
 		<execute selenium="clickAt" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="assertTextClick">
@@ -29,6 +33,8 @@
 		<execute selenium="mouseOver" />
 
 		<execute selenium="click" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="assertValueClick">
@@ -41,5 +47,7 @@
 		<execute selenium="mouseOver" />
 
 		<execute selenium="click" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

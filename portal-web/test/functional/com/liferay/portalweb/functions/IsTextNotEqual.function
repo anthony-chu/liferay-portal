@@ -3,18 +3,24 @@
 		<execute selenium="waitForElementPresent" />
 
 		<execute selenium="isNotPartialText" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="isNotText">
 		<execute selenium="waitForElementPresent" />
 
 		<execute selenium="isNotText" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="isNotValue">
 		<execute selenium="waitForElementPresent" />
 
 		<execute selenium="isNotValue" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="isTextNotEqual">
@@ -27,5 +33,7 @@
 				<execute function="IsTextNotEqual#isNotText" />
 			</else>
 		</if>
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

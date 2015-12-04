@@ -1,5 +1,7 @@
 <definition default="pause">
 	<command name="pause" summary-ignore="true">
 		<execute selenium="pause" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>
