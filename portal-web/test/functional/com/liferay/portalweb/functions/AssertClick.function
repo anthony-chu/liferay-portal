@@ -36,7 +36,6 @@
 	</command>
 
 	<command name="assertPartialTextClickAtCPNavigation">
-		<execute argument1="//script[contains(@src,'/liferay/message.js')]" selenium="waitForElementPresent" />
 
 		<execute function="AssertClick#assertPartialTextClickAt" />
 
@@ -70,7 +69,6 @@
 	</command>
 
 	<command name="assertTextClickAtAddApplication">
-		<execute argument1="//script[contains(@src,'/liferay/dockbar_add_application.js')] | //script[contains(@src,'/liferay/dockbar_add_page.js')] | //script[contains(@src,'liferay/toggler_interaction.js')]" selenium="waitForElementPresent" />
 
 		<execute argument1="1000" selenium="pause" />
 
@@ -122,8 +120,6 @@
 
 		<execute selenium="mouseOver" />
 
-		<execute argument1="//script[contains(@src,'/liferay/node.js')]" selenium="waitForElementPresent" />
-
 		<execute function="AssertClick#assertTextClickAt" />
 
 		<execute selenium="assertJavaScriptErrors" />
@@ -138,8 +134,6 @@
 			<condition argument1="//a[@id='_145_addPanel']" selenium="isElementPresent" />
 			<then>
 				<execute argument1="//nav[@id='navigation']" selenium="clickAt" />
-
-				<execute argument1="//script[contains(@src,'/aui/sortable/sortable')]" selenium="waitForElementPresent" />
 
 				<execute selenium="mouseOver" />
 
@@ -189,13 +183,6 @@
 	</command>
 
 	<command name="assertTextClickWaitForInlineCKEditor">
-		<if>
-			<condition argument1="//div[contains(@class,'cke_editable_inline')]" selenium="isElementPresent" />
-			<then>
-				<execute argument1="//script[contains(@src,'http://localhost:8080/o/frontend-editors-web/ckeditor/plugins/wsc/lang/en.js')]" selenium="waitForElementPresent" />
-			</then>
-		</if>
-
 		<execute function="AssertClick#assertTextClick" />
 
 		<execute selenium="assertJavaScriptErrors" />
@@ -300,7 +287,6 @@
 	</command>
 
 	<command name="waitForNodeScriptAssertTextEqualsClick">
-		<execute argument1="//script[contains(@src,'/liferay/node.js')]" selenium="waitForElementPresent" />
 
 		<execute function="AssertClick#assertTextClickAt" />
 

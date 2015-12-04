@@ -12,8 +12,6 @@
 	<command name="mouseOverClickNavigation">
 		<execute argument1="//nav[@id='navigation']" argument2="" selenium="clickAt" />
 
-		<execute argument1="//script[contains(@src,'/frontend-js-web/liferay/sign_in_modal.js')]" selenium="waitForElementPresent" />
-
 		<execute function="MouseOver#mouseOver" />
 
 		<execute selenium="assertJavaScriptErrors" />
@@ -55,8 +53,6 @@
 
 	<command name="textMouseOverClickNavigation">
 		<execute argument1="//nav[@id='navigation']" argument2="" selenium="clickAt" />
-
-		<execute argument1="//script[contains(@src,'/aui/sortable/sortable')]" selenium="waitForElementPresent" />
 
 		<execute function="MouseOver#textMouseOver" />
 
