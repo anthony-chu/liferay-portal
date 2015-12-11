@@ -51,7 +51,10 @@
 
 		<var name="key_assetType" value="${assetType}" />
 
-		<execute function="AssertClick" locator1="WCEditWebContent#MENU_RELATED_ASSETS" value1="Related Assets" />
+		<execute macro="Panel#expandPanel">
+			<var name="panelHeading" value="Related Assets" />
+		</execute>
+
 		<execute function="AssertClick" locator1="WCEditWebContent#RELATED_ASSETS_SELECT" value1="Select" />
 
 		<var method="StringUtil#replace('${assetType}', ' ', '_')" name="assetTypeLocator" />
