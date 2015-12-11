@@ -56,6 +56,10 @@ public interface RecentLayoutRevisionLocalService extends BaseLocalService,
 	public com.liferay.portal.model.RecentLayoutRevision addRecentLayoutRevision(
 		com.liferay.portal.model.RecentLayoutRevision recentLayoutRevision);
 
+	public com.liferay.portal.model.RecentLayoutRevision addRecentLayoutRevision(
+		long userId, long layoutRevisionId, long layoutSetBranchId, long plid)
+		throws PortalException;
+
 	/**
 	* Creates a new recent layout revision with the primary key. Does not add the recent layout revision to the database.
 	*
@@ -93,6 +97,10 @@ public interface RecentLayoutRevisionLocalService extends BaseLocalService,
 	@com.liferay.portal.kernel.search.Indexable(type = IndexableType.DELETE)
 	public com.liferay.portal.model.RecentLayoutRevision deleteRecentLayoutRevision(
 		long recentLayoutRevisionId) throws PortalException;
+
+	public void deleteRecentLayoutRevisions(long layoutRevisionId);
+
+	public void deleteUserRecentLayoutRevisions(long userId);
 
 	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery();
 
@@ -162,6 +170,10 @@ public interface RecentLayoutRevisionLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.portal.model.RecentLayoutRevision fetchRecentLayoutRevision(
 		long recentLayoutRevisionId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public com.liferay.portal.model.RecentLayoutRevision fetchRecentLayoutRevision(
+		long userId, long layoutSetBranchId, long plid);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery();

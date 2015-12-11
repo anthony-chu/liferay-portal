@@ -1783,6 +1783,10 @@
 			<finder-column name="layoutSetBranchId" />
 			<finder-column name="plid" />
 		</finder>
+
+		<!-- References -->
+
+		<reference package-path="com.liferay.portal" entity="LayoutBranch" />
 	</entity>
 	<entity name="RecentLayoutRevision" local-service="true" remote-service="false" uuid="false">
 
@@ -1821,6 +1825,10 @@
 			<finder-column name="layoutSetBranchId" />
 			<finder-column name="plid" />
 		</finder>
+
+		<!-- References -->
+
+		<reference package-path="com.liferay.portal" entity="LayoutRevision" />
 	</entity>
 	<entity name="RecentLayoutSetBranch" local-service="true" remote-service="false" uuid="false">
 
@@ -1857,6 +1865,10 @@
 			<finder-column name="userId" />
 			<finder-column name="layoutSetId" />
 		</finder>
+
+		<!-- References -->
+
+		<reference package-path="com.liferay.portal" entity="LayoutSetBranch" />
 	</entity>
 	<entity name="Region" local-service="false" remote-service="true">
 

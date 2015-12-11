@@ -1,4 +1,3 @@
-<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -12,13 +11,23 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
---%>
 
-<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+package com.liferay.portal.tools.deploy.extension;
 
-<%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
-taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
+import com.liferay.portal.tools.deploy.BaseDeployer;
 
-<%@ page import="javax.portlet.WindowState" %>
+import java.io.File;
 
-<liferay-theme:defineObjects />
+/**
+ * @author Shuyang Zhou
+ */
+public interface DeploymentExtension {
+
+	public void copyXmls(BaseDeployer baseDeployer, File srcFile)
+		throws Exception;
+
+	public String getServerId();
+
+	public void postDeploy(String destDir, String deployDir) throws Exception;
+
+}

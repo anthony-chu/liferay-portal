@@ -46,12 +46,13 @@ public class OpenIdNavigationPreDynamicInclude extends BaseDynamicInclude {
 			String key)
 		throws IOException {
 
-		String strutsAction = ParamUtil.getString(request, "struts_action");
+		String mvcRenderCommandName = ParamUtil.getString(
+			request, "mvcRenderCommandName");
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		if (strutsAction.startsWith("/login/openid") ||
+		if (mvcRenderCommandName.equals("/login/openid") ||
 			!_openId.isEnabled(themeDisplay.getCompanyId())) {
 
 			return;
@@ -75,7 +76,7 @@ public class OpenIdNavigationPreDynamicInclude extends BaseDynamicInclude {
 		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry) {
 
 		dynamicIncludeRegistry.register(
-			"/html/portlet/login/navigation.jsp#pre");
+			"com.liferay.login.web#/navigation.jsp#pre");
 	}
 
 	@Reference(unbind = "-")
@@ -92,7 +93,7 @@ public class OpenIdNavigationPreDynamicInclude extends BaseDynamicInclude {
 	}
 
 	private static final String _JSP_PATH =
-		"/html/portlet/login/navigation/openid.jsp";
+		"/com.liferay.login.web/navigation/openid.jsp";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		OpenIdNavigationPreDynamicInclude.class);

@@ -14,8 +14,8 @@
 
 package com.liferay.flags.web.portlet.action;
 
-import com.liferay.flags.web.constants.PageFlagsPortletKeys;
 import com.liferay.flags.service.FlagsEntryService;
+import com.liferay.flags.web.constants.PageFlagsPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.util.ParamUtil;

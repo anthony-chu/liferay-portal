@@ -56,6 +56,10 @@ public interface RecentLayoutSetBranchLocalService extends BaseLocalService,
 	public com.liferay.portal.model.RecentLayoutSetBranch addRecentLayoutSetBranch(
 		com.liferay.portal.model.RecentLayoutSetBranch recentLayoutSetBranch);
 
+	public com.liferay.portal.model.RecentLayoutSetBranch addRecentLayoutSetBranch(
+		long userId, long layoutSetBranchId, long layoutSetId)
+		throws PortalException;
+
 	/**
 	* Creates a new recent layout set branch with the primary key. Does not add the recent layout set branch to the database.
 	*
@@ -93,6 +97,10 @@ public interface RecentLayoutSetBranchLocalService extends BaseLocalService,
 	@com.liferay.portal.kernel.search.Indexable(type = IndexableType.DELETE)
 	public com.liferay.portal.model.RecentLayoutSetBranch deleteRecentLayoutSetBranch(
 		long recentLayoutSetBranchId) throws PortalException;
+
+	public void deleteRecentLayoutSetBranches(long layoutSetBranchId);
+
+	public void deleteUserRecentLayoutSetBranches(long userId);
 
 	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery();
 
@@ -162,6 +170,10 @@ public interface RecentLayoutSetBranchLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.portal.model.RecentLayoutSetBranch fetchRecentLayoutSetBranch(
 		long recentLayoutSetBranchId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public com.liferay.portal.model.RecentLayoutSetBranch fetchRecentLayoutSetBranch(
+		long userId, long layoutSetId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery();

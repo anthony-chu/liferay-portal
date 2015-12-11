@@ -52,6 +52,14 @@ public class RecentLayoutRevisionLocalServiceUtil {
 		return getService().addRecentLayoutRevision(recentLayoutRevision);
 	}
 
+	public static com.liferay.portal.model.RecentLayoutRevision addRecentLayoutRevision(
+		long userId, long layoutRevisionId, long layoutSetBranchId, long plid)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .addRecentLayoutRevision(userId, layoutRevisionId,
+			layoutSetBranchId, plid);
+	}
+
 	/**
 	* Creates a new recent layout revision with the primary key. Does not add the recent layout revision to the database.
 	*
@@ -94,6 +102,14 @@ public class RecentLayoutRevisionLocalServiceUtil {
 		long recentLayoutRevisionId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().deleteRecentLayoutRevision(recentLayoutRevisionId);
+	}
+
+	public static void deleteRecentLayoutRevisions(long layoutRevisionId) {
+		getService().deleteRecentLayoutRevisions(layoutRevisionId);
+	}
+
+	public static void deleteUserRecentLayoutRevisions(long userId) {
+		getService().deleteUserRecentLayoutRevisions(userId);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
@@ -177,6 +193,12 @@ public class RecentLayoutRevisionLocalServiceUtil {
 	public static com.liferay.portal.model.RecentLayoutRevision fetchRecentLayoutRevision(
 		long recentLayoutRevisionId) {
 		return getService().fetchRecentLayoutRevision(recentLayoutRevisionId);
+	}
+
+	public static com.liferay.portal.model.RecentLayoutRevision fetchRecentLayoutRevision(
+		long userId, long layoutSetBranchId, long plid) {
+		return getService()
+				   .fetchRecentLayoutRevision(userId, layoutSetBranchId, plid);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {

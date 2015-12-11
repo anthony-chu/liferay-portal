@@ -14,10 +14,10 @@
  */
 --%>
 
-<%@ include file="/html/portlet/login/navigation/init.jsp" %>
+<%@ include file="/com.liferay.login.web/init.jsp" %>
 
 <portlet:renderURL var="openIdURL" windowState="<%= WindowState.MAXIMIZED.toString() %>">
-	<portlet:param name="struts_action" value="/login/openid" />
+	<portlet:param name="mvcRenderCommandName" value="/login/openid" />
 </portlet:renderURL>
 
 <liferay-ui:icon
