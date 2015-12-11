@@ -5,6 +5,8 @@
 		<execute selenium="waitForVisible" />
 
 		<execute selenium="isPartialText" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="isText">
@@ -13,6 +15,8 @@
 		<execute selenium="waitForVisible" />
 
 		<execute selenium="isText" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="isTextEqual">
@@ -25,6 +29,8 @@
 				<execute function="IsTextEqual#isText" />
 			</else>
 		</if>
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="isValue">
@@ -33,5 +39,7 @@
 		<execute selenium="waitForVisible" />
 
 		<execute selenium="isValue" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

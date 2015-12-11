@@ -1,5 +1,7 @@
 <definition default="setWindowSize">
 	<command name="setWindowSize">
 		<execute selenium="setWindowSize" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

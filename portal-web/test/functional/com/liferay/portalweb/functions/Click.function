@@ -9,6 +9,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="clickAt">
@@ -21,6 +23,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="clickAtAndWait">
@@ -33,16 +37,19 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="clickAtAndWaitCPNavigation">
-		<execute argument1="//script[contains(@src,'/liferay/message.js')]" selenium="waitForElementPresent" />
 
 		<execute function="Click#clickAtAndWait" />
 
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="clickAtClickDockbar">
@@ -50,23 +57,23 @@
 
 		<execute argument1="//div[@id='_145_dockbar']" selenium="click" />
 
-		<execute argument1="//script[contains(@src,'/liferay/node.js')]" selenium="waitForElementPresent" />
-
 		<execute function="Click#clickAt" />
 
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="clickAtNavigation">
 		<execute function="Click#clickAtNonLiferayNavigation" />
 
-		<execute argument1="//script[contains(@src,'/aui/aui-url/aui-url')]" selenium="waitForElementPresent" />
-
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="clickAtNonLiferayNavigation">
@@ -76,8 +83,6 @@
 			<condition argument1="//a[@id='_145_addPanel']" selenium="isElementPresent" />
 			<then>
 				<execute argument1="//nav[@id='navigation']" selenium="clickAt" />
-
-				<execute argument1="//script[contains(@src,'/aui/sortable/sortable')]" selenium="waitForElementPresent" />
 
 				<execute selenium="mouseOver" />
 
@@ -92,14 +97,14 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="clickAtSidebarClickAt">
 		<execute argument1="1000" selenium="pause" />
 
 		<execute argument1="//ul[contains(@data-namespace,'ControlMenuPortlet')]" selenium="clickAt" />
-
-		<execute argument1="//script[contains(@src,'/classic/js/main.js')]" selenium="waitForElementPresent" />
 
 		<execute argument1="1000" selenium="pause" />
 
@@ -108,6 +113,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="clickAtSidebarClickAtWaitForScript">
@@ -117,13 +124,11 @@
 
 		<execute selenium="mouseOver" />
 
-		<execute argument1="//script[contains(@src,'/liferay/node.js')] | //script[contains(@src,'/js/control_menu.js')]" selenium="waitForElementPresent" />
-
 		<execute argument1="1000" selenium="pause" />
 
 		<execute function="Click#clickAt" />
 
-		<execute argument1="//script[contains(@src,'/liferay/dockbar_add_application.js')] | //script[contains(	@src,'/js/control_menu_add_content.js')] | //script[contains(@src,'js/control_menu_add_application.js')]" selenium="waitForElementPresent" />
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="clickNoMouseOver">
@@ -134,34 +139,26 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="clickWaitForInlineCKEditor">
-		<if>
-			<condition argument1="//div[contains(@class,'cke_editable_inline')]" selenium="isElementPresent" />
-			<then>
-				<execute argument1="//script[contains(@src,'http://localhost:8080/o/frontend-editors-web/ckeditor/plugins/wsc/lang/en.js')]" selenium="waitForElementPresent" />
-			</then>
-		</if>
-
 		<execute function="Click#click" />
 
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="clickWaitForInlineCKEditorNoMouseOver">
-		<if>
-			<condition argument1="//div[contains(@class,'cke_editable_inline')]" selenium="isElementPresent" />
-			<then>
-				<execute argument1="//script[contains(@src,'http://localhost:8080/o/frontend-editors-web/ckeditor/plugins/wsc/lang/en.js')]" selenium="waitForElementPresent" />
-			</then>
-		</if>
-
 		<execute selenium="waitForVisible" />
 
 		<execute selenium="click" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="makeVisibleClickAt">
@@ -174,6 +171,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="mouseOverClick">
@@ -188,6 +187,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="partialTextClickAt">
@@ -200,6 +201,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="partialTextClickAtAndWait">
@@ -212,6 +215,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="pauseClickAt">
@@ -224,6 +229,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="pauseMakeVisibleClickAt">
@@ -234,6 +241,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="pauseTextClickAt">
@@ -244,6 +253,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="pauseTextClickAtAndWait">
@@ -254,6 +265,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="textClick">
@@ -266,6 +279,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="textClickAndWait">
@@ -278,6 +293,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="textClickAt">
@@ -290,6 +307,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="textClickAtAndWait">
@@ -302,6 +321,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="textClickAtAndWaitCKEditor">
@@ -312,18 +333,20 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="textClickAtClickDockbar">
 		<execute argument1="//div[@id='_145_dockbar']" selenium="click" />
-
-		<execute argument1="//script[contains(@src,'/liferay/node.js')]" selenium="waitForElementPresent" />
 
 		<execute function="Click#textClickAt" />
 
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="valueClickAt">
@@ -336,6 +359,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="valueClickAtAndWait">
@@ -348,6 +373,8 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="valueClickAtAndWaitCKEditor">
@@ -358,15 +385,18 @@
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 
 	<command name="waitForNavigationInteractionTouchScriptTap">
-		<execute argument1="//script[contains(@src,'liferay/dockbar_keyboard_interaction.js')]" selenium="waitForElementPresent" />
 
 		<execute function="Click#clickAt" />
 
 		<execute selenium="assertJavaScriptErrors" />
 
 		<execute selenium="assertLiferayErrors" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>

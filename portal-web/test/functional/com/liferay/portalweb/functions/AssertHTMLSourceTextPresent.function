@@ -1,5 +1,7 @@
 <definition default="assertHTMLSourceTextPresent">
 	<command name="assertHTMLSourceTextPresent">
 		<execute selenium="assertHTMLSourceTextPresent" />
+
+		<execute function="WaitForScript#waitForScript" />
 	</command>
 </definition>
