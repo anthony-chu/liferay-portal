@@ -77,7 +77,12 @@ class LiferayApp extends App {
 			}
 		);
 
-		if (!event.error && Liferay.Layout && Liferay.Data.layoutConfig) {
+		if (event.error) {
+			if (event.error.requestError || event.error.invalidStatus) {
+				window.location.href = event.path;
+			}
+		}
+		else if (Liferay.Layout && Liferay.Data.layoutConfig) {
 			Liferay.Layout.init();
 		}
 
