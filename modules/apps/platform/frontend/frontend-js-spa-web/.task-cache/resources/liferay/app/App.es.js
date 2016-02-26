@@ -115,7 +115,11 @@ define("frontend-js-spa-web@1.0.0/liferay/app/App.es", ['exports', 'senna/src/ap
 				path: event.path
 			});
 
-			if (!event.error && Liferay.Layout && Liferay.Data.layoutConfig) {
+			if (event.error) {
+				if (event.error.requestError || event.error.invalidStatus) {
+					window.location.href = event.path;
+				}
+			} else if (Liferay.Layout && Liferay.Data.layoutConfig) {
 				Liferay.Layout.init();
 			}
 
