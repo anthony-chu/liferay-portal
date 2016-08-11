@@ -38,7 +38,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * @author Miguel Pastor
  */
-@PowerMockIgnore({"javax.net.ssl.*", "javax.xml.datatype.*"})
+@PowerMockIgnore("javax.xml.datatype.*")
 @PrepareForTest(PortalUtil.class)
 @RunWith(PowerMockRunner.class)
 public class HttpImplTest extends PowerMockito {
