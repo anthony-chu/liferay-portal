@@ -1927,7 +1927,7 @@ public class HttpImpl implements Http {
 			for (Header header : closeableHttpResponse.getAllHeaders()) {
 				response.addHeader(header.getName(), header.getValue());
 			}
-
+			
 			HttpEntity httpEntity = closeableHttpResponse.getEntity();
 
 			InputStream inputStream = httpEntity.getContent();
@@ -1970,8 +1970,7 @@ public class HttpImpl implements Http {
 		finally {
 			try {
 				if (basicCookieStore != null) {
-					_cookies.set(
-						toServletCookies(basicCookieStore.getCookies()));
+					_cookies.set(toServletCookies(basicCookieStore.getCookies()));
 				}
 			}
 			catch (Exception e) {
@@ -2034,8 +2033,8 @@ public class HttpImpl implements Http {
 	private final Pattern _protocolRelativeURLPattern = Pattern.compile(
 		"^[\\s\\\\/]+");
 	private final List<String> _proxyAuthPrefs = new ArrayList<>();
-	private final CloseableHttpClient _proxyCloseableHttpClient;
 	private final Credentials _proxyCredentials;
+	private final CloseableHttpClient _proxyCloseableHttpClient;
 	private final Pattern _relativeURLPattern = Pattern.compile(
 		"^\\s*/[a-zA-Z0-9]+");
 
