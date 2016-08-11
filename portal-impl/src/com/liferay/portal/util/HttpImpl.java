@@ -1899,6 +1899,7 @@ public class HttpImpl implements Http {
 				}
 			}
 
+
 			long contentLengthLong = 0;
 
 			Header contentLengthHeader = closeableHttpResponse.getFirstHeader(
