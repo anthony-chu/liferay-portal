@@ -1461,7 +1461,7 @@ public class HttpImpl implements Http {
 
 		Header[] headers = requestBuilder.getHeaders(name);
 
-		if (ArrayUtil.isEmpty(headers)) {
+		if (headers.length == 0) {
 			return false;
 		}
 
