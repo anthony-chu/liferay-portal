@@ -944,7 +944,9 @@ public class HttpImpl implements Http {
 	public void proxifyState(
 		org.apache.commons.httpclient.HttpState httpState,
 		org.apache.commons.httpclient.HostConfiguration hostConfiguration) {
+
 	}
+
 
 	@Override
 	public String removeDomain(String url) {
@@ -1227,10 +1229,11 @@ public class HttpImpl implements Http {
 	@Override
 	public byte[] URLtoByteArray(Http.Options options) throws IOException {
 		return URLtoByteArray(
-			options.getLocation(), options.getMethod(), options.getHeaders(),
-			options.getCookies(), options.getAuth(), options.getBody(),
-			options.getFileParts(), options.getParts(), options.getResponse(),
-			options.isFollowRedirects(), options.getTimeout());
+			options.getLocation(), options.getMethod(),
+			options.getHeaders(), options.getCookies(), options.getAuth(),
+			options.getBody(), options.getFileParts(), options.getParts(),
+			options.getResponse(), options.isFollowRedirects(),
+			options.getTimeout());
 	}
 
 	@Override
@@ -1259,10 +1262,11 @@ public class HttpImpl implements Http {
 		throws IOException {
 
 		return URLtoInputStream(
-			options.getLocation(), options.getMethod(), options.getHeaders(),
-			options.getCookies(), options.getAuth(), options.getBody(),
-			options.getFileParts(), options.getParts(), options.getResponse(),
-			options.isFollowRedirects(), options.getTimeout());
+			options.getLocation(), options.getMethod(),
+			options.getHeaders(), options.getCookies(), options.getAuth(),
+			options.getBody(), options.getFileParts(), options.getParts(),
+			options.getResponse(), options.isFollowRedirects(),
+			options.getTimeout());
 	}
 
 	@Override
@@ -1532,26 +1536,6 @@ public class HttpImpl implements Http {
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * @deprecated As of 7.0.0, no replacement
-	 */
-	@Deprecated
-	protected org.apache.commons.httpclient.Cookie[] toCommonsCookies(
-		Cookie[] cookie) {
-
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * @deprecated As of 7.0.0, no replacement
-	 */
-	@Deprecated
-	protected org.apache.commons.httpclient.methods.multipart.FilePart
-		toCommonsFilePart(Http.FilePart filePart) {
-
-		throw new UnsupportedOperationException();
-	}
-
 	protected org.apache.http.cookie.Cookie toHttpCookie(Cookie cookie) {
 		BasicClientCookie basicClientCookie = new BasicClientCookie(
 			cookie.getName(), cookie.getValue());
@@ -1576,7 +1560,19 @@ public class HttpImpl implements Http {
 		return basicClientCookie;
 	}
 
-	protected org.apache.http.cookie.Cookie[] toHttpCookies(Cookie[] cookies) {
+	/**
+	 * @deprecated As of 7.0.0, no replacement
+	 */
+	@Deprecated
+	protected org.apache.commons.httpclient.Cookie[] toCommonsCookies(
+		Cookie[] cookie) {
+
+		throw new UnsupportedOperationException();
+	}
+
+	protected org.apache.http.cookie.Cookie[] toHttpCookies(
+		Cookie[] cookies) {
+
 		if (cookies == null) {
 			return null;
 		}
@@ -1595,8 +1591,28 @@ public class HttpImpl implements Http {
 	 * @deprecated As of 7.0.0, no replacement
 	 */
 	@Deprecated
+	protected org.apache.commons.httpclient.methods.multipart.FilePart
+	toCommonsFilePart(Http.FilePart filePart) {
+
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * @deprecated As of 7.0.0, no replacement
+	 */
+	@Deprecated
 	protected Cookie toServletCookie(
 		org.apache.commons.httpclient.Cookie commonsCookie) {
+
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * @deprecated As of 7.0.0, no replacement
+	 */
+	@Deprecated
+	protected Cookie[] toServletCookies(
+		org.apache.commons.httpclient.Cookie[] commonsCookies) {
 
 		throw new UnsupportedOperationException();
 	}
@@ -1651,16 +1667,6 @@ public class HttpImpl implements Http {
 		}
 
 		return cookies;
-	}
-
-	/**
-	 * @deprecated As of 7.0.0, no replacement
-	 */
-	@Deprecated
-	protected Cookie[] toServletCookies(
-		org.apache.commons.httpclient.Cookie[] commonsCookies) {
-
-		throw new UnsupportedOperationException();
 	}
 
 	protected byte[] URLtoByteArray(
@@ -1737,8 +1743,8 @@ public class HttpImpl implements Http {
 		try {
 			uri = new URI(location);
 		}
-		catch (URISyntaxException urise) {
-			throw new IOException("Invalid URI: " + location, urise);
+		catch (URISyntaxException e) {
+			throw new IOException("Invalid URI: " + location, e);
 		}
 
 		BasicCookieStore cookieStore = null;
