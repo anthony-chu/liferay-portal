@@ -1881,24 +1881,20 @@ public class HttpImpl implements Http {
 			Header locationHeader = closeableHttpResponse.getFirstHeader(
 				"location");
 
-			String locationHeaderValue = locationHeader.getValue();
-
-			if ((locationHeader != null) &&
-				!locationHeaderValue.equals(location)) {
+			if ((locationHeader != null) && !locationHeader.equals(location)) {
+				String redirect = locationHeader.getValue();
 
 				if (followRedirects) {
 					closeableHttpResponse.close();
 
 					return URLtoInputStream(
-						locationHeaderValue, Http.Method.GET, headers, cookies,
-						auth, body, fileParts, parts, response, followRedirects,
-						timeout);
+						redirect, Http.Method.GET, headers, cookies, auth, body,
+						fileParts, parts, response, followRedirects, timeout);
 				}
 				else {
-					response.setRedirect(locationHeaderValue);
+					response.setRedirect(redirect);
 				}
 			}
-
 
 			long contentLengthLong = 0;
 
