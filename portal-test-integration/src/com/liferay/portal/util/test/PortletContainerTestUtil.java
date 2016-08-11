@@ -15,7 +15,6 @@
 package com.liferay.portal.util.test;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.io.WriterOutputStream;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -39,9 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import java.io.StringWriter;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -55,17 +52,15 @@ import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.RequestBuilder;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicHeader;
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.StatusLine;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
@@ -217,66 +212,35 @@ public class PortletContainerTestUtil {
 			throw new IllegalStateException("Cookie is null");
 		}
 
-		CloseableHttpClient httpClient = null;
-		CloseableHttpResponse httpResponse = null;
+		HttpClient httpClient = new HttpClient();
 
-		try {
-			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+		PostMethod postMethod = new PostMethod(url);
 
-			httpClient = httpClientBuilder.build();
-
-			RequestBuilder requestBuilder = RequestBuilder.post(url);
-
-			for (String cookie : cookies) {
-				requestBuilder.addHeader(new BasicHeader("Cookie", cookie));
-			}
-
-			byte[] bytes = FileUtil.getBytes(
-				mockMultipartHttpServletRequest.getInputStream());
-
-			MultipartEntityBuilder multipartEntityBuilder =
-				MultipartEntityBuilder.create();
-
-			ByteArrayBody byteArrayBody = new ByteArrayBody(
-				bytes, ContentType.DEFAULT_BINARY,
-				fileNameParameter);
-
-			multipartEntityBuilder.addPart(
-				fileNameParameter, byteArrayBody);
-
-			requestBuilder.setEntity(multipartEntityBuilder.build());
-
-			URI uri = requestBuilder.getUri();
-
-			httpResponse = httpClient.execute(
-				new HttpHost(uri.getHost(), uri.getPort()),
-				requestBuilder.build());
-
-			StatusLine statusLine = httpResponse.getStatusLine();
-
-			HttpEntity httpEntity = httpResponse.getEntity();
-
-			StringWriter stringWriter = new StringWriter();
-
-			WriterOutputStream writerOutputStream = new WriterOutputStream(
-				stringWriter);
-
-			httpEntity.writeTo(writerOutputStream);
-
-			stringWriter.close();
-
-			return new Response(
-				statusLine.getStatusCode(), stringWriter.toString(),
-				null);
+		for (String cookie : cookies) {
+			postMethod.addRequestHeader(new Header("Cookie", cookie));
 		}
-		finally {
-			if (httpResponse != null) {
-				httpResponse.close();
-			}
-			if (httpClient != null) {
-				httpClient.close();
-			}
-		}
+
+		byte[] bytes = FileUtil.getBytes(
+			mockMultipartHttpServletRequest.getInputStream());
+
+		Part[] parts = {
+			new FilePart(
+				fileNameParameter,
+				new ByteArrayPartSource(fileNameParameter, bytes))
+		};
+
+		MultipartRequestEntity multipartRequestEntity =
+			new MultipartRequestEntity(parts, postMethod.getParams());
+
+		postMethod.setRequestEntity(multipartRequestEntity);
+
+		httpClient.executeMethod(postMethod);
+
+		StatusLine statusLine = postMethod.getStatusLine();
+
+		return new Response(
+			statusLine.getStatusCode(), postMethod.getResponseBodyAsString(),
+			null);
 	}
 
 	public static Response request(String url) throws IOException {
