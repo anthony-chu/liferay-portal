@@ -49,6 +49,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>CATEGORY_SELECT</td>
+	<td>//div[contains(@id,'categorizationContent')]//div[contains(@id,'assetCategoriesSelector')]//button[contains(.,'Select')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td></td>
 	<td></td>
 	<td></td>

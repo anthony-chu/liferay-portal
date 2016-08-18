@@ -137,6 +137,22 @@
 		<execute function="AssertTextEquals" locator1="Message#ERROR_FIELD_REQUIRED" value1="This field is required." />
 	</command>
 
+	<command name="assertNoCategoryOnPage">
+		<execute macro="SitePageNavigator#gotoAddPage">
+			<var name="sitePagePrivacy" value="${sitePagePrivacy}" />
+		</execute>
+
+		<execute macro-mobile="MobileNavigator#clickRemoveIcon" />
+
+		<execute function="Type#typeClickAt" locator1="TextInput#NAME" value1="${pageName}" />
+
+		<execute macro="Panel#expandPanel">
+			<var name="panelHeading" value="Categorization" />
+		</execute>
+
+		<execute function="AssertElementNotPresent" locator1="Categories#CATEGORY_SELECT" />
+	</command>
+
 	<command name="deleteByIconCP">
 		<var name="key_categoryName" value="${categoryName}" />
 		<var name="key_vocabularyName" value="${vocabularyName}" />

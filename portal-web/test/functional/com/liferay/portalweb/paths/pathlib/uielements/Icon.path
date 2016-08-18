@@ -14,6 +14,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ADD_ROW_BUTTON</td>
+	<td>//button[contains(@class,'add-row')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ADVANCED_SEARCH</td>
 	<td>//button[contains(@class,'toggle-advanced') and span[@class='caret']] | //a[contains(@id,'searchtoggleAdvanced')]</td>
 	<td></td>
