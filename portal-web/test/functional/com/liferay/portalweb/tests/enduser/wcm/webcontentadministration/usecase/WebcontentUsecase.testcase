@@ -275,9 +275,9 @@
 
 		<execute macro="Portlet#shutdownServer" />
 
-		<execute function="Pause" locator1="30000" />
-
-		<execute macro="Portlet#startServer" />
+		<execute macro="Portlet#startServer">
+			<var name="deleteLiferayHome" value="false" />
+		</execute>
 
 		<execute macro="Navigator#openURL" />
 
