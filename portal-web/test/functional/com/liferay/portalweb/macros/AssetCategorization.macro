@@ -14,7 +14,7 @@
 
 		<execute function="AssertVisible" locator1="AssetCategorization#CATEGORIES_CATEGORY_CHECKBOX_CHECKED" />
 
-		<execute function="SelectFrame" value1="relative=top" />
+		<execute function="SelectFrameTop" />
 
 		<if>
 			<condition function="IsElementPresent" locator1="Button#DONE" />
