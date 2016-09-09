@@ -248,8 +248,8 @@ public class PoshiRunner {
 	private class Retry implements TestRule {
 
 		public Retry(int retryCount, Class... retryClasses) {
-			_retryClasses = retryClasses;
 			_retryCount = retryCount;
+			_retryClasses = retryClasses;
 		}
 
 		public Statement apply(
@@ -266,6 +266,10 @@ public class PoshiRunner {
 							return;
 						}
 						catch (Throwable t) {
+							if (i == (_retryCount - 1)) {
+								throw t;
+							}
+
 							boolean retry = false;
 
 							List<Throwable> throwables = null;
