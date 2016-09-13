@@ -99,6 +99,22 @@
 	<td>//div[contains(@id,'ImageEditorPortlet') and contains (@id,'effectsaureus')]</td>
 	<td></td>
 </tr>
+<!--SLIDER-->
+<tr>
+	<td>SLIDER_RAIL</td>
+	<td>//div[@class='rail']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SLIDER_RAIL_HANDLE</td>
+	<td>//div[@class='rail-handle']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SLIDER_VALUE</td>
+	<td>//div[@class='slider ']/span</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
