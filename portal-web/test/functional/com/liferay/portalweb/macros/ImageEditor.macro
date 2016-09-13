@@ -100,6 +100,18 @@
 		</if>
 	</command>
 
+	<command name="setSliderValue">
+		<var method="selenium#getElementWidth('//div[@class=\'rail\']')" name="width" />
+
+		<var method="MathUtil#percent(${sliderValue}, ${width})" name="position" />
+
+		<execute function="MouseDown#mouseDownAt" locator1="ImageEditor#SLIDER_RAIL_HANDLE" value1="0, 10" />
+
+		<execute function="MouseUp#mouseUpAt" locator1="ImageEditor#SLIDER_RAIL" value1="${position}, 15" />
+
+		<execute function="AssertTextEquals" locator1="ImageEditor#SLIDER_VALUE" value1="${sliderValue}" />
+	</command>
+
 	<command name="viewBaseControls">
 		<execute function="AssertElementPresent" locator1="Button#TRANSFORM" />
 		<execute function="AssertElementPresent" locator1="Button#FILTER_EFFECT" />
