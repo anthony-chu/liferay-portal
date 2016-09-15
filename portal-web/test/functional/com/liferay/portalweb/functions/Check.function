@@ -1,4 +1,4 @@
-<definition default="clickAt">
+<definition default="click">
 	<command name="checkAll">
 		<execute function="WaitForSPARefresh" />
 
@@ -9,7 +9,7 @@
 		<if>
 			<condition selenium="isNotChecked" />
 			<then>
-				<execute selenium="clickAt" />
+				<execute selenium="click" />
 			</then>
 		</if>
 
@@ -30,7 +30,7 @@
 		<if>
 			<condition argument1="xpath=(${locator1})/../../input" selenium="isNotChecked" />
 			<then>
-				<execute selenium="clickAt" />
+				<execute selenium="click" />
 			</then>
 		</if>
 
@@ -51,7 +51,7 @@
 		<if>
 			<condition selenium="isNotChecked" />
 			<then>
-				<execute selenium="clickAt" />
+				<execute selenium="click" />
 			</then>
 		</if>
 
@@ -62,7 +62,7 @@
 		<execute selenium="assertLiferayErrors" />
 	</command>
 
-	<command name="clickAt">
+	<command name="click">
 		<execute function="WaitForSPARefresh" />
 
 		<execute selenium="waitForVisible" />
@@ -72,7 +72,7 @@
 		<if>
 			<condition selenium="isNotChecked" />
 			<then>
-				<execute selenium="clickAt" />
+				<execute selenium="click" />
 			</then>
 		</if>
 
@@ -93,7 +93,7 @@
 		<if>
 			<condition selenium="isNotChecked" />
 			<then>
-				<execute selenium="clickAt" />
+				<execute selenium="click" />
 			</then>
 		</if>
 
