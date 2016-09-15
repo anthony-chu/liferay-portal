@@ -12,25 +12,13 @@
  * details.
  */
 
-package com.liferay.portal.tools.data.partitioning.sql.builder.exporter;
-
-import org.junit.Assert;
-import org.junit.Test;
+package com.liferay.portal.tools.data.partitioning.sql.builder.exporter.serializer;
 
 /**
- * @author Manuel de la Peña
+ * @author Miguel Pastor
  */
-public class InsertSQLBuilderTest {
+public interface FieldSerializer {
 
-	@Test
-	public void testBuildInsert() {
-		String[] fields = {"a", "b", "c", "d"};
-
-		InsertSQLBuilder insertSQLBuilder = new InsertSQLBuilder();
-
-		Assert.assertEquals(
-			"insert into Foo values (a, b, c, d);\n",
-			insertSQLBuilder.buildInsert(null, "Foo", fields));
-	}
+	public String serialize(Object object);
 
 }
