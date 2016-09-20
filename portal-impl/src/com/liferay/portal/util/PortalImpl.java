@@ -5421,7 +5421,7 @@ public class PortalImpl implements Portal {
 
 			String currentRequestClassName = currentRequestClass.getName();
 
-			if (!currentRequestClassName.startsWith("com.liferay.")) {
+			if (!isUnwrapRequest(currentRequestClassName)) {
 				break;
 			}
 
@@ -8003,6 +8003,16 @@ public class PortalImpl implements Portal {
 				alwaysAllowDoAsUser.getStrutsActions();
 
 			if (strutsActions.contains(strutsAction)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	protected boolean isUnwrapRequest(String currentRequestClassName) {
+		for (String packageName : PropsValues.REQUEST_UNWRAP_PACKAGES) {
+			if (currentRequestClassName.startsWith(packageName)) {
 				return true;
 			}
 		}
