@@ -101,6 +101,9 @@
 	</command>
 
 	<command name="setSliderValue">
+		<execute function="AssertElementPresent" locator1="ImageEditor#SLIDER_RAIL" />
+		<execute function="AssertVisible" locator1="ImageEditor#SLIDER_RAIL" />
+
 		<var method="selenium#getElementWidth('//div[@class=\'rail\']')" name="width" />
 
 		<var method="MathUtil#percent(${sliderValue}, ${width})" name="position" />
