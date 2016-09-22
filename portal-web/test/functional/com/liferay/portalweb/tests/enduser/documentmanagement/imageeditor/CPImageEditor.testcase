@@ -52,6 +52,10 @@
 
 		<execute macro="ImageEditor#applyChangesAndSaveFile" />
 
+		<execute macro="IFrame#selectTopFrame" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -84,6 +88,10 @@
 		</execute>
 
 		<execute macro="ImageEditor#applyChangesAndSaveFile" />
+
+		<execute macro="IFrame#selectTopFrame" />
+
+		<execute macro="Alert#viewSuccessMessage" />
 
 		<execute macro="Navigator#openURL" />
 
@@ -118,6 +126,10 @@
 
 		<execute macro="ImageEditor#applyChangesAndSaveFile" />
 
+		<execute macro="IFrame#selectTopFrame" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -150,6 +162,10 @@
 		</execute>
 
 		<execute macro="ImageEditor#applyChangesAndSaveFile" />
+
+		<execute macro="IFrame#selectTopFrame" />
+
+		<execute macro="Alert#viewSuccessMessage" />
 
 		<execute macro="Navigator#openURL" />
 
@@ -184,6 +200,10 @@
 
 		<execute macro="ImageEditor#applyChangesAndSaveFile" />
 
+		<execute macro="IFrame#selectTopFrame" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -216,6 +236,10 @@
 		</execute>
 
 		<execute macro="ImageEditor#applyChangesAndSaveFile" />
+
+		<execute macro="IFrame#selectTopFrame" />
+
+		<execute macro="Alert#viewSuccessMessage" />
 
 		<execute macro="Navigator#openURL" />
 
