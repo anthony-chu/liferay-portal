@@ -871,9 +871,7 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 	}
 
 	public void dragAndDropByOffset(
-		String locator,
-		String coordString,
-		String offsetString) {
+		String locator, String coordString, String offsetString) {
 
 		WebElement webElement = getWebElement(locator);
 
