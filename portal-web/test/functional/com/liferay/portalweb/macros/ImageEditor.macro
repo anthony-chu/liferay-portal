@@ -123,6 +123,12 @@
 		<execute function="AssertElementPresent" locator1="Button#COLOR_EFFECT" />
 	</command>
 
+	<command name="viewEditedImage">
+		<var method="StringUtil#toUpperCase('${adjustment}')" name="adjustment" />
+
+		<execute function="SikuliAssertElementPresent" locator1="ImageEditor#IMAGE_${adjustment}_${adjustmentLevel}_PNG" />
+	</command>
+
 	<command name="viewImageEditorPortletHeader">
 		<execute function="AssertTextEquals#assertPartialText" locator1="Portlet#H3_MODAL_TITLE" value1="${imageFileName} (Copy)" />
 	</command>
