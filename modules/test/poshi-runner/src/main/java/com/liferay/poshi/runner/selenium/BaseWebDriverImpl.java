@@ -1107,6 +1107,14 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 		throw new UnsupportedOperationException();
 	}
 
+	public int getElementCenterX(String locator) {
+		return (WebDriverHelper.getElementWidth(this, locator) / 2);
+	}
+
+	public int getElementCenterY(String locator) {
+		return (WebDriverHelper.getElementHeight(this, locator) / 2);
+	}
+
 	@Override
 	public int getElementHeight(String locator) {
 		return WebDriverHelper.getElementHeight(this, locator);
