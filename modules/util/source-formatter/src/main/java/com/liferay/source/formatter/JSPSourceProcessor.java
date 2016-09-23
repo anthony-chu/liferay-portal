@@ -177,30 +177,18 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 		}
 	}
 
-	protected void checkDefineObjectsVariable(
-		String line, String fileName, int lineCount, String objectType,
-		String variableName, String value, String tag) {
-
-		if (line.contains(objectType + " " + variableName + " = " + value)) {
-			processMessage(
-				fileName,
-				"Use '" + tag + ":defineObjects' or rename var, see LPS-62493",
-				lineCount);
-		}
-	}
-
 	protected void checkDefineObjectsVariables(
-		String line, String fileName, String absolutePath, int lineCount) {
+		String fileName, String content, String absolutePath) {
 
 		for (String[] defineObject : _LIFERAY_THEME_DEFINE_OBJECTS) {
-			checkDefineObjectsVariable(
-				line, fileName, lineCount, defineObject[0], defineObject[1],
+			checkDefineObjectsVariables(
+				fileName, content, defineObject[0], defineObject[1],
 				defineObject[2], "liferay-theme");
 		}
 
 		for (String[] defineObject : _PORTLET_DEFINE_OBJECTS) {
-			checkDefineObjectsVariable(
-				line, fileName, lineCount, defineObject[0], defineObject[1],
+			checkDefineObjectsVariables(
+				fileName, content, defineObject[0], defineObject[1],
 				defineObject[2], "portlet");
 		}
 
@@ -221,9 +209,49 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 		}
 
 		for (String[] defineObject : _LIFERAY_FRONTEND_DEFINE_OBJECTS) {
-			checkDefineObjectsVariable(
-				line, fileName, lineCount, defineObject[0], defineObject[1],
+			checkDefineObjectsVariables(
+				fileName, content, defineObject[0], defineObject[1],
 				defineObject[2], "liferay-frontend");
+		}
+	}
+
+	protected void checkDefineObjectsVariables(
+		String fileName, String content, String objectType, String variableName,
+		String value, String tag) {
+
+		int x = -1;
+
+		while (true) {
+			x = content.indexOf(
+				objectType + " " + variableName + " = " + value + ";", x + 1);
+
+			if (x == -1) {
+				return;
+			}
+
+			int y = content.lastIndexOf("<%", x);
+
+			if ((y == -1) ||
+				(getLevel(content.substring(y, x), "{", "}") > 0)) {
+
+				continue;
+			}
+
+			processMessage(
+				fileName,
+				"Use '" + tag + ":defineObjects' or rename var, see LPS-62493",
+				getLineCount(content, x));
+		}
+	}
+
+	protected void checkSubnames(String fileName, String content) {
+		Matcher matcher = _subnamePattern.matcher(content);
+
+		while (matcher.find()) {
+			processMessage(
+				fileName,
+				"'sub' should be followed by a lowercase character for '" +
+					matcher.group(1) + "'");
 		}
 	}
 
@@ -393,6 +421,8 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 		checkLanguageKeys(
 			fileName, absolutePath, newContent, _taglibLanguageKeyPattern3);
 
+		checkSubnames(fileName, newContent);
+
 		newContent = sortPutOrSetCalls(
 			newContent, jsonObjectPutBlockPattern, jsonObjectPutPattern);
 		newContent = sortPutOrSetCalls(
@@ -450,6 +480,8 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 		checkGetterUtilGet(fileName, newContent);
 
 		checkValidatorEquals(fileName, newContent);
+
+		checkDefineObjectsVariables(fileName, newContent, absolutePath);
 
 		matcher = _javaClassPattern.matcher(newContent);
 
@@ -761,9 +793,6 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 				// LPS-58529
 
 				checkResourceUtil(line, fileName, lineCount);
-
-				checkDefineObjectsVariables(
-					line, fileName, absolutePath, lineCount);
 
 				if (!fileName.endsWith("test.jsp") &&
 					line.contains("System.out.print")) {
@@ -2146,6 +2175,8 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 			"\\);)\n(String backURL = ParamUtil\\.getString\\(request, \"" +
 				"backURL\", redirect\\);)");
 	private boolean _stripJSPImports = true;
+	private final Pattern _subnamePattern = Pattern.compile(
+		"\\s(_?sub[A-Z]\\w+)[; ]");
 	private final Map<String, JavaClass> _tagJavaClassesMap = new HashMap<>();
 	private final Pattern _taglibLanguageKeyPattern1 = Pattern.compile(
 		"(?:confirmation|label|(?:M|m)essage|message key|names|title)=\"[^A-Z" +

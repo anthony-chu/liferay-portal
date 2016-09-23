@@ -51,6 +51,7 @@ public class ViewEntryMVCRenderCommand implements MVCRenderCommand {
 
 			renderRequest.setAttribute(
 				AnnouncementsWebKeys.ANNOUNCEMENTS_ENTRY, entry);
+
 			renderRequest.setAttribute(
 				AnnouncementsWebKeys.VIEW_ENTRY_FLAG_VALUE,
 				AnnouncementsFlagConstants.NOT_HIDDEN);

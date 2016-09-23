@@ -184,6 +184,11 @@ public interface LiferaySelenium {
 
 	public void dragAndDrop(String locator, String movementsString);
 
+	public void dragAndDropByOffset(
+		String locator,
+		String coordString,
+		String offsetString);
+
 	public void dragAndDropToObject(
 		String locatorOfObjectToBeDragged,
 		String locatorOfDragDestinationObject);
@@ -237,6 +242,10 @@ public interface LiferaySelenium {
 	public String getCurrentYear();
 
 	public Number getCursorPosition(String locator);
+
+	public int getElementCenterX(String locator);
+
+	public int getElementCenterY(String locator);
 
 	public int getElementHeight(String locator);
 

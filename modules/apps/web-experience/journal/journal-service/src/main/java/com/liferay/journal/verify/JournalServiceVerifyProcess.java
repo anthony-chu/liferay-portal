@@ -367,6 +367,7 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 				article.getCompanyId());
 
 			LocaleThreadLocal.setDefaultLocale(company.getLocale());
+
 			LocaleThreadLocal.setSiteDefaultLocale(
 				PortalUtil.getSiteDefaultLocale(article.getGroupId()));
 
@@ -925,6 +926,7 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 							groupId, articleId, normalizedURLTitle);
 
 					ps2.setString(1, normalizedURLTitle);
+
 					ps2.setString(2, urlTitle);
 
 					ps2.addBatch();

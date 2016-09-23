@@ -749,6 +749,7 @@ public class JournalArticleIndexer
 				themeDisplay);
 
 			content = articleDisplay.getDescription();
+
 			content = HtmlUtil.replaceNewLine(content);
 
 			if (Validator.isNull(content)) {

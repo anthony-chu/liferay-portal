@@ -93,7 +93,7 @@ public class JournalArticleImpl extends JournalArticleBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link #getContentByLocale(Document,
+	 * @deprecated As of 4.0.0, replaced by {@link #getContentByLocale(Document,
 	 *             String)}
 	 */
 	@Deprecated
@@ -426,7 +426,7 @@ public class JournalArticleImpl extends JournalArticleBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0
+	 * @deprecated As of 4.0.0
 	 */
 	@Deprecated
 	public String getLegacyDescription() {
@@ -434,7 +434,7 @@ public class JournalArticleImpl extends JournalArticleBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0
+	 * @deprecated As of 4.0.0
 	 */
 	@Deprecated
 	public String getLegacyTitle() {
@@ -459,7 +459,7 @@ public class JournalArticleImpl extends JournalArticleBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link #getDDMStructureKey()}
+	 * @deprecated As of 4.0.0, replaced by {@link #getDDMStructureKey()}
 	 */
 	@Deprecated
 	@Override
@@ -468,7 +468,7 @@ public class JournalArticleImpl extends JournalArticleBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link #getDDMTemplateKey()}
+	 * @deprecated As of 4.0.0, replaced by {@link #getDDMTemplateKey()}
 	 */
 	@Deprecated
 	@Override
@@ -577,7 +577,7 @@ public class JournalArticleImpl extends JournalArticleBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, with no direct replacement
+	 * @deprecated As of 4.0.0, with no direct replacement
 	 */
 	@Deprecated
 	@Override
@@ -593,7 +593,7 @@ public class JournalArticleImpl extends JournalArticleBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0
+	 * @deprecated As of 4.0.0
 	 */
 	@Deprecated
 	public void setDescription(String description) {
@@ -620,7 +620,7 @@ public class JournalArticleImpl extends JournalArticleBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link #setDDMStructureKey(String)}
+	 * @deprecated As of 4.0.0, replaced by {@link #setDDMStructureKey(String)}
 	 */
 	@Deprecated
 	@Override
@@ -629,7 +629,7 @@ public class JournalArticleImpl extends JournalArticleBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link #setDDMTemplateKey(String)}
+	 * @deprecated As of 4.0.0, replaced by {@link #setDDMTemplateKey(String)}
 	 */
 	@Deprecated
 	@Override
@@ -638,7 +638,7 @@ public class JournalArticleImpl extends JournalArticleBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0
+	 * @deprecated As of 4.0.0
 	 */
 	@Deprecated
 	public void setTitle(String title) {
@@ -653,7 +653,7 @@ public class JournalArticleImpl extends JournalArticleBaseImpl {
 		JournalArticleImpl.class);
 
 	/**
-	 * @deprecated As of 7.0.0
+	 * @deprecated As of 4.0.0
 	 */
 	@Deprecated
 	private String _description;
@@ -667,7 +667,7 @@ public class JournalArticleImpl extends JournalArticleBaseImpl {
 	private String _smallImageType;
 
 	/**
-	 * @deprecated As of 7.0.0
+	 * @deprecated As of 4.0.0
 	 */
 	@Deprecated
 	private String _title;

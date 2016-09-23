@@ -100,10 +100,33 @@
 		</if>
 	</command>
 
+	<command name="setSliderValue">
+		<execute function="AssertElementPresent" locator1="ImageEditor#SLIDER_RAIL" />
+		<execute function="AssertVisible" locator1="ImageEditor#SLIDER_RAIL" />
+
+		<var method="selenium#getElementWidth('//div[@class=\'rail\']')" name="width" />
+
+		<var method="selenium#getElementCenterX('//div[@class=\'rail\']')" name="center" />
+
+		<var method="MathUtil#percent(${sliderValue}, ${width})" name="position" />
+
+		<var method="MathUtil#difference(${position}, ${center})" name="offset" />
+
+		<execute function="DragAndDrop#dragAndDropByOffset" locator1="ImageEditor#SLIDER_RAIL_HANDLE" value1="0, 10" value2="${offset}, 0" />
+
+		<execute function="AssertTextEquals" locator1="ImageEditor#SLIDER_VALUE" value1="${sliderValue}" />
+	</command>
+
 	<command name="viewBaseControls">
 		<execute function="AssertElementPresent" locator1="Button#TRANSFORM" />
 		<execute function="AssertElementPresent" locator1="Button#FILTER_EFFECT" />
 		<execute function="AssertElementPresent" locator1="Button#COLOR_EFFECT" />
+	</command>
+
+	<command name="viewEditedImage">
+		<var method="StringUtil#toUpperCase('${adjustment}')" name="adjustment" />
+
+		<execute function="SikuliAssertElementPresent" locator1="ImageEditor#IMAGE_${adjustment}_${adjustmentLevel}_PNG" />
 	</command>
 
 	<command name="viewImageEditorPortletHeader">

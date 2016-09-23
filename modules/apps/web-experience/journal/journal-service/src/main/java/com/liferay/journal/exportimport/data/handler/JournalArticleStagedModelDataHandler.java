@@ -548,6 +548,7 @@ public class JournalArticleStagedModelDataHandler
 			expirationDateYear = expirationCal.get(Calendar.YEAR);
 			expirationDateHour = expirationCal.get(Calendar.HOUR);
 			expirationDateMinute = expirationCal.get(Calendar.MINUTE);
+
 			neverExpire = false;
 
 			if (expirationCal.get(Calendar.AM_PM) == Calendar.PM) {
@@ -575,6 +576,7 @@ public class JournalArticleStagedModelDataHandler
 			reviewDateYear = reviewCal.get(Calendar.YEAR);
 			reviewDateHour = reviewCal.get(Calendar.HOUR);
 			reviewDateMinute = reviewCal.get(Calendar.MINUTE);
+
 			neverReview = false;
 
 			if (reviewCal.get(Calendar.AM_PM) == Calendar.PM) {
@@ -967,7 +969,7 @@ public class JournalArticleStagedModelDataHandler
 	}
 
 	/**
-	 * @deprecated As of 7.0.0
+	 * @deprecated As of 4.0.0
 	 */
 	@Deprecated
 	protected void setJournalArticleExportImportContentProcessor(
@@ -1003,7 +1005,7 @@ public class JournalArticleStagedModelDataHandler
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, only used for backwards compatibility with
+	 * @deprecated As of 4.0.0, only used for backwards compatibility with
 	 *             LARs that use journal schema under 1.1.0
 	 */
 	@Deprecated
