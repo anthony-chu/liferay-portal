@@ -2986,9 +2986,12 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 		<attribute default="" name="testable.portal.started.marker.file" />
 
 		<sequential>
+			<echo>abc</echo>
+
 			<if>
 				<equals arg1="${tcat.enabled}" arg2="true" />
 				<then>
+					<echo>xyz</echo>
 					<start-app-server-cmd
 						app.server.bin.dir="${app.server.tcat.admin.bin.dir}"
 						app.server.bundle.index="@{app.server.bundle.index}"
@@ -3004,6 +3007,7 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 					/>
 				</then>
 				<else>
+					<echo>777</echo>
 					<start-app-server-cmd
 						app.server.bundle.index="@{app.server.bundle.index}"
 						delete.liferay.home="@{delete.liferay.home}"
@@ -3021,16 +3025,18 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 		<attribute default="" name="testable.portal.started.marker.file" />
 
 		<sequential>
+			<echo>cmd-123</echo>
 			<set-app-server-properties
 				app.server.bin.dir="@{app.server.bin.dir}"
 				app.server.bundle.index="@{app.server.bundle.index}"
 			/>
 
 			<local name="portal.not.started" />
-
+			<echo>${portal.not.started}</echo>
 			<if>
 				<equals arg1="@{app.server.bin.dir}" arg2="${app.server.tcat.admin.bin.dir}" />
 				<then>
+					<echo>cmd-abc</echo>
 					<waitfor maxwait="1" maxwaitunit="second" timeoutproperty="portal.not.started">
 						<socket port="${test.app.server.leading.port.number}180" server="localhost" />
 					</waitfor>
@@ -3038,26 +3044,31 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 				<elseif>
 					<equals arg1="@{app.server.bin.dir}" arg2="${app.server.tcat.agent.bin.dir}" />
 					<then>
+						<echo>cmd-xyz</echo>
 						<waitfor maxwait="1" maxwaitunit="second" timeoutproperty="portal.not.started">
 							<socket port="${test.app.server.leading.port.number}080" server="localhost" />
 						</waitfor>
 					</then>
 				</elseif>
 				<else>
+					<echo>${test.app.server.leading.port.number}</echo>
 					<waitfor maxwait="1" maxwaitunit="second" timeoutproperty="portal.not.started">
 						<socket port="${test.app.server.leading.port.number}080" server="localhost" />
 					</waitfor>
+					<echo>${portal.not.started}</echo>
 				</else>
 			</if>
-
+			<echo>${portal.not.started}</echo>
 			<if>
 				<isset property="portal.not.started" />
 				<then>
+					<echo>test</echo>
 					<if>
 						<not>
 							<equals arg1="@{testable.portal.started.marker.file}" arg2="" />
 						</not>
 						<then>
+							<echo>test-1233</echo>
 							<echo file="@{testable.portal.started.marker.file}" message="1" />
 						</then>
 					</if>
@@ -3082,6 +3093,7 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 							<equals arg1="@{delete.liferay.home}" arg2="true" />
 						</and>
 						<then>
+							<echo>delete-123</echo>
 							<antcall target="delete-liferay-home">
 								<param name="keep.hypersonicdb" value="true" />
 							</antcall>
@@ -3095,6 +3107,7 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 					<if>
 						<equals arg1="${test.ant.launched.by.selenium}" arg2="true" />
 						<then>
+							<echo>selenium-123</echo>
 							<exec dir="${test.app.server.bin.dir}" executable="${app.server.start.executable}" resolveexecutable="true">
 								<arg line="${app.server.start.executable.arg.line}" />
 							</exec>
@@ -3102,6 +3115,7 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 							<wait-for-app-server app.server.bin.dir="@{app.server.bin.dir}" app.server.bundle.index="@{app.server.bundle.index}" />
 						</then>
 						<else>
+							<echo>abcdefg</echo>
 							<parallel>
 								<sequential>
 									<wait-for-app-server app.server.bin.dir="@{app.server.bin.dir}" app.server.bundle.index="@{app.server.bundle.index}" />
@@ -8519,6 +8533,8 @@ jdbc.default.password=${database.mysql.password}</echo>
 				<var name="app.server.bundle.index" value="0" />
 			</then>
 		</if>
+
+		<echo>123</echo>
 
 		<start-app-server
 			app.server.bundle.index="${app.server.bundle.index}"
