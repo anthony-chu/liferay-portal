@@ -479,6 +479,8 @@
 	</command>
 
 	<command name="AddTemplateXSL" priority="3">
+		<property name="portal.acceptance" value="anthony" />
+
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
