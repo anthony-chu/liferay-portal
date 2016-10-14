@@ -888,6 +888,51 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 		}
 	}
 
+	public void dragAndDropByOffset(
+		String locator, String coordString, String offsetString) {
+
+		WebElement webElement = getWebElement(locator);
+
+		scrollWebElementIntoView(webElement);
+
+		WrapsDriver wrapsDriver = (WrapsDriver)webElement;
+
+		WebDriver webDriver = wrapsDriver.getWrappedDriver();
+
+		Actions actions = new Actions(webDriver);
+
+		if (Validator.isNotNull(coordString) && coordString.contains(",")) {
+			String[] coords = coordString.split(",");
+
+			int x1 = GetterUtil.getInteger(coords[0]);
+			int y1 = GetterUtil.getInteger(coords[1]);
+
+			actions.moveToElement(webElement, x1, y1);
+
+			actions.clickAndHold();
+		}
+		else {
+			actions.moveToElement(webElement);
+
+			actions.clickAndHold(webElement);
+		}
+
+		if (Validator.isNotNull(offsetString) && offsetString.contains(",")) {
+			String[] offset = offsetString.split(",");
+
+			int x2 = GetterUtil.getInteger(offset[0]);
+			int y2 = GetterUtil.getInteger(offset[1]);
+
+			actions.moveByOffset(x2, y2);
+
+			actions.release();
+		}
+
+		Action action = actions.build();
+
+		action.perform();
+	}
+
 	@Override
 	public void dragAndDropToObject(
 		String locatorOfObjectToBeDragged,
@@ -1076,6 +1121,14 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 	@Override
 	public Number getCursorPosition(String locator) {
 		throw new UnsupportedOperationException();
+	}
+
+	public int getElementCenterX(String locator) {
+		return (WebDriverHelper.getElementWidth(this, locator) / 2);
+	}
+
+	public int getElementCenterY(String locator) {
+		return (WebDriverHelper.getElementHeight(this, locator) / 2);
 	}
 
 	@Override

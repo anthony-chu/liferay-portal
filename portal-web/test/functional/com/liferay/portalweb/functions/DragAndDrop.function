@@ -9,6 +9,16 @@
 		<execute selenium="assertLiferayErrors" />
 	</command>
 
+	<command name="dragAndDropByOffset">
+		<execute function="WaitForSPARefresh" />
+
+		<execute argument1="${locator1}" argument2="${value1}" argument3="${value2}" selenium="dragAndDropByOffset" />
+
+		<execute selenium="assertJavaScriptErrors" />
+
+		<execute selenium="assertLiferayErrors" />
+	</command>
+
 	<command name="dragAndDropPortletToObject">
 		<execute function="WaitForSPARefresh" />
 
