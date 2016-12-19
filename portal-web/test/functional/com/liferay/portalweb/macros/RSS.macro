@@ -21,6 +21,39 @@
 		<execute function="Type" locator1="RSSFeed#FEEDS_URL_NAME_FIELD" value1="${feedUrlLink}" />
 	</command>
 
+	<command name="addFeedViaWebContent">
+		<execute function="Type" locator1="TextInput#NAME" value1="${feedTitle}" />
+		<execute function="Type" locator1="TextArea#DESCRIPTION" value1="${description}" />
+		<execute function="Type" locator1="TextInput#TARGET_PAGE_FRIENDLY_URL" value1="${targetFriendlyUrl}" />
+
+		<execute macro="Panel#expandPanel">
+			<var name="panelHeading" value="Web Content Constraints" />
+		</execute>
+
+		<execute function="AssertClick" locator1="WCEditWebContent#SELECT_STRUCTURE" value1="Select" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<var name="key_ddlDataDefinitionName" value="${structureName}" />
+
+		<execute function="AssertClickNoError" locator1="DDMSelectStructure#DDM_STRUCTURE_TABLE_NAME_LINK" value1="${structureName}" />
+
+		<execute function="Confirm#assertConfirmationNoWait" value1="Selecting a new structure changes the available templates and available feed item content. Do you want to proceed?" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+
+		<execute macro="Panel#expandPanel">
+			<var name="panelHeading" value="Presentation Settings" />
+		</execute>
+
+		<execute function="Select#select" locator1="Select#FEED_ITEM_CONTENT" value1="${feedContent}" />
+		<execute function="Select#select" locator1="Select#FEED_TYPE" value1="${feedType}" />
+
+		<execute macro="PortletEntry#save" />
+	</command>
+
 	<command name="changeFeedsOrder">
 		<var name="key_fromRowNumber" value="${fromRowNumber}" />
 		<var name="key_toRowNumber" value="${toRowNumber}" />
@@ -102,6 +135,14 @@
 		<var name="key_feedTitle" value="${feedTitle}" />
 
 		<execute function="AssertTextEquals#assertPartialText" locator1="RSSFeed#FEEDS_TITLE" value1="${feedTitle}" />
+	</command>
+
+	<command name="viewFeedContent">
+		<execute macro="Panel#expandPanel">
+			<var name="panelHeading" value="${panelHeading}" />
+		</execute>
+
+		<execute function="AssertTextEquals#assertPartialText" locator1="RSSFeed#FEEDS_CONTENT" value1="${feedContent}" />
 	</command>
 
 	<command name="viewNavigationDisplayFeedTitle">
