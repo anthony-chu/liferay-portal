@@ -145,7 +145,30 @@
 			</then>
 		</if>
 
+		<if>
+			<equals arg1="${themeSite}" arg2="true" />
+			<then>
+				<execute function="Pause" locator1="30000" />
+			</then>
+		</if>
+
 		<execute macro="Button#clickSave" />
+
+		<var name="pauseCount" value="0" />
+
+		<while>
+			<not>
+				<or>
+					<condition function="IsElementPresent" locator1="Message#SUCCESS" />
+					<equals arg1="${pauseCount}" arg2="10" />
+				</or>
+			</not>
+			<then>
+				<execute function="Pause" locator1="3000" />
+
+				<var method="MathUtil#sum('${pauseCount}', '1')" name="pauseCount" />
+			</then>
+		</while>
 
 		<execute macro="Alert#viewSuccessMessage" />
 
@@ -170,6 +193,7 @@
 			<var name="siteName" value="${siteName}" />
 			<var name="siteTemplateName" value="${siteTemplateName}" />
 			<var name="siteType" value="Site Template" />
+			<var name="themeSite" value="${themeSite}" />
 			<var name="uncheckPropagation" value="${uncheckPropagation}" />
 		</execute>
 	</command>

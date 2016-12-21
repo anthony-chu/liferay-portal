@@ -37,6 +37,7 @@
 				<execute macro="Site#addSiteTemplateCP">
 					<var name="siteName" value="Porygon Theme Site" />
 					<var name="siteTemplateName" value="Porygon Theme" />
+					<var name="themeSite" value="true" />
 				</execute>
 
 				<execute macro="ProductMenu#gotoSite">
