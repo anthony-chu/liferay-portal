@@ -154,21 +154,26 @@
 
 		<execute macro="Button#clickSave" />
 
-		<var name="pauseCount" value="0" />
-
-		<while>
-			<not>
-				<or>
-					<condition function="IsElementPresent" locator1="Message#SUCCESS" />
-					<equals arg1="${pauseCount}" arg2="10" />
-				</or>
-			</not>
+		<if>
+			<equals arg1="${themeSite}" arg2="true" />
 			<then>
-				<execute function="Pause" locator1="3000" />
+				<var name="pauseCount" value="0" />
 
-				<var method="MathUtil#sum('${pauseCount}', '1')" name="pauseCount" />
+				<while>
+					<not>
+						<or>
+							<condition function="IsElementPresent" locator1="Message#SUCCESS" />
+							<equals arg1="${pauseCount}" arg2="10" />
+						</or>
+					</not>
+					<then>
+						<execute function="Pause" locator1="3000" />
+
+						<var method="MathUtil#sum('${pauseCount}', '1')" name="pauseCount" />
+					</then>
+				</while>
 			</then>
-		</while>
+		</if>
 
 		<execute macro="Alert#viewSuccessMessage" />
 
