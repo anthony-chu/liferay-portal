@@ -21,9 +21,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.taglib.aui.ScriptTag;
 import com.liferay.taglib.util.IncludeTag;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,7 +68,7 @@ public class AlertTag extends IncludeTag {
 		values.put("type", _type);
 
 		String result = StringUtil.replace(
-			_alertTemplate, StringPool.POUND, StringPool.POUND, values);
+			_TMPL_CONTENT, StringPool.POUND, StringPool.POUND, values);
 
 		ScriptTag.doTag(
 			null, null, "liferay-alert", result, getBodyContent(), pageContext);
@@ -148,22 +145,12 @@ public class AlertTag extends IncludeTag {
 	protected void setAttributes(HttpServletRequest request) {
 	}
 
-	private static final String _alertTemplate;
-
-	static {
-		try (InputStream inputStream = AlertTag.class.getResourceAsStream(
-				"alert/alert.tmpl")) {
-
-			_alertTemplate = StringUtil.read(inputStream);
-		}
-		catch (IOException ioe) {
-			throw new ExceptionInInitializerError(ioe);
-		}
-	}
-
 	private static final String _ATTRIBUTE_NAMESPACE = "liferay-ui:alert:";
 
 	private static final String _PAGE = "/html/taglib/ui/alert/page.jsp";
+
+	private static final String _TMPL_CONTENT = StringUtil.read(
+		AlertTag.class, "alert/alert.tmpl");
 
 	private Integer _animationTime = 500;
 	private boolean _closeable = true;

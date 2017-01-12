@@ -288,9 +288,16 @@
 	</command>
 
 	<command name="configureFlaggableDisplaySettingsPG">
-		<execute macro="AssetPublisherPortlet#gotoConfigurationPG" />
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="${portletName}" />
+			<var name="portletOption" value="Configuration" />
+		</execute>
 
-		<execute function="AssertClick" locator1="NavTab#DISPLAY_SETTINGS" value1="Display Settings" />
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute macro="Navigator#gotoNavTab">
+			<var name="navTab" value="Display Settings" />
+		</execute>
 
 		<if>
 			<equals arg1="${enableRatings}" arg2="true" />
@@ -560,8 +567,10 @@
 		<execute function="AssertClick" locator1="Link#VIEW_IN_CONTEXT" value1="View in Context »" />
 	</command>
 
-	<command name="rate4StarsPG">
-		<execute function="Click#clickNoMouseOver" locator1="Ratings#YOUR_RATING_STAR_EMPTY_4" />
+	<command name="rateAssetPG">
+		<execute function="Click#clickNoMouseOver" locator1="Ratings#YOUR_RATING_STAR_EMPTY">
+			<var name="key_emptyStarPosition" value="${emptyStarPosition}" />
+		</execute>
 	</command>
 
 	<command name="removeSiteScope">
@@ -657,6 +666,25 @@
 		<execute function="AssertTextEquals#assertPartialText" locator1="AP#ASSET_ABSTRACT_DESCRIPTION" value1="${assetContent}" />
 	</command>
 
+	<command name="viewAssetRatingStarPG">
+		<for list="${ratingStarPositionList}" param="ratingStarPosition">
+			<execute function="AssertElementPresent" locator1="Ratings#YOUR_RATING_STAR">
+				<var name="key_ratingStarPosition" value="${ratingStarPosition}" />
+			</execute>
+		</for>
+
+		<if>
+			<isset var="EmptyStarPositionList" />
+			<then>
+				<for list="${EmptyStarPositionList}" param="emptyStarPosition">
+					<execute function="AssertElementPresent" locator1="Ratings#YOUR_RATING_STAR_EMPTY">
+						<var name="key_emptyStarPosition" value="${emptyStarPosition}" />
+					</execute>
+				</for>
+			</then>
+		</if>
+	</command>
+
 	<command name="viewAssetTypeNotAvailable">
 		<execute function="SelectFrame" locator1="IFrame#CONFIGURATION" />
 
@@ -674,6 +702,27 @@
 			<var name="key_assetTitle" value="${assetTitle}" />
 			<var name="key_viewCount" value="${viewCount}" />
 		</execute>
+	</command>
+
+	<command name="viewAverageRatingStarPG">
+		<for list="${averageRatingStarList}" param="averageRatingStar">
+			<execute function="AssertElementPresent" locator1="Ratings#AVERAGE_STAR">
+				<var name="key_averageRatingStar" value="${averageRatingStar}" />
+			</execute>
+		</for>
+
+		<if>
+			<isset var="averageEmptyStarList" />
+			<then>
+				<for list="${averageEmptyStarList}" param="averageEmptyStar">
+					<execute function="AssertElementPresent" locator1="Ratings#AVERAGE_STAR_EMPTY">
+						<var name="key_averageEmptyStar" value="${averageEmptyStar}" />
+					</execute>
+				</for>
+			</then>
+		</if>
+
+		<execute function="AssertTextEquals" locator1="Ratings#AVERAGE_LABEL" value1="Average (1 Vote)" />
 	</command>
 
 	<command name="viewConfigureAPDisplayTemplateFullContentBookmarksPG">
@@ -1065,24 +1114,6 @@
 				<execute function="AssertTextEquals" locator1="AP#METADATA_TAGS" value1="${tagName}" />
 			</then>
 		</if>
-	</command>
-
-	<command name="viewRate4StarsPG">
-		<execute function="AssertTextEquals" locator1="Ratings#AVERAGE_LABEL" value1="Average (1 Vote)" />
-
-		<var name="key_assetTitle" value="${assetTitle}" />
-
-		<execute function="AssertElementPresent" locator1="Ratings#YOUR_RATING_STAR_1" />
-		<execute function="AssertElementPresent" locator1="Ratings#YOUR_RATING_STAR_2" />
-		<execute function="AssertElementPresent" locator1="Ratings#YOUR_RATING_STAR_3" />
-		<execute function="AssertElementPresent" locator1="Ratings#YOUR_RATING_STAR_4" />
-		<execute function="AssertElementPresent" locator1="Ratings#YOUR_RATING_STAR_EMPTY_1" />
-
-		<execute function="AssertElementPresent" locator1="Ratings#AVERAGE_STAR_1" />
-		<execute function="AssertElementPresent" locator1="Ratings#AVERAGE_STAR_2" />
-		<execute function="AssertElementPresent" locator1="Ratings#AVERAGE_STAR_3" />
-		<execute function="AssertElementPresent" locator1="Ratings#AVERAGE_STAR_4" />
-		<execute function="AssertElementPresent" locator1="Ratings#AVERAGE_STAR_EMPTY_1" />
 	</command>
 
 	<command name="viewReadMoreLinkNotPresentPG">
