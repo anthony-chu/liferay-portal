@@ -598,8 +598,15 @@ jdbc.counter.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 					<include name="**/.gitrepo" />
 				</fileset>
 				<sequential>
+					<local name="gitrepo.file.content" />
+
+					<loadfile property="gitrepo.file.content" srcfile="@{gitrepo.file}" />
+
 					<if>
-						<resourcecontains resource="@{gitrepo.file}" substring="git@github.com:liferay/${subrepository.name}.git" />
+						<or>
+							<contains string="${gitrepo.file.content}" substring="git@github.com:liferay/${subrepository.name}.git" />
+							<contains string="${gitrepo.file.content}" substring="git@github.com:liferay/${subrepository.name}-private.git" />
+						</or>
 						<then>
 							<antelope:stringutil property="module.base.dir" string="@{gitrepo.file}">
 								<antelope:replace regex="\\" replacement="/" />
@@ -5938,6 +5945,18 @@ custom.sql.function.isnotnull=CONVERT(VARCHAR,?) IS NOT NULL</echo>
 				<echo append="true" file="portal-impl/src/portal-ext.properties">
 
 hot.deploy.dependency.management.enabled=false</echo>
+			</then>
+		</if>
+
+		<get-testcase-property property.name="index.on.startup" />
+
+		<if>
+			<equals arg1="${index.on.startup}" arg2="false" />
+			<then>
+				<replace file="portal-impl/src/portal-ext.properties">
+					<replacetoken>index.on.startup=true</replacetoken>
+					<replacevalue>index.on.startup=false</replacevalue>
+				</replace>
 			</then>
 		</if>
 

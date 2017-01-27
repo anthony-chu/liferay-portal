@@ -1750,6 +1750,7 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 
 		_configureConfigurationDefault(project);
 		_configureConfigurationJspC(project, liferayExtension);
+		_configureConfigurationTestCompile(project);
 
 		String projectPath = project.getPath();
 
@@ -1762,6 +1763,10 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 			_configureConfigurationTransitive(
 				project, JavaPlugin.COMPILE_CONFIGURATION_NAME, false);
 		}
+
+		_configureDependenciesTransitive(
+			project, LiferayOSGiPlugin.COMPILE_INCLUDE_CONFIGURATION_NAME,
+			false);
 
 		ConfigurationContainer configurationContainer =
 			project.getConfigurations();
@@ -1777,6 +1782,16 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 			});
 	}
 
+	private void _configureConfigurationTestCompile(Project project) {
+		Configuration configuration = GradleUtil.getConfiguration(
+			project, JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME);
+
+		Configuration compileIncludeConfiguration = GradleUtil.getConfiguration(
+			project, LiferayOSGiPlugin.COMPILE_INCLUDE_CONFIGURATION_NAME);
+
+		configuration.extendsFrom(compileIncludeConfiguration);
+	}
+
 	private void _configureConfigurationTransitive(
 		Project project, String name, boolean transitive) {
 
@@ -1784,6 +1799,26 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 			project, name);
 
 		configuration.setTransitive(transitive);
+	}
+
+	private void _configureDependenciesTransitive(
+		Project project, String configurationName, final boolean transitive) {
+
+		Configuration configuration = GradleUtil.getConfiguration(
+			project, configurationName);
+
+		DependencySet dependencySet = configuration.getAllDependencies();
+
+		dependencySet.withType(
+			ModuleDependency.class,
+			new Action<ModuleDependency>() {
+
+				@Override
+				public void execute(ModuleDependency moduleDependency) {
+					moduleDependency.setTransitive(transitive);
+				}
+
+			});
 	}
 
 	private void _configureDependencyChecker(Project project) {

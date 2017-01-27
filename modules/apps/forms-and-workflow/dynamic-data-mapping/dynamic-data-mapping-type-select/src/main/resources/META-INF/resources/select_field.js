@@ -269,7 +269,7 @@ AUI.add(
 								function(value, index) {
 									options.forEach(
 										function(option, index) {
-											if (value && option.value.indexOf(value) > -1) {
+											if (value && option.value === value) {
 												optionsSelected.push(option);
 											}
 										}
