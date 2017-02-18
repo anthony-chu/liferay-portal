@@ -29,6 +29,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>PASSWORD</td>
+	<td>//textarea[contains(@id,'Password')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>PIWIK</td>
 	<td>//textarea[contains(@id,'_analytics_piwik')]</td>
 	<td></td>
@@ -44,8 +49,13 @@
 	<td></td>
 </tr>
 <tr>
+	<td>USERNAME</td>
+	<td>//textarea[contains(@id,'Username')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>URL</td>
-	<td>//textarea[contains(@id,'url')]</td>
+	<td>//textarea[contains(@id,'url') or contains(@id,'URL')]</td>
 	<td></td>
 </tr>
 <tr>

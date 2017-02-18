@@ -4877,6 +4877,8 @@ go]]></replacevalue>
 				<ant antfile="build-test-plugins.xml" target="deploy-extra-apps">
 					<property name="plugins.includes" value="${extraapps.plugins.includes}" />
 				</ant>
+
+				<antcall inheritAll="false" target="rebuild-extraapps-database" />
 			</then>
 		</if>
 	</target>
@@ -8206,6 +8208,57 @@ cluster.link.bind.addr["cluster-link-udp"]=127.0.0.1</echo>
 		</if>
 
 		<delete file="create.sql" />
+	</target>
+
+	<target name="rebuild-extraapps-database">
+		<get-testcase-property property.name="extraapps.database.name" />
+
+		<if>
+			<isset property="extraapps.database.name" />
+			<then>
+				<copy
+					file="sql/create-bare/create-bare-mysql.sql"
+					tofile="create-extraapps.sql"
+				/>
+
+				<var name="arg.line" unset="true" />
+
+				<if>
+					<and>
+						<equals arg1="${database.mysql.password}" arg2="" />
+						<equals arg1="${database.mysql.username}" arg2="" />
+					</and>
+					<then>
+						<var name="arg.line" value="" />
+					</then>
+					<elseif>
+						<equals arg1="${database.mysql.password}" arg2="" />
+						<then>
+							<var name="arg.line" value="-u ${database.mysql.username}" />
+						</then>
+					</elseif>
+					<elseif>
+						<equals arg1="${database.mysql.username}" arg2="" />
+						<then>
+							<var name="arg.line" value="-p${database.mysql.password}" />
+						</then>
+					</elseif>
+					<else>
+						<var name="arg.line" value="-p${database.mysql.password} -u ${database.mysql.username}" />
+					</else>
+				</if>
+
+				<replace
+					file="create-extraapps.sql"
+					token="lportal"
+					value="${extraapps.database.name}"
+				/>
+
+				<exec executable="${mysql.executable}" failonerror="true" input="create-extraapps.sql">
+					<arg line="${arg.line}" />
+				</exec>
+			</then>
+		</if>
 	</target>
 
 	<target name="rebuild-legacy-database">

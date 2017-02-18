@@ -1,4 +1,16 @@
 <definition>
+	<command name="configureAnalyticsStorage">
+		<execute function="Check" locator1="Checkbox#ANY_CHECKBOX">
+			<var name="key_checkboxLabel" value="External storage enabled" />
+		</execute>
+
+		<var method="StringUtil#replace('${jdbcURL}', 'lportal', '${databaseName}')" name="jdbcURL" />
+
+		<execute function="Type" locator1="TextArea#URL" value1="${jdbcURL}" />
+		<execute function="Type" locator1="TextArea#USERNAME" value1="${databaseUserName}" />
+		<execute function="Type" locator1="TextArea#PASSWORD" value1="${databasePassword}" />
+	</command>
+
 	<command name="enableAnalytics">
 		<execute macro="Panel#expandPanel">
 			<var name="panelHeading" value="Audience Targeting Analytics" />
@@ -39,6 +51,18 @@
 				<execute function="AssertElementPresent" locator1="ContentTargeting#PREVIEW_BUTTON_EXPANDED" />
 			</then>
 		</if>
+	</command>
+
+	<command name="viewAnalyticsStorageConfiguration">
+		<execute function="AssertChecked" locator1="Checkbox#ANY_CHECKBOX">
+			<var name="key_checkboxLabel" value="External storage enabled" />
+		</execute>
+
+		<var method="StringUtil#replace('${jdbcURL}', 'lportal', '${databaseName}')" name="jdbcURL" />
+
+		<execute function="AssertTextEquals" locator1="TextArea#URL" value1="${jdbcURL}" />
+		<execute function="AssertTextEquals" locator1="TextArea#USERNAME" value1="${databaseUserName}" />
+		<execute function="AssertTextEquals" locator1="TextArea#PASSWORD" value1="${databasePassword}" />
 	</command>
 
 	<command name="viewEntryOnStagingLiveMode">

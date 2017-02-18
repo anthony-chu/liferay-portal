@@ -1,10 +1,16 @@
 <definition>
+	<command name="activateAppCP">
+		<execute macro="LexiconEntry#gotoEntryMenuItem">
+			<var name="menuItem" value="Activate" />
+			<var name="rowEntry" value="${appName}" />
+		</execute>
+	</command>
+
 	<command name="deactivateAppCP">
-		<var name="key_appName" value="${appName}" />
-
-		<execute function="Click" locator1="AppManager#APP_ACTIONS" />
-
-		<execute function="AssertClickNoError" locator1="MenuItem#DEACTIVATE" value1="Deactivate" />
+		<execute macro="LexiconEntry#gotoEntryMenuItemNoError">
+			<var name="menuItem" value="Deactivate" />
+			<var name="rowEntry" value="${appName}" />
+		</execute>
 
 		<execute function="Confirm" value1="Are you sure you want to deactivate this?" />
 	</command>
@@ -23,11 +29,10 @@
 	</command>
 
 	<command name="uninstallAppCP">
-		<var name="key_appName" value="${appName}" />
-
-		<execute function="AssertClick" locator1="AppManager#APP_ACTIONS" value1="Actions" />
-
-		<execute function="AssertClickNoError" locator1="MenuItem#UNINSTALL" value1="Uninstall" />
+		<execute macro="LexiconEntry#gotoEntryMenuItemNoError">
+			<var name="menuItem" value="Uninstall" />
+			<var name="rowEntry" value="${appName}" />
+		</execute>
 
 		<execute function="Confirm" value1="Are you sure you want to uninstall this?" />
 
