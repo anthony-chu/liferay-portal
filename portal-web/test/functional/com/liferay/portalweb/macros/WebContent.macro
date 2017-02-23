@@ -309,15 +309,6 @@
 		</execute>
 
 		<if>
-			<not>
-				<condition function="IsElementPresent" locator1="Translation#SELECTED_LOCALE" value1="${localizedLanguage}" />
-			</not>
-			<then>
-				<execute function="Click" locator1="Translation#CURRENT_LOCALE" />
-			</then>
-		</if>
-
-		<if>
 			<isset var="localizedTitle" />
 			<then>
 				<execute macro="PortletEntry#inputTitle">
