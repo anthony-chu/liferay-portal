@@ -308,6 +308,10 @@
 			<var name="key_menuItem" value="${localizedLanguage}" />
 		</execute>
 
+		<execute macro="Navigator#gotoNavTab">
+			<var name="navTab" value="${locale}" />
+		</execute>
+
 		<if>
 			<isset var="localizedTitle" />
 			<then>
