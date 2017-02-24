@@ -743,6 +743,7 @@
 		</execute>
 
 		<execute macro="WebContent#addTranslation">
+			<var name="locale" value="es-ES" />
 			<var name="localizedContent" value="WC Contenido" />
 			<var name="localizedLanguage" value="Spanish (Spain)" />
 			<var name="localizedTitle" value="WC Titulo" />
@@ -750,6 +751,7 @@
 		</execute>
 
 		<execute macro="WebContent#addTranslation">
+			<var name="locale" value="de-DE" />
 			<var name="localizedContent" value="WC Inhalt" />
 			<var name="localizedLanguage" value="German (Germany)" />
 			<var name="localizedTitle" value="WC Titel" />
@@ -757,6 +759,7 @@
 		</execute>
 
 		<execute macro="WebContent#addTranslation">
+			<var name="locale" value="fi-FI" />
 			<var name="localizedContent" value="WC Pitoisuus" />
 			<var name="localizedLanguage" value="Finnish (Finland)" />
 			<var name="localizedTitle" value="WC Otsikko" />

@@ -475,6 +475,7 @@
 		<execute macro="WebContentNavigator#gotoEditPGViaWCD" />
 
 		<execute macro="WebContent#addTranslation">
+			<var name="locale" value="zh-CN" />
 			<var name="localizedContent" value="世界您好 Content" />
 			<var name="localizedLanguage" value="Chinese (China)" />
 			<var name="localizedTitle" value="世界您好 Title" />
@@ -943,6 +944,7 @@
 		<execute macro="WebContentNavigator#gotoEditPGViaWCD" />
 
 		<execute macro="WebContent#addTranslation">
+			<var name="locale" value="zh-CN" />
 			<var name="localizedContent" value="世界您好 Content" />
 			<var name="localizedLanguage" value="Chinese (China)" />
 			<var name="localizedTitle" value="世界您好 Title" />
