@@ -2035,19 +2035,9 @@
 		<if>
 			<isset var="webContentTranslationLanguage" />
 			<then>
-				<var name="key_localizedLanguage" value="${webContentTranslationLanguage}" />
-
-				<toggle name="LPS-67821">
-					<on>
-						<execute function="Click" locator1="NavTab#TAB_LINK">
-							<var name="key_tab" value="${webContentTranslationLanguage}" />
-						</execute>
-					</on>
-
-					<off>
-						<execute function="Click" locator1="Translation#AVAILABLE_TRANSLATION" />
-					</off>
-				</toggle>
+				<execute macro="Navigator#gotoNavTab">
+					<var name="navTab" value="${webContentTranslationLanguage}" />
+				</execute>
 
 				<if>
 					<isset var="localizedTitle" />
