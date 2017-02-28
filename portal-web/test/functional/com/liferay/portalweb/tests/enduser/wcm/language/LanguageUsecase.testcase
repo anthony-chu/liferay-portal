@@ -155,7 +155,7 @@
 	</command>
 
 	<command name="AddWCWithTranslation" priority="5">
-		<property name="portal.acceptance" value="quarantine" />
+		<property name="portal.acceptance" value="true" />
 		<property name="test.name.skip.portal.instance" value="LanguageUsecase#AddWCWithTranslation" />
 
 		<execute macro="ProductMenu#gotoSite">
@@ -187,17 +187,8 @@
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="Portlet#addPG">
-			<var name="portletName" value="Web Content Display" />
-		</execute>
-
-		<execute macro="WebContentDisplayPortlet#selectWebContent">
-			<var name="webContentTitle" value="WC Title" />
-		</execute>
-
-		<execute macro="Navigator#gotoSitePage">
-			<var name="pageName" value="Test Page Name" />
-			<var name="siteName" value="Site Name" />
+		<execute macro="Content#addPG">
+			<var name="assetTitle" value="WC Title" />
 		</execute>
 
 		<execute macro="Portlet#addPG">
