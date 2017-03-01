@@ -399,6 +399,7 @@
 		</execute>
 
 		<execute macro="WebContent#addTranslation">
+			<var name="locale" value="es-ES" />
 			<var name="localizedLanguage" value="Spanish (Spain)" />
 			<var name="localizedText" value="Text Spanish" />
 			<var name="localizedTextBox" value="Text Box Spanish" />
@@ -1545,6 +1546,7 @@
 		</execute>
 
 		<execute macro="WebContent#addTranslation">
+			<var name="locale" value="es-ES" />
 			<var name="localizedContent" value="WC Contenido de la web Contenido" />
 			<var name="localizedLanguage" value="Spanish (Spain)" />
 			<var name="localizedTitle" value="WC Contenido de la web Titulo" />
@@ -1563,6 +1565,7 @@
 		</execute>
 
 		<execute macro="WebContent#viewTranslation">
+			<var name="locale" value="es-ES" />
 			<var name="localizedContent" value="WC Contenido de la web Contenido" />
 			<var name="localizedLanguage" value="Spanish (Spain)" />
 			<var name="localizedTitle" value="WC Contenido de la web Titulo" />

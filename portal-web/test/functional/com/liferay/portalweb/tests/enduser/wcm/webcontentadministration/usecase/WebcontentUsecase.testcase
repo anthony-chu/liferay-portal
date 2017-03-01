@@ -2338,6 +2338,7 @@
 		</execute>
 
 		<execute macro="WebContent#addTranslation">
+			<var name="locale" value="fr-FR" />
 			<var name="localizedLanguage" value="French (France)" />
 			<var name="localizedText" value="WC contenu WebContent" />
 			<var name="localizedTitle" value="WC WebContent Titre" />
