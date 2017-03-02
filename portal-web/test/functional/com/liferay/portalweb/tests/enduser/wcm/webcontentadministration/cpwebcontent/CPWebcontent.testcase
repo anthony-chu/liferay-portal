@@ -398,12 +398,23 @@
 			<var name="webContentTitle" value="WC WebContent Title" />
 		</execute>
 
-		<execute macro="WebContent#addTranslation">
-			<var name="localizedLanguage" value="Spanish (Spain)" />
-			<var name="localizedText" value="Text Spanish" />
-			<var name="localizedTextBox" value="Text Box Spanish" />
-			<var name="localizedTitle" value="Title Spanish" />
-			<var name="webContentTitle" value="WC WebContent Title" />
+		<execute macro="WebContent#addLocale">
+			<var name="language" value="Spanish (Spain)" />
+			<var name="locale" value="es-ES" />
+		</execute>
+
+		<execute macro="WebContent#addCP">
+			<var name="webContentTitle" value="Title Spanish" />
+		</execute>
+
+		<execute macro="FormFields#editText">
+			<var name="fieldName" value="Text" />
+			<var name="fieldValue" value="Text Spanish" />
+		</execute>
+
+		<execute macro="FormFields#editTextMultiline">
+			<var name="fieldName" value="TextBox" />
+			<var name="fieldValue" value="Text Box Spanish" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -1544,11 +1555,14 @@
 			<var name="webContentTitle" value="WC WebContent Title" />
 		</execute>
 
-		<execute macro="WebContent#addTranslation">
-			<var name="localizedContent" value="WC Contenido de la web Contenido" />
-			<var name="localizedLanguage" value="Spanish (Spain)" />
-			<var name="localizedTitle" value="WC Contenido de la web Titulo" />
-			<var name="webContentTitle" value="WC WebContent Title" />
+		<execute macro="WebContent#addLocale">
+			<var name="language" value="Spanish (Spain)" />
+			<var name="locale" value="es-ES" />
+		</execute>
+
+		<execute macro="WebContent#addCP">
+			<var name="webContentContent" value="WC Contenido de la web Contenido" />
+			<var name="webContentTitle" value="WC Contenido de la web Titulo" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -1562,11 +1576,13 @@
 			<var name="webContentTitle" value="WC WebContent Title" />
 		</execute>
 
-		<execute macro="WebContent#viewTranslation">
-			<var name="localizedContent" value="WC Contenido de la web Contenido" />
-			<var name="localizedLanguage" value="Spanish (Spain)" />
-			<var name="localizedTitle" value="WC Contenido de la web Titulo" />
-			<var name="webContentTitle" value="WC WebContent Title" />
+		<execute macro="WebContent#selectLocale">
+			<var name="locale" value="es-ES" />
+		</execute>
+
+		<execute macro="WebContent#viewCP">
+			<var name="webContentContent" value="WC Contenido de la web Contenido" />
+			<var name="webContentTitle" value="WC Contenido de la web Titulo" />
 		</execute>
 	</command>
 

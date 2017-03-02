@@ -178,6 +178,18 @@
 		<execute macro="PortletEntry#save" />
 	</command>
 
+	<command name="addLocale">
+		<execute function="Click" locator1="Translation#ADD" />
+
+		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="${language}">
+			<var name="key_menuItem" value="${language}" />
+		</execute>
+
+		<execute macro="WebContent#selectLocale">
+			<var name="locale" value="${locale}" />
+		</execute>
+	</command>
+
 	<command name="addLocalizedPGViaWCD">
 		<execute macro="WebContentNavigator#gotoAddPGViaWCD">
 			<var name="structureName" value="${localizedBasicWebContent}" />
@@ -295,124 +307,6 @@
 		<execute function="AssertClick" locator1="Button#PUBLISH" value1="Publish" />
 
 		<execute function="SelectFrame" value1="relative=top" />
-	</command>
-
-	<command name="addTranslation">
-		<var name="key_localizedLanguage" value="${localizedLanguage}" />
-
-		<execute function="AssertTextEquals" locator1="TextInput#TITLE" value1="${webContentTitle}" />
-
-		<execute function="Click" locator1="Translation#ADD" />
-
-		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="${localizedLanguage}">
-			<var name="key_menuItem" value="${localizedLanguage}" />
-		</execute>
-
-		<if>
-			<not>
-				<condition function="IsElementPresent" locator1="Translation#SELECTED_LOCALE" value1="${localizedLanguage}" />
-			</not>
-			<then>
-				<execute function="Click" locator1="Translation#CURRENT_LOCALE" />
-			</then>
-		</if>
-
-		<if>
-			<isset var="localizedTitle" />
-			<then>
-				<execute macro="PortletEntry#inputTitle">
-					<var name="title" value="${localizedTitle}" />
-				</execute>
-			</then>
-		</if>
-
-		<if>
-			<isset var="localizedAbstractSummary" />
-			<then>
-				<execute function="Type" locator1="TextArea#SUMMARY" value1="${localizedAbstractSummary}" />
-			</then>
-		</if>
-
-		<if>
-			<isset var="localizedContent" />
-			<then>
-				<execute macro="AlloyEditor#addContent">
-					<var name="content" value="${localizedContent}" />
-				</execute>
-			</then>
-		</if>
-
-		<if>
-			<isset var="localizedInteger" />
-			<then>
-				<var name="key_fieldName" value="Integer" />
-
-				<execute function="Type" locator1="DDMField#INTEGER" value1="${localizedInteger}" />
-			</then>
-		</if>
-
-		<if>
-			<isset var="localizedNumber" />
-			<then>
-				<var name="key_fieldName" value="Number" />
-
-				<execute function="Type" locator1="DDMField#NUMBER" value1="${localizedNumber}" />
-			</then>
-		</if>
-
-		<if>
-			<isset var="localizedText" />
-			<then>
-				<var name="key_fieldName" value="Text" />
-
-				<execute function="Type" locator1="DDMField#TEXT" value1="${localizedText}" />
-			</then>
-		</if>
-
-		<if>
-			<isset var="localizedTextBox" />
-			<then>
-				<var name="key_fieldName" value="TextBox" />
-
-				<execute function="Type" locator1="DDMField#TEXT_BOX" value1="${localizedTextBox}" />
-			</then>
-		</if>
-
-		<if>
-			<isset var="unlocalizableHTML" />
-			<then>
-				<var name="key_fieldName" value="${unlocalizableHTML}" />
-
-				<execute function="AssertElementNotPresent" locator1="DDMField#HTML" />
-			</then>
-		</if>
-
-		<if>
-			<isset var="unlocalizableText" />
-			<then>
-				<var name="key_fieldName" value="${unlocalizableText}" />
-
-				<execute function="AssertElementNotPresent" locator1="DDMField#TEXT" />
-			</then>
-		</if>
-
-		<if>
-			<isset var="unlocalizableTextBox" />
-			<then>
-				<var name="key_fieldName" value="${unlocalizableTextBox}" />
-
-				<execute function="AssertElementNotPresent" locator1="DDMField#TEXT_BOX" />
-			</then>
-		</if>
-
-		<if>
-			<isset var="unlocalizableField" />
-			<then>
-				<var name="key_fieldName" value="${unlocalizableField}" />
-
-				<execute function="AssertTextNotPresent" locator1="DDMField#${unlocalizableFieldLocator}" value1="${unlocalizableField}" />
-			</then>
-		</if>
 	</command>
 
 	<command name="addViaCKEditor">
@@ -747,25 +641,34 @@
 			<var name="webContentTitle" value="WC Title" />
 		</execute>
 
-		<execute macro="WebContent#addTranslation">
-			<var name="localizedContent" value="WC Contenido" />
-			<var name="localizedLanguage" value="Spanish (Spain)" />
-			<var name="localizedTitle" value="WC Titulo" />
-			<var name="webContentTitle" value="WC Title" />
+		<execute macro="WebContent#addLocale">
+			<var name="language" value="Spanish (Spain)" />
+			<var name="locale" value="es-ES" />
 		</execute>
 
-		<execute macro="WebContent#addTranslation">
-			<var name="localizedContent" value="WC Inhalt" />
-			<var name="localizedLanguage" value="German (Germany)" />
-			<var name="localizedTitle" value="WC Titel" />
+		<execute macro="WebContent#addCP">
+			<var name="webContentContent" value="WC Contenido" />
 			<var name="webContentTitle" value="WC Titulo" />
 		</execute>
 
-		<execute macro="WebContent#addTranslation">
-			<var name="localizedContent" value="WC Pitoisuus" />
-			<var name="localizedLanguage" value="Finnish (Finland)" />
-			<var name="localizedTitle" value="WC Otsikko" />
+		<execute macro="WebContent#addLocale">
+			<var name="language" value="German (Germany)" />
+			<var name="locale" value="de-DE" />
+		</execute>
+
+		<execute macro="WebContent#addCP">
+			<var name="webContentContent" value="WC Inhalt" />
 			<var name="webContentTitle" value="WC Titel" />
+		</execute>
+
+		<execute macro="WebContent#addLocale">
+			<var name="language" value="Finnish (Finland)" />
+			<var name="locale" value="fi-FI" />
+		</execute>
+
+		<execute macro="WebContent#addCP">
+			<var name="webContentContent" value="WC Pitoisuus" />
+			<var name="webContentTitle" value="WC Otsikko" />
 		</execute>
 	</command>
 
@@ -1375,6 +1278,12 @@
 		</if>
 	</command>
 
+	<command name="selectLocale">
+		<execute macro="Navigator#gotoNavTab">
+			<var name="navTab" value="${locale}" />
+		</execute>
+	</command>
+
 	<command name="selectTemplateCP">
 		<execute function="ScrollBy" value1="0, 50" />
 
@@ -1669,7 +1578,13 @@
 	</command>
 
 	<command name="viewDefaultLanguage">
-		<execute function="AssertTextEquals" locator1="WCEditWebContent#DEFAULT_LANGUAGE" value1="${localizedLanguage}" />
+		<execute function="AssertTextEquals" locator1="NavTab#TAB_LINK" value1="${locale}">
+			<var name="key_tab" value="${locale}" />
+		</execute>
+
+		<execute function="AssertElementNotPresent" locator1="NavTab#TAB_LINK">
+			<var name="key_tab" value="en-US" />
+		</execute>
 	</command>
 
 	<command name="viewDefaultPGViaWCD">
@@ -1958,6 +1873,30 @@
 		<execute function="SelectFrameTop" />
 	</command>
 
+	<command name="viewStructureAndTemplateLocalization">
+		<if>
+			<isset var="structureLocalizationName" />
+			<then>
+				<execute macro="Panel#expandPanel">
+					<var name="panelHeading" value="${panelHeading}" />
+				</execute>
+
+				<execute function="AssertTextEquals" locator1="WCEditWebContent#SELECTED_STRUCTURE" value1="${structureLocalizationName}" />
+			</then>
+		</if>
+
+		<if>
+			<isset var="templateLocalizationName" />
+			<then>
+				<execute macro="Panel#expandPanel">
+					<var name="panelHeading" value="${panelHeading}" />
+				</execute>
+
+				<execute function="AssertTextEquals" locator1="WCEditWebContent#SELECTED_TEMPLATE" value1="${templateLocalizationName}" />
+			</then>
+		</if>
+	</command>
+
 	<command name="viewStructureViaAddMenuCP">
 		<var name="key_structureName" value="${structureName}" />
 
@@ -2007,106 +1946,29 @@
 		<execute function="AssertTextEquals" locator1="AlloyEditor#CONTENT_FIELD" value1="${localizedContent}" />
 	</command>
 
-	<command name="viewTranslationPGViaWCD">
-		<execute function="SelectFrame" locator1="IFrame#MODAL_IFRAME" />
-
-		<if>
-			<isset var="structureLocalizationName" />
-			<then>
-				<execute macro="Panel#expandPanel">
-					<var name="panelHeading" value="${panelHeading}" />
-				</execute>
-
-				<execute function="AssertTextEquals" locator1="WCEditWebContent#SELECTED_STRUCTURE" value1="${structureLocalizationName}" />
-			</then>
-		</if>
-
-		<if>
-			<isset var="templateLocalizationName" />
-			<then>
-				<execute macro="Panel#expandPanel">
-					<var name="panelHeading" value="${panelHeading}" />
-				</execute>
-
-				<execute function="AssertTextEquals" locator1="WCEditWebContent#SELECTED_TEMPLATE" value1="${templateLocalizationName}" />
-			</then>
-		</if>
-
-		<if>
-			<isset var="webContentTranslationLanguage" />
-			<then>
-				<var name="key_localizedLanguage" value="${webContentTranslationLanguage}" />
-
-				<toggle name="LPS-67821">
-					<on>
-						<execute function="Click" locator1="NavTab#TAB_LINK">
-							<var name="key_tab" value="${webContentTranslationLanguage}" />
-						</execute>
-					</on>
-
-					<off>
-						<execute function="Click" locator1="Translation#AVAILABLE_TRANSLATION" />
-					</off>
-				</toggle>
-
-				<if>
-					<isset var="localizedTitle" />
-					<then>
-						<execute function="AssertTextEquals" locator1="TextInput#TITLE" value1="${localizedTitle}" />
-					</then>
-				</if>
-
-				<if>
-					<isset var="localizedContent" />
-					<then>
-						<execute function="AssertTextEquals" locator1="AlloyEditor#CONTENT_FIELD" value1="${localizedContent}" />
-					</then>
-				</if>
-
-				<if>
-					<isset var="localizedText" />
-					<then>
-						<var name="key_fieldName" value="${fieldName}" />
-
-						<execute function="AssertTextEquals" locator1="DDMField#TEXT" value1="${localizedText}" />
-					</then>
-				</if>
-
-				<if>
-					<isset var="localizedAbstractDescription" />
-					<then>
-						<execute function="AssertTextEquals" locator1="TextArea#SUMMARY" value1="${localizedAbstractDescription}" />
-					</then>
-				</if>
-			</then>
-		</if>
-
-		<execute function="SelectFrame" value1="relative=top" />
-	</command>
-
 	<command name="viewUnlocalizableTextBox">
-		<var name="key_fieldName" value="Text" />
-		<var name="key_webContentTitle" value="${webContentTitle}" />
-
 		<execute function="AssertTextEquals" locator1="TextInput#TITLE" value1="${webContentTitle}" />
 
-		<var name="key_fieldName" value="TextBox" />
+		<execute macro="FormFields#viewTextMultilineValue">
+			<var name="fieldName" value="TextBox" />
+			<var name="fieldValue" value="${webContentTextBox}" />
+		</execute>
 
-		<execute function="AssertTextEquals" locator1="DDMField#TEXT_BOX" value1="${webContentTextBox}" />
-
-		<var name="key_localizedLanguage" value="Spanish (Spain)" />
-
-		<execute function="Click" locator1="Translation#AVAILABLE_TRANSLATION" />
+		<execute macro="WebContent#selectLocale">
+			<var name="locale" value="es-ES" />
+		</execute>
 
 		<execute function="AssertTextEquals" locator1="TextInput#TITLE" value1="${localizedTitle}" />
 
-		<var name="key_fieldName" value="Text" />
+		<execute macro="FormFields#viewTextValue">
+			<var name="fieldName" value="Text" />
+			<var name="fieldValue" value="${localizedText}" />
+		</execute>
 
-		<execute function="AssertTextEquals" locator1="DDMField#TEXT" value1="${localizedText}" />
-
-		<var name="key_fieldName" value="TextBox" />
-
-		<execute function="AssertTextEquals" locator1="DDMField#TEXT_BOX" value1="${localizedTextBox}" />
+		<execute macro="FormFields#viewTextMultilineValue">
+			<var name="fieldName" value="TextBox" />
+			<var name="fieldValue" value="${localizedTextBox}" />
+		</execute>
 	</command>
 
 	<command name="viewUserEditCP">
