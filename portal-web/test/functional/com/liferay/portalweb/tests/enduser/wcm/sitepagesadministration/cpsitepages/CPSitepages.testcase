@@ -126,6 +126,8 @@
 	</command>
 
 	<command name="AddSitePrivateChildPage" priority="4">
+		<property name="test.name.skip.portal.instance" value="CPSitepages#AddSitePrivateChildPage" />
+
 		<execute macro="ProductMenu#gotoControlPanelSites">
 			<var name="portlet" value="Sites" />
 		</execute>
@@ -197,6 +199,8 @@
 	</command>
 
 	<command name="AddSitePrivatePagePortlet" priority="4">
+		<property name="test.name.skip.portal.instance" value="CPSitepages#AddSitePrivatePagePortlet" />
+
 		<execute macro="ProductMenu#gotoControlPanelSites">
 			<var name="portlet" value="Sites" />
 		</execute>
@@ -472,6 +476,8 @@
 	</command>
 
 	<command name="SaveEmbeddedPageType" priority="4">
+		<property name="test.name.skip.portal.instance" value="CPSitepages#SaveEmbeddedPageType" />
+
 		<execute macro="ProductMenu#gotoControlPanelSites">
 			<var name="portlet" value="Sites" />
 		</execute>

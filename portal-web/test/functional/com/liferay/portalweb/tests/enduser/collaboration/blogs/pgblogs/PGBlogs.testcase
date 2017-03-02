@@ -490,6 +490,8 @@
 	<command name="AddCustomURL" priority="4">
 		<description message="This is usecase 3 for LPS-69240" />
 
+		<property name="test.name.skip.portal.instance" value="PGBlogs#AddCustomURL" />
+
 		<var name="entryContent" value="Blogs Entry Content" />
 		<var name="entrySubtitle" value="Blogs Entry Subtitle" />
 		<var name="entryTitle" value="Blogs Entry Title" />

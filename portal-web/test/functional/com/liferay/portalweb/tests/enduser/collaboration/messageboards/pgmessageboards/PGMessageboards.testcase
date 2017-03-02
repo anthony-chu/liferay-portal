@@ -240,6 +240,8 @@
 	</command>
 
 	<command name="AddMBCategoryThreadQuestion" priority="4">
+		<property name="test.name.skip.portal.instance" value="PGMessageboards#AddMBCategoryThreadQuestion" />
+
 		<execute macro="Navigator#gotoPage">
 			<var name="pageName" value="Message Boards Page" />
 		</execute>
@@ -472,6 +474,8 @@
 	</command>
 
 	<command name="AddMBThreadWithInvalidAttachmentSize" priority="4">
+		<property name="test.name.skip.portal.instance" value="PGMessageboards#AddMBThreadWithInvalidAttachmentSize" />
+
 		<execute macro="Navigator#gotoPage">
 			<var name="pageName" value="Message Boards Page" />
 		</execute>
@@ -672,6 +676,8 @@
 	</command>
 
 	<command name="EditMBThreadSubjectAndBody" priority="5">
+		<property name="test.name.skip.portal.instance" value="PGMessageboards#EditMBThreadSubjectAndBody" />
+
 		<execute macro="Navigator#gotoPage">
 			<var name="pageName" value="Message Boards Page" />
 		</execute>
@@ -836,6 +842,8 @@
 	</command>
 
 	<command name="ReplyAfterDownloadingMBThreadAttachmentTwice" priority="5">
+		<property name="test.name.skip.portal.instance" value="PGMessageboards#ReplyAfterDownloadingMBThreadAttachmentTwice" />
+
 		<description message="This is a use case for LPS-67722." />
 
 		<execute macro="Navigator#gotoPage">
@@ -871,6 +879,8 @@
 	</command>
 
 	<command name="SaveThreadAsDraft" priority="5">
+		<property name="test.name.skip.portal.instance" value="PGMessageboards#SaveThreadAsDraft" />
+
 		<execute macro="Navigator#gotoPage">
 			<var name="pageName" value="Message Boards Page" />
 		</execute>

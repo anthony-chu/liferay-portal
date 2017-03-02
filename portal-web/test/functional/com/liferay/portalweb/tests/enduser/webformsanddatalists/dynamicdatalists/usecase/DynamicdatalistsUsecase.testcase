@@ -2352,6 +2352,8 @@
 	</command>
 
 	<command name="EditListRecordWithNestedFieldViaSpreadsheetView" priority="3">
+		<property name="test.name.skip.portal.instance" value="DynamicdatalisesUsecase#EditListRecordWithNestedFieldViaSpreadsheetView" />
+
 		<description message="This is a use case for LPS-59272." />
 
 		<execute macro="Navigator#openURL" />
@@ -2614,6 +2616,8 @@
 	</command>
 
 	<command name="RemoveRepeatableFieldAndAssertOrderInTranslation" priority="3">
+		<property name="test.name.skip.portal.instance" value="DynamicdatalisesUsecase#RemoveRepeatableFieldAndAssertOrderInTranslation" />
+
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
