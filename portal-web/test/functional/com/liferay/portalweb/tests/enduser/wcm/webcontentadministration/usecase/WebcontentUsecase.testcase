@@ -266,6 +266,7 @@
 
 	<command name="AddAudioViaWebContent" priority="4">
 		<property name="custom.properties" value="editor.wysiwyg.portal-impl.portlet.ddm.text_html.ftl=ckeditor" />
+		<property name="test.name.skip.portal.instance" value="WebcontentUsecase#AddAudioViaWebContent" />
 
 		<execute macro="ProductMenu#gotoControlPanelConfiguration">
 			<var name="portlet" value="Server Administration" />
@@ -686,6 +687,7 @@
 
 	<command name="AddVideoViaWebContent" priority="4">
 		<property name="custom.properties" value="editor.wysiwyg.portal-impl.portlet.ddm.text_html.ftl=ckeditor" />
+		<property name="test.name.skip.portal.instance" value="WebcontentUsecase#AddVideoViaWebContent" />
 
 		<execute macro="ProductMenu#gotoControlPanelConfiguration">
 			<var name="portlet" value="Server Administration" />
@@ -777,6 +779,8 @@
 	</command>
 
 	<command name="AddWebContentRemoveGuestViewPermission" priority="4">
+		<property name="test.name.skip.portal.instance" value="WebcontentUsecase#AddWebContentRemoveGuestViewPermission" />
+
 		<execute macro="ProductMenu#gotoControlPanelConfiguration">
 			<var name="portlet" value="System Settings" />
 		</execute>

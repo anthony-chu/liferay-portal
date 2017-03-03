@@ -655,6 +655,8 @@
 	</command>
 
 	<command name="ViewAllFileTypesEnabled" priority="4">
+		<property name="test.name.skip.portal.instance" value="PGWebcontentdisplay#ViewAllFileTypesEnabled" />
+
 		<execute macro="Navigator#gotoPage">
 			<var name="pageName" value="Web Content Display Page" />
 		</execute>
