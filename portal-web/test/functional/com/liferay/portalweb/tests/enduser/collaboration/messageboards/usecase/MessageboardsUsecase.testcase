@@ -209,6 +209,8 @@
 	</command>
 
 	<command name="SearchMessageBoardsAttachment" priority="3">
+		<property name="test.name.skip.portal.instance" value="MessageboardsUsecase#SearchMessageBoardsAttachment" />
+
 		<execute macro="Page#add">
 			<var name="pageName" value="Message Boards Page" />
 		</execute>
@@ -1032,6 +1034,9 @@
 
 	<command name="ViewMBThreadAndReplyThreadInGmail" priority="4">
 		<property name="custom.properties" value="message.boards.message.formats.default=html${line.separator}pop.server.notifications.enabled=true${line.separator}pop.server.subdomain=${line.separator}mail.session.mail.smtp.auth=true${line.separator}mail.session.mail.store.protocol=pop3${line.separator}mail.session.mail.transport.protocol=smtp" />
+		<property name="test.name.skip.portal.instance" value="MessageboardsUsecase#ViewMBThreadAndReplyThreadInGmail" />
+
+		<var method="TestPropsUtil#get('portal.url')" name="portalURL" />
 
 		<execute macro="TestCase#getSiteName">
 			<return from="siteName" name="siteName" />
@@ -1183,7 +1188,7 @@
 			<var name="gmailReplyMessage" value="MB Thread Message Subject GMMB1 Reply" />
 		</execute>
 
-		<execute function="Open" locator1="http://localhost:8080" />
+		<execute function="Open" locator1="${portalURL}" />
 
 		<execute function="Pause" locator1="60000" />
 
@@ -1496,6 +1501,8 @@
 	</command>
 
 	<command name="ViewNoMBThreadXSS" priority="4">
+		<property name="test.name.skip.portal.instance" value="MessageboardsUsecase#ViewNoMBThreadXSS" />
+
 		<execute macro="Page#add">
 			<var name="pageName" value="Message Boards Page" />
 		</execute>
@@ -1627,6 +1634,8 @@
 	</command>
 
 	<command name="ViewQuestionOnSplitThread" priority="3">
+		<property name="test.name.skip.portal.instance" value="MessageboardsUsecase#ViewQuestionOnSplitThread" />
+
 		<execute macro="Page#add">
 			<var name="pageName" value="Message Boards Page" />
 		</execute>
