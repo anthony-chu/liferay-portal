@@ -1108,6 +1108,8 @@
 	</command>
 
 	<command name="RestoreMessageboardsThreadViaRBCP" priority="3">
+		<property name="test.name.skip.portal.instance" value="RecyclebinUsecase#RestoreMessageboardsThreadViaRBCP" />
+
 		<execute macro="ProductMenu#gotoSite">
 			<var name="site" value="Site Name" />
 		</execute>
