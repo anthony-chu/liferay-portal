@@ -78,6 +78,8 @@
 	<command name="LocalizationStyle0" priority="3">
 		<property name="custom.properties" value="locale.prepend.friendly.url.style=0" />
 
+		<var method="TestPropsUtil#get('portal.url')" name="portalURL" />
+
 		<execute macro="Page#add">
 			<var name="pageName" value="Language Test Page" />
 		</execute>
@@ -94,19 +96,19 @@
 			<var name="language" value="English (United States)" />
 		</execute>
 
-		<execute function="AssertLocation" value1="http://localhost:8080/web/guest/language-test-page" />
+		<execute function="AssertLocation" value1="${portalURL}/web/guest/language-test-page" />
 
 		<execute macro="LanguagePortlet#selectLanguagePG">
 			<var name="language" value="Spanish (Spain)" />
 		</execute>
 
-		<execute function="AssertLocation" value1="http://localhost:8080/web/guest/language-test-page" />
+		<execute function="AssertLocation" value1="${portalURL}/web/guest/language-test-page" />
 
 		<execute macro="LanguagePortlet#selectLanguagePG">
 			<var name="language" value="Japanese (Japan)" />
 		</execute>
 
-		<execute function="AssertLocation" value1="http://localhost:8080/web/guest/language-test-page" />
+		<execute function="AssertLocation" value1="${portalURL}/web/guest/language-test-page" />
 
 		<execute macro="LanguagePortlet#selectLanguagePG">
 			<var name="language" value="English (United States)" />
@@ -120,6 +122,8 @@
 	<command name="LocalizationStyle1" priority="3">
 		<property name="custom.properties" value="locale.prepend.friendly.url.style=1" />
 
+		<var method="TestPropsUtil#get('portal.url')" name="portalURL" />
+
 		<execute macro="Page#add">
 			<var name="pageName" value="Language Test Page" />
 		</execute>
@@ -136,19 +140,19 @@
 			<var name="language" value="English (United States)" />
 		</execute>
 
-		<execute function="AssertLocation" value1="http://localhost:8080/web/guest/language-test-page" />
+		<execute function="AssertLocation" value1="${portalURL}/web/guest/language-test-page" />
 
 		<execute macro="LanguagePortlet#selectLanguagePG">
 			<var name="language" value="Spanish (Spain)" />
 		</execute>
 
-		<execute function="AssertLocation" value1="http://localhost:8080/es/web/guest/language-test-page" />
+		<execute function="AssertLocation" value1="${portalURL}/es/web/guest/language-test-page" />
 
 		<execute macro="LanguagePortlet#selectLanguagePG">
 			<var name="language" value="Japanese (Japan)" />
 		</execute>
 
-		<execute function="AssertLocation" value1="http://localhost:8080/ja/web/guest/language-test-page" />
+		<execute function="AssertLocation" value1="${portalURL}/ja/web/guest/language-test-page" />
 
 		<execute macro="LanguagePortlet#selectLanguagePG">
 			<var name="language" value="English (United States)" />
@@ -162,6 +166,8 @@
 	<command name="LocalizationStyle2" priority="3">
 		<property name="custom.properties" value="locale.prepend.friendly.url.style=2" />
 
+		<var method="TestPropsUtil#get('portal.url')" name="portalURL" />
+
 		<execute macro="Page#add">
 			<var name="pageName" value="Language Test Page" />
 		</execute>
@@ -178,19 +184,19 @@
 			<var name="language" value="English (United States)" />
 		</execute>
 
-		<execute function="AssertLocation" value1="http://localhost:8080/en/web/guest/language-test-page" />
+		<execute function="AssertLocation" value1="${portalURL}/en/web/guest/language-test-page" />
 
 		<execute macro="LanguagePortlet#selectLanguagePG">
 			<var name="language" value="Spanish (Spain)" />
 		</execute>
 
-		<execute function="AssertLocation" value1="http://localhost:8080/es/web/guest/language-test-page" />
+		<execute function="AssertLocation" value1="${portalURL}/es/web/guest/language-test-page" />
 
 		<execute macro="LanguagePortlet#selectLanguagePG">
 			<var name="language" value="Japanese (Japan)" />
 		</execute>
 
-		<execute function="AssertLocation" value1="http://localhost:8080/ja/web/guest/language-test-page" />
+		<execute function="AssertLocation" value1="${portalURL}/ja/web/guest/language-test-page" />
 
 		<execute macro="LanguagePortlet#selectLanguagePG">
 			<var name="language" value="English (United States)" />
@@ -277,6 +283,8 @@
 	</command>
 
 	<command name="NoLocalePrependedWhenLocaleMatchMyPreferredLocalization" priority="3">
+		<var method="TestPropsUtil#get('portal.url')" name="portalURL" />
+
 		<execute macro="ProductMenu#gotoControlPanelSites">
 			<var name="portlet" value="Sites" />
 		</execute>
@@ -388,19 +396,19 @@
 		</execute>
 
 		<execute macro="Page#openURLLocale">
-			<var name="localizationPageURL" value="http://localhost:8080/web/site2-name" />
+			<var name="localizationPageURL" value="${portalURL}/web/site2-name" />
 		</execute>
 
 		<execute macro="Page#viewURLLocale">
-			<var name="localizationPageURL" value="http://localhost:8080/web/site2-name" />
+			<var name="localizationPageURL" value="${portalURL}/web/site2-name" />
 		</execute>
 
 		<execute macro="Page#openURLLocale">
-			<var name="localizationPageURL" value="http://localhost:8080/web/site-name" />
+			<var name="localizationPageURL" value="${portalURL}/web/site-name" />
 		</execute>
 
 		<execute macro="Page#viewURLLocale">
-			<var name="localizationPageURL" value="http://localhost:8080/web/site-name" />
+			<var name="localizationPageURL" value="${portalURL}/web/site-name" />
 		</execute>
 
 		<execute macro="User#firstLoginPG">
@@ -409,12 +417,12 @@
 		</execute>
 
 		<execute macro="Page#openURLLocale">
-			<var name="localizationPageURL" value="http://localhost:8080/es/web/site2-name" />
+			<var name="localizationPageURL" value="${portalURL}/es/web/site2-name" />
 		</execute>
 
 		<execute macro="Page#viewURLLocale">
 			<var name="localizationOption" value="Display the page in English (United States)." />
-			<var name="localizationPageURL" value="http://localhost:8080/web/site2-name" />
+			<var name="localizationPageURL" value="${portalURL}/web/site2-name" />
 		</execute>
 	</command>
 
@@ -716,6 +724,8 @@
 	</command>
 
 	<command name="ViewEditURLLocale" priority="4">
+		<var method="TestPropsUtil#get('portal.url')" name="portalURL" />
+
 		<execute macro="ProductMenu#gotoSitesConfiguration">
 			<var name="portlet" value="Site Settings" />
 		</execute>
@@ -754,26 +764,26 @@
 		<execute macro="User#logoutPG" />
 
 		<execute macro="Navigator#openSpecificURL">
-			<var name="url" value="http://localhost:8080/fr/web/site-name/language-page" />
+			<var name="url" value="${portalURL}/fr/web/site-name/language-page" />
 		</execute>
 
 		<execute macro="Alert#closePortalLocalizationWarning" />
 
-		<execute function="AssertLocation" value1="http://localhost:8080/en/web/site-name/language-page" />
+		<execute function="AssertLocation" value1="${portalURL}/en/web/site-name/language-page" />
 
 		<execute macro="Navigator#openSpecificURL">
-			<var name="url" value="http://localhost:8080/fr" />
+			<var name="url" value="${portalURL}/fr" />
 		</execute>
 
 		<execute macro="Alert#closePortalLocalizationWarning" />
 
-		<execute function="AssertLocation" value1="http://localhost:8080/en/web/guest/home" />
+		<execute function="AssertLocation" value1="${portalURL}/en/web/guest/home" />
 
 		<execute macro="User#loginPG">
-			<var name="specificURL" value="http://localhost:8080/fr" />
+			<var name="specificURL" value="${portalURL}/fr" />
 		</execute>
 
-		<execute function="AssertLocation" value1="http://localhost:8080/web/guest/home" />
+		<execute function="AssertLocation" value1="${portalURL}/web/guest/home" />
 
 		<execute macro="ProductMenu#gotoSite">
 			<var name="site" value="Site Name" />
