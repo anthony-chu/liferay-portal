@@ -209,6 +209,8 @@
 	</command>
 
 	<command name="SearchMessageBoardsAttachment" priority="3">
+		<property name="test.name.skip.portal.instance" value="MessageboardsUsecase#SearchMessageBoardsAttachment" />
+
 		<execute macro="Page#add">
 			<var name="pageName" value="Message Boards Page" />
 		</execute>
@@ -1499,6 +1501,8 @@
 	</command>
 
 	<command name="ViewNoMBThreadXSS" priority="4">
+		<property name="test.name.skip.portal.instance" value="MessageboardsUsecase#ViewNoMBThreadXSS" />
+
 		<execute macro="Page#add">
 			<var name="pageName" value="Message Boards Page" />
 		</execute>
@@ -1630,6 +1634,8 @@
 	</command>
 
 	<command name="ViewQuestionOnSplitThread" priority="3">
+		<property name="test.name.skip.portal.instance" value="MessageboardsUsecase#ViewQuestionOnSplitThread" />
+
 		<execute macro="Page#add">
 			<var name="pageName" value="Message Boards Page" />
 		</execute>
