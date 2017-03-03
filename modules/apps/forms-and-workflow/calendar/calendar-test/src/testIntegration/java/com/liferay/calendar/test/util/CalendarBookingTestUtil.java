@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
 
 import java.util.Locale;
 import java.util.Map;
@@ -160,10 +161,39 @@ public class CalendarBookingTestUtil {
 			recurrence, 0, null, 0, null, serviceContext);
 	}
 
+	public static CalendarBooking addRecurringCalendarBooking(
+			User user, Calendar calendar, Recurrence recurrence,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		long startTime = System.currentTimeMillis();
+
+		long endTime = startTime + Time.HOUR;
+
+		return addCalendarBooking(
+			user, calendar, new long[0], RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(), startTime, endTime,
+			recurrence, 0, null, 0, null, serviceContext);
+	}
+
 	public static CalendarBooking addRegularCalendarBooking(
 			User user, Calendar calendar, long startTime, long endTime,
 			ServiceContext serviceContext)
 		throws PortalException {
+
+		return addCalendarBooking(
+			user, calendar, new long[0], RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(), startTime, endTime, null, 0,
+			null, 0, null, serviceContext);
+	}
+
+	public static CalendarBooking addRegularCalendarBooking(
+			User user, Calendar calendar, ServiceContext serviceContext)
+		throws PortalException {
+
+		long startTime = System.currentTimeMillis();
+
+		long endTime = startTime + Time.HOUR;
 
 		return addCalendarBooking(
 			user, calendar, new long[0], RandomTestUtil.randomLocaleStringMap(),
@@ -181,6 +211,27 @@ public class CalendarBookingTestUtil {
 		return addCalendarBooking(
 			user, calendar, new long[0], titleMap, descriptionMap, startTime,
 			endTime, null, 0, null, 0, null, serviceContext);
+	}
+
+	public static CalendarBooking addRegularCalendarBookingWithWorkflow(
+			User user, Calendar calendar, ServiceContext serviceContext)
+		throws PortalException {
+
+		boolean workflowEnabled = WorkflowThreadLocal.isEnabled();
+
+		try {
+			WorkflowThreadLocal.setEnabled(true);
+
+			serviceContext = (ServiceContext)serviceContext.clone();
+
+			serviceContext.setWorkflowAction(
+				WorkflowConstants.ACTION_SAVE_DRAFT);
+
+			return addRegularCalendarBooking(user, calendar, serviceContext);
+		}
+		finally {
+			WorkflowThreadLocal.setEnabled(workflowEnabled);
+		}
 	}
 
 	public static CalendarBooking updateCalendarBookingInstance(
