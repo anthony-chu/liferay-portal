@@ -703,6 +703,8 @@
 	</command>
 
 	<command name="ViewAllSettingsEnabledWCDConfiguration" priority="4">
+		<property name="test.name.skip.portal.instance" value="PGWebcontentdisplay#ViewAllSettingsEnabledWCDConfiguration" />
+
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">

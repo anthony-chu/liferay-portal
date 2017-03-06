@@ -950,6 +950,8 @@
 	</command>
 
 	<command name="SitesDemoSiteManagement" priority="4">
+		<property name="test.name.skip.portal.instance" value="SitesadministrationUsecase#SitesDemoSiteManagement" />
+
 		<var method="TestPropsUtil#get('portal.url')" name="portalURL" />
 
 		<execute macro="ProductMenu#gotoControlPanelSites">
