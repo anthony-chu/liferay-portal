@@ -455,6 +455,8 @@
 	</command>
 
 	<command name="LocalizeWebContent" priority="4">
+		<property name="test.name.skip.portal.instance" value="PGWebcontentdisplay#LocalizeWebContent" />
+
 		<execute macro="Navigator#gotoPage">
 			<var name="pageName" value="Web Content Display Page" />
 		</execute>
