@@ -745,6 +745,8 @@
 	</command>
 
 	<command name="RolesPermissionsDynamicDataLists" priority="4">
+		<property name="test.name.skip.portal.instance" value="RolesandpermissionsUsecase#RolesPermissionsDynamicDataLists" />
+
 		<execute macro="TestCase#getSiteName">
 			<return from="siteName" name="siteName" />
 			<var name="siteName" value="${siteName}" />
