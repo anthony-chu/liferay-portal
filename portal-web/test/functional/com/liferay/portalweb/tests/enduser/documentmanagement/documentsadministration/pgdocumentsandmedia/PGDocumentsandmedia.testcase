@@ -1975,6 +1975,8 @@
 	</command>
 
 	<command name="ViewSearchResultsForChildObjectRespectsParentFolderPermissions" priority="4">
+		<property name="test.name.skip.portal.instance" value="PGDocumentsandmedia#ViewSearchResultsForChildObjectRespectsParentFolderPermissions" />
+
 		<execute macro="ProductMenu#gotoControlPanelConfiguration">
 			<var name="portlet" value="Server Administration" />
 		</execute>

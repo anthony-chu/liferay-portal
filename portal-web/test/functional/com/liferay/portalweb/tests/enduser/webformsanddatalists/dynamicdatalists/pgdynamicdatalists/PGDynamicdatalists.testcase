@@ -255,6 +255,8 @@
 	<command name="AddListWithDocumentsAndMediaField" priority="3">
 		<description message="This is a use case for LPS-58893." />
 
+		<property name="test.name.skip.portal.instance" value="PGDynamicdatalists#AddListWithDocumentsAndMediaField" />
+
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">

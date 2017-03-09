@@ -870,6 +870,8 @@
 	</command>
 
 	<command name="AddWebContentWithImageField" priority="4">
+		<property name="test.name.skip.portal.instance" value="CPWebcontent#AddWebContentWithImageField" />
+
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">

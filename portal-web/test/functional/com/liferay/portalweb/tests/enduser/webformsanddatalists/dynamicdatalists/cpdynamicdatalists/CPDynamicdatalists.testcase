@@ -470,6 +470,8 @@
 	</command>
 
 	<command name="AddListAndRecordWithIssuesTrackingPredefinedDataDefinition" priority="3">
+		<property name="test.name.skip.portal.instance" value="CPDynamicdatalists#AddListAndRecordWithIssuesTrackingPredefinedDataDefinition" />
+
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -566,6 +568,8 @@
 	</command>
 
 	<command name="AddListAndRecordWithMeetingMinutesPredefinedDataDefinition" priority="3">
+		<property name="test.name.skip.portal.instance" value="CPDynamicdatalists#AddListAndRecordWithMeetingMinutesPredefinedDataDefinition" />
+
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -651,6 +655,7 @@
 
 	<command name="AddListAndRecordWithToDoPredefinedDataDefinition" priority="5">
 		<property name="portal.acceptance" value="quarantine" />
+		<property name="test.name.skip.portal.instance" value="CPDynamicdatalists#AddListAndRecordWithToDoPredefinedDataDefinition" />
 
 		<execute macro="Navigator#openURL" />
 

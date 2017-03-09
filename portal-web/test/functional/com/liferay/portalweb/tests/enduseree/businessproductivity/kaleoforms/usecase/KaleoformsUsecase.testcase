@@ -2133,6 +2133,7 @@
 		<property name="test.assert.javascript.errors" value="false" />
 		<property name="test.smtp.server.enabled" value="true" />
 
+		<var method="TestPropsUtil#get('portal.url')" name="portalURL" />
 		<var method="TestPropsUtil#get('email.address.2')" name="user1EmailAddress" />
 		<var method="TestPropsUtil#get('email.address.3')" name="user2EmailAddress" />
 		<var method="TestPropsUtil#get('email.password.3')" name="user2EmailPassword" />
@@ -2399,7 +2400,7 @@
 			<var name="subject" value="Review Notification Description" />
 		</execute>
 
-		<execute function="Open" locator1="http://localhost:8080" />
+		<execute function="Open" locator1="${portalURL}" />
 
 		<execute macro="User#logoutAndLoginPG">
 			<var name="userLoginEmailAddress" value="${user2EmailAddress}" />
@@ -2442,7 +2443,7 @@
 			<var name="subject" value="Updater Modification Notification Description" />
 		</execute>
 
-		<execute function="Open" locator1="http://localhost:8080" />
+		<execute function="Open" locator1="${portalURL}" />
 
 		<execute macro="User#logoutAndLoginPG">
 			<var name="userLoginEmailAddress" value="${user3EmailAddress}" />
@@ -2473,7 +2474,7 @@
 			<var name="subject" value="Review Notification Description" />
 		</execute>
 
-		<execute function="Open" locator1="http://localhost:8080" />
+		<execute function="Open" locator1="${portalURL}" />
 
 		<execute macro="User#logoutAndLoginPG">
 			<var name="userLoginEmailAddress" value="${user2EmailAddress}" />
