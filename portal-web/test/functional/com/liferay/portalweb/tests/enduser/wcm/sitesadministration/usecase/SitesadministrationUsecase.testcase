@@ -743,6 +743,8 @@
 	</command>
 
 	<command name="SiteFriendlyURLLayoutImporter" priority="3">
+		<property name="test.name.skip.portal.instance" value="SitesadministrationUsecase#SiteFriendlyURLLayoutImporter" />
+
 		<execute macro="ProductMenu#gotoControlPanelUsers">
 			<var name="portlet" value="User Groups" />
 		</execute>
@@ -947,6 +949,8 @@
 	</command>
 
 	<command name="SitesDemoSiteManagement" priority="4">
+		<property name="test.name.skip.portal.instance" value="SitesadministrationUsecase#SitesDemoSiteManagement" />
+
 		<execute macro="ProductMenu#gotoControlPanelSites">
 			<var name="portlet" value="Sites" />
 		</execute>

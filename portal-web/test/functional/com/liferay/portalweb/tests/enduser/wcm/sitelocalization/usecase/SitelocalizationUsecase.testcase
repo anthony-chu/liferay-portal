@@ -277,6 +277,8 @@
 	</command>
 
 	<command name="NoLocalePrependedWhenLocaleMatchMyPreferredLocalization" priority="3">
+		<property name="test.name.skip.portal.instance" value="SitelocalizationUsecase#NoLocalePrependedWhenLocaleMatchMyPreferredLocalization" />
+
 		<execute macro="ProductMenu#gotoControlPanelSites">
 			<var name="portlet" value="Sites" />
 		</execute>

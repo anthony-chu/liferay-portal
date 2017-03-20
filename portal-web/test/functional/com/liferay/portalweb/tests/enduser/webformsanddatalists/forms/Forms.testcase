@@ -1398,6 +1398,8 @@
 	</command>
 
 	<command name="NavigateToCorrectForm" priority="5">
+		<property name="test.name.skip.portal.instance" value="Forms#NavigateToCorrectForm" />
+
 		<description message="This is a use case for LPS-59331" />
 		<property name="portal.acceptance" value="true" />
 
@@ -1499,6 +1501,8 @@
 	</command>
 
 	<command name="PreviewAndPublishForm" priority="5">
+		<property name="test.name.skip.portal.instance" value="Forms#PreviewAndPublishForm" />
+
 		<description message="This is a use case for LPS-61740" />
 		<property name="portal.acceptance" value="true" />
 

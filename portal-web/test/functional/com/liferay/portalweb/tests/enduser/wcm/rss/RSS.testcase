@@ -668,6 +668,8 @@
 	</command>
 
 	<command name="UpdateRSSFeedViaAssetpublisher" priority="4">
+		<property name="test.name.skip.portal.instance" value="RSS#UpdateRSSFeedViaAssetpublisher" />
+
 		<execute macro="TestCase#getSiteName">
 			<return from="siteName" name="siteName" />
 			<var name="siteName" value="${siteName}" />

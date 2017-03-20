@@ -29,6 +29,8 @@
 	</tear-down>
 
 	<command name="AddQuickNote" priority="2">
+		<property name="test.name.skip.portal.instance" value="Quicknote#AddQuickNote" />
+
 		<var name="portletName" value="Quick Note" />
 
 		<execute function="Click#clickAtSidebarClickAtWaitForScript" locator1="ControlMenu#ADD" value1="Add" />

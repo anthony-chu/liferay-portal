@@ -980,6 +980,8 @@
 	</command>
 
 	<command name="ViewChildArticleViaUserDefinedFriendlyURL" priority="3">
+		<property name="test.name.skip.portal.instance" value="KnowledgebaseUsecase#ViewChildArticleViaUserDefinedFriendlyURL" />
+
 		<execute macro="Page#add">
 			<var name="pageName" value="Knowledge Base Page" />
 		</execute>
@@ -1362,6 +1364,8 @@
 	</command>
 
 	<command name="ViewImportedKBArticleWithSourceURLMetadata" priority="4">
+		<property name="test.name.skip.portal.instance" value="KnowledgebaseUsecase#ViewImportedKBArticleWithSourceURLMetadata" />
+
 		<execute macro="Page#add">
 			<var name="pageName" value="Knowledge Base Display Page" />
 		</execute>
@@ -1433,6 +1437,8 @@
 	</command>
 
 	<command name="ViewKBArticleFriendlyURL" priority="4">
+		<property name="test.name.skip.portal.instance" value="KnowledgebaseUsecase#ViewKBArticleFriendlyURL" />
+
 		<execute macro="Page#add">
 			<var name="pageName" value="Knowledge Base Display" />
 		</execute>
@@ -3018,6 +3024,8 @@
 	</command>
 
 	<command name="ViewUnchangedKBArticleTitleViaLocalizedPage" priority="3">
+		<property name="test.name.skip.portal.instance" value="KnowledgebaseUsecase#ViewUnchangedKBArticleTitleViaLocalizedPage" />
+
 		<execute macro="ProductMenu#gotoControlPanelSites">
 			<var name="portlet" value="Sites" />
 		</execute>

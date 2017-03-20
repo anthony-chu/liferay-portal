@@ -379,6 +379,8 @@
 	</command>
 
 	<command name="EditSiteFriendlyURL" priority="4">
+		<property name="test.name.skip.portal.instance" value="CPSites#EditSiteFriendlyURL" />
+
 		<execute macro="ProductMenu#gotoControlPanelSites">
 			<var name="portlet" value="Sites" />
 		</execute>
@@ -435,6 +437,8 @@
 	</command>
 
 	<command name="EditSiteFriendlyURLInvalid" priority="3">
+		<property name="test.name.skip.portal.instance" value="CPSites#EditSiteFriendlyURLInvalid" />
+
 		<execute macro="ProductMenu#gotoControlPanelSites">
 			<var name="portlet" value="Sites" />
 		</execute>

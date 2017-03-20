@@ -1140,6 +1140,8 @@
 	</command>
 
 	<command name="ViewBlogsEntriesWithSpecialCharactersOnPublicAndPrivateVirtualHostPages" priority="3">
+		<property name="test.name.skip.portal.instance" value="BlogsUsecase#ViewBlogsEntriesWithSpecialCharactersOnPublicAndPrivateVirtualHostPages" />
+
 		<var name="entryTitleSpecialCharacter" value="true" />
 		<var name="privatePageVirtualHostURL" value="www.baker.com" />
 
@@ -1362,6 +1364,8 @@
 	</command>
 
 	<command name="ViewBlogsEntryFriendlyURLViaBlogsPortletAndRecentBloggers" priority="3">
+		<property name="test.name.skip.portal.instance" value="BlogsUsecase#ViewBlogsEntryFriendlyURLViaBlogsPortletAndRecentBloggers" />
+
 		<var name="entryAuthor" value="Test Test" />
 		<var name="entryContent" value="Blogs Entry Content" />
 		<var name="entryTitle" value="Blogs Entry Title" />
