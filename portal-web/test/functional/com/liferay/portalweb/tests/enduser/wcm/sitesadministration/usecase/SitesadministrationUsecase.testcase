@@ -947,6 +947,8 @@
 	</command>
 
 	<command name="SitesDemoSiteManagement" priority="4">
+		<property name="portal.acceptance" value="anthony" />
+
 		<execute macro="ProductMenu#gotoControlPanelSites">
 			<var name="portlet" value="Sites" />
 		</execute>
