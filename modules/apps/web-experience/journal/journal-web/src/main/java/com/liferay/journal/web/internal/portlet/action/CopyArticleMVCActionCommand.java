@@ -87,10 +87,10 @@ public class CopyArticleMVCActionCommand extends BaseMVCActionCommand {
 			actionRequest, JournalArticle.class.getName(),
 			PortletProvider.Action.EDIT);
 
-		redirectURL.setParameter("articleId", newArticle.getArticleId());
-		redirectURL.setParameter("groupId", String.valueOf(groupId));
 		redirectURL.setParameter("mvcPath", "/edit_article.jsp");
 		redirectURL.setParameter("redirect", redirect);
+		redirectURL.setParameter("groupId", String.valueOf(groupId));
+		redirectURL.setParameter("articleId", newArticle.getArticleId());
 
 		actionRequest.setAttribute(WebKeys.REDIRECT, redirectURL.toString());
 
