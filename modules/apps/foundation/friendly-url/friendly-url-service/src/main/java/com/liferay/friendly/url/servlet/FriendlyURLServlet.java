@@ -48,8 +48,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.util.PortalInstances;
-import com.liferay.site.model.SiteFriendlyURL;
-import com.liferay.site.service.SiteFriendlyURLLocalService;
+import com.liferay.site.model.GroupFriendlyURL;
+import com.liferay.site.service.GroupFriendlyURLLocalService;
 
 import java.io.IOException;
 
@@ -153,25 +153,25 @@ public class FriendlyURLServlet extends HttpServlet {
 
 		Locale locale = portal.getLocale(request);
 
-		SiteFriendlyURL siteFriendlyURL =
-			siteFriendlyURLLocalService.fetchSiteFriendlyURL(
+		GroupFriendlyURL groupFriendlyURLInstance =
+			groupFriendlyURLLocalService.fetchGroupFriendlyURL(
 				companyId, group.getGroupId(), LocaleUtil.toLanguageId(locale));
 
-		if (siteFriendlyURL == null) {
-			siteFriendlyURL =
-				siteFriendlyURLLocalService.fetchSiteFriendlyURLByFriendlyURL(
+		if (groupFriendlyURLInstance == null) {
+			groupFriendlyURLInstance =
+				groupFriendlyURLLocalService.fetchGroupFriendlyURLByFriendlyURL(
 					companyId, friendlyURL);
 		}
 
-		SiteFriendlyURL alternativeSiteFriendlyURL = null;
+		GroupFriendlyURL alternativeGroupFriendlyURL = null;
 
-		if ((siteFriendlyURL != null) &&
+		if ((groupFriendlyURLInstance != null) &&
 			!StringUtil.equalsIgnoreCase(
-				siteFriendlyURL.getFriendlyURL(), friendlyURL)) {
+				groupFriendlyURLInstance.getFriendlyURL(), friendlyURL)) {
 
-			alternativeSiteFriendlyURL =
-				siteFriendlyURLLocalService.fetchSiteFriendlyURLByFriendlyURL(
-					siteFriendlyURL.getCompanyId(), friendlyURL);
+			alternativeGroupFriendlyURL =
+				groupFriendlyURLLocalService.fetchGroupFriendlyURLByFriendlyURL(
+					groupFriendlyURLInstance.getCompanyId(), friendlyURL);
 		}
 
 		// Layout friendly URL
@@ -237,11 +237,11 @@ public class FriendlyURLServlet extends HttpServlet {
 					!StringUtil.equalsIgnoreCase(
 						layoutFriendlyURLCompositeFriendlyURL,
 						layout.getFriendlyURL(locale)) ||
-					(alternativeSiteFriendlyURL != null)) {
+					(alternativeGroupFriendlyURL != null)) {
 
 					Locale originalLocale = setAlternativeLayoutFriendlyURL(
 						request, layout, layoutFriendlyURLCompositeFriendlyURL,
-						alternativeSiteFriendlyURL);
+						alternativeGroupFriendlyURL);
 
 					String redirect = portal.getLocalizedFriendlyURL(
 						request, layout, locale, originalLocale);
@@ -486,7 +486,7 @@ public class FriendlyURLServlet extends HttpServlet {
 
 	protected Locale setAlternativeLayoutFriendlyURL(
 		HttpServletRequest request, Layout layout, String friendlyURL,
-		SiteFriendlyURL siteFriendlyURL) {
+		GroupFriendlyURL groupFriendlyURL) {
 
 		List<LayoutFriendlyURL> layoutFriendlyURLs =
 			layoutFriendlyURLLocalService.getLayoutFriendlyURLs(
@@ -503,9 +503,9 @@ public class FriendlyURLServlet extends HttpServlet {
 
 		Locale groupLocale = locale;
 
-		if (siteFriendlyURL != null) {
+		if (groupFriendlyURL != null) {
 			groupLocale = LocaleUtil.fromLanguageId(
-				siteFriendlyURL.getLanguageId());
+				groupFriendlyURL.getLanguageId());
 		}
 
 		String alternativeLayoutFriendlyURL = portal.getLocalizedFriendlyURL(
@@ -527,6 +527,9 @@ public class FriendlyURLServlet extends HttpServlet {
 	}
 
 	@Reference
+	protected GroupFriendlyURLLocalService groupFriendlyURLLocalService;
+
+	@Reference
 	protected GroupLocalService groupLocalService;
 
 	@Reference
@@ -537,9 +540,6 @@ public class FriendlyURLServlet extends HttpServlet {
 
 	@Reference
 	protected Portal portal;
-
-	@Reference
-	protected SiteFriendlyURLLocalService siteFriendlyURLLocalService;
 
 	@Reference
 	protected UserLocalService userLocalService;
