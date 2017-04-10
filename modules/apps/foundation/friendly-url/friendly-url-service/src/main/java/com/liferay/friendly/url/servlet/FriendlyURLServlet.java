@@ -95,6 +95,8 @@ public class FriendlyURLServlet extends HttpServlet {
 
 		long companyId = PortalInstances.getCompanyId(request);
 
+		Locale locale = portal.getLocale(request);
+
 		Group group = groupLocalService.fetchFriendlyURLGroup(
 			companyId, friendlyURL);
 
@@ -150,8 +152,6 @@ public class FriendlyURLServlet extends HttpServlet {
 
 			throw new NoSuchGroupException(sb.toString());
 		}
-
-		Locale locale = portal.getLocale(request);
 
 		GroupFriendlyURL groupFriendlyURLInstance =
 			groupFriendlyURLLocalService.fetchGroupFriendlyURL(
@@ -501,11 +501,14 @@ public class FriendlyURLServlet extends HttpServlet {
 		Locale locale = LocaleUtil.fromLanguageId(
 			layoutFriendlyURL.getLanguageId());
 
-		Locale groupLocale = locale;
+		Locale groupLocale = null;
 
 		if (groupFriendlyURL != null) {
 			groupLocale = LocaleUtil.fromLanguageId(
 				groupFriendlyURL.getLanguageId());
+		}
+		else {
+			groupLocale = locale;
 		}
 
 		String alternativeLayoutFriendlyURL = portal.getLocalizedFriendlyURL(
