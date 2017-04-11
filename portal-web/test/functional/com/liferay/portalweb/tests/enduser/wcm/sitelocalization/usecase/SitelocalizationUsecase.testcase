@@ -729,6 +729,7 @@
 	</command>
 
 	<command name="ViewEditURLLocale" priority="4">
+		<property name="portal.acceptance" value="LPS-71836" />
 		<property name="testray.component.names" value="Site Localization" />
 
 		<execute macro="ProductMenu#gotoSitesConfiguration">
