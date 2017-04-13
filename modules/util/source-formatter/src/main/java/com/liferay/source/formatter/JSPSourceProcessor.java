@@ -17,13 +17,18 @@ package com.liferay.source.formatter;
 import com.liferay.portal.kernel.io.unsync.UnsyncBufferedReader;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringReader;
 import com.liferay.portal.kernel.util.CharPool;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.source.formatter.checks.CompatClassImportsCheck;
 import com.liferay.source.formatter.checks.CopyrightCheck;
+import com.liferay.source.formatter.checks.EmptyArrayCheck;
+import com.liferay.source.formatter.checks.EmptyCollectionCheck;
+import com.liferay.source.formatter.checks.GetterUtilCheck;
 import com.liferay.source.formatter.checks.JSPDefineObjectsCheck;
 import com.liferay.source.formatter.checks.JSPEmptyLinesCheck;
 import com.liferay.source.formatter.checks.JSPIfStatementCheck;
@@ -33,6 +38,7 @@ import com.liferay.source.formatter.checks.JSPLogFileNameCheck;
 import com.liferay.source.formatter.checks.JSPModuleIllegalImportsCheck;
 import com.liferay.source.formatter.checks.JSPRedirectBackURLCheck;
 import com.liferay.source.formatter.checks.JSPSessionKeysCheck;
+import com.liferay.source.formatter.checks.JSPStringMethodsCheck;
 import com.liferay.source.formatter.checks.JSPStylingCheck;
 import com.liferay.source.formatter.checks.JSPSubnameCheck;
 import com.liferay.source.formatter.checks.JSPTagAttributesCheck;
@@ -43,8 +49,10 @@ import com.liferay.source.formatter.checks.JSPUnusedVariableCheck;
 import com.liferay.source.formatter.checks.JSPWhitespaceCheck;
 import com.liferay.source.formatter.checks.JSPXSSVulnerabilitiesCheck;
 import com.liferay.source.formatter.checks.MethodCallsOrderCheck;
+import com.liferay.source.formatter.checks.PrincipalExceptionCheck;
 import com.liferay.source.formatter.checks.ResourceBundleCheck;
 import com.liferay.source.formatter.checks.SourceCheck;
+import com.liferay.source.formatter.checks.StringBundlerCheck;
 import com.liferay.source.formatter.checks.StringUtilCheck;
 import com.liferay.source.formatter.checks.UnparameterizedClassCheck;
 import com.liferay.source.formatter.checks.ValidatorEqualsCheck;
@@ -94,24 +102,14 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 				"javascript:", ") {\n", ";\n"
 			});
 
-		newContent = fixCompatClassImports(absolutePath, newContent);
-
-		newContent = formatStringBundler(fileName, newContent, -1);
-
 		// LPS-47682
 
 		newContent = fixIncorrectParameterTypeForLanguageUtil(
 			newContent, true, fileName);
 
-		// LPS-48156
-
-		newContent = checkPrincipalException(newContent);
-
 		// LPS-62786
 
 		checkPropertyUtils(fileName, newContent);
-
-		checkGetterUtilGet(fileName, newContent);
 
 		JSPSourceTabCalculator jspSourceTabCalculator =
 			new JSPSourceTabCalculator();
@@ -200,19 +198,12 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 						fileName, "Avoid chaining on 'getClass'", lineCount);
 				}
 
-				checkEmptyCollection(trimmedLine, fileName, lineCount);
-
-				line = formatEmptyArray(line);
-
 				if (trimmedLine.equals("<%") || trimmedLine.equals("<%!")) {
 					javaSource = true;
 				}
 				else if (trimmedLine.equals("%>")) {
 					javaSource = false;
 				}
-
-				checkInefficientStringMethods(
-					line, fileName, absolutePath, lineCount, javaSource);
 
 				// LPS-47179
 
@@ -351,13 +342,18 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 	}
 
 	@Override
+	protected List<SourceCheck> getModuleSourceChecks() {
+		return _moduleSourceChecks;
+	}
+
+	@Override
 	protected List<SourceCheck> getSourceChecks() {
 		return _sourceChecks;
 	}
 
 	@Override
-	protected List<SourceCheck> getModuleSourceChecks() {
-		return _moduleSourceChecks;
+	protected void populateModuleSourceChecks() throws Exception {
+		_moduleSourceChecks.add(new JSPModuleIllegalImportsCheck());
 	}
 
 	@Override
@@ -369,6 +365,9 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 		_sourceChecks.add(new JSPWhitespaceCheck());
 
 		_sourceChecks.add(new CopyrightCheck(getCopyright()));
+		_sourceChecks.add(new EmptyArrayCheck());
+		_sourceChecks.add(new EmptyCollectionCheck());
+		_sourceChecks.add(new GetterUtilCheck());
 		_sourceChecks.add(
 			new JSPDefineObjectsCheck(
 				portalSource, subrepository,
@@ -390,11 +389,16 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 		_sourceChecks.add(new JSPXSSVulnerabilitiesCheck());
 		_sourceChecks.add(
 			new MethodCallsOrderCheck(getExcludes(METHOD_CALL_SORT_EXCLUDES)));
+		_sourceChecks.add(new PrincipalExceptionCheck());
+		_sourceChecks.add(new StringBundlerCheck(-1));
 		_sourceChecks.add(new StringUtilCheck());
 		_sourceChecks.add(new UnparameterizedClassCheck());
 		_sourceChecks.add(new ValidatorEqualsCheck());
 
 		if (portalSource || subrepository) {
+			_sourceChecks.add(
+				new JSPStringMethodsCheck(
+					getExcludes(RUN_OUTSIDE_PORTAL_EXCLUDES)));
 			_sourceChecks.add(new JSPUnusedTaglibCheck(_contentsMap));
 			_sourceChecks.add(
 				new JSPUnusedVariableCheck(
@@ -403,6 +407,14 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 				new ResourceBundleCheck(
 					getExcludes(RUN_OUTSIDE_PORTAL_EXCLUDES)));
 		}
+		else {
+			if (GetterUtil.getBoolean(
+					getProperty("use.portal.compat.import"))) {
+
+				_sourceChecks.add(
+					new CompatClassImportsCheck(getCompatClassNamesMap()));
+			}
+		}
 
 		if (portalSource) {
 			_sourceChecks.add(
@@ -410,11 +422,6 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 					getExcludes(LANGUAGE_KEYS_CHECK_EXCLUDES),
 					getPortalLanguageProperties()));
 		}
-	}
-
-	@Override
-	protected void populateModuleSourceChecks() throws Exception {
-		_moduleSourceChecks.add(new JSPModuleIllegalImportsCheck());
 	}
 
 	private Map<String, String> _getContentsMap(List<String> fileNames)
