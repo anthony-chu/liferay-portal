@@ -1421,6 +1421,14 @@ jdbc.counter.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 		</sequential>
 	</macrodef>
 
+	<macrodef name="prepare-captcha-configuration" >
+		<sequential>
+			<echo file="${liferay.home}/osgi/configs/com.liferay.captcha.configuration.CaptchaConfiguration.config">createAccountCaptchaEnabled=&quot;false&quot;
+maxChallenges=&quot;-1&quot;
+sendPasswordCaptchaEnabled=&quot;false&quot;</echo>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="prepare-chrome-driver">
 		<sequential>
 			<if>
@@ -1564,35 +1572,33 @@ jdbc.counter.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 
 	<macrodef name="prepare-elasticsearch-configuration" >
 		<sequential>
-			<echo file="${liferay.home}/osgi/portal/com.liferay.portal.search.elasticsearch.configuration.ElasticsearchConfiguration.cfg">
-				additionalConfigurations=\
-					cluster.routing.allocation.disk.threshold_enabled: false\n\
-					cluster.service.slow_task_logging_threshold: 1800s\n\
-					httpEnabled: false\n\
-					index.indexing.slowlog.threshold.index.warn: 1800s\n\
-					index.search.slowlog.threshold.fetch.warn: 1800s\n\
-					index.search.slowlog.threshold.query.warn: 1800s\n\
-					monitor.jvm.gc.old.warn: 1800s\n\
-					monitor.jvm.gc.young.warn: 1800s\n\
-					threadpool.bulk.size: 1\n\
-					threadpool.fetch_shard_started.size: 1\n\
-					threadpool.fetch_shard_store.size: 1\n\
-					threadpool.flush.size: 1\n\
-					threadpool.force_merge.size: 1\n\
-					threadpool.generic.size: 1\n\
-					threadpool.get.size: 1\n\
-					threadpool.index.size: 1\n\
-					threadpool.listener.size: 1\n\
-					threadpool.management.size: 1\n\
-					threadpool.percolate.size: 1\n\
-					threadpool.refresh.size: 1\n\
-					threadpool.search.size: 1\n\
-					threadpool.snapshot.size: 1\n\
-					threadpool.suggest.size: 1\n\
-					threadpool.warmer.size: 1\n\
-					transport.local.workers: 1
-				logExceptionsOnly=false
-			</echo>
+			<echo file="${liferay.home}/osgi/portal/com.liferay.portal.search.elasticsearch.configuration.ElasticsearchConfiguration.config">additionalConfigurations=&quot;
+cluster.routing.allocation.disk.threshold_enabled:\ false
+cluster.service.slow_task_logging_threshold:\ 1800s
+httpEnabled:\ false
+index.indexing.slowlog.threshold.index.warn:\ 1800s
+index.search.slowlog.threshold.fetch.warn:\ 1800s
+index.search.slowlog.threshold.query.warn:\ 1800s
+monitor.jvm.gc.old.warn:\ 1800s
+monitor.jvm.gc.young.warn:\ 1800s
+threadpool.bulk.size:\ 1
+threadpool.fetch_shard_started.size:\ 1
+threadpool.fetch_shard_store.size:\ 1
+threadpool.flush.size:\ 1
+threadpool.force_merge.size:\ 1
+threadpool.generic.size:\ 1
+threadpool.get.size:\ 1
+threadpool.index.size:\ 1
+threadpool.listener.size:\ 1
+threadpool.management.size:\ 1
+threadpool.percolate.size:\ 1
+threadpool.refresh.size:\ 1
+threadpool.search.size:\ 1
+threadpool.snapshot.size:\ 1
+threadpool.suggest.size:\ 1
+threadpool.warmer.size:\ 1
+transport.local.workers:\ 1&quot;
+logExceptionsOnly=&quot;false&quot;</echo>
 		</sequential>
 	</macrodef>
 
@@ -1884,14 +1890,6 @@ tell application "Safari" to quit
 		</sequential>
 	</macrodef>
 
-	<macrodef name="prepare-spa-configuration" >
-		<sequential>
-			<echo file="${liferay.home}/osgi/configs/com.liferay.frontend.js.spa.web.configuration.SPAConfiguration.cfg">
-				userNotificationTimeout=0
-			</echo>
-		</sequential>
-	</macrodef>
-
 	<macrodef name="prepare-test-bundles">
 		<attribute name="unit" />
 		<sequential>
@@ -2076,10 +2074,6 @@ tell application "Safari" to quit
 							<ant antfile="build-dist.xml" inheritAll="false" target="build-dist-tomcat" />
 
 							<setup-testable-tomcat />
-
-							<prepare-elasticsearch-configuration />
-
-							<prepare-spa-configuration />
 						</else>
 					</if>
 				</else>
@@ -6059,11 +6053,11 @@ osb.lcs.portlet.oauth.consumer.secret=${osb.lcs.portlet.oauth.consumer.secret}</
 				<contains string="${osgi.module.configurations}" substring="maxChallenges" />
 			</not>
 			<then>
-				<echo file="${liferay.home}/osgi/configs/com.liferay.captcha.configuration.CaptchaConfiguration.config">createAccountCaptchaEnabled=&quot;false&quot;
-maxChallenges=&quot;-1&quot;
-sendPasswordCaptchaEnabled=&quot;false&quot;</echo>
+				<prepare-captcha-configuration />
 			</then>
 		</if>
+
+		<prepare-elasticsearch-configuration />
 	</target>
 
 	<target name="prepare-portal-ext-properties">
@@ -7738,6 +7732,8 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 			</then>
 		</if>
 
+		<property name="default.timeout.explicit.wait" value="${timeout.explicit.wait}" />
+
 		<get-testcase-property property.name="timeout.explicit.wait" />
 
 		<if>
@@ -7747,6 +7743,11 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 					timeout.explicit.wait=${timeout.explicit.wait}
 				</echo>
 			</then>
+			<else>
+				<echo append="true" file="${test.ext.properties.file}">
+					timeout.explicit.wait=${default.timeout.explicit.wait}
+				</echo>
+			</else>
 		</if>
 	</target>
 

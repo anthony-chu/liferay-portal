@@ -183,7 +183,8 @@ public class ModulesStructureTest {
 
 						_testAntPluginIgnoreFiles(dirPath);
 					}
-					else if (dirName.startsWith("frontend-theme-") &&
+					else if (StringUtil.startsWith(
+								dirName, "frontend-theme-") &&
 							 Files.exists(dirPath.resolve("gulpfile.js"))) {
 
 						_testThemeIgnoreFiles(
@@ -244,6 +245,33 @@ public class ModulesStructureTest {
 										path.resolveSibling(entry.getValue()));
 							}
 						}
+					}
+
+					return FileVisitResult.CONTINUE;
+				}
+
+			});
+	}
+
+	@Test
+	public void testScanMarkerFiles() throws IOException {
+		Files.walkFileTree(
+			_modulesDirPath,
+			new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult visitFile(
+						Path path, BasicFileAttributes basicFileAttributes)
+					throws IOException {
+
+					String fileName = String.valueOf(path.getFileName());
+
+					if (StringUtil.startsWith(fileName, ".lfrbuild-") ||
+						StringUtil.startsWith(fileName, ".lfrrelease-")) {
+
+						Assert.assertEquals(
+							"Marker file " + path + " must be empty", 0,
+							basicFileAttributes.size());
 					}
 
 					return FileVisitResult.CONTINUE;
@@ -713,7 +741,7 @@ public class ModulesStructureTest {
 			Assert.assertFalse(
 				messagePrefix + " cannot start with the reserved prefix \"" +
 					prefix + "\"",
-				projectGroup.startsWith(prefix));
+				StringUtil.startsWith(projectGroup, prefix));
 		}
 
 		Matcher matcher = _gitRepoGradleProjectGroupPattern.matcher(

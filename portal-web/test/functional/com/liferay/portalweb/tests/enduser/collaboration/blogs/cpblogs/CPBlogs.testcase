@@ -240,7 +240,7 @@
 		<execute macro="ItemSelector#gotoItemSelectorViaAlloyEditor" />
 
 		<execute macro="ItemSelector#addFromURL">
-			<var name="imageSourceURL" value="https://cdn.lfrs.sl/www.liferay.com/osb-community-theme/images/custom/heading.png" />
+			<var name="imageSourceURL" value="https://dummyimage.com/600x400/000/fff.jpg" />
 		</execute>
 
 		<execute function="Pause" locator1="1000" />
@@ -263,7 +263,7 @@
 		</execute>
 
 		<execute macro="BlogsEntry#viewInlineImage">
-			<var name="uploadFileName" value="https://cdn.lfrs.sl/www.liferay.com/osb-community-theme/images/custom/heading.png" />
+			<var name="uploadFileName" value="https://dummyimage.com/600x400/000/fff.jpg" />
 		</execute>
 	</command>
 
