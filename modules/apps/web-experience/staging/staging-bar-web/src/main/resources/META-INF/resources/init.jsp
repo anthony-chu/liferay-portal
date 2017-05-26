@@ -74,6 +74,8 @@ page import="com.liferay.portal.kernel.util.comparator.LayoutRevisionIdComparato
 page import="com.liferay.portal.kernel.workflow.WorkflowConstants" %><%@
 page import="com.liferay.portal.kernel.workflow.WorkflowTask" %><%@
 page import="com.liferay.portal.util.PropsValues" %><%@
+page import="com.liferay.staging.bar.web.internal.display.context.LayoutBranchDisplayContext" %><%@
+page import="com.liferay.staging.bar.web.internal.display.context.LayoutSetBranchDisplayContext" %><%@
 page import="com.liferay.staging.constants.StagingProcessesWebKeys" %>
 
 <%@ page import="java.util.ArrayList" %><%@
@@ -107,6 +109,9 @@ if (selLayout != null) {
 
 	privateLayout = selLayout.isPrivateLayout();
 }
+
+LayoutBranchDisplayContext layoutBranchDisplayContext = new LayoutBranchDisplayContext(request);
+LayoutSetBranchDisplayContext layoutSetBranchDisplayContext = new LayoutSetBranchDisplayContext(request);
 %>
 
 <%@ include file="/init-ext.jsp" %>
