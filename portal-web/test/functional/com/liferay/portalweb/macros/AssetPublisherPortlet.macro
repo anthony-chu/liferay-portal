@@ -114,13 +114,15 @@
 	<command name="configureAssetDisplayOrderPG">
 		<execute macro="AssetPublisherPortlet#gotoConfigurationPG" />
 
+		<execute function="AssertClick" locator1="NavTab#ASSET_SELECTION" value1="Asset Selection" />
+
 		<execute macro="Panel#expandPanel">
 			<var name="panelHeading" value="Ordering and Grouping" />
 		</execute>
 
 		<execute function="Select" locator1="APConfiguration#ORDERING_AND_GROUPING_ORDER_BY_SELECT" value1="${fieldNameOrder}" />
 
-		<execute function="Select" locator1="APConfiguration#ORDERING_AND_GROUPING_ORDER_DIRECTION_SELECT" value1="${sortOrder}" />
+		<execute function="Click" locator1="APConfiguration#ORDERING_AND_GROUPING_ORDER_ASCENDING" />
 
 		<execute macro="PortletEntry#save" />
 	</command>
