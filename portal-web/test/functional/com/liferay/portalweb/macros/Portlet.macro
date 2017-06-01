@@ -312,9 +312,7 @@
 	</command>
 
 	<command name="selectApplicationDecorator">
-		<execute function="Select" locator1="Select#APPLICATION_DECORATORS" value1="${decorator}">
-			<var name="key_decorator" value="${decorator}" />
-		</execute>
+		<execute function="Select" locator1="Select#APPLICATION_DECORATORS" value1="${decorator}" />
 
 		<execute macro="PortletEntry#save" />
 	</command>
