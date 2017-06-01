@@ -24,24 +24,18 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.tools.ToolsUtil;
-import com.liferay.source.formatter.checks.FileCheck;
-import com.liferay.source.formatter.checks.JavaTermCheck;
 import com.liferay.source.formatter.checks.SourceCheck;
-import com.liferay.source.formatter.checks.configuration.ConfigurationLoader;
-import com.liferay.source.formatter.checks.configuration.SourceCheckConfiguration;
-import com.liferay.source.formatter.checks.configuration.SourceFormatterConfiguration;
-import com.liferay.source.formatter.checks.util.JavaSourceUtil;
-import com.liferay.source.formatter.parser.JavaClass;
-import com.liferay.source.formatter.parser.JavaClassParser;
-import com.liferay.source.formatter.parser.ParseException;
+import com.liferay.source.formatter.checks.configuration.SourceChecksResult;
+import com.liferay.source.formatter.checks.configuration.SourceChecksSuppressions;
+import com.liferay.source.formatter.checks.configuration.SuppressionsLoader;
+import com.liferay.source.formatter.checks.util.SourceChecksUtil;
+import com.liferay.source.formatter.checks.util.SourceUtil;
 import com.liferay.source.formatter.util.FileUtil;
 import com.liferay.source.formatter.util.SourceFormatterUtil;
 
 import java.awt.Desktop;
 
 import java.io.File;
-
-import java.lang.reflect.Constructor;
 
 import java.net.URI;
 
@@ -64,7 +58,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.tools.ant.types.selectors.SelectorUtils;
 
 /**
@@ -97,6 +90,9 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 			getPluginsInsideModulesDirectoryNames();
 
 		_sourceChecks = _getSourceChecks(_containsModuleFile(fileNames));
+
+		_sourceChecksSuppressions = SuppressionsLoader.loadSuppressions(
+			getSuppressionsFiles("sourcechecks-suppressions.xml"));
 
 		ExecutorService executorService = Executors.newFixedThreadPool(
 			sourceFormatterArgs.getProcessorThreadCount());
@@ -282,7 +278,7 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 			pluginBuildFileName = StringUtil.replace(
 				pluginBuildFileName, CharPool.BACK_SLASH, CharPool.SLASH);
 
-			String absolutePath = JavaSourceUtil.getAbsolutePath(
+			String absolutePath = SourceUtil.getAbsolutePath(
 				pluginBuildFileName);
 
 			int x = absolutePath.indexOf("/modules/apps/");
@@ -307,6 +303,61 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 	protected List<String> getPropertyList(String key) {
 		return ListUtil.fromString(
 			GetterUtil.getString(getProperty(key)), StringPool.COMMA);
+	}
+
+	protected List<File> getSuppressionsFiles(String fileName)
+		throws Exception {
+
+		List<File> suppressionsFiles = new ArrayList<>();
+
+		// Find suppressions file in portal-impl/src/
+
+		if (portalSource) {
+			File suppressionsFile = getFile(
+				"portal-impl/src/" + fileName, PORTAL_MAX_DIR_LEVEL);
+
+			if (suppressionsFile != null) {
+				suppressionsFiles.add(suppressionsFile);
+			}
+		}
+
+		// Find suppressions files in any parent directory
+
+		int maxDirLevel = PLUGINS_MAX_DIR_LEVEL;
+		String parentDirName = sourceFormatterArgs.getBaseDirName();
+
+		if (portalSource || subrepository) {
+			maxDirLevel = PORTAL_MAX_DIR_LEVEL;
+		}
+
+		for (int i = 0; i < maxDirLevel; i++) {
+			File suppressionsFile = new File(parentDirName + fileName);
+
+			if (suppressionsFile.exists()) {
+				suppressionsFiles.add(suppressionsFile);
+			}
+
+			parentDirName += "../";
+		}
+
+		if (!portalSource && !subrepository) {
+			return suppressionsFiles;
+		}
+
+		// Find suppressions files in any child directory
+
+		List<String> moduleSuppressionsFileNames = getFileNames(
+			new String[0], new String[] {"**/modules/**/" + fileName}, true);
+
+		for (String moduleSuppressionsFileName : moduleSuppressionsFileNames) {
+			moduleSuppressionsFileName = StringUtil.replace(
+				moduleSuppressionsFileName, CharPool.BACK_SLASH,
+				CharPool.SLASH);
+
+			suppressionsFiles.add(new File(moduleSuppressionsFileName));
+		}
+
+		return suppressionsFiles;
 	}
 
 	protected void postFormat() throws Exception {
@@ -396,52 +447,19 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 			File file, String fileName, String absolutePath, String content)
 		throws Exception {
 
-		if (ListUtil.isEmpty(_sourceChecks)) {
-			return content;
+		SourceChecksResult sourceChecksResult =
+			SourceChecksUtil.processSourceChecks(
+				file, fileName, absolutePath, content,
+				_isModulesFile(absolutePath), _sourceChecks,
+				_sourceChecksSuppressions);
+
+		for (SourceFormatterMessage sourceFormatterMessage :
+				sourceChecksResult.getSourceFormatterMessages()) {
+
+			processMessage(fileName, sourceFormatterMessage);
 		}
 
-		JavaClass javaClass = null;
-		List<JavaClass> anonymousClasses = null;
-
-		for (SourceCheck sourceCheck : _sourceChecks) {
-			if (sourceCheck.isModulesCheck() && !_isModulesFile(absolutePath)) {
-				continue;
-			}
-
-			String newContent = null;
-
-			if (sourceCheck instanceof FileCheck) {
-				newContent = _processFileCheck(
-					(FileCheck)sourceCheck, fileName, absolutePath, content);
-			}
-			else if ((sourceCheck instanceof JavaTermCheck) &&
-					 (this instanceof JavaSourceProcessor)) {
-
-				if (javaClass == null) {
-					try {
-						anonymousClasses =
-							JavaClassParser.parseAnonymousClasses(content);
-						javaClass = JavaClassParser.parseJavaClass(
-							fileName, content);
-					}
-					catch (ParseException pe) {
-						processMessage(fileName, pe.getMessage());
-
-						continue;
-					}
-				}
-
-				newContent = _processJavaTermCheck(
-					(JavaTermCheck)sourceCheck, javaClass, anonymousClasses,
-					fileName, absolutePath, content);
-			}
-
-			if (!newContent.equals(content)) {
-				return newContent;
-			}
-		}
-
-		return content;
+		return sourceChecksResult.getContent();
 	}
 
 	protected static Pattern javaSourceInsideJSPLinePattern = Pattern.compile(
@@ -472,7 +490,7 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 				continue;
 			}
 
-			String absolutePath = JavaSourceUtil.getAbsolutePath(fileName);
+			String absolutePath = SourceUtil.getAbsolutePath(fileName);
 
 			if (_isModulesFile(absolutePath, true)) {
 				return true;
@@ -508,7 +526,7 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 		fileName = StringUtil.replace(
 			fileName, CharPool.BACK_SLASH, CharPool.SLASH);
 
-		String absolutePath = JavaSourceUtil.getAbsolutePath(fileName);
+		String absolutePath = SourceUtil.getAbsolutePath(fileName);
 
 		File file = new File(absolutePath);
 
@@ -536,90 +554,14 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 	private List<SourceCheck> _getSourceChecks(boolean includeModuleChecks)
 		throws Exception {
 
-		SourceFormatterConfiguration sourceFormatterConfiguration =
-			ConfigurationLoader.loadConfiguration("sourcechecks.xml");
-
 		Class<?> clazz = getClass();
 
-		List<SourceCheck> sourceChecks = _getSourceChecks(
-			sourceFormatterConfiguration, clazz.getSimpleName(),
+		List<SourceCheck> sourceChecks = SourceChecksUtil.getSourceChecks(
+			clazz.getSimpleName(), portalSource, subrepository,
 			includeModuleChecks);
 
-		sourceChecks.addAll(
-			_getSourceChecks(
-				sourceFormatterConfiguration, "all", includeModuleChecks));
-
-		return sourceChecks;
-	}
-
-	private List<SourceCheck> _getSourceChecks(
-			SourceFormatterConfiguration sourceFormatterConfiguration,
-			String sourceProcessorName, boolean includeModuleChecks)
-		throws Exception {
-
-		List<SourceCheck> sourceChecks = new ArrayList<>();
-
-		List<SourceCheckConfiguration> sourceCheckConfigurations =
-			sourceFormatterConfiguration.getSourceCheckConfigurations(
-				sourceProcessorName);
-
-		if (sourceCheckConfigurations == null) {
-			return sourceChecks;
-		}
-
-		for (SourceCheckConfiguration sourceCheckConfiguration :
-				sourceCheckConfigurations) {
-
-			String sourceCheckName = sourceCheckConfiguration.getName();
-
-			if (!sourceCheckName.contains(StringPool.PERIOD)) {
-				sourceCheckName =
-					"com.liferay.source.formatter.checks." + sourceCheckName;
-			}
-
-			Class<?> sourceCheckClass = null;
-
-			try {
-				sourceCheckClass = Class.forName(sourceCheckName);
-			}
-			catch (ClassNotFoundException cnfe) {
-				SourceFormatterUtil.printError(
-					"sourcechecks.xml",
-					"sourcechecks.xml: Class " + sourceCheckName +
-						" cannot be found");
-
-				continue;
-			}
-
-			Constructor<?> declaredConstructor =
-				sourceCheckClass.getDeclaredConstructor();
-
-			Object instance = declaredConstructor.newInstance();
-
-			if (!(instance instanceof SourceCheck)) {
-				continue;
-			}
-
-			SourceCheck sourceCheck = (SourceCheck)instance;
-
-			if ((!portalSource && !subrepository &&
-				 sourceCheck.isPortalCheck()) ||
-				(!includeModuleChecks && sourceCheck.isModulesCheck())) {
-
-				continue;
-			}
-
-			for (String attributeName :
-					sourceCheckConfiguration.attributeNames()) {
-
-				BeanUtils.setProperty(
-					sourceCheck, attributeName,
-					sourceCheckConfiguration.getAttributeValue(attributeName));
-			}
-
+		for (SourceCheck sourceCheck : sourceChecks) {
 			_initSourceCheck(sourceCheck);
-
-			sourceChecks.add(sourceCheck);
 		}
 
 		return sourceChecks;
@@ -702,7 +644,7 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 	}
 
 	private boolean _isSubrepository() {
-		String baseDirAbsolutePath = JavaSourceUtil.getAbsolutePath(
+		String baseDirAbsolutePath = SourceUtil.getAbsolutePath(
 			sourceFormatterArgs.getBaseDirName());
 
 		int x = baseDirAbsolutePath.length();
@@ -737,51 +679,6 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 		return pattern;
 	}
 
-	private String _processFileCheck(
-			FileCheck fileCheck, String fileName, String absolutePath,
-			String content)
-		throws Exception {
-
-		content = fileCheck.process(fileName, absolutePath, content);
-
-		for (SourceFormatterMessage sourceFormatterMessage :
-				fileCheck.getSourceFormatterMessages(fileName)) {
-
-			processMessage(fileName, sourceFormatterMessage);
-		}
-
-		return content;
-	}
-
-	private String _processJavaTermCheck(
-			JavaTermCheck javaTermCheck, JavaClass javaClass,
-			List<JavaClass> anonymousClasses, String fileName,
-			String absolutePath, String content)
-		throws Exception {
-
-		content = javaTermCheck.process(
-			fileName, absolutePath, javaClass, content);
-
-		for (SourceFormatterMessage sourceFormatterMessage :
-				javaTermCheck.getSourceFormatterMessages(fileName)) {
-
-			processMessage(fileName, sourceFormatterMessage);
-		}
-
-		for (JavaClass anonymousClass : anonymousClasses) {
-			content = javaTermCheck.process(
-				fileName, absolutePath, anonymousClass, content);
-
-			for (SourceFormatterMessage sourceFormatterMessage :
-					javaTermCheck.getSourceFormatterMessages(fileName)) {
-
-				processMessage(fileName, sourceFormatterMessage);
-			}
-		}
-
-		return content;
-	}
-
 	private static final String _DOCUMENTATION_URL =
 		"https://github.com/liferay/liferay-portal/blob/master/modules/util" +
 			"/source-formatter/documentation/";
@@ -797,6 +694,7 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 	private List<String> _pluginsInsideModulesDirectoryNames;
 	private Properties _properties;
 	private List<SourceCheck> _sourceChecks = new ArrayList<>();
+	private SourceChecksSuppressions _sourceChecksSuppressions;
 	private Map<String, Set<SourceFormatterMessage>>
 		_sourceFormatterMessagesMap = new ConcurrentHashMap<>();
 
