@@ -45,6 +45,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>LAYOUT_SELECT_COLUMN</td>
+	<td>//div[label[contains(.,'${key_columnName}')]]//img[contains(@class,'layout-selected')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>LAYOUT_CARD</td>
 	<td>//div[contains(@class,'card')]//span[contains(.,'${key_columnName}')]</td>
 	<td></td>
