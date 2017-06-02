@@ -1106,7 +1106,7 @@
 	</command>
 
 	<command name="viewSelectedLayoutColumn">
-		<execute function="AssertElementPresent" locator1="SitePagesEditPage#LAYOUT_SELECT_COLUMN">
+		<execute function="AssertElementPresent" locator1="SitePagesEditPage#LAYOUT_CARD_SELECTED">
 			<var name="key_columnName" value="${columnName}" />
 		</execute>
 	</command>
