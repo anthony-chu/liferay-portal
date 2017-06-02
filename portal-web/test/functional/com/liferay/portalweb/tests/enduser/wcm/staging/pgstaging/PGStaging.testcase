@@ -193,7 +193,7 @@
 		</execute>
 	</command>
 
-	<command name="AddDMDocumentStagingLocalLive" priority="3">
+	<command name="AddDMDocumentWCArticleStagingLocalLive" priority="3">
 		<execute macro="ProductMenu#gotoSite">
 			<var name="site" value="Site Name" />
 		</execute>
