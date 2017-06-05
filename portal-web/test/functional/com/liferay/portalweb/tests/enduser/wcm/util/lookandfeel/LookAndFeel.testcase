@@ -60,7 +60,7 @@
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="Portlet#viewApplicationDecorator">
-			<var name="decorator" value="borderless" />
+			<var name="decorator" value="Borderless" />
 		</execute>
 
 		<execute macro="Portlet#gotoPortletOptions">
@@ -75,7 +75,7 @@
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="Portlet#viewApplicationDecorator">
-			<var name="decorator" value="barebone" />
+			<var name="decorator" value="Barebone" />
 		</execute>
 	</command>
 </definition>

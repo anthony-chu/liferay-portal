@@ -362,6 +362,8 @@
 	</command>
 
 	<command name="viewApplicationDecorator">
+		<var method="StringUtil#lowerCase('${decorator}')" name="decorator" />
+
 		<execute function="AssertElementPresent" locator1="Portlet#PORTLET_BORDER_DECORATOR">
 			<var name="key_decorator" value="${decorator}" />
 		</execute>
