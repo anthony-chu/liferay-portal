@@ -37,6 +37,7 @@
 	</tear-down>
 
 	<command name="AddCategorywithLocalization" priority="4">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="testray.component.names" value="Categories,Localization" />
 
 		<execute macro="Navigator#openURL" />
@@ -365,6 +366,7 @@
 	</command>
 
 	<command name="AddPageWithRequiredVocabulary" priority="4">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="testray.component.names" value="Categories" />
 
 		<execute macro="Navigator#openURL" />
@@ -464,6 +466,7 @@
 	</command>
 
 	<command name="AddVocabularyWithAssetSubtype" priority="3">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="testray.component.names" value="Categories,Web Content Administration" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -550,6 +553,7 @@
 	</command>
 
 	<command name="AddVocabularyWithMultipleAssetTypes" priority="4">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="testray.component.names" value="Categories" />
 
 		<execute macro="Navigator#openURL" />
@@ -612,6 +616,7 @@
 	</command>
 
 	<command name="AddWCFailWithRequiredVocabularyAssetType" priority="3">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="testray.component.names" value="Categories,Web Content Administration" />
 
 		<execute macro="Navigator#openURL" />
@@ -675,6 +680,7 @@
 	</command>
 
 	<command name="AddWCWithOptionalVocabularyAssetType" priority="3">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="testray.component.names" value="Categories,Web Content Administration" />
 
 		<execute macro="Navigator#openURL" />
@@ -876,6 +882,7 @@
 	</command>
 
 	<command name="DisableMultipleCategories" priority="4">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="testray.component.names" value="Categories,Web Content Administration" />
 
 		<execute macro="Navigator#openURL" />
@@ -990,6 +997,7 @@
 	</command>
 
 	<command name="DuplicateCategoriesViaWebContentCopy" priority="3">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="testray.component.names" value="Categories,Web Content Administration" />
 
 		<execute macro="Navigator#openURL" />
@@ -1067,6 +1075,7 @@
 	</command>
 
 	<command name="ExportImportWCWithCategoryViaAP" priority="4">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="testray.component.names" value="Asset Publisher,Categories,Web Content Administration" />
 
 		<execute macro="ProductMenu#gotoControlPanelSites">
@@ -1235,6 +1244,7 @@
 	</command>
 
 	<command name="MoveSubcategory" priority="3">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="testray.component.names" value="Categories" />
 
 		<execute macro="Navigator#openURL" />
@@ -1429,6 +1439,7 @@
 	</command>
 
 	<command name="SearchEditedCategory" priority="4">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="testray.component.names" value="Categories,Documents Management" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -1728,6 +1739,7 @@
 	</command>
 
 	<command name="UseCategoryFromParentSiteViaSiteHierarchy" priority="4">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="testray.component.names" value="Categories,Site Administration,Web Content Administration" />
 
 		<execute macro="TestCase#getSiteName">

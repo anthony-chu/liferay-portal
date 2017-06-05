@@ -160,6 +160,7 @@
 	</command>
 
 	<command name="SearchWebContentCategory" priority="4">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="testray.component.names" value="Categories,Web Content Search" />
 
 		<execute macro="Navigator#openURL" />
@@ -260,6 +261,7 @@
 	</command>
 
 	<command name="SearchWebContentCategoryQuotes" priority="3">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="testray.component.names" value="Categories,Web Content Search" />
 
 		<execute macro="Navigator#openURL" />
