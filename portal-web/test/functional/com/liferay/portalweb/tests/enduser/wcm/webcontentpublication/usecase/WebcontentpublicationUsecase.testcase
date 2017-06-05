@@ -337,6 +337,7 @@
 	</command>
 
 	<command name="AssetPublisherCategoriesLocalization" priority="3">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="test.name.skip.portal.instance" value="WebcontentpublicationUsecase#AssetPublisherCategoriesLocalization" />
 
 		<execute macro="Navigator#openURL" />
@@ -521,6 +522,7 @@
 	</command>
 
 	<command name="AssetPublisherCategoriesNavigation" priority="3">
+		<property name="portal.acceptance" value="anthony" />
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -1386,6 +1388,8 @@
 	</command>
 
 	<command name="DisplayAssetsFilterByTagsOrCategoryViaAssetPublisher" priority="4">
+		<property name="portal.acceptance" value="anthony" />
+
 		<execute macro="ProductMenu#gotoSitesContent">
 			<var name="portlet" value="Tags" />
 		</execute>

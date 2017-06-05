@@ -1297,6 +1297,8 @@
 	</command>
 
 	<command name="ViewFileCategoryAndTags" priority="4">
+		<property name="portal.acceptance" value="anthony" />
+
 		<execute macro="Page#add">
 			<var name="pageName" value="Documents and Media Page" />
 		</execute>

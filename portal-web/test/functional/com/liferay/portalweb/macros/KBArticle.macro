@@ -210,7 +210,11 @@
 		<if>
 			<isset var="categoryName" />
 			<then>
-				<execute macro="KBArticle#selectCategoryCP">
+				<execute macro="Panel#expandPanel">
+					<var name="panelHeading" value="Categorization" />
+				</execute>
+
+				<execute macro="AssetCategorization#addCategory">
 					<var name="categoryName" value="${categoryName}" />
 					<var name="vocabularyName" value="${vocabularyName}" />
 				</execute>
@@ -1067,32 +1071,6 @@
 		<execute function="AssertClick" locator1="Button#SELECT_FILES" value1="Select Files" />
 
 		<execute function="SikuliUploadCommonFile" locator1="OS#FILE_DIALOG_BOX_FILE_NAME_FIELD_PNG" value1="${kbArticleAttachment}" />
-	</command>
-
-	<command name="selectCategoryCP">
-		<var name="key_categoryName" value="${categoryName}" />
-		<var name="key_vocabularyName" value="${vocabularyName}" />
-
-		<if>
-			<condition function="IsElementNotPresent" locator1="AssetCategorization#CATEGORIZATION_PANEL_EXPANDED" />
-			<then>
-				<execute function="Click" locator1="AssetCategorization#CATEGORIZATION_PANEL_COLLAPSED" />
-			</then>
-		</if>
-
-		<execute function="AssertClick" locator1="Button#SELECT_VOCABULARY" value1="Select" />
-
-		<execute function="SelectFrame" locator1="IFrame#SELECT_CATEGORY" />
-
-		<execute function="AssertClick" locator1="AssetCategorization#CATEGORY_UNSELECTED" value1="${categoryName}" />
-
-		<execute function="AssertElementPresent" locator1="AssetCategorization#CATEGORY_SELECTED" value1="${categoryName}" />
-
-		<execute function="SelectFrameTop" />
-
-		<execute function="Click" locator1="KnowledgeBaseArticle#SELECT_CATEGORIES_IFRAME" />
-
-		<execute function="Click" locator1="Button#DONE" value1="Done" />
 	</command>
 
 	<command name="selectParentArticleCP">

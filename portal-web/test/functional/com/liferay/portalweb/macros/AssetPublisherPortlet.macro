@@ -79,12 +79,9 @@
 	</command>
 
 	<command name="configureAPSelectMoreThanOnePG">
-		<execute macro="Portlet#gotoPortletOptions">
-			<var name="portletName" value="Asset Publisher" />
-			<var name="portletOption" value="Configuration" />
+		<execute macro="AssetPublisherPortlet#gotoConfigurationPG">
+			<var name="portletName" value="${portletName}" />
 		</execute>
-
-		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
 		<execute macro="Panel#expandPanel">
 			<var name="panelHeading" value="Source" />
@@ -206,19 +203,9 @@
 	</command>
 
 	<command name="configureDisplaySettings">
-		<if>
-			<contains string="${portletName}" substring="{portletName}" />
-			<then>
-				<var name="portletName" value="Asset Publisher" />
-			</then>
-		</if>
-
-		<execute macro="Portlet#gotoPortletOptions">
+		<execute macro="AssetPublisherPortlet#gotoConfigurationPG">
 			<var name="portletName" value="${portletName}" />
-			<var name="portletOption" value="Configuration" />
 		</execute>
-
-		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
 		<execute macro="Navigator#gotoNavTab">
 			<var name="navTab" value="Display Settings" />
@@ -259,6 +246,31 @@
 		<execute macro="PortletEntry#save" />
 
 		<execute function="SelectFrame" value1="relative=top" />
+	</command>
+
+	<command name="configureFilterByCategories">
+		<execute macro="AssetPublisherPortlet#gotoConfigurationPG">
+			<var name="portletName" value="${portletName}" />
+		</execute>
+
+		<execute macro="Navigator#gotoNavTab">
+			<var name="navTab" value="Asset Selection" />
+		</execute>
+
+		<execute macro="Panel#expandPanel">
+			<var name="panelHeading" value="Filter" />
+		</execute>
+
+		<execute function="Select" locator1="APConfiguration#FILTER_CATEGORIZATION_SELECT" value1="Categories" />
+
+		<execute macro="AssetCategorization#addCategory">
+			<var name="categoryName" value="${categoryName}" />
+			<var name="vocabularyName" value="${vocabularyName}" />
+		</execute>
+
+		<execute macro="PortletEntry#save" />
+
+		<execute function="SelectFrameTop" />
 	</command>
 
 	<command name="configureFilterByFieldPG">
@@ -320,12 +332,9 @@
 	</command>
 
 	<command name="configureManualAssetSelectionPG">
-		<execute macro="Portlet#gotoPortletOptions">
-			<var name="portletName" value="Asset Publisher" />
-			<var name="portletOption" value="Configuration" />
+		<execute macro="AssetPublisherPortlet#gotoConfigurationPG">
+			<var name="portletName" value="${portletName}" />
 		</execute>
-
-		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
 		<execute function="Click" locator1="APConfiguration#ASSET_SELECTION_MANUAL" />
 
@@ -386,12 +395,9 @@
 	</command>
 
 	<command name="configureShowMetadataFieldsPG">
-		<execute macro="Portlet#gotoPortletOptions">
+		<execute macro="AssetPublisherPortlet#gotoConfigurationPG">
 			<var name="portletName" value="${portletName}" />
-			<var name="portletOption" value="Configuration" />
 		</execute>
-
-		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
 		<execute macro="Navigator#gotoNavTab">
 			<var name="navTab" value="Display Settings" />
@@ -485,12 +491,9 @@
 	<command name="configureSiteScopeRemoveSitePG">
 		<var name="key_siteName" value="${siteName}" />
 
-		<execute macro="Portlet#gotoPortletOptions">
-			<var name="portletName" value="Asset Publisher" />
-			<var name="portletOption" value="Configuration" />
+		<execute macro="AssetPublisherPortlet#gotoConfigurationPG">
+			<var name="portletName" value="${portletName}" />
 		</execute>
-
-		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
 		<execute macro="Panel#expandPanel">
 			<var name="panelHeading" value="Scope" />
@@ -560,8 +563,15 @@
 	</command>
 
 	<command name="gotoConfigurationPG">
+		<if>
+			<contains string="${portletName}" substring="{portletName}" />
+			<then>
+				<var name="portletName" value="Asset Publisher" />
+			</then>
+		</if>
+
 		<execute macro="Portlet#gotoPortletOptions">
-			<var name="portletName" value="Asset Publisher" />
+			<var name="portletName" value="${portletName}" />
 			<var name="portletOption" value="Configuration" />
 		</execute>
 
@@ -976,19 +986,9 @@
 	</command>
 
 	<command name="viewDisplaySettings">
-		<if>
-			<contains string="${portletName}" substring="{portletName}" />
-			<then>
-				<var name="portletName" value="Asset Publisher" />
-			</then>
-		</if>
-
-		<execute macro="Portlet#gotoPortletOptions">
+		<execute macro="AssetPublisherPortlet#gotoConfigurationPG">
 			<var name="portletName" value="${portletName}" />
-			<var name="portletOption" value="Configuration" />
 		</execute>
-
-		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
 		<execute macro="Navigator#gotoNavTab">
 			<var name="navTab" value="Display Settings" />
@@ -1018,12 +1018,9 @@
 	</command>
 
 	<command name="viewDynamicAssetSelectionConfigurationPG">
-		<execute macro="Portlet#gotoPortletOptions">
-			<var name="portletName" value="Asset Publisher" />
-			<var name="portletOption" value="Configuration" />
+		<execute macro="AssetPublisherPortlet#gotoConfigurationPG">
+			<var name="portletName" value="${portletName}" />
 		</execute>
-
-		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
 		<execute function="Click" locator1="APConfiguration#ASSET_SELECTION_DYNAMIC" />
 
@@ -1045,7 +1042,9 @@
 	</command>
 
 	<command name="viewFilterAndFieldsPG">
-		<execute macro="AssetPublisherPortlet#gotoConfigurationPG" />
+		<execute macro="AssetPublisherPortlet#gotoConfigurationPG">
+			<var name="portletName" value="${portletName}" />
+		</execute>
 
 		<execute macro="Panel#expandPanel">
 			<var name="panelHeading" value="Source" />
@@ -1082,12 +1081,9 @@
 	</command>
 
 	<command name="viewManualAssetSelectionConfigurationPG">
-		<execute macro="Portlet#gotoPortletOptions">
-			<var name="portletName" value="Asset Publisher" />
-			<var name="portletOption" value="Configuration" />
+		<execute macro="AssetPublisherPortlet#gotoConfigurationPG">
+			<var name="portletName" value="${portletName}" />
 		</execute>
-
-		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
 		<execute macro="Panel#expandPanel">
 			<var name="panelHeading" value="Asset Entries" />
@@ -1233,12 +1229,9 @@
 	</command>
 
 	<command name="viewRestoredSetupPG">
-		<execute macro="Portlet#gotoPortletOptions">
-			<var name="portletName" value="Asset Publisher" />
-			<var name="portletOption" value="Configuration" />
+		<execute macro="AssetPublisherPortlet#gotoConfigurationPG">
+			<var name="portletName" value="${portletName}" />
 		</execute>
-
-		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
 		<execute macro="Panel#expandPanel">
 			<var name="panelHeading" value="Asset Entries" />

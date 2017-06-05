@@ -813,17 +813,10 @@
 
 		<execute function="SelectFrame" locator1="WCSelectDisplayPage#DISPLAY_PAGE_CONFIGURATION_IFRAME" />
 
-		<while>
-			<condition function="IsElementPresent" locator1="PagesConfiguration#PAGE_TREE_NODE_COLLAPSED" />
-			<then>
-				<execute function="Click" locator1="PagesConfiguration#PAGE_TREE_NODE_COLLAPSED" />
-			</then>
-		</while>
+		<execute macro="Portlet#expandTree" />
 
-		<execute function="AssertElementPresent" locator1="PagesConfiguration#PAGE_TREE_NODE_EXPANDED" />
-
-		<execute function="Click#mouseOverClick" locator1="PagesConfiguration#PAGE_TREE_LINK">
-			<var name="key_pageName" value="${pageName}" />
+		<execute macro="Portlet#selectTreeNode">
+			<var name="nodeName" value="${pageName}" />
 		</execute>
 
 		<execute function="SelectFrameTop" />
@@ -955,20 +948,6 @@
 		</if>
 	</command>
 
-	<command name="expandFolderTreeCP">
-		<while>
-			<and>
-				<condition function="IsElementPresent" locator1="WC#WEB_CONTENT_PLUS_ICON_COLLAPSED" />
-				<condition function="IsVisible" locator1="WC#WEB_CONTENT_PLUS_ICON_COLLAPSED" />
-			</and>
-			<then>
-				<execute function="Click" locator1="WC#WEB_CONTENT_PLUS_ICON_COLLAPSED" />
-			</then>
-		</while>
-
-		<execute function="AssertElementNotPresent" locator1="WC#WEB_CONTENT_PLUS_ICON_COLLAPSED" />
-	</command>
-
 	<command name="expireCP">
 		<for list="${webContentTitleList}" param="webContentTitle">
 			<execute function="Check" locator1="WC#ENTRY_DESCRIPTIVE_CHECKBOX">
@@ -1042,10 +1021,10 @@
 
 		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
-		<execute macro="WebContent#expandFolderTreeCP" />
+		<execute macro="Portlet#expandTree" />
 
-		<execute function="Click" locator1="WC#SELECT_FOLDER">
-			<var name="key_folderName" value="${folderName}" />
+		<execute macro="Portlet#selectTreeNode">
+			<var name="nodeName" value="${folderName}" />
 		</execute>
 
 		<execute function="SelectFrame" value1="relative=top" />
@@ -1073,10 +1052,10 @@
 
 		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
-		<execute macro="WebContent#expandFolderTreeCP" />
+		<execute macro="Portlet#expandTree" />
 
-		<execute function="Click" locator1="WC#SELECT_FOLDER">
-			<var name="key_folderName" value="${folderName}" />
+		<execute macro="Portlet#selectTreeNode">
+			<var name="nodeName" value="${folderName}" />
 		</execute>
 
 		<execute function="SelectFrame" value1="relative=top" />

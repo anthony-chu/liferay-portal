@@ -186,6 +186,8 @@
 	</command>
 
 	<command name="SearchBlogsEntryCategory" priority="4">
+		<property name="portal.acceptance" value="anthony" />
+
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -272,6 +274,8 @@
 	</command>
 
 	<command name="SearchBlogsEntryCategoryQuotes" priority="4">
+		<property name="portal.acceptance" value="anthony" />
+
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">

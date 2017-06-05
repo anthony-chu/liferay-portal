@@ -21,6 +21,7 @@
 	</tear-down>
 
 	<command name="AssertRelatedAssetsDisplayWithCategory" priority="4">
+		<property name="portal.acceptance" value="anthony" />
 		<property name="testray.component.names" value="Categories,Staging,Related Assets,Web Content Administration" />
 
 		<execute macro="ProductMenu#gotoControlPanelSites">
@@ -186,8 +187,9 @@
 			<var name="portletName" value="Related Assets" />
 		</execute>
 
-		<execute macro="RelatedAssets#configureFilterByCategories">
+		<execute macro="AssetPublisherPortlet#configureFilterByCategories">
 			<var name="categoryName" value="Category Name" />
+			<var name="portletName" value="Related Assets" />
 			<var name="vocabularyName" value="Vocabulary Name" />
 		</execute>
 
