@@ -301,6 +301,12 @@
 		<execute function="Open" locator1="${adminURL}" />
 	</command>
 
+	<command name="selectApplicationDecorator">
+		<execute function="Select" locator1="Select#APPLICATION_DECORATORS" value1="${decorator}" />
+
+		<execute macro="PortletEntry#save" />
+	</command>
+
 	<command name="selectTreeNode">
 		<execute function="AssertClick#assertPartialTextClickAt" locator1="Treeview#NODE_UNSELECTED" value1="${nodeName}">
 			<var name="key_nodeName" value="${nodeName}" />
@@ -309,12 +315,6 @@
 		<execute function="AssertElementPresent" locator1="Treeview#NODE_SELECTED">
 			<var name="key_nodeName" value="${nodeName}" />
 		</execute>
-	</command>
-
-	<command name="selectApplicationDecorator">
-		<execute function="Select" locator1="Select#APPLICATION_DECORATORS" value1="${decorator}" />
-
-		<execute macro="PortletEntry#save" />
 	</command>
 
 	<command name="shutdownServer" summary="Shutdown the current Liferay Portal instance.">
