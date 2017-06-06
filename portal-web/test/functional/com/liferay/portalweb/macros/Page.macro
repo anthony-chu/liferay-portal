@@ -487,17 +487,10 @@
 
 				<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
-				<while>
-					<condition function="IsElementPresent" locator1="PagesConfiguration#PAGE_TREE_NODE_COLLAPSED" />
-					<then>
-						<execute function="Click" locator1="PagesConfiguration#PAGE_TREE_NODE_COLLAPSED" />
-					</then>
-				</while>
+				<execute macro="Portlet#expandTree" />
 
-				<execute function="AssertElementPresent" locator1="PagesConfiguration#PAGE_TREE_NODE_EXPANDED" />
-
-				<execute function="Click#mouseOverClick" locator1="PagesConfiguration#PAGE_TREE_LINK">
-					<var name="key_pageName" value="${pageLinkName}" />
+				<execute macro="Portlet#selectTreeNode">
+					<var name="nodeName" value="${pageLinkName}" />
 				</execute>
 
 				<execute function="SelectFrameTop" />
@@ -1110,6 +1103,12 @@
 
 			<execute function="AssertTextEquals" locator1="Panel#MENU_ITEM" value1="${portletName}" />
 		</for>
+	</command>
+
+	<command name="viewSelectedLayoutColumn">
+		<execute function="AssertElementPresent" locator1="SitePagesEditPage#LAYOUT_CARD_SELECTED">
+			<var name="key_columnName" value="${columnName}" />
+		</execute>
 	</command>
 
 	<command name="viewSiteNameTranslationsPG">

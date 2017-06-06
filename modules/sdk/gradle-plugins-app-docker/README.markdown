@@ -1,9 +1,9 @@
 # App Docker Gradle Plugin
 
-The App Docker Gradle plugin lets you build a single Docker image for an
-application that spans different subprojects, each one representing a different
-component of the same application. The Docker image can then be pushed to a
-registry.
+The App Docker Gradle plugin lets you build a single [Docker](https://www.docker.com/)
+image for an application that spans different subprojects, each one representing
+a different component of the same application. The Docker image can then be
+pushed to a registry.
 
 The plugin has been successfully tested with Gradle 2.5 up to 3.3.
 
@@ -30,6 +30,19 @@ apply plugin: "com.liferay.app.docker"
 The App Docker plugin automatically applies the
 [`com.bmuschko.docker-remote-api`](https://github.com/bmuschko/gradle-docker-plugin)
 plugin.
+
+Since the plugin automatically resolves the [Java Docker API Client](https://github.com/docker-java/docker-java)
+library as a dependency, you have to configure a repository that hosts the
+library and its transitive dependencies. The Liferay CDN repository hosts them
+all:
+
+```gradle
+repositories {
+	maven {
+		url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
+	}
+}
+```
 
 ## Project Extension
 
