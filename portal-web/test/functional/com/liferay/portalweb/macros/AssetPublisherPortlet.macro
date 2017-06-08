@@ -131,15 +131,6 @@
 			</then>
 		</if>
 
-		<if>
-			<isset var="disableConfiguration" />
-			<then>
-				<execute function="Uncheck#uncheckToggleSwitch" locator1="ToggleSwitch#ANY_TOGGLE_SWITCH">
-					<var name="key_toggleSwitchLabel" value="${disableConfiguration}" />
-				</execute>
-			</then>
-		</if>
-
 		<execute function="Select" locator1="APConfigurationDisplaysettings#ASSET_LINK_BEHAVIOR_SELECT" value1="${assetLinkBehavior}" />
 
 		<execute macro="PortletEntry#save" />
