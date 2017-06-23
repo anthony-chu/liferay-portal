@@ -45,6 +45,12 @@
 		<execute function="Click" locator1="Icon#BACK" />
 	</command>
 
+	<command name="gotoEditPageFromControlMenu">
+		<execute function="Click" locator1="ControlMenu#CONFIGURE_PAGE" />
+
+		<execute function="AssertTextEquals" locator1="ControlMenu#HEADER_TITLE" value1="${pageName}" />
+	</command>
+
 	<command name="gotoEntryInDescriptiveView">
 		<var name="key_siteName" value="${entryName}" />
 
