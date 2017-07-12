@@ -1807,6 +1807,8 @@ public class PropsValues {
 
 	public static final boolean XML_SECURITY_ENABLED = GetterUtil.getBoolean(PropsUtil.get(PropsKeys.XML_SECURITY_ENABLED));
 
+	public static final boolean XML_SITEMAP_INDEX_ENABLED = GetterUtil.getBoolean(PropsUtil.get(PropsKeys.XML_SITEMAP_INDEX_ENABLED));
+
 	public static final boolean XML_VALIDATION_ENABLED = GetterUtil.getBoolean(PropsUtil.get(PropsKeys.XML_VALIDATION_ENABLED));
 
 	public static final boolean XUGGLER_ENABLED = GetterUtil.getBoolean(PropsUtil.get(PropsKeys.XUGGLER_ENABLED));

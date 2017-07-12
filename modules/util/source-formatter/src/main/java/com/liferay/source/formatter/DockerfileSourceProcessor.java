@@ -12,22 +12,25 @@
  * details.
  */
 
-package com.liferay.portal.upgrade.v7_0_3;
+package com.liferay.source.formatter;
 
-import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.upgrade.v7_0_3.util.MBMailingListTable;
+import java.util.List;
 
 /**
- * @author Ugurcan Cetin
+ * @author Peter Shin
  */
-public class UpgradeMBMailingList extends UpgradeProcess {
+public class DockerfileSourceProcessor extends BaseSourceProcessor {
 
 	@Override
-	protected void doUpgrade() throws Exception {
-		alter(
-			MBMailingListTable.class,
-			new AlterColumnType("emailAddress", "VARCHAR(254) null"),
-			new AlterColumnType("outEmailAddress", "VARCHAR(254) null"));
+	protected List<String> doGetFileNames() throws Exception {
+		return getFileNames(new String[0], getIncludes());
 	}
+
+	@Override
+	protected String[] doGetIncludes() {
+		return _INCLUDES;
+	}
+
+	private static final String[] _INCLUDES = {"**/Dockerfile"};
 
 }

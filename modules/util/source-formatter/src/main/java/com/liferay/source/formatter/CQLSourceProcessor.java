@@ -12,18 +12,25 @@
  * details.
  */
 
-package com.liferay.portal.upgrade.v7_0_3;
+package com.liferay.source.formatter;
 
-import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import java.util.List;
 
 /**
- * @author Adolfo Pérez
+ * @author Peter Shin
  */
-public class UpgradeSchema extends UpgradeProcess {
+public class CQLSourceProcessor extends BaseSourceProcessor {
 
 	@Override
-	protected void doUpgrade() throws Exception {
-		upgrade(UpgradeMVCCVersion.class);
+	protected List<String> doGetFileNames() throws Exception {
+		return getFileNames(new String[0], getIncludes());
 	}
+
+	@Override
+	protected String[] doGetIncludes() {
+		return _INCLUDES;
+	}
+
+	private static final String[] _INCLUDES = {"**/*.cql"};
 
 }
