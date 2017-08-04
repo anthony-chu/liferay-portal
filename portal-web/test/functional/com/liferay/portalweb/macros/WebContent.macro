@@ -1315,6 +1315,18 @@
 		<execute macro="Alert#viewSuccessMessage" />
 	</command>
 
+	<command name="subscribeToSpecificArticle">
+		<execute function="Click" locator1="Icon#ROW_VERTICAL_ELLIPSIS">
+			<var name="key_rowEntry" value="${rowEntry}" />
+		</execute>
+
+		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Subscribe">
+			<var name="key_menuItem" value="Subscribe" />
+		</execute>
+
+		<execute macro="Alert#viewSuccessMessage" />
+	</command>
+
 	<command name="tearDownCP">
 		<execute macro="Navigator#openURL" />
 
