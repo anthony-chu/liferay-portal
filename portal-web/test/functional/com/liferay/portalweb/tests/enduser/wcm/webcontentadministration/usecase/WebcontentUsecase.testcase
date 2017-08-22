@@ -711,7 +711,8 @@
 			<var name="webContentTitle" value="Web Content Title" />
 		</execute>
 
-		<execute macro="Navigator#openSiteURL">
+		<execute macro="Navigator#gotoSitePage">
+			<var name="pageName" value="Site Page Name" />
 			<var name="siteName" value="Blank Site Name" />
 		</execute>
 
