@@ -4,10 +4,32 @@
 			<var name="key_vocabularyName" value="${vocabularyName}" />
 		</execute>
 
-		<execute macro="AssetCategorization#selectCategory">
-			<var name="categoryName" value="${categoryName}" />
-			<var name="vocabularyName" value="${vocabularyName}" />
+		<execute function="AssertClick" locator1="AssetCategorization#CATEGORY_SELECT" value1="Select" />
+
+		<execute macro="AssetCategorization#gotoSelectCategory" />
+
+		<execute macro="Portlet#selectTreeNode">
+			<var name="nodeName" value="${categoryName}" />
 		</execute>
+
+		<execute function="SelectFrameTop" />
+
+		<if>
+			<condition function="IsElementPresent" locator1="Button#DONE" />
+			<then>
+				<execute function="AssertClick" locator1="Button#DONE" value1="Done" />
+			</then>
+			<else>
+				<execute function="Click" locator1="Icon#CLOSE" />
+			</else>
+		</if>
+
+		<if>
+			<condition function="IsElementPresent" locator1="IFrame#MODAL_IFRAME" />
+			<then>
+				<execute macro="IFrame#selectModalFrame" />
+			</then>
+		</if>
 
 		<execute function="AssertTextEquals" locator1="AssetCategorization#CATEGORY" value1="${categoryName}">
 			<var name="key_categoryName" value="${categoryName}" />
