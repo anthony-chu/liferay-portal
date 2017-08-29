@@ -1215,7 +1215,7 @@
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="LAR#_gotoExportSite">
+		<execute macro="LAR#gotoExport">
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
