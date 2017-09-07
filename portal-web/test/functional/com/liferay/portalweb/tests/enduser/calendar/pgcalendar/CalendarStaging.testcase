@@ -266,6 +266,8 @@
 		</execute>
 
 		<execute macro="Staging#schedulePublishToLivePG">
+			<var name="endByDate" value="true" />
+			<var name="frequency" value="Daily" />
 			<var name="scheduleTitleName" value="Staging Schedule Title" />
 		</execute>
 
