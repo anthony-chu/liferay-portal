@@ -20,6 +20,7 @@
 	<c:if test="<%= Validator.isNotNull(id) %>">
 		<span class="workflow-id">
 			<span class="workflow-label"><liferay-ui:message key="id" />:</span>
+
 			<span class="workflow-value"><%= HtmlUtil.escape(id) %></span>
 		</span>
 	</c:if>
@@ -27,18 +28,19 @@
 	<c:if test="<%= Validator.isNotNull(version) %>">
 		<span class="workflow-version">
 			<span class="workflow-label"><liferay-ui:message key="version" />:</span>
-			<strong class="workflow-value"><%= version %></strong>
+
+			<span class="workflow-value"><%= version %></span>
 		</span>
 	</c:if>
 
-	<span class="<%= showIcon ? "icon-file-alt workflow-status" : "workflow-status" %>">
+	<span class="workflow-status">
 		<c:if test="<%= showLabel %>">
 			<span class="workflow-label"><liferay-ui:message key="status" />:</span>
 		</c:if>
 
-		<strong class="label status workflow-status-<%= WorkflowConstants.getStatusLabel(status) %> <%= WorkflowConstants.getStatusCssClass(status) %> workflow-value">
+		<span class="status workflow-status-<%= WorkflowConstants.getStatusLabel(status) %> <%= WorkflowConstants.getStatusCssClass(status) %> workflow-value">
 			<liferay-ui:message key="<%= statusMessage %>" /><%= additionalText %>
-		</strong>
+		</span>
 	</span>
 
 	<c:if test="<%= showHelpMessage && Validator.isNotNull(helpMessage) %>">

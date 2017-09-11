@@ -20,22 +20,25 @@
 boolean advancedSearch = displayTerms.isAdvancedSearch();
 %>
 
-<div class="taglib-search-toggle">
-	<div class="form-search">
-		<div class="advanced-search input-group" id="<%= id %>simple">
-			<input class="form-control search-query" <%= advancedSearch ? "disabled" : StringPool.BLANK %> id="<%= id + DisplayTerms.KEYWORDS %>" name="<portlet:namespace /><%= DisplayTerms.KEYWORDS %>" placeholder="<liferay-ui:message key="keywords" />" title="keywords" type="text" value="<%= HtmlUtil.escapeAttribute(displayTerms.getKeywords()) %>" />
+<div class="basic-search input-group">
+	<div class="input-group-input">
+		<div class="basic-search-slider" id="<%= id %>simple">
+			<button class="basic-search-close btn btn-default" type="button">
+				<span class="icon-remove"></span>
+			</button>
 
-			<span class="input-group-btn">
-				<button class="btn btn-default" type="submit">
-					<%= LanguageUtil.get(resourceBundle, buttonLabel, "search") %>
-				</button>
-			</span>
+			<input class="form-control search-query" <%= advancedSearch ? "disabled" : StringPool.BLANK %> id="<%= id + DisplayTerms.KEYWORDS %>" name="<portlet:namespace /><%= DisplayTerms.KEYWORDS %>" placeholder="<liferay-ui:message key="search" />..." title="search" type="text" value="<%= HtmlUtil.escapeAttribute(displayTerms.getKeywords()) %>" />
 		</div>
+	</div>
 
-		<a class="toggle-advanced" href="javascript:;" id="<%= id %>toggleAdvanced">
-			<i class="icon-search"></i>
-			<i class="caret"></i>
-		</a>
+	<div class="input-group-btn">
+		<button class="btn btn-default" type="submit">
+			<span class="icon-search"></span>
+		</button>
+
+		<button class="btn btn-default toggle-advanced" id="<%= id %>toggleAdvanced" type="button">
+			<span class="caret"></span>
+		</button>
 	</div>
 </div>
 

@@ -16,15 +16,17 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<%@ page contentType="text/html; charset=UTF-8" %>
-
 <%@ page import="com.liferay.portal.kernel.util.GetterUtil" %>
 
 <%
 boolean showUserDetails = GetterUtil.getBoolean((String)request.getAttribute("liferay-ui:user-display:showUserDetails"));
+boolean showUserName = GetterUtil.getBoolean((String)request.getAttribute("liferay-ui:user-display:showUserName"));
 %>
 
-	<c:if test="<%= showUserDetails %>">
+<c:if test="<%= showUserDetails || showUserName %>">
+			<c:if test="<%= showUserDetails %>">
+				</div>
+			</c:if>
 		</div>
-	</c:if>
-</div>
+	</div>
+</c:if>

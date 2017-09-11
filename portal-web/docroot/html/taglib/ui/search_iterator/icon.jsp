@@ -16,9 +16,13 @@
 
 <%@ include file="/html/taglib/ui/search_iterator/init.jsp" %>
 
-<%@ include file="/html/taglib/ui/search_iterator/lexicon/top.jspf" %>
+<%@ include file="/html/taglib/ui/search_iterator/top.jspf" %>
 
 <%
+request.setAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW_CHECKER, rowChecker);
+
+boolean allRowsIsChecked = true;
+
 List<ResultRowSplitterEntry> resultRowSplitterEntries = new ArrayList<ResultRowSplitterEntry>();
 
 if (resultRowSplitter != null) {
@@ -28,26 +32,23 @@ else {
 	resultRowSplitterEntries.add(new ResultRowSplitterEntry(StringPool.BLANK, resultRows));
 }
 
-for (ResultRowSplitterEntry resultRowSplitterEntry : resultRowSplitterEntries) {
+for (int i = 0; i < resultRowSplitterEntries.size(); i++) {
+	ResultRowSplitterEntry resultRowSplitterEntry = resultRowSplitterEntries.get(i);
+
 	List<com.liferay.portal.kernel.dao.search.ResultRow> curResultRows = resultRowSplitterEntry.getResultRows();
 %>
 
 	<c:if test="<%= Validator.isNotNull(resultRowSplitterEntry.getTitle()) %>">
-		<div class="splitter">
+		<div class="splitter splitter-spaced">
 			<liferay-ui:message key="<%= resultRowSplitterEntry.getTitle() %>" />
 		</div>
 	</c:if>
 
-	<ul class="display-style-descriptive tabular-list-group">
-		<c:if test="<%= (headerNames != null) && Validator.isNotNull(headerNames.get(0)) %>">
-			<li class="list-group-heading"><liferay-ui:message key="<%= headerNames.get(0) %>" /></li>
-		</c:if>
+	<ul class="display-style-icon list-unstyled row" data-qa-id="rows<%= i %>">
 
 		<%
-		boolean allRowsIsChecked = true;
-
-		for (int i = 0; i < curResultRows.size(); i++) {
-			com.liferay.portal.kernel.dao.search.ResultRow row = (com.liferay.portal.kernel.dao.search.ResultRow)curResultRows.get(i);
+		for (int j = 0; j < curResultRows.size(); j++) {
+			com.liferay.portal.kernel.dao.search.ResultRow row = curResultRows.get(j);
 
 			primaryKeysJSONArray.put(row.getPrimaryKey());
 
@@ -90,33 +91,20 @@ for (ResultRowSplitterEntry resultRowSplitterEntry : resultRowSplitterEntries) {
 			}
 		%>
 
-			<li class="list-group-item <%= GetterUtil.getString(row.getClassName()) %> <%= row.getCssClass() %> <%= rowIsChecked ? "active" : StringPool.BLANK %> <%= Validator.isNotNull(row.getState()) ? "list-group-item-" + row.getState() : StringPool.BLANK %>" data-qa-id="row" <%= AUIUtil.buildData(data) %>>
-				<c:if test="<%= rowChecker != null %>">
-					<div class="list-group-item-field">
-						<div class="checkbox">
-							<label>
-								<%= rowChecker.getRowCheckBox(request, rowIsChecked, rowChecker.isDisabled(row.getObject()), row.getPrimaryKey()) %>
-							</label>
-						</div>
-					</div>
-				</c:if>
+			<li class="<%= GetterUtil.getString(row.getClassName()) %> <%= row.getCssClass() %> <%= rowIsChecked ? "active" : StringPool.BLANK %>" data-qa-id="row" <%= AUIUtil.buildData(data) %>>
 
 				<%
-				for (int j = 0; j < entries.size(); j++) {
-					com.liferay.portal.kernel.dao.search.SearchEntry entry = (com.liferay.portal.kernel.dao.search.SearchEntry)entries.get(j);
+				for (int k = 0; k < entries.size(); k++) {
+					com.liferay.portal.kernel.dao.search.SearchEntry entry = (com.liferay.portal.kernel.dao.search.SearchEntry)entries.get(k);
 
-					entry.setIndex(j);
+					entry.setIndex(k);
 
 					request.setAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW_ENTRY, entry);
 				%>
 
-					<div class="<%= entry.getCssClass() %> <%= entry.getColspan() > 1 ? "list-group-item-content" : "list-group-item-field" %>">
-
-						<%
-						entry.print(pageContext.getOut(), request, response);
-						%>
-
-					</div>
+					<%
+					entry.print(pageContext.getOut(), request, response);
+					%>
 
 				<%
 				}
@@ -132,7 +120,9 @@ for (ResultRowSplitterEntry resultRowSplitterEntry : resultRowSplitterEntries) {
 		}
 		%>
 
-		<li class="lfr-template list-group-item"></li>
+		<c:if test="<%= i == (resultRowSplitterEntries.size() - 1) %>">
+			<li></li>
+		</c:if>
 	</ul>
 
 <%
@@ -141,4 +131,4 @@ for (ResultRowSplitterEntry resultRowSplitterEntry : resultRowSplitterEntries) {
 String rowHtmlTag = "li";
 %>
 
-<%@ include file="/html/taglib/ui/search_iterator/lexicon/bottom.jspf" %>
+<%@ include file="/html/taglib/ui/search_iterator/bottom.jspf" %>
