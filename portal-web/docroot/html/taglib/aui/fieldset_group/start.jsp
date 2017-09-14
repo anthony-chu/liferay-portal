@@ -17,4 +17,4 @@
 <%@ include file="/html/taglib/aui/fieldset_group/init.jsp" %>
 
 <div class="card-horizontal main-content-card">
-	<div class="card-row card-row-padded">
+	<div aria-multiselectable="true" class="panel-group" role="tablist">
