@@ -86,6 +86,16 @@
 
 				<execute function="AssertClick#pauseAssertTextClickAt" locator1="MyWorkflowTasks#ASSIGNED_TO_ME_MENULIST_OPTION" value1="${workflowDefinitionTask}" />
 			</then>
+			<elseif>
+				<isset var="boardworkflowtask" />
+				<then>
+					<var name="key_boardworkflowtask" value="${boardworkflowtask}" />
+
+					<execute function="AssertClick#pauseAssertTextClickAt" locator1="MenuItem#ANY_MENU_ITEM" value1="Approve ${boardworkflowtask}">
+						<var name="key_menuItem" value="Approve ${boardworkflowtask}" />
+					</execute>
+				</then>
+			</elseif>
 			<else>
 				<execute function="AssertClick#pauseAssertTextClickAt" locator1="MenuItem#ANY_MENU_ITEM" value1="Approve">
 					<var name="key_menuItem" value="Approve" />
