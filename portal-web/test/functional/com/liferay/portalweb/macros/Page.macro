@@ -659,7 +659,7 @@
 		<var name="key_portletCategoryName" value="${portletCategoryName}" />
 
 		<execute macro="ProductMenuHelper#expandCategory">
-			<var name="category" value="${portletCategoryName}" />
+			<var name="appGroup" value="${portletCategoryName}" />
 		</execute>
 
 		<var name="key_portletName" value="${portletName}" />
@@ -806,10 +806,12 @@
 	</command>
 
 	<command name="view">
-		<execute macro="ProductMenuHelper#expandPanelSites" />
+		<execute macro="ProductMenuHelper#expandPanel">
+			<var name="panel" value="Site Administration" />
+		</execute>
 
 		<execute macro="ProductMenuHelper#expandCategory">
-			<var name="category" value="Navigation" />
+			<var name="appGroup" value="Navigation" />
 		</execute>
 
 		<execute function="AssertTextEquals" locator1="SitePages#PAGE_TREE_PAGE_LINK" value1="${pageName}">
@@ -820,10 +822,12 @@
 	<command name="viewChildPage">
 		<execute macro="ProductMenuHelper#openProductMenu" />
 
-		<execute macro="ProductMenuHelper#expandPanelSites" />
+		<execute macro="ProductMenuHelper#expandPanel">
+			<var name="panel" value="Site Administration" />
+		</execute>
 
 		<execute macro="ProductMenuHelper#expandCategory">
-			<var name="category" value="Navigation" />
+			<var name="appGroup" value="Navigation" />
 		</execute>
 
 		<var name="key_page" value="${pageName}" />
@@ -982,7 +986,7 @@
 
 	<command name="viewNoDeletePagesAssociatedWithSiteTemplate">
 		<execute macro="ProductMenuHelper#expandCategory">
-			<var name="category" value="Navigation" />
+			<var name="appGroup" value="Navigation" />
 		</execute>
 
 		<execute macro="ProductMenuHelper#expandPageTree" />
@@ -1122,7 +1126,7 @@
 
 	<command name="viewPagesOrder">
 		<execute macro="ProductMenuHelper#expandCategory">
-			<var name="category" value="Navigation" />
+			<var name="appGroup" value="Navigation" />
 		</execute>
 
 		<var name="key_page" value="${pageName1}" />
@@ -1140,10 +1144,12 @@
 
 		<execute function="AssertTextEquals#assertPartialText" locator1="Message#CUSTOMIZED_PAGE_INFO" value1="This page is linked to a page template. Disable the automatic propagation of changes to this page to be able to make modifications." />
 
-		<execute macro="ProductMenuHelper#expandPanelSites" />
+		<execute macro="ProductMenuHelper#expandPanel">
+			<var name="panel" value="Site Administration" />
+		</execute>
 
 		<execute macro="ProductMenuHelper#expandCategory">
-			<var name="category" value="Navigation" />
+			<var name="appGroup" value="Navigation" />
 		</execute>
 
 		<execute macro="SitePageNavigator#gotoEditPage">

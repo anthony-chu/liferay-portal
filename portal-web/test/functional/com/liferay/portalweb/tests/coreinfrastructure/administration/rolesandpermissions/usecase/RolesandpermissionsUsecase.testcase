@@ -446,7 +446,7 @@
 		</execute>
 
 		<execute macro="ProductMenuHelper#expandCategory">
-			<var name="category" value="Navigation" />
+			<var name="appGroup" value="Navigation" />
 		</execute>
 
 		<execute macro="PermissionsInline#gotoSitepageCP">

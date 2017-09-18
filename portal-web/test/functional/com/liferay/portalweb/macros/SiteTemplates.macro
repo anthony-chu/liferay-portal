@@ -11,7 +11,7 @@
 		<execute macro="ProductMenuHelper#openProductMenu" />
 
 		<execute macro="ProductMenuHelper#expandCategory">
-			<var name="category" value="Navigation" />
+			<var name="appGroup" value="Navigation" />
 		</execute>
 
 		<execute macro="Page#addChild">
@@ -64,7 +64,7 @@
 		<execute macro="ProductMenuHelper#openProductMenu" />
 
 		<execute macro="ProductMenuHelper#expandCategory">
-			<var name="category" value="Navigation" />
+			<var name="appGroup" value="Navigation" />
 		</execute>
 
 		<var name="key_page" value="${pageName}" />
@@ -220,7 +220,7 @@
 		<execute function="AssertTextEquals" locator1="SiteTemplates#SITE_TEMPLATE_NAME" value1="${siteTemplateName}" />
 
 		<execute macro="ProductMenuHelper#expandCategory">
-			<var name="category" value="Configuration" />
+			<var name="appGroup" value="Configuration" />
 		</execute>
 
 		<execute function="AssertClick" locator1="SiteTemplates#CONFIGURATION_SITE_TEMPLATE_SETTINGS" value1="Site Template Settings" />
@@ -347,10 +347,12 @@
 			<var name="key_menuItem" value="Manage" />
 		</execute>
 
-		<execute macro="ProductMenuHelper#expandPanelSites" />
+		<execute macro="ProductMenuHelper#expandPanel">
+			<var name="panel" value="Site Administration" />
+		</execute>
 
 		<execute macro="ProductMenuHelper#expandCategory">
-			<var name="category" value="Configuration" />
+			<var name="appGroup" value="Configuration" />
 		</execute>
 
 		<for list="Site Settings,Social Activities,Workflow Configuration" param="portletName">
