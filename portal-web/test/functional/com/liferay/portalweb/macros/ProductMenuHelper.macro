@@ -29,7 +29,7 @@
 	</command>
 
 	<command name="expandCategory">
-		<var name="key_category" value="${category}" />
+		<var name="key_appGroup" value="${appGroup}" />
 
 		<if>
 			<condition function="IsElementPresent" locator1="ProductMenu#CATEGORY_COLLAPSED" />
