@@ -31,8 +31,10 @@
 	<command name="AddReportInvalidEmail" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />
@@ -69,8 +71,10 @@
 	<command name="AddSchedule" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />
@@ -102,8 +106,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#viewReportEntry">
@@ -123,8 +129,10 @@
 	<command name="ChangeReportName" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />
@@ -164,8 +172,10 @@
 	<command name="DeleteReportFile" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />
@@ -202,8 +212,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#viewReportEntry">
@@ -223,8 +235,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />
@@ -274,8 +288,10 @@
 	<command name="DownloadReportCSV" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />
@@ -314,8 +330,10 @@
 	<command name="DownloadReportHTML" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />
@@ -354,8 +372,10 @@
 	<command name="DownloadReportPDF" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />
@@ -395,8 +415,10 @@
 	<command name="DownloadReportRTF" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />
@@ -435,8 +457,10 @@
 	<command name="DownloadReportTXT" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />
@@ -475,8 +499,10 @@
 	<command name="DownloadReportXLS" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />
@@ -515,8 +541,10 @@
 	<command name="DownloadReportXML" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />
@@ -561,8 +589,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoSources" />
@@ -604,8 +634,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />
@@ -687,8 +719,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />
@@ -741,8 +775,10 @@
 	<command name="ViewReportDefinitionParametersFields" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />

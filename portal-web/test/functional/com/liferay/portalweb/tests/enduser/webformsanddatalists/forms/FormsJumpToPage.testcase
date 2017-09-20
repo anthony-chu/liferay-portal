@@ -12,8 +12,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Forms" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Forms" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="FormsAdminNavigator#gotoAddForm" />
@@ -125,8 +127,10 @@
 			<else>
 				<execute macro="Navigator#openURL" />
 
-				<execute macro="ProductMenu#gotoSitesContent">
-					<var name="portlet" value="Forms" />
+				<execute macro="ProductMenu#gotoPortlet">
+					<var name="app" value="Forms" />
+					<var name="appGroup" value="Content" />
+					<var name="panel" value="Site Administration" />
 				</execute>
 
 				<execute macro="FormsAdmin#teardownForms" />

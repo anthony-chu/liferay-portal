@@ -50,8 +50,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Knowledge Base" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Knowledge Base" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="KBArticle#addCP">
@@ -188,8 +190,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Knowledge Base" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Knowledge Base" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="KBArticle#addCP">

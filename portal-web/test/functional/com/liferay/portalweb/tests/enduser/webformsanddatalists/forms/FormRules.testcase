@@ -20,8 +20,10 @@
 			<else>
 				<execute macro="Navigator#openURL" />
 
-				<execute macro="ProductMenu#gotoSitesContent">
-					<var name="portlet" value="Forms" />
+				<execute macro="ProductMenu#gotoPortlet">
+					<var name="app" value="Forms" />
+					<var name="appGroup" value="Content" />
+					<var name="panel" value="Site Administration" />
 				</execute>
 
 				<execute macro="FormsAdmin#teardownForms" />
@@ -41,8 +43,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Forms" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Forms" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="FormsAdminNavigator#gotoDataProviders" />
@@ -64,8 +68,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Forms" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Forms" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="FormsAdminNavigator#gotoAddForm" />
@@ -179,8 +185,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Forms" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Forms" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="FormsAdminNavigator#gotoAddForm" />
@@ -301,8 +309,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Forms" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Forms" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="FormsAdminNavigator#gotoAddForm" />
@@ -392,8 +402,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Forms" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Forms" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="FormsAdminNavigator#gotoAddForm" />
@@ -516,8 +528,10 @@
 	<command name="ConfigureUserBelongsToRule" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Forms" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Forms" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="FormsAdminNavigator#gotoAddForm" />
@@ -666,8 +680,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Forms" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Forms" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="FormsAdminNavigator#gotoViewEntries" />
@@ -688,8 +704,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Forms" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Forms" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="FormsAdminNavigator#gotoAddForm" />
@@ -740,8 +758,10 @@
 
 		<execute macro="Form#save" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Forms" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Forms" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="FormsAdminNavigator#gotoEditFormByName" />
@@ -772,8 +792,10 @@
 	<command name="UseIsNotEmptyRuleToShowField" priority="4">
 		<description message="This is a use case for LPS-71399." />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Forms" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Forms" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="FormsAdminNavigator#gotoAddForm" />
@@ -878,8 +900,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Forms" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Forms" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="FormsAdminNavigator#gotoAddForm" />

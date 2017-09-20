@@ -144,8 +144,10 @@
 	<command name="AddList" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -197,8 +199,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -257,8 +261,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -275,8 +281,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLList#addCP">
@@ -327,8 +335,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -487,8 +497,10 @@
 	<command name="ConfigureEditableListPG" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -539,8 +551,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -589,8 +603,10 @@
 	<command name="DeleteListRecord" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -646,8 +662,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -664,8 +682,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLTemplate#addFormTemplateCP">
@@ -681,8 +701,10 @@
 
 		<execute macro="DDLTemplate#saveFormTemplateCP" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLList#addCP">
@@ -737,8 +759,10 @@
 	<command name="EditList" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -790,8 +814,10 @@
 	<command name="EditListRecord" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -864,8 +890,10 @@
 	<command name="EditListRecordViaRecordView" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -938,8 +966,10 @@
 	<command name="SearchDynamicDataListsRecords" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -962,8 +992,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLList#addCP">
@@ -1097,8 +1129,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -1115,8 +1149,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLList#addCP">
@@ -1130,8 +1166,10 @@
 
 		<execute macro="DDLList#save" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLList#editPermissions">
@@ -1145,8 +1183,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
@@ -1209,8 +1249,10 @@
 	<command name="SelectList" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -1227,8 +1269,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLList#addCP">
@@ -1301,8 +1345,10 @@
 	<command name="ViewBooleanFieldPredefinedValue" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -1398,8 +1444,10 @@
 	<command name="ViewDateFieldPredefinedValue" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -1498,8 +1546,10 @@
 	<command name="ViewDecimalFieldPredefinedValue" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -1595,8 +1645,10 @@
 	<command name="ViewDefaultGuestViewPermissions" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -1614,8 +1666,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLNavigator#gotoDataDefinitionPermissions">
@@ -1678,8 +1732,10 @@
 	<command name="ViewIntegerFieldPredefinedValue" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -1777,8 +1833,10 @@
 	<command name="ViewListRecordAndAssertAnchorLink"  priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -1837,8 +1895,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -1855,8 +1915,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLTemplate#addDisplayTemplateCP">
@@ -1868,8 +1930,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLList#addCP">
@@ -1884,8 +1948,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
@@ -1903,8 +1969,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
@@ -1950,8 +2018,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -1968,8 +2038,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLTemplate#addDisplayTemplateCP">
@@ -1981,8 +2053,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLList#addCP">
@@ -1997,8 +2071,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
@@ -2016,8 +2092,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
@@ -2072,8 +2150,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -2091,8 +2171,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLTemplate#addDisplayTemplateCP">
@@ -2105,8 +2187,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLList#addCP">
@@ -2122,8 +2206,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
@@ -2141,8 +2227,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
@@ -2181,8 +2269,10 @@
 	<command name="ViewNumberFieldPredefinedValue" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -2328,8 +2418,10 @@
 	<command name="ViewTextBoxFieldPredefinedValue" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
@@ -2425,8 +2517,10 @@
 	<command name="ViewTextFieldPredefinedValue" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Dynamic Data Lists" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">

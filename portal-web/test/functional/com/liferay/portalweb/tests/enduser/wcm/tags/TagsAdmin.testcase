@@ -9,8 +9,10 @@
 
 		<execute macro="User#firstLoginPG" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Tags" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Tags" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Tag#addCP">

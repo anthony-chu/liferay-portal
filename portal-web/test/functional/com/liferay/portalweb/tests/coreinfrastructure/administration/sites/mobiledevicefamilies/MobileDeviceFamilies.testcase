@@ -46,16 +46,20 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Mobile Device Families" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Mobile Device Families" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MobileDevice#addDeviceFamilyCP">
 			<var name="deviceFamilyName" value="Linux Family Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Mobile Device Families" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Mobile Device Families" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MobileDevice#addClassificationRuleCP">
@@ -65,16 +69,20 @@
 			<var name="ruleOSScope" value="Linux" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Mobile Device Families" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Mobile Device Families" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MobileDevice#addDeviceFamilyCP">
 			<var name="deviceFamilyName" value="Windows Device Family Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Mobile Device Families" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Mobile Device Families" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MobileDevice#addClassificationRuleCP">

@@ -69,8 +69,10 @@
 		<task macro-summary="ProductMenu#gotoSitesContent">
 			<execute macro="Navigator#openURL" />
 
-			<execute macro="ProductMenu#gotoSitesContent">
-				<var name="portlet" value="${portlet}" />
+			<execute macro="ProductMenu#gotoPortlet">
+				<var name="app" value="${portlet}" />
+				<var name="appGroup" value="Content" />
+				<var name="panel" value="Site Administration" />
 			</execute>
 
 			<execute macro="SiteAdmin#viewPortletTitle">

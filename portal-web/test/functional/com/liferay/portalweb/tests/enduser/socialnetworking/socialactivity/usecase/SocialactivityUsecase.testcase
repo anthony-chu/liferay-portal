@@ -61,8 +61,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Social Activity" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Social Activity" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="SocialActivity#enableBlogsCP" />
@@ -343,8 +345,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Social Activity" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Social Activity" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Page#gotoMyAccount">
@@ -434,8 +438,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Social Activity" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Social Activity" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="SocialActivity#enableBlogsCP" />
@@ -447,8 +453,10 @@
 		<for list="${blogsEntryCounterList}" param="entryCount" >
 			<execute macro="Navigator#openURL" />
 
-			<execute macro="ProductMenu#gotoSitesContent">
-				<var name="portlet" value="Blogs" />
+			<execute macro="ProductMenu#gotoPortlet">
+				<var name="app" value="Blogs" />
+				<var name="appGroup" value="Content" />
+				<var name="panel" value="Site Administration" />
 			</execute>
 
 			<execute macro="Blogs#addEntry">

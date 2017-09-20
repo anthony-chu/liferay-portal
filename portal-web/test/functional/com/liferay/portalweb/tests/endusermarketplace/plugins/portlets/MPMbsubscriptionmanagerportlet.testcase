@@ -12,8 +12,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Message Boards Subscription Manager" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards Subscription Manager" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ProductMenu#gotoPortlet">

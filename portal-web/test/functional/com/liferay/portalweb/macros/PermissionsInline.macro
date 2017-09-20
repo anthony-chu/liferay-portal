@@ -220,8 +220,10 @@
 			<var name="site" value="${siteScopeName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesMembers">
-			<var name="portlet" value="${portletName}" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="${portletName}" />
+			<var name="appGroup" value="Members" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="LexiconEntry#gotoEntryMenuItem">

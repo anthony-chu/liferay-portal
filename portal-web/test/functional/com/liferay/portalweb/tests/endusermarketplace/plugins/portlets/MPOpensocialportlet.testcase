@@ -28,8 +28,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="OpenSocial Gadget Editor" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="OpenSocial Gadget Editor" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ProductMenu#gotoPortlet">
