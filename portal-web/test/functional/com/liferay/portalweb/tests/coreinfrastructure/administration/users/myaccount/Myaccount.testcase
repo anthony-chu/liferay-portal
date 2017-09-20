@@ -37,16 +37,20 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoUserMyAccount">
-			<var name="portlet" value="My Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="My Organizations" />
+			<var name="appGroup" value="MyAccount" />
+			<var name="panel" value="User" />
 		</execute>
 
 		<execute macro="MyAccount#addOrganization">
 			<var name="organizationName" value="Organization Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoUserMyAccount">
-			<var name="portlet" value="My Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="My Organizations" />
+			<var name="appGroup" value="MyAccount" />
+			<var name="panel" value="User" />
 		</execute>
 
 		<execute macro="Organization#addMemberCP">
@@ -57,8 +61,10 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoUserMyAccount">
-			<var name="portlet" value="My Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="My Organizations" />
+			<var name="appGroup" value="MyAccount" />
+			<var name="panel" value="User" />
 		</execute>
 
 		<execute macro="Organization#gotoCP">
@@ -73,8 +79,10 @@
 	</command>
 
 	<command name="AddOrganizations" priority="4">
-		<execute macro="ProductMenu#gotoUserMyAccount">
-			<var name="portlet" value="My Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="My Organizations" />
+			<var name="appGroup" value="MyAccount" />
+			<var name="panel" value="User" />
 		</execute>
 
 		<for list="1,2,3" param="i">
@@ -82,8 +90,10 @@
 				<var name="organizationName" value="Organization Name ${i}" />
 			</execute>
 
-			<execute macro="ProductMenu#gotoUserMyAccount">
-				<var name="portlet" value="My Organizations" />
+			<execute macro="ProductMenu#gotoPortlet">
+				<var name="app" value="My Organizations" />
+				<var name="appGroup" value="MyAccount" />
+				<var name="panel" value="User" />
 			</execute>
 
 			<execute macro="Organization#searchCP">
@@ -94,40 +104,50 @@
 	</command>
 
 	<command name="DeleteOrganization" priority="5">
-		<execute macro="ProductMenu#gotoUserMyAccount">
-			<var name="portlet" value="My Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="My Organizations" />
+			<var name="appGroup" value="MyAccount" />
+			<var name="panel" value="User" />
 		</execute>
 
 		<execute macro="MyAccount#addOrganization">
 			<var name="organizationName" value="Organization Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoUserMyAccount">
-			<var name="portlet" value="My Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="My Organizations" />
+			<var name="appGroup" value="MyAccount" />
+			<var name="panel" value="User" />
 		</execute>
 
 		<execute macro="Organization#deleteCP">
 			<var name="orgName" value="Organization Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoUserMyAccount">
-			<var name="portlet" value="My Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="My Organizations" />
+			<var name="appGroup" value="MyAccount" />
+			<var name="panel" value="User" />
 		</execute>
 
 		<execute macro="Organization#viewNoOrganizationsFoundCP" />
 	</command>
 
 	<command name="EditOrganizationSite" priority="5">
-		<execute macro="ProductMenu#gotoUserMyAccount">
-			<var name="portlet" value="My Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="My Organizations" />
+			<var name="appGroup" value="MyAccount" />
+			<var name="panel" value="User" />
 		</execute>
 
 		<execute macro="MyAccount#addOrganization">
 			<var name="organizationName" value="Organization Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoUserMyAccount">
-			<var name="portlet" value="My Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="My Organizations" />
+			<var name="appGroup" value="MyAccount" />
+			<var name="panel" value="User" />
 		</execute>
 
 		<execute macro="Organization#addSiteCP">
@@ -146,8 +166,10 @@
 			<var name="siteType" value="Private" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoUserMyAccount">
-			<var name="portlet" value="My Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="My Organizations" />
+			<var name="appGroup" value="MyAccount" />
+			<var name="panel" value="User" />
 		</execute>
 
 		<execute macro="Organization#editSiteCP">
@@ -155,8 +177,10 @@
 			<var name="orgNameEdit" value="Organization Name Edit" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoUserMyAccount">
-			<var name="portlet" value="My Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="My Organizations" />
+			<var name="appGroup" value="MyAccount" />
+			<var name="panel" value="User" />
 		</execute>
 
 		<execute macro="Organization#searchCP">

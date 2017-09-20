@@ -640,8 +640,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoUserMyAccount">
-			<var name="portlet" value="${portletName}" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="${portletName}" />
+			<var name="appGroup" value="MyAccount" />
+			<var name="panel" value="User" />
 		</execute>
 	</command>
 

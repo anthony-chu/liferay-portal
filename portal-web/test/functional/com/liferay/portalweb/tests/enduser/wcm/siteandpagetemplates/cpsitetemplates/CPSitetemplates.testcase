@@ -365,8 +365,10 @@
 			<var name="siteTemplateNameList" value="Community Site,Intranet Site" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoUserMyAccount">
-			<var name="portlet" value="Account Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Account Settings" />
+			<var name="appGroup" value="MyAccount" />
+			<var name="panel" value="User" />
 		</execute>
 
 		<execute macro="MyAccount#changeUserLanguage">

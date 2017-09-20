@@ -217,8 +217,10 @@
 			<var name="activePanel" value="Profile" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoUserMyAccount">
-			<var name="portlet" value="Notifications" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Notifications" />
+			<var name="appGroup" value="MyAccount" />
+			<var name="panel" value="User" />
 		</execute>
 
 		<execute macro="Notifications#viewNoRequest" />
