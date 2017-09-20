@@ -25,17 +25,17 @@
 </tr>
 <tr>
 	<td>CATEGORY</td>
-	<td>//div[@class='panel'][div/div/a[@aria-expanded='true']]//a[@data-qa-id='appGroup'][normalize-space()='${key_appGroup}']</td>
+	<td>//div[@class='panel'][div/div/a[@aria-expanded='true']]//a[@data-qa-id='appGroup'][normalize-space(.//text())='${key_appGroup}']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>CATEGORY_COLLAPSED</td>
-	<td>//div[@class='panel'][div/div/a[@aria-expanded='true']]//a[@data-qa-id='appGroup'][normalize-space()='${key_appGroup}'][@aria-expanded='false']</td>
+	<td>//div[@class='panel'][div/div/a[@aria-expanded='true']]//a[@data-qa-id='appGroup'][normalize-space(.//text())='${key_appGroup}'][@aria-expanded='false']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>CATEGORY_EXPANDED</td>
-	<td>//div[@class='panel'][div/div/a[@aria-expanded='true']]//a[@data-qa-id='appGroup'][normalize-space()='${key_appGroup}'][@aria-expanded='true']</td>
+	<td>//div[@class='panel'][div/div/a[@aria-expanded='true']]//a[@data-qa-id='appGroup'][normalize-space(.//text())='${key_appGroup}'][@aria-expanded='true']</td>
 	<td></td>
 </tr>
 <tr>
