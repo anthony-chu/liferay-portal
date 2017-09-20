@@ -219,7 +219,7 @@
 		</execute>
 
 		<execute macro="ProductMenuHelper#expandCategory">
-			<var name="category" value="Commerce" />
+			<var name="appGroup" value="Commerce" />
 		</execute>
 
 		<execute macro="ProductMenuHelper#gotoPortlet">
