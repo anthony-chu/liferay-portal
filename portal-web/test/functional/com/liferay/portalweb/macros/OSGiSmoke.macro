@@ -1,7 +1,9 @@
 <definition>
 	<command name="Smoke">
-		<execute macro="ProductMenu#gotoControlPanelApps">
-			<var name="portlet" value="App Manager" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="App Manager" />
+			<var name="appGroup" value="Apps" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute function="AssertElementNotPresent" locator1="AppManager#BREADCRUMB_2_LINK">

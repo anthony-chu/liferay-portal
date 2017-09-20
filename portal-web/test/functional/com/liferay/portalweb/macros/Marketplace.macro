@@ -2,8 +2,10 @@
 	<command name="downloadAndInstallApp">
 		<var name="key_appName" value="${appName}" />
 
-		<execute macro="ProductMenu#gotoControlPanelApps">
-			<var name="portlet" value="Store" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Store" />
+			<var name="appGroup" value="Apps" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Marketplace#signIn" />
@@ -12,16 +14,20 @@
 
 		<execute macro="Portlet#startServer" />
 
-		<execute macro="ProductMenu#gotoControlPanelApps">
-			<var name="portlet" value="Store" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Store" />
+			<var name="appGroup" value="Apps" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Marketplace#downloadApp">
 			<var name="appName" value="${appName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelApps">
-			<var name="portlet" value="Purchased" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Purchased" />
+			<var name="appGroup" value="Apps" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Marketplace#installApp">
@@ -612,8 +618,10 @@
 			<var name="siteURL" value="${siteURL}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Site#addCommunityCP">

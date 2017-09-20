@@ -254,8 +254,10 @@
 	</command>
 
 	<command name="tearDownCP">
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Site Templates" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Site Templates" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<var name="key_siteTemplateName" value="Site Template Name" />

@@ -54,8 +54,10 @@
 	</command>
 
 	<command name="tearDownCP">
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<while>
@@ -78,8 +80,10 @@
 					</then>
 				</while>
 
-				<execute macro="ProductMenu#gotoControlPanelConfiguration">
-					<var name="portlet" value="Custom Fields" />
+				<execute macro="ProductMenu#gotoPortlet">
+					<var name="app" value="Custom Fields" />
+					<var name="appGroup" value="Configuration" />
+					<var name="panel" value="Control Panel" />
 				</execute>
 			</then>
 		</while>
