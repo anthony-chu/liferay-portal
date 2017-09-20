@@ -2,8 +2,10 @@
 	<command name="configureAnonymousPostingCP">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute function="Click" locator1="Portlet#OPTIONS_ICON" />
@@ -37,8 +39,10 @@
 	<command name="configureGeneralCP">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute function="Click" locator1="Portlet#OPTIONS_ICON" />
@@ -64,8 +68,10 @@
 	<command name="configureMessageAddedEmailCP">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute function="Click" locator1="Portlet#OPTIONS_ICON" />
@@ -96,8 +102,10 @@
 	<command name="configureMessageEmailFromCP">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute function="Click" locator1="Portlet#OPTIONS_ICON" />
@@ -132,8 +140,10 @@
 	<command name="configureMessageUpdatedEmailCP">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute function="Click" locator1="Portlet#OPTIONS_ICON" />
@@ -199,8 +209,10 @@
 	<command name="tearDownConfigurationEmailCP">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute function="Click" locator1="Portlet#OPTIONS_ICON" />
@@ -231,8 +243,10 @@
 	<command name="tearDownConfigurationGeneralCP">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute function="Click" locator1="Portlet#OPTIONS_ICON" />
@@ -324,8 +338,10 @@
 	<command name="viewDefaultEmailFromCP">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute function="Click" locator1="Portlet#OPTIONS_ICON" />

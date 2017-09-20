@@ -28,8 +28,10 @@
 	<command name="AddMember" priority="5">
 		<property name="portal.acceptance" value="true" />
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#addCP">
@@ -39,16 +41,20 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#addCP">
 			<var name="userGroupName" value="UG UserGroup Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#assignMemberCP">
@@ -56,8 +62,10 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#viewAssignMemberCP">
@@ -67,8 +75,10 @@
 	</command>
 
 	<command name="AddUserGroup" priority="4">
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#addCP">
@@ -81,8 +91,10 @@
 	</command>
 
 	<command name="AddUserGroupNameDuplicate" priority="3">
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#addCP">
@@ -94,8 +106,10 @@
 			<var name="userGroupNameVariation" value="Duplicate" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#viewCP">
@@ -104,8 +118,10 @@
 	</command>
 
 	<command name="AddUserGroupNameWithInvalidCharacters" priority="3">
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#addCP">
@@ -113,8 +129,10 @@
 			<var name="userGroupNameVariation" value="Asterik" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#addCP">
@@ -122,8 +140,10 @@
 			<var name="userGroupNameVariation" value="Comma" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#addCP">
@@ -131,8 +151,10 @@
 			<var name="userGroupNameVariation" value="Null" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#addCP">
@@ -140,16 +162,20 @@
 			<var name="userGroupNameVariation" value="Number" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#viewDefault" />
 	</command>
 
 	<command name="AddUserGroups" priority="4">
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#addCP">
@@ -164,8 +190,10 @@
 			<var name="userGroupName" value="UG UserGroup3 Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#viewCP">
@@ -184,8 +212,10 @@
 	<command name="DeleteUserGroup" priority="5">
 		<property name="portal.acceptance" value="true" />
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#addCP">
@@ -200,8 +230,10 @@
 	</command>
 
 	<command name="DeleteUserGroupWithMemberAssigned" priority="4">
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#addCP">
@@ -211,16 +243,20 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#addCP">
 			<var name="userGroupName" value="UG UserGroup Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#viewCP">
@@ -232,16 +268,20 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#deleteUserCP">
 			<var name="userGroupName" value="UG UserGroup Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#viewCP">
@@ -252,16 +292,20 @@
 	<command name="EditUserGroup" priority="5">
 		<property name="portal.acceptance" value="true" />
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#addCP">
 			<var name="userGroupName" value="UG UserGroup Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#editCP">
@@ -269,8 +313,10 @@
 			<var name="userGroupNameEdit" value="UG UserGroup Name Edit" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#viewCP">
@@ -279,8 +325,10 @@
 	</command>
 
 	<command name="RemoveMember" priority="4">
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#addCP">
@@ -290,16 +338,20 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#addCP">
 			<var name="userGroupName" value="UG UserGroup Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#assignMemberCP">
@@ -307,8 +359,10 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#removeMemberCP">
@@ -316,8 +370,10 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#viewRemoveMemberCP">
@@ -329,24 +385,30 @@
 	<command name="SearchCurrentMembersAssignedToUserGroup" priority="3">
 		<property name="test.name.skip.portal.instance" value="CPUsergroups#SearchCurrentMembersAssignedToUserGroup" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Server Administration" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Server Administration" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="ServerAdministration#executeServerResourcesActions">
 			<var name="actionsDescription" value="Reindex all search indexes." />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#addCP">
 			<var name="userGroupName" value="UG UserGroup Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#addCP">
@@ -356,8 +418,10 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#assignMemberCP">
@@ -365,8 +429,10 @@
 			<var name="userScreenName" value="test" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#assignMemberCP">
@@ -383,8 +449,10 @@
 	</command>
 
 	<command name="SearchUserGroup" priority="3">
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#addCP">
@@ -397,8 +465,10 @@
 	</command>
 
 	<command name="ViewPortletUserGroup" priority="3">
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#viewPortletCP" />

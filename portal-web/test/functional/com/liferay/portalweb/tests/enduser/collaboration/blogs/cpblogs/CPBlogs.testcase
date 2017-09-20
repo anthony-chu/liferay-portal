@@ -32,8 +32,10 @@
 		<task summary="Add a blogs entry called 'Blogs Entry1 Title' with content 'Blogs Entry1 Content'">
 			<execute macro="Navigator#openURL" />
 
-			<execute macro="ProductMenu#gotoSitesContent">
-				<var name="portlet" value="Blogs" />
+			<execute macro="ProductMenu#gotoPortlet">
+				<var name="app" value="Blogs" />
+				<var name="appGroup" value="Content" />
+				<var name="panel" value="Site Administration" />
 			</execute>
 
 			<execute macro="Blogs#addEntry">
@@ -45,8 +47,10 @@
 		<task summary="Add a blogs entry called 'Blogs Entry2 Title' with content 'Blogs Entry2 Content'">
 			<execute macro="Navigator#openURL" />
 
-			<execute macro="ProductMenu#gotoSitesContent">
-				<var name="portlet" value="Blogs" />
+			<execute macro="ProductMenu#gotoPortlet">
+				<var name="app" value="Blogs" />
+				<var name="appGroup" value="Content" />
+				<var name="panel" value="Site Administration" />
 			</execute>
 
 			<execute macro="Blogs#addEntry">
@@ -58,8 +62,10 @@
 		<task summary="Add a blogs entry called 'Blogs Entry3 Title' with content 'Blogs Entry3 Content'">
 			<execute macro="Navigator#openURL" />
 
-			<execute macro="ProductMenu#gotoSitesContent">
-				<var name="portlet" value="Blogs" />
+			<execute macro="ProductMenu#gotoPortlet">
+				<var name="app" value="Blogs" />
+				<var name="appGroup" value="Content" />
+				<var name="panel" value="Site Administration" />
 			</execute>
 
 			<execute macro="Blogs#addEntry">
@@ -71,8 +77,10 @@
 		<task summary="Ensure blogs entry 'Blogs Entry1 Title' with content 'Blogs Entry1 Content' can be found">
 			<execute macro="Navigator#openURL" />
 
-			<execute macro="ProductMenu#gotoSitesContent">
-				<var name="portlet" value="Blogs" />
+			<execute macro="ProductMenu#gotoPortlet">
+				<var name="app" value="Blogs" />
+				<var name="appGroup" value="Content" />
+				<var name="panel" value="Site Administration" />
 			</execute>
 
 			<execute macro="BlogsNavigator#gotoEntryCP">
@@ -88,8 +96,10 @@
 		<task summary="Ensure blogs entry 'Blogs Entry2 Title' with content 'Blogs Entry2 Content' can be found">
 			<execute macro="Navigator#openURL" />
 
-			<execute macro="ProductMenu#gotoSitesContent">
-				<var name="portlet" value="Blogs" />
+			<execute macro="ProductMenu#gotoPortlet">
+				<var name="app" value="Blogs" />
+				<var name="appGroup" value="Content" />
+				<var name="panel" value="Site Administration" />
 			</execute>
 
 			<execute macro="BlogsNavigator#gotoEntryCP">
@@ -105,8 +115,10 @@
 		<task summary="Ensure blogs entry 'Blogs Entry3 Title' with content 'Blogs Entry3 Content' can be found">
 			<execute macro="Navigator#openURL" />
 
-			<execute macro="ProductMenu#gotoSitesContent">
-				<var name="portlet" value="Blogs" />
+			<execute macro="ProductMenu#gotoPortlet">
+				<var name="app" value="Blogs" />
+				<var name="appGroup" value="Content" />
+				<var name="panel" value="Site Administration" />
 			</execute>
 
 			<execute macro="BlogsNavigator#gotoEntryCP">
@@ -123,8 +135,10 @@
 	<command name="AddBlogsEntry" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addEntry">
@@ -134,8 +148,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoEntryCP">
@@ -151,8 +167,10 @@
 	<command name="AddBlogsEntryContentNull" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addWithInvalidContent">
@@ -162,8 +180,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsEntry#viewDefaultCP">
@@ -174,8 +194,10 @@
 	<command name="AddBlogsEntryTitleEscapeCharacters" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addEntry">
@@ -185,8 +207,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoEntryCP">
@@ -202,8 +226,10 @@
 	<command name="AddBlogsEntryTitleNull" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addWithInvalidTitle">
@@ -213,8 +239,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsEntry#viewDefaultCP">
@@ -225,8 +253,10 @@
 	<command name="AddBlogsEntryWithInlineImageViaURL" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoAddEntry" />
@@ -251,8 +281,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoEntryCP">
@@ -272,8 +304,10 @@
 	<command name="AddBlogsEntryWithSubtitle" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addEntry">
@@ -284,8 +318,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoEntryCP">
@@ -303,8 +339,10 @@
 		<property name="portal.acceptance" value="pending" />
 		<property name="testray.component.names" value="Training" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="LexiconEntry#gotoAdd" />
@@ -334,8 +372,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoAddEntry" />
@@ -354,8 +394,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoEntryCP">
@@ -379,8 +421,10 @@
 		<for list="1,2,3" param="entryCount" >
 			<execute macro="Navigator#openURL" />
 
-			<execute macro="ProductMenu#gotoSitesContent">
-				<var name="portlet" value="Blogs" />
+			<execute macro="ProductMenu#gotoPortlet">
+				<var name="app" value="Blogs" />
+				<var name="appGroup" value="Content" />
+				<var name="panel" value="Site Administration" />
 			</execute>
 
 			<execute macro="Blogs#addEntry">
@@ -392,8 +436,10 @@
 		<for list="1,2,3" param="entryCount" >
 			<execute macro="Navigator#openURL" />
 
-			<execute macro="ProductMenu#gotoSitesContent">
-				<var name="portlet" value="Blogs" />
+			<execute macro="ProductMenu#gotoPortlet">
+				<var name="app" value="Blogs" />
+				<var name="appGroup" value="Content" />
+				<var name="panel" value="Site Administration" />
 			</execute>
 
 			<execute macro="BlogsNavigator#gotoEntryCP">
@@ -410,8 +456,10 @@
 		<for list="1,2,3" param="entryCount" >
 			<execute macro="Navigator#openURL" />
 
-			<execute macro="ProductMenu#gotoSitesContent">
-				<var name="portlet" value="Blogs" />
+			<execute macro="ProductMenu#gotoPortlet">
+				<var name="app" value="Blogs" />
+				<var name="appGroup" value="Content" />
+				<var name="panel" value="Site Administration" />
 			</execute>
 
 			<execute macro="BlogsNavigator#moveToRecycleBinCP">
@@ -422,8 +470,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<for list="1,2,3" param="entryCount" >
@@ -438,8 +488,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addEntry">
@@ -449,8 +501,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoEditCP">
@@ -467,8 +521,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoEntryCP">
@@ -486,8 +542,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addEntry">
@@ -497,8 +555,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoEditCP">
@@ -514,8 +574,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoEntryCP">
@@ -531,8 +593,10 @@
 	<command name="PublishBlogsEntryDraft" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addDraft">
@@ -543,8 +607,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#publishDraftCP">
@@ -555,8 +621,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoEntryCP">
@@ -573,8 +641,10 @@
 	<command name="SaveBlogsEntryDraft" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addDraft">
@@ -585,8 +655,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoEntryCP">
@@ -604,8 +676,10 @@
 	<command name="SaveBlogsEntryDraftAuto" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addDraftViaAutoSave">
@@ -616,8 +690,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoEntryCP">
@@ -635,8 +711,10 @@
 	<command name="SearchBlogsEntryContent" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addEntry">
@@ -646,8 +724,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMPortlet#setDescriptiveView" />
@@ -686,8 +766,10 @@
 	<command name="SearchBlogsEntryTitle" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addEntry">
@@ -697,8 +779,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMPortlet#setDescriptiveView" />
@@ -737,8 +821,10 @@
 	<command name="SearchBlogsImagesViaItemSelector" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addEntryWithUploadedCoverImage">
@@ -773,8 +859,10 @@
 	<command name="SearchDMImagesViaItemSelector" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addEntryWithUploadedCoverImage">
@@ -809,8 +897,10 @@
 	<command name="ViewBlogsEntryDraftWithCoverImage" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addEntryWithUploadedCoverImage">
@@ -850,8 +940,10 @@
 	<command name="ViewCoverImageDetails" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addEntryWithUploadedCoverImage">
@@ -892,8 +984,10 @@
 	<command name="ViewErrorMessageForNullCustomAbstract" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoAddEntry" />

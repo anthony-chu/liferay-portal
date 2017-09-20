@@ -29,8 +29,10 @@
 		<property name="apacheds.enabled" value="true" />
 		<property name="test.name.skip.portal.instance" value="Authentication#TestLDAPConnectionAndEntries" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Instance Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Instance Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="PortalSettingsNavigator#gotoLDAP" />
@@ -51,8 +53,10 @@
 	<command name="ViewAuthenticationCAS" priority="3">
 		<property name="test.name.skip.portal.instance" value="Authentication#ViewAuthenticationCAS" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Instance Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Instance Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="PortalSettings#viewAuthenticationCASCP" />
@@ -61,8 +65,10 @@
 	<command name="ViewAuthenticationGeneral" priority="3">
 		<property name="test.name.skip.portal.instance" value="Authentication#ViewAuthenticationGeneral" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Instance Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Instance Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="PortalSettings#viewAuthenticationGeneralCP" />
@@ -73,8 +79,10 @@
 		<property name="test.name.skip.portal.instance" value="Authentication#ViewAuthenticationLDAP" />
 		<property name="testray.component.names" value="Training" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Instance Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Instance Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="PortalSettings#viewAuthenticationLDAPCP" />
@@ -83,8 +91,10 @@
 	<command name="ViewAuthenticationNTLM" priority="3">
 		<property name="test.name.skip.portal.instance" value="Authentication#ViewAuthenticationNTLM" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Instance Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Instance Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="PortalSettings#viewAuthenticationNTLMCP" />
@@ -93,8 +103,10 @@
 	<command name="ViewAuthenticationOpenID" priority="3">
 		<property name="test.name.skip.portal.instance" value="Authentication#ViewAuthenticationOpenID" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Instance Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Instance Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="PortalSettings#viewAuthenticationOpenIDCP" />
@@ -103,8 +115,10 @@
 	<command name="ViewAuthenticationOpenSSO" priority="3">
 		<property name="test.name.skip.portal.instance" value="Authentication#ViewAuthenticationOpenSSO" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Instance Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Instance Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="PortalSettings#viewAuthenticationOpenSSOCP" />
@@ -113,8 +127,10 @@
 	<command name="ViewInstanceSettingEnableLDAPAuthNotAffectSystemSetting" priority="3">
 		<property name="test.name.skip.portal.instance" value="Authentication#ViewInstanceSettingEnableLDAPAuthNotAffectSystemSetting" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="System Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="System Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="SystemSettings#gotoCategory">
@@ -126,8 +142,10 @@
 			<var name="enableLDAP" value="false" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Instance Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Instance Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="PortalSettingsNavigator#gotoLDAP" />
@@ -142,8 +160,10 @@
 			<var name="enableCheckboxKey" value="ENABLED" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="System Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="System Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="SystemSettings#gotoCategory">

@@ -8,16 +8,20 @@
 
 		<execute macro="User#firstLoginPG" />
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Site#addBlankCP">
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Page#add">
@@ -48,8 +52,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoAddCP" />
@@ -178,8 +184,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoAddCP" />
@@ -283,8 +291,10 @@
 		<property name="test.name.skip.portal.instance" value="LanguageUsecase#ViewChangedDefaultPortalLanguageViaWebContent" />
 		<property name="testray.component.names" value="Localization" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Instance Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Instance Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="PortalSettings#configureCurrentLanguagesCP">
@@ -295,8 +305,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoAddCP" />
@@ -411,8 +423,10 @@
 			<var name="portletName" value="Language Selector" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Instance Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Instance Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="PortalSettings#configureCurrentLanguagesCP">
@@ -458,8 +472,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Site Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Site Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Site#configureCurrentLanguagesCP">

@@ -21,8 +21,10 @@
 			<var name="pageName" value="Wiki Page" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#addCP">
@@ -32,8 +34,10 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#editPasswordCP">
@@ -42,8 +46,10 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#assignRegularRoleCP">
@@ -51,8 +57,10 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Server Administration" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Server Administration" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="ServerAdministration#configureMailServerSettings">
@@ -64,8 +72,10 @@
 			<var name="pageName" value="Wiki Page" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Virtual Instances" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Virtual Instances" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="PortalInstances#editCP">
@@ -101,8 +111,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Wiki" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Wiki" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WikiNavigator#gotoNode">

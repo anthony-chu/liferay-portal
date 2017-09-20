@@ -30,8 +30,10 @@
 		<if>
 			<equals arg1="${themeContainsResources}" arg2="true" />
 			<then>
-				<execute macro="ProductMenu#gotoControlPanelSites">
-					<var name="portlet" value="Sites" />
+				<execute macro="ProductMenu#gotoPortlet">
+					<var name="app" value="Sites" />
+					<var name="appGroup" value="Sites" />
+					<var name="panel" value="Control Panel" />
 				</execute>
 
 				<execute macro="Site#addSiteTemplateCP">
@@ -62,8 +64,10 @@
 			<else>
 				<var name="appName" value="westeros-bank-theme" />
 
-				<execute macro="ProductMenu#gotoControlPanelApps">
-					<var name="portlet" value="App Manager" />
+				<execute macro="ProductMenu#gotoPortlet">
+					<var name="app" value="App Manager" />
+					<var name="appGroup" value="Apps" />
+					<var name="panel" value="Control Panel" />
 				</execute>
 
 				<execute function="Type" locator1="TextInput#SEARCH" value1="${appName}" />

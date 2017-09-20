@@ -139,8 +139,10 @@
 			<var name="roleTitle" value="${roleTitle}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Roles" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Roles" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Role#definePermissionsCP">
@@ -1016,8 +1018,10 @@
 	</command>
 
 	<command name="tearDownCP">
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Roles" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Roles" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute function="Type#sendKeys" locator1="NavBar#BASIC_SEARCH_FIELD" value1="Name" />

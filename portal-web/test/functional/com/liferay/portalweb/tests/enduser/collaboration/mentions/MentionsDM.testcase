@@ -9,8 +9,10 @@
 
 		<execute macro="User#firstLoginPG" />
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#addCP">
@@ -20,8 +22,10 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#editPasswordCP">
@@ -30,8 +34,10 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#assignRegularRoleCP">
@@ -75,8 +81,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMDocument#addCP">
@@ -131,8 +139,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMDocument#addCP">

@@ -112,16 +112,20 @@
 		<property name="portal.acceptance" value="true" />
 		<var name="siteName"><![CDATA[<script>document.write("XSS"); window.stop();</script>]]></var>
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Site#addBlankCP">
 			<var name="siteName" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute function="Type" locator1="NavBar#BASIC_SEARCH_FIELD" value1="${siteName}" />
@@ -146,8 +150,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Site Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Site Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Site#editGoogleAnalyticsIDCP">
@@ -227,8 +233,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoAddEntry" />
@@ -243,8 +251,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Portlet#changeDisplayStyle">
@@ -259,8 +269,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Recycle Bin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Recycle Bin" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="RecycleBin#restoreCP">
@@ -273,16 +285,20 @@
 	</command>
 
 	<command name="ViewRolesNoXSS" priority="4">
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Roles" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Roles" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Role#add">
 			<var name="roleTitle"><![CDATA[<script>document.write("XSS"); window.stop();</script>]]></var>
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Roles" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Roles" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Role#viewCP">
@@ -372,8 +388,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Wiki" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Wiki" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WikiNavigator#gotoNode">

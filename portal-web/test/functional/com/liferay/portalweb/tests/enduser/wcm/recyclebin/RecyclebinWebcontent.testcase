@@ -27,8 +27,10 @@
 	<command name="DeleteWebcontent" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoAddCP" />
@@ -46,8 +48,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContent#moveToRecycleBinCP">
@@ -58,8 +62,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Recycle Bin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Recycle Bin" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="RecycleBin#deleteCP">
@@ -69,8 +75,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Recycle Bin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Recycle Bin" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="RecycleBin#viewDefaultCP">
@@ -79,8 +87,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContent#viewDefaultCP">
@@ -98,8 +108,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentFolder#addCP">
@@ -111,8 +123,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentFolder#gotoCP">
@@ -137,8 +151,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentFolder#moveToRecycleBinCP">
@@ -150,8 +166,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContent#viewDefaultCP">
@@ -162,8 +180,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Recycle Bin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Recycle Bin" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="RecycleBin#viewCP">
@@ -183,8 +203,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoAddCP" />
@@ -204,8 +226,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContent#moveToRecycleBinViaDeleteIconCP" />
@@ -214,8 +238,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContent#viewDefaultCP">
@@ -226,8 +252,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Recycle Bin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Recycle Bin" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="RecycleBin#viewCP">
@@ -242,8 +270,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoAddCP" />
@@ -261,8 +291,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContent#moveToRecycleBinCP">
@@ -273,8 +305,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Recycle Bin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Recycle Bin" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="RecycleBin#restoreCP">
@@ -285,8 +319,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Recycle Bin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Recycle Bin" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="RecycleBin#viewDefaultCP">
@@ -295,8 +331,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoEditCP">
@@ -312,8 +350,10 @@
 	<command name="UndoMoveToRecycleBin" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoAddCP" />
@@ -331,8 +371,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContent#moveToRecycleBinCP">
@@ -344,8 +386,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContent#viewTitle">
@@ -354,8 +398,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Recycle Bin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Recycle Bin" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="RecycleBin#viewDefaultCP">
@@ -373,8 +419,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoAddCP" />
@@ -394,8 +442,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContent#moveToRecycleBinViaDeleteIconCP" />
@@ -404,8 +454,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Recycle Bin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Recycle Bin" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="RecycleBin#viewCP">
@@ -418,8 +470,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoAddCP" />
@@ -439,8 +493,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContent#moveToRecycleBinViaDeleteIconCP" />
@@ -449,8 +505,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Recycle Bin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Recycle Bin" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="RecycleBin#viewDuplicateNames">
@@ -468,8 +526,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentFolder#addCP">
@@ -481,8 +541,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentFolder#moveToRecycleBinCP">
@@ -494,8 +556,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Recycle Bin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Recycle Bin" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="RecycleBin#viewCP">
@@ -508,8 +572,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentFolder#addCP">
@@ -521,8 +587,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentFolder#moveToRecycleBinCP">
@@ -534,8 +602,10 @@
 			<var name="site" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Recycle Bin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Recycle Bin" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="RecycleBin#viewDuplicateNames">
@@ -546,8 +616,10 @@
 	<command name="ViewRecycleBinEntryViaSuccessMessageLink" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoAddCP" />
@@ -565,8 +637,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContent#moveToRecycleBinCP">

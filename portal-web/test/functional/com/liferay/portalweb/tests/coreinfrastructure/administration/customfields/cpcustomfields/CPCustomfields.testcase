@@ -26,8 +26,10 @@
 	</tear-down>
 
 	<command name="AddCustomFieldsSmoke" priority="4">
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -36,8 +38,10 @@
 			<var name="resourceName" value="Blogs Entry" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -46,8 +50,10 @@
 			<var name="resourceName" value="Bookmarks Entry" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -56,8 +62,10 @@
 			<var name="resourceName" value="Bookmarks Folder" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -66,8 +74,10 @@
 			<var name="resourceName" value="Document" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -76,8 +86,10 @@
 			<var name="resourceName" value="Documents Folder" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -86,8 +98,10 @@
 			<var name="resourceName" value="Message Boards Category" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -96,8 +110,10 @@
 			<var name="resourceName" value="Message Boards Message" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -106,8 +122,10 @@
 			<var name="resourceName" value="Organization" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -116,8 +134,10 @@
 			<var name="resourceName" value="Page" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -126,8 +146,10 @@
 			<var name="resourceName" value="Role" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -136,8 +158,10 @@
 			<var name="resourceName" value="Site" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -146,8 +170,10 @@
 			<var name="resourceName" value="User" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -156,8 +182,10 @@
 			<var name="resourceName" value="User Group" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -166,8 +194,10 @@
 			<var name="resourceName" value="Web Content Article" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -180,8 +210,10 @@
 	<command name="AddCustomFieldUserBoolean" priority="5">
 		<property name="portal.acceptance" value="true" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -190,8 +222,10 @@
 			<var name="resourceName" value="User" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#addCP">
@@ -201,8 +235,10 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#gotoEditCP">
@@ -218,8 +254,10 @@
 	<command name="EditCustomFieldUserBoolean" priority="5">
 		<property name="portal.acceptance" value="true" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">
@@ -228,8 +266,10 @@
 			<var name="resourceName" value="User" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#editCP">
@@ -239,8 +279,10 @@
 			<var name="resourceName" value="User" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#addCP">
@@ -250,8 +292,10 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#gotoEditCP">
@@ -265,8 +309,10 @@
 	</command>
 
 	<command name="EditRevertCustomFieldWikiPage" priority="4">
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Custom Fields" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Custom Fields" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="CustomFields#addCP">

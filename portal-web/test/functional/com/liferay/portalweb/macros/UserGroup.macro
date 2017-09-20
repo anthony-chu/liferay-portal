@@ -328,8 +328,10 @@
 	</command>
 
 	<command name="tearDownCP">
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<if>

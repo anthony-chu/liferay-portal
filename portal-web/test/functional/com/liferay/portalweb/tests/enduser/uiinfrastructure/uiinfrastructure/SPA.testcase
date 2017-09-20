@@ -26,8 +26,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute function="AssertVisible#assertVisibleNoSPAWait" locator1="//html[contains(@class,'lfr-spa-loading')]" />

@@ -120,8 +120,10 @@
 			</then>
 		</if>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Virtual Instances" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Virtual Instances" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<while>

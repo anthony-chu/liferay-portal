@@ -52,20 +52,26 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Knowledge Base (Admin)" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Knowledge Base (Admin)" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelApps">
-			<var name="portlet" value="App Manager" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="App Manager" />
+			<var name="appGroup" value="Apps" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="AppManager#uninstallAppCP">
 			<var name="appName" value="Knowledge Base" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelApps">
-			<var name="portlet" value="App Manager" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="App Manager" />
+			<var name="appGroup" value="Apps" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="AppManager#viewUninstallAppCP">

@@ -71,8 +71,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Blogs#addEntry">
@@ -82,8 +84,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoBlogsEntryPermissionsCP">
@@ -102,8 +106,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsEntry#viewDefaultCP">
@@ -117,8 +123,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoBlogsEntryPermissionsCP">
@@ -137,8 +145,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Portlet#changeDisplayStyle">
@@ -192,8 +202,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsConfiguration#viewNoPermissionCP" />
@@ -238,8 +250,10 @@
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Blogs" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Blogs" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BlogsConfiguration#viewNoPermissionCP" />

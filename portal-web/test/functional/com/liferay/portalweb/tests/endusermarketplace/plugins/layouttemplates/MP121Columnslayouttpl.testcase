@@ -10,16 +10,20 @@
 
 		<var name="appName" value="1-2-1 Columns Layout" />
 
-		<execute macro="ProductMenu#gotoControlPanelApps">
-			<var name="portlet" value="App Manager" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="App Manager" />
+			<var name="appGroup" value="Apps" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="AppManager#uninstallAppCP">
 			<var name="appName" value="${appName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelApps">
-			<var name="portlet" value="App Manager" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="App Manager" />
+			<var name="appGroup" value="Apps" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="AppManager#viewUninstallAppCP">

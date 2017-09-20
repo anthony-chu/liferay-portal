@@ -237,8 +237,10 @@
 	</command>
 
 	<command name="AddDocumentTypes" priority="4">
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMNavigator#gotoDocumentType" />
@@ -249,16 +251,20 @@
 			<var name="dmDocumentTypeName" value="DM Document Type 1 Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMDocumentType#viewMenulistOption">
 			<var name="dmDocumentTypeName" value="DM Document Type 1 Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMNavigator#gotoDocumentType" />
@@ -269,16 +275,20 @@
 			<var name="dmDocumentTypeName" value="DM Document Type 2 Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMDocumentType#viewMenulistOption">
 			<var name="dmDocumentTypeName" value="DM Document Type 2 Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMNavigator#gotoDocumentType" />
@@ -289,8 +299,10 @@
 			<var name="dmDocumentTypeName" value="DM Document Type 3 Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMDocumentType#viewMenulistOption">
@@ -763,8 +775,10 @@
 	</command>
 
 	<command name="DeleteDocumentType" priority="4">
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMNavigator#gotoDocumentType" />
@@ -775,16 +789,20 @@
 			<var name="dmDocumentTypeName" value="DM Document Type Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMDocumentType#viewMenulistOption">
 			<var name="dmDocumentTypeName" value="DM Document Type Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMNavigator#gotoDocumentType" />
@@ -822,8 +840,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Recycle Bin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Recycle Bin" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="RecycleBin#emptyCP" />
@@ -977,8 +997,10 @@
 		<property name="portal.acceptance" value="pending" />
 		<property name="testray.component.names" value="Training" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMNavigator#gotoDocumentType" />
@@ -989,16 +1011,20 @@
 			<var name="dmDocumentTypeName" value="DM Document Type Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMDocumentType#viewMenulistOption">
 			<var name="dmDocumentTypeName" value="DM Document Type Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMNavigator#gotoDocumentType" />
@@ -1009,8 +1035,10 @@
 			<var name="dmDocumentTypeNameEdit" value="DM Document Type Name Edit" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMDocumentType#viewMenulistOption">
@@ -1684,8 +1712,10 @@
 		<property name="test.name.skip.portal.instance" value="PGDocumentsandmedia#ViewSearchResultsForChildObjectRespectsParentFolderPermissions" />
 		<property name="testray.component.names" value="Training" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Server Administration" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Server Administration" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute function="Pause" locator1="5000" />
@@ -1694,16 +1724,20 @@
 			<var name="actionsDescription" value="Reindex all search indexes." />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#addCP">
 			<var name="userGroupName" value="UG UserGroup Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Site#addBlankCP">
@@ -1714,8 +1748,10 @@
 			<var name="site" value="Site Name 1" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesMembers">
-			<var name="portlet" value="Site Memberships" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Site Memberships" />
+			<var name="appGroup" value="Members" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Site#assignUserGroupAsMemberCP">
@@ -1726,8 +1762,10 @@
 			<var name="site" value="Site Name 1" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesMembers">
-			<var name="portlet" value="Site Teams" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Site Teams" />
+			<var name="appGroup" value="Members" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Team#addCP">
@@ -1739,8 +1777,10 @@
 			<var name="site" value="Site Name 1" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesMembers">
-			<var name="portlet" value="Site Teams" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Site Teams" />
+			<var name="appGroup" value="Members" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Team#assignUserGroups">
@@ -1752,8 +1792,10 @@
 			<var name="site" value="Site Name 1" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesMembers">
-			<var name="portlet" value="Site Memberships" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Site Memberships" />
+			<var name="appGroup" value="Members" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Navigator#gotoNavItem">
@@ -1765,8 +1807,10 @@
 			<var name="roleTitle" value="Site Administrator" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#addCP">
@@ -1776,8 +1820,10 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Users and Organizations" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="User#editPasswordCP">
@@ -1785,8 +1831,10 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelUsers">
-			<var name="portlet" value="User Groups" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="User Groups" />
+			<var name="appGroup" value="Users" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="UserGroup#assignMemberCP">
@@ -1794,8 +1842,10 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Site#addBlankCP">
@@ -1837,8 +1887,10 @@
 			<var name="dmSubFolderName" value="DM SubFolder Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMNavigator#gotoDocumentPermissionsCP">
@@ -1852,8 +1904,10 @@
 
 		<execute macro="IFrame#closeFrame" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMNavigator#gotoFolder">
@@ -1890,8 +1944,10 @@
 			<var name="dmDocumentTitle" value="DM Document Title" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMNavigator#gotoFolder">

@@ -45,8 +45,10 @@
 	<command name="AddWikiFrontPageChildPage" priority="5">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Wiki" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Wiki" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WikiNavigator#gotoNode">
@@ -107,8 +109,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Wiki" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Wiki" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WikiNavigator#gotoNode">
@@ -183,8 +187,10 @@
 	<command name="AddWikiFrontPageChildPageInvalidTitle" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Wiki" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Wiki" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WikiNavigator#gotoNode">
@@ -323,8 +329,10 @@
 	<command name="DeleteWikiFrontPage" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Wiki" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Wiki" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WikiNavigator#gotoNode">
@@ -374,8 +382,10 @@
 	<command name="ViewConfigurationSetupPageFrontPage" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Wiki" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Wiki" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WikiNavigator#gotoNode">

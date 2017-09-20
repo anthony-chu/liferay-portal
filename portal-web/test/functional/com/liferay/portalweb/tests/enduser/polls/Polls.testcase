@@ -20,8 +20,10 @@
 			<else>
 				<execute macro="Navigator#openURL" />
 
-				<execute macro="ProductMenu#gotoSitesContent">
-					<var name="portlet" value="Polls" />
+				<execute macro="ProductMenu#gotoPortlet">
+					<var name="app" value="Polls" />
+					<var name="appGroup" value="Content" />
+					<var name="panel" value="Site Administration" />
 				</execute>
 
 				<execute macro="Polls#tearDownCP" />
@@ -36,8 +38,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Polls" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Polls" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Polls#addPollCPWithExpirationDate">
@@ -75,8 +79,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Polls" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Polls" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Polls#addPollCP">
@@ -141,8 +147,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Polls" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Polls" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Polls#addPollCP">
@@ -174,8 +182,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Polls" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Polls" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Page#add">
@@ -226,8 +236,10 @@
 	<command name="ViewChart" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Polls" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Polls" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Polls#addPollCP">
@@ -275,8 +287,10 @@
 			<var name="pollsQuestionChoice" value="Red" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Polls" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Polls" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Polls#viewPollChartArea">
@@ -287,8 +301,10 @@
 	<command name="VotePollsQuestionWithGuestPermissions" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Polls" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Polls" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Polls#addPollCP">
@@ -343,8 +359,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Polls" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Polls" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="PermissionsInline#gotoPollPermissionsCP">

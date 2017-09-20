@@ -8,16 +8,20 @@
 
 		<execute macro="User#firstLoginPG" />
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Site#addBlankCP">
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Page#add">
@@ -29,8 +33,10 @@
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesPublishing">
-			<var name="portlet" value="Staging" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Staging" />
+			<var name="appGroup" value="Publishing" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Staging#activateStagingCP">
@@ -55,8 +61,10 @@
 	<command name="DeleteLivePage" priority="5">
 		<property name="portal.acceptance" value="true" />
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Page#add">
@@ -108,8 +116,10 @@
 			<var name="entryTitle" value="Blogs Entry Title" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Page#add">
@@ -141,8 +151,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesPublishing">
-			<var name="portlet" value="Staging" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Staging" />
+			<var name="appGroup" value="Publishing" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Staging#addPublishTemplate">
@@ -210,8 +222,10 @@
 
 		<execute macro="Navigator#gotoStagedView" />
 
-		<execute macro="ProductMenu#gotoSitesPublishing">
-			<var name="portlet" value="Staging" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Staging" />
+			<var name="appGroup" value="Publishing" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Staging#viewPublishTemplate">
@@ -281,8 +295,10 @@
 
 		<execute function="Pause" locator1="30000" />
 
-		<execute macro="ProductMenu#gotoSitesPublishing">
-			<var name="portlet" value="Staging" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Staging" />
+			<var name="appGroup" value="Publishing" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Staging#addPublishTemplate">
@@ -301,8 +317,10 @@
 
 		<execute macro="Navigator#gotoStagedView" />
 
-		<execute macro="ProductMenu#gotoSitesPublishing">
-			<var name="portlet" value="Staging" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Staging" />
+			<var name="appGroup" value="Publishing" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Staging#viewPublishTemplate">
@@ -316,8 +334,10 @@
 
 		<execute macro="Navigator#gotoStagedView" />
 
-		<execute macro="ProductMenu#gotoSitesPublishing">
-			<var name="portlet" value="Staging" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Staging" />
+			<var name="appGroup" value="Publishing" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Staging#moveToTheRecycleBinPublishTemplate">
@@ -330,8 +350,10 @@
 
 		<execute macro="Navigator#gotoStagedView" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Recycle Bin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Recycle Bin" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="RecycleBin#viewCP">
@@ -350,8 +372,10 @@
 
 		<execute macro="Navigator#gotoStagedView" />
 
-		<execute macro="ProductMenu#gotoSitesPublishing">
-			<var name="portlet" value="Staging" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Staging" />
+			<var name="appGroup" value="Publishing" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Staging#viewPublishTemplate">
@@ -370,8 +394,10 @@
 
 		<execute macro="Navigator#gotoStagedView" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoAddCP" />
@@ -392,8 +418,10 @@
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesMembers">
-			<var name="portlet" value="Site Teams" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Site Teams" />
+			<var name="appGroup" value="Members" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Team#addCP">
@@ -401,8 +429,10 @@
 			<var name="teamName" value="Site Team Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesMembers">
-			<var name="portlet" value="Site Teams" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Site Teams" />
+			<var name="appGroup" value="Members" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Staging#publishToLiveNowViaPortletCP" />
@@ -411,8 +441,10 @@
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesMembers">
-			<var name="portlet" value="Site Teams" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Site Teams" />
+			<var name="appGroup" value="Members" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Team#viewCP">
@@ -427,8 +459,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesPublishing">
-			<var name="portlet" value="Staging" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Staging" />
+			<var name="appGroup" value="Publishing" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Staging#addPublishTemplate">
@@ -441,8 +475,10 @@
 			<var name="publishTemplateName" value="First Template" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesPublishing">
-			<var name="portlet" value="Staging" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Staging" />
+			<var name="appGroup" value="Publishing" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Staging#addPublishTemplate">
@@ -466,8 +502,10 @@
 
 		<execute macro="Navigator#gotoStagedView" />
 
-		<execute macro="ProductMenu#gotoSitesPublishing">
-			<var name="portlet" value="Staging" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Staging" />
+			<var name="appGroup" value="Publishing" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Staging#searchPublishTemplate">
@@ -515,8 +553,10 @@
 
 		<execute macro="Navigator#gotoStagedView" />
 
-		<execute macro="ProductMenu#gotoSitesPublishing">
-			<var name="portlet" value="Staging" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Staging" />
+			<var name="appGroup" value="Publishing" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Staging#editStagingConfiguration">
@@ -530,8 +570,10 @@
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Web Content" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Web Content" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoAddCP" />
@@ -552,8 +594,10 @@
 
 		<execute macro="Staging#publishToLive" />
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Site#addBlankCP">
@@ -561,8 +605,10 @@
 			<var name="siteName" value="Child Site" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Site#searchInputCP">
@@ -588,8 +634,10 @@
 			<var name="webContentTitle" value="Web Content Title" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesPublishing">
-			<var name="portlet" value="Staging" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Staging" />
+			<var name="appGroup" value="Publishing" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Staging#activateStagingCP">
@@ -598,8 +646,10 @@
 	</command>
 
 	<command name="StagingPublishOnlySelectedPage" priority="4">
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Page#add">
@@ -608,8 +658,10 @@
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Page#add">
@@ -618,8 +670,10 @@
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Page#add">
@@ -689,8 +743,10 @@
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesPublishing">
-			<var name="portlet" value="Staging" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Staging" />
+			<var name="appGroup" value="Publishing" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Staging#addPublishTemplate">

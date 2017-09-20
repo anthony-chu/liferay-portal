@@ -17,16 +17,20 @@
 
 		<execute macro="User#firstLoginPG" />
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Site#addBlankCP">
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Page#add">
@@ -34,8 +38,10 @@
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingUserSegment#addCP">
@@ -68,8 +74,10 @@
 	<command name="AddCampaignContentCP" priority="5">
 		<property name="content.targeting.release" value="true" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Documents and Media" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Documents and Media" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="DMDocument#addCP">
@@ -82,8 +90,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#addCP">
@@ -103,8 +113,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#gotoAddReport">
@@ -129,8 +141,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#gotoEditReport">
@@ -149,8 +163,10 @@
 	<command name="AddCampaignCustomFormCP" priority="5">
 		<property name="content.targeting.release" value="true" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#addCP">
@@ -170,8 +186,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#gotoAddReport">
@@ -195,8 +213,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#gotoEditReport">
@@ -216,8 +236,10 @@
 	<command name="AddCampaignDDLFormCP" priority="5">
 		<property name="content.targeting.release" value="true" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#addCP">
@@ -233,8 +255,10 @@
 
 		<execute macro="PortletEntry#save" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Forms" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Forms" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="FormsAdminNavigator#gotoAddForm" />
@@ -255,8 +279,10 @@
 
 		<execute macro="Form#save" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#gotoAddReport">
@@ -276,8 +302,10 @@
 
 		<execute macro="PortletEntry#save" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#gotoEditReport">
@@ -297,8 +325,10 @@
 	<command name="AddCampaignLinkCP" priority="5">
 		<property name="content.targeting.release" value="true" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#addCP">
@@ -314,8 +344,10 @@
 
 		<execute macro="PortletEntry#save" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Instance Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Instance Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Navigator#gotoNavTab">
@@ -332,8 +364,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#gotoAddReport">
@@ -357,8 +391,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#gotoEditReport">
@@ -378,8 +414,10 @@
 	<command name="AddCampaignPageCP" priority="5">
 		<property name="content.targeting.release" value="true" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#addCP">
@@ -399,8 +437,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#gotoAddReport">
@@ -423,8 +463,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#gotoEditReport">
@@ -444,8 +486,10 @@
 	<command name="AddCampaignYouTubeCP" priority="5">
 		<property name="content.targeting.release" value="true" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#addCP">
@@ -461,8 +505,10 @@
 
 		<execute macro="PortletEntry#save" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Instance Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Instance Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Navigator#gotoNavTab">
@@ -479,8 +525,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#gotoAddReport">
@@ -504,8 +552,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Audience Targeting" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Audience Targeting" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ContentTargetingCampaign#gotoEditReport">
