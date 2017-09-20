@@ -1,6 +1,5 @@
 <definition>
-	<var method="StringUtil#toLowerCase('User')" name="key_panel" />
-	<var method="StringUtil#replace('${key_panel}', ' ', '_')" name="key_panel" />
+	<var name="key_panel" value="user" />
 
 	<command name="gotoDashboard">
 		<description message="Navigate to My Dashboard." />
