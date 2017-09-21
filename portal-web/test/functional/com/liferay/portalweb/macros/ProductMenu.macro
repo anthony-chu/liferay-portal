@@ -129,6 +129,20 @@
 		<execute function="Click" locator1="ProductMenu#USER_PROFILE" />
 	</command>
 
+	<command name="gotoPortlet" summary="Navigate to Product Menu > ${panel} > ${category} > ${portlet}">
+		<execute macro="ProductMenuHelper#expandPanel">
+			<var name="panel" value="${panel}" />
+		</execute>
+
+		<execute macro="ProductMenuHelper#expandCategory">
+			<var name="category" value="${category}" />
+		</execute>
+
+		<execute macro="ProductMenuHelper#gotoPortlet">
+			<var name="portlet" value="${portlet}" />
+		</execute>
+	</command>
+
 	<command name="gotoPrivatePages" summary="Navigate to Product Menu > Sites > Navigation > Private Pages">
 		<execute macro="ProductMenuHelper#expandPanel">
 			<var name="panel" value="Site Administration" />
