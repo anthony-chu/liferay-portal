@@ -9,6 +9,36 @@
 </thead>
 <tbody>
 <tr>
+	<td>PANEL</td>
+	<td>//div[contains(@id,'${key_panel}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PANEL_COLLAPSED</td>
+	<td>//div[contains(@id,'${key_panel}')]/div/a[@aria-expanded='false']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PANEL_EXPANDED</td>
+	<td>//div[contains(@id,'${key_panel}')]/div/a[@aria-expanded='true']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY</td>
+	<td>//div[@class='panel'][div/div/a[@aria-expanded='true']]//a[@data-qa-id='appGroup'][normalize-space()='${key_category}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY_COLLAPSED</td>
+	<td>//div[@class='panel'][div/div/a[@aria-expanded='true']]//a[@data-qa-id='appGroup'][normalize-space()='${key_category}'][@aria-expanded='false']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY_EXPANDED</td>
+	<td>//div[@class='panel'][div/div/a[@aria-expanded='true']]//a[@data-qa-id='appGroup'][normalize-space()='${key_category}'][@aria-expanded='true']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>TOGGLE</td>
 	<td>//*[@data-qa-id='productMenu']</td>
 	<td></td>
