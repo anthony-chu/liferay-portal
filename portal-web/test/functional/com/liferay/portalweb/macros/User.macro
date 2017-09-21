@@ -1952,7 +1952,9 @@
 	<command name="logoutAndLoginPG">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenuHelper#expandPanelUser" />
+		<execute macro="ProductMenuHelper#expandPanel">
+			<var name="panel" value="User" />
+		</execute>
 
 		<if>
 			<condition function="IsTextNotEqual" locator1="ControlMenu#USER_NAME" value1="${userLoginFullName}" />
@@ -2264,7 +2266,9 @@
 	</command>
 
 	<command name="viewLoggedInPG">
-		<execute macro="ProductMenuHelper#expandPanelControlPanel" />
+		<execute macro="ProductMenuHelper#expandPanel">
+			<var name="panel" value="Control Panel" />
+		</execute>
 
 		<if>
 			<equals arg1="${authenticationMethod}" arg2="By Screen Name" />

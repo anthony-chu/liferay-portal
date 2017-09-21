@@ -119,7 +119,9 @@
 	<command name="CannotViewSiteSettingsInUserPersonalSite" priority="4">
 		<execute macro="ProductMenu#gotoPersonalSite" />
 
-		<execute macro="ProductMenuHelper#expandPanelSites" />
+		<execute macro="ProductMenuHelper#expandPanel">
+			<var name="panel" value="Site Administration" />
+		</execute>
 
 		<execute macro="ProductMenuHelper#expandCategory">
 			<var name="category" value="Configuration" />

@@ -277,7 +277,9 @@
 			<var name="portletName" value="Language Selector" />
 		</execute>
 
-		<execute macro="ProductMenuHelper#expandPanelControlPanel" />
+		<execute macro="ProductMenuHelper#expandPanel">
+			<var name="panel" value="Control Panel" />
+		</execute>
 
 		<execute macro="LanguagePortlet#selectLanguagePG">
 			<var name="language" value="French (France)" />
