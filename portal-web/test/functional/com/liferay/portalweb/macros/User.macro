@@ -1618,7 +1618,9 @@
 
 		<execute function="Click" locator1="UserBar#USER_AVATAR_IMAGE" />
 
-		<execute function="AssertElementPresent" locator1="ProductMenu#PRODUCT_MENU_TABS_USER_EXPANDED" />
+		<execute function="AssertElementPresent" locator1="ProductMenu#PANEL_EXPANDED">
+			<var name="key_category" value="user" />
+		</execute>
 	</command>
 
 	<command name="loginLocalizationPG">
