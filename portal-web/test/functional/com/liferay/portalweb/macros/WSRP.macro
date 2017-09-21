@@ -56,8 +56,10 @@
 	</command>
 
 	<command name="tearDownCP">
-		<execute macro="ProductMenu#gotoControlPanelApps">
-			<var name="portlet" value="WSRP Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="WSRP Admin" />
+			<var name="appGroup" value="Apps" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute function="AssertClick" locator1="NavTab#PRODUCERS" value1="Producers" />

@@ -57,8 +57,10 @@
 			<var name="portletName" value="Activities" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="System Settings" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="System Settings" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="SystemSettings#gotoCategory">

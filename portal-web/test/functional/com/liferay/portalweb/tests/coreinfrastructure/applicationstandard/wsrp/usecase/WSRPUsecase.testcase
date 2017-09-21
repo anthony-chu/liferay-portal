@@ -28,8 +28,10 @@
 	</tear-down>
 
 	<command name="AddWSRPUnitConverter" priority="4">
-		<execute macro="ProductMenu#gotoControlPanelApps">
-			<var name="portlet" value="WSRP Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="WSRP Admin" />
+			<var name="appGroup" value="Apps" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="WSRP#addProducerCP">
@@ -37,8 +39,10 @@
 			<var name="producerName" value="Producer Demo" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelApps">
-			<var name="portlet" value="WSRP Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="WSRP Admin" />
+			<var name="appGroup" value="Apps" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="WSRP#addConsumerCP">
@@ -46,8 +50,10 @@
 			<var name="producerName" value="Producer Demo" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelApps">
-			<var name="portlet" value="WSRP Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="WSRP Admin" />
+			<var name="appGroup" value="Apps" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="WSRP#addConsumerPortletCP">

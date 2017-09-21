@@ -14,8 +14,10 @@
 	</tear-down>
 
 	<command name="ViewOAuth" priority="4">
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="OAuth Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="OAuth Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="TestOAuth#addApplication">

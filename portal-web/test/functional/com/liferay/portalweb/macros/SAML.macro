@@ -4,8 +4,10 @@
 
 		<!-- Configure IdP (Identity Provider) on http://localhost:8080 with database lportal and saml deployed -->
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="SAML Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="SAML Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="SAMLRole#configure">
@@ -23,8 +25,10 @@
 
 		<!-- Navigate away from SAML portlet after enabling SAML in order to avoid LPS-65869 -->
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="SAML Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="SAML Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="SAMLNavigation#gotoIdentityProvider" />
@@ -48,8 +52,10 @@
 			<var name="url" value="${spURL}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="SAML Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="SAML Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="SAMLRole#configure">
@@ -61,8 +67,10 @@
 			<var name="samlKeyPassword" value="${samlEntityID}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="SAML Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="SAML Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="SAMLNavigation#gotoIdentityProviderConnection" />
@@ -88,8 +96,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="SAML Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="SAML Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="SAMLNavigation#gotoServiceProviderConnection" />

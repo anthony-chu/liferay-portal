@@ -79,8 +79,10 @@
 			<var name="url" value="http://localhost:8080/" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoControlPanelConfiguration">
-			<var name="portlet" value="Virtual Instances" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Virtual Instances" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<while>

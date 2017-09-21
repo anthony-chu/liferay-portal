@@ -10,8 +10,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesPublishing">
-			<var name="portlet" value="Import" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Import" />
+			<var name="appGroup" value="Publishing" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 	</set-up>
 

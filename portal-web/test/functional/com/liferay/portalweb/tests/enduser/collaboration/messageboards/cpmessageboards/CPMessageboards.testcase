@@ -32,8 +32,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsCategory#addCP">
@@ -50,8 +52,10 @@
 	<command name="AddMBCategorySubcategory" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsCategory#addCP">
@@ -60,8 +64,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsCategory#addSubcategoryCP">
@@ -74,8 +80,10 @@
 	<command name="AddMBThread" priority="5">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#addCP">
@@ -85,8 +93,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#viewCP">
@@ -101,8 +111,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute function="Click" locator1="Button#PLUS" />
@@ -123,8 +135,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#viewCP">
@@ -138,8 +152,10 @@
 		<execute macro="Navigator#openURL" />
 
 		<for list="MB Category1 Name,MB Category2 Name,MB Category3 Name" param="categoryName" >
-			<execute macro="ProductMenu#gotoSitesContent">
-				<var name="portlet" value="Message Boards" />
+			<execute macro="ProductMenu#gotoPortlet">
+				<var name="app" value="Message Boards" />
+				<var name="appGroup" value="Content" />
+				<var name="panel" value="Site Administration" />
 			</execute>
 
 			<execute macro="MessageboardsCategory#addCP">
@@ -151,8 +167,10 @@
 			<var name="assetType" value="3 items" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute function="AssertTextEquals#assertText" locator1="Message#EMPTY_INFO" value1="There are no threads nor categories." />
@@ -161,8 +179,10 @@
 	<command name="DeleteMBThreadWithAttachment" priority="3">
 		<property name="custom.properties" value="trash.entry.check.interval=1${line.separator}trash.entries.max.age=1" />
 
-		<execute macro="ProductMenu#gotoControlPanelSites">
-			<var name="portlet" value="Sites" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Sites" />
+			<var name="appGroup" value="Sites" />
+			<var name="panel" value="Control Panel" />
 		</execute>
 
 		<execute macro="Site#addBlankCP">
@@ -173,8 +193,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#addCPWithAttachment">
@@ -187,8 +209,10 @@
 			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#moveToRecycleBinCP">
@@ -200,8 +224,10 @@
 		<execute function="AssertConsoleTextNotPresent" value1="MessageListenerException" />
 		<execute function="AssertConsoleTextNotPresent" value1="com.liferay.portlet.documentlibrary.NoSuchFileEntryException" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Recycle Bin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Recycle Bin" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute function="AssertTextEquals" locator1="Message#EMPTY_INFO" value1="The Recycle Bin is empty." />
@@ -210,8 +236,10 @@
 	<command name="EditMBThreadBody" priority="5">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#addCP">
@@ -221,8 +249,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#gotoCP">
@@ -235,8 +265,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#viewCP">
@@ -249,8 +281,10 @@
 	<command name="EditMBThreadSubject" priority="5">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#addCP">
@@ -260,8 +294,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#gotoCP">
@@ -274,8 +310,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#viewCP">
@@ -288,8 +326,10 @@
 	<command name="EditMBThreadSubjectAndBody" priority="5">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#addCP">
@@ -299,8 +339,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#gotoCP">
@@ -314,8 +356,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#viewCP">
@@ -330,8 +374,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#addCP">
@@ -341,8 +387,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#moveToRecycleBinCP">
@@ -351,8 +399,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#viewDefaultCP">
@@ -363,8 +413,10 @@
 	<command name="ViewAnonymousPostingAllowedCheckboxConfiguration" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#viewAnonymousPostingCheckboxCP" />
@@ -375,8 +427,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Portlet#gotoPortletOptions">
@@ -389,8 +443,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#viewNoAnonymousPostingCheckboxCP" />
@@ -399,8 +455,10 @@
 	<command name="ViewBBCodeNoXSS" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsPortlet#configureGeneralCP">
@@ -410,8 +468,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#addCP">
@@ -424,8 +484,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#viewCP">
@@ -436,8 +498,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#addCP">
@@ -449,8 +513,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Message Boards" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Message Boards" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="MessageboardsThread#viewCP">

@@ -28,8 +28,10 @@
 	<command name="AddBookmark" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addCP">
@@ -40,8 +42,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#viewBookmark">
@@ -56,8 +60,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addCP">
@@ -68,8 +74,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addCP">
@@ -80,8 +88,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#viewBookmark">
@@ -91,8 +101,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#viewBookmark">
@@ -104,8 +116,10 @@
 	<command name="AddFolder" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#addCP">
@@ -117,8 +131,10 @@
 	<command name="AddIncorrectURLBookmark" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addIncorrectURLCP">
@@ -131,8 +147,10 @@
 	<command name="AddNullBookmark" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addNullCP" />
@@ -143,8 +161,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#addNullCP" />
@@ -153,8 +173,10 @@
 	<command name="AddNullSubfolder" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#addCP">
@@ -164,8 +186,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#addNullSubfolderCP">
@@ -176,8 +200,10 @@
 	<command name="AddNullTitleBookmark" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addCP">
@@ -189,8 +215,10 @@
 	<command name="AddNullURLBookmark" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addNullCP">
@@ -202,8 +230,10 @@
 	<command name="AddSubfolder" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#addCP">
@@ -213,8 +243,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#addSubfolderCP">
@@ -229,8 +261,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addCP">
@@ -241,8 +275,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#viewBookmark">
@@ -260,8 +296,10 @@
 	<command name="DeleteSecondBookmark" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addCP">
@@ -272,8 +310,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addCP">
@@ -284,8 +324,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#moveToRecycleBinCP">
@@ -299,8 +341,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addCP">
@@ -311,8 +355,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#viewBookmark">
@@ -322,8 +368,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#editCP">
@@ -341,8 +389,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#addCP">
@@ -352,8 +402,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#editCP">
@@ -367,8 +419,10 @@
 	<command name="EditSubfolder" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#addCP">
@@ -378,8 +432,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#addSubfolderCP">
@@ -390,8 +446,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#editSubfolderCP">
@@ -405,8 +463,10 @@
 	<command name="MergeSubfolderBookmarkToFolder" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#addCP">
@@ -416,8 +476,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#addSubfolderCP">
@@ -428,8 +490,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addToSubfolderCP">
@@ -442,8 +506,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#mergeSubfolderToFolderCP">
@@ -457,8 +523,10 @@
 	<command name="MoveSubfolderBookmarkToHome" priority="4">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#addCP">
@@ -468,8 +536,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#addSubfolderCP">
@@ -480,8 +550,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addToSubfolderCP">
@@ -494,8 +566,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#moveToHomeCP">
@@ -510,8 +584,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#addCP">
@@ -521,8 +597,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#viewFolder">
@@ -532,8 +610,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="BookmarksFolder#moveToRecycleBinCP">
@@ -545,8 +625,10 @@
 	<command name="SearchBookmark" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addCP">
@@ -557,8 +639,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#viewBookmark">
@@ -568,8 +652,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Search#searchCP">
@@ -584,8 +670,10 @@
 	<command name="SearchBookmarks" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addCP">
@@ -596,8 +684,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addCP">
@@ -608,8 +698,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#viewBookmark">
@@ -619,8 +711,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#viewBookmark">
@@ -630,8 +724,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Search#searchCP">
@@ -644,8 +740,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Search#searchCP">
@@ -660,8 +758,10 @@
 	<command name="SearchNullBookmark" priority="3">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addCP">
@@ -672,8 +772,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#addCP">
@@ -684,8 +786,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Bookmarks" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Bookmarks" />
+			<var name="appGroup" value="Content" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="Bookmark#searchNullCP">

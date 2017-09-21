@@ -320,8 +320,10 @@ Sincerely,<br />
 	<command name="tearDownDefinitions">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoDefinitions" />
@@ -347,8 +349,10 @@ Sincerely,<br />
 	<command name="tearDownReports">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<while>
@@ -370,8 +374,10 @@ Sincerely,<br />
 	<command name="tearDownSources">
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoSitesConfiguration">
-			<var name="portlet" value="Report Admin" />
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="app" value="Report Admin" />
+			<var name="appGroup" value="Configuration" />
+			<var name="panel" value="Site Administration" />
 		</execute>
 
 		<execute macro="ReportsAdmin#gotoSources" />
