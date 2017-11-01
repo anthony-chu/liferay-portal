@@ -46,7 +46,7 @@
 	</command>
 
 	<command name="AddStructures" priority="5">
-		<property name="portal.acceptance" value="pending" />
+		<property name="portal.acceptance" value="true" />
 		<property name="testray.component.names" value="Training,Web Content Administration" />
 
 		<execute macro="Navigator#openURL" />
@@ -588,7 +588,7 @@
 	</command>
 
 	<command name="AddTemplateWithStructure" priority="5">
-		<property name="portal.acceptance" value="quarantine" />
+		<property name="portal.acceptance" value="true" />
 		<property name="testray.component.names" value="Web Content Administration" />
 
 		<execute macro="Navigator#openURL" />
@@ -658,7 +658,7 @@
 	</command>
 
 	<command name="AddTemplateXSL" priority="5">
-		<property name="portal.acceptance" value="pending" />
+		<property name="portal.acceptance" value="true" />
 		<property name="testray.component.names" value="Training,Web Content Administration,XSL" />
 
 		<execute macro="Navigator#openURL" />

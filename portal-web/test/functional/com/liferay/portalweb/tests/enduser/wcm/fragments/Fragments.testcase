@@ -33,7 +33,7 @@
 	</tear-down>
 
 	<command name="AddCollectionFragmentWithSnippets" priority="5">
-		<property name="portal.acceptance" value="pending" />
+		<property name="portal.acceptance" value="true" />
 
 		<execute macro="ProductMenu#gotoPortlet">
 			<var name="category" value="Content" />
