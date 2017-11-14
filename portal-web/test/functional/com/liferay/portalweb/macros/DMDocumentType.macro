@@ -2,6 +2,8 @@
 	<command name="add">
 		<execute function="Click" locator1="Button#PLUS" />
 
+		<execute function="Click" locator1="DocumentsAndMediaEditDocumentType#NAME_FIELD" />
+
 		<execute function="Type" locator1="DocumentsAndMediaEditDocumentType#NAME_FIELD" value1="${dmDocumentTypeName}" />
 		<execute function="Type" locator1="DocumentsAndMediaEditDocumentType#DETAILS_DESCRIPTION_FIELD" value1="${dmDocumentTypeDescription}" />
 
