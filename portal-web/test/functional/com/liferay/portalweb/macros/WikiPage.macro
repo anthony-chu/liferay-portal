@@ -1460,6 +1460,21 @@
 		<execute function="AssertElementNotPresent" locator1="WikiTable#ALL_PAGES_WIKI_PAGE_TITLE" value1="${wikiPageTitle}" />
 	</command>
 
+	<command name="viewPageNoAttachment">
+		<var name="key_attachmentFileName" value="${attachmentFileName}" />
+		<var name="key_wikiPageContent" value="${wikiPageContent}" />
+		<var name="key_wikiPageTitle" value="${wikiPageTitle}" />
+
+		<execute macro="WikiPage#viewPG">
+			<var name="wikiPageContent" value="${wikiPageContent}" />
+			<var name="wikiPageTitle" value="${wikiPageTitle}" />
+		</execute>
+
+		<execute function="AssertElementNotPresent" locator1="WikiEntry#ATTACHMENTS_LABEL" />
+
+		<execute function="AssertElementNotPresent" locator1="WikiEntry#ATTACHMENT_FILE_NAME" />
+	</command>
+
 	<command name="viewPagePG">
 		<var name="key_wikiPageTitle" value="${wikiPageTitle}" />
 
