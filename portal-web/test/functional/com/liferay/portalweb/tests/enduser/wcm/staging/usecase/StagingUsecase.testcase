@@ -686,7 +686,7 @@
 		</execute>
 	</command>
 
-	<command name="StagingLocalLiveLock" priority="4">
+	<command name="StagingLocalLiveLockAndEditBlogsEntry" priority="5">
 		<description message="This is a use case for LPS-72949." />
 
 		<execute macro="Navigator#gotoStagedSitePage">
