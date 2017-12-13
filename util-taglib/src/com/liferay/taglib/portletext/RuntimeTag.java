@@ -312,7 +312,7 @@ public class RuntimeTag extends TagSupport implements DirectTag {
 				(HttpServletRequest)pageContext.getRequest();
 
 			if (_useLastForwardRequest) {
-				request = _getLastForwardRequest(request);
+				request = getLastForwardRequest(request);
 			}
 
 			Layout layout = (Layout)request.getAttribute(WebKeys.LAYOUT);
@@ -427,20 +427,20 @@ public class RuntimeTag extends TagSupport implements DirectTag {
 		return portlet;
 	}
 
-	private HttpServletRequest _getLastForwardRequest(
-		HttpServletRequest request) {
+	private HttpServletRequest getLastForwardRequest(
+		HttpServletRequest currentRequest) {
 
-		HttpServletRequestWrapper requestWrapper = null;
+		HttpServletRequestWrapper currentRequestWrapper = null;
 		HttpServletRequest originalRequest = null;
 		HttpServletRequest nextRequest = null;
 
-		while (request instanceof HttpServletRequestWrapper) {
-			if (request instanceof
+		while (currentRequest instanceof HttpServletRequestWrapper) {
+			if (currentRequest instanceof
 				PersistentHttpServletRequestWrapper) {
 
 				PersistentHttpServletRequestWrapper
 					persistentHttpServletRequestWrapper =
-						(PersistentHttpServletRequestWrapper)request;
+					(PersistentHttpServletRequestWrapper)currentRequest;
 
 				persistentHttpServletRequestWrapper =
 					persistentHttpServletRequestWrapper.clone();
@@ -450,39 +450,39 @@ public class RuntimeTag extends TagSupport implements DirectTag {
 						persistentHttpServletRequestWrapper.clone();
 				}
 
-				if (requestWrapper != null) {
-					requestWrapper.setRequest(
+				if (currentRequestWrapper != null) {
+					currentRequestWrapper.setRequest(
 						persistentHttpServletRequestWrapper);
 				}
 
-				requestWrapper = persistentHttpServletRequestWrapper;
+				currentRequestWrapper = persistentHttpServletRequestWrapper;
 			}
 
 			HttpServletRequestWrapper httpServletRequestWrapper =
-				(HttpServletRequestWrapper)request;
+				(HttpServletRequestWrapper)currentRequest;
 
 			nextRequest =
 				(HttpServletRequest)httpServletRequestWrapper.getRequest();
 
-			if ((request.getDispatcherType() ==
+			if ((currentRequest.getDispatcherType() ==
 				 DispatcherType.FORWARD) &&
 				(nextRequest.getDispatcherType() == DispatcherType.REQUEST)) {
 
 				break;
 			}
 
-			request = nextRequest;
+			currentRequest = nextRequest;
 		}
 
-		if (requestWrapper != null) {
-			requestWrapper.setRequest(request);
+		if (currentRequestWrapper != null) {
+			currentRequestWrapper.setRequest(currentRequest);
 		}
 
 		if (originalRequest != null) {
 			return originalRequest;
 		}
 
-		return request;
+		return currentRequest;
 	}
 
 	private static final String _ERROR_PAGE =
