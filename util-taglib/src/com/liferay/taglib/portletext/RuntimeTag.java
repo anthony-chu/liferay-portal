@@ -311,10 +311,6 @@ public class RuntimeTag extends TagSupport implements DirectTag {
 			HttpServletRequest request =
 				(HttpServletRequest)pageContext.getRequest();
 
-			if (_useLastForwardRequest) {
-				request = getLastForwardRequest(request);
-			}
-
 			Layout layout = (Layout)request.getAttribute(WebKeys.LAYOUT);
 
 			if (layout == null) {
@@ -427,9 +423,8 @@ public class RuntimeTag extends TagSupport implements DirectTag {
 		return portlet;
 	}
 
-	private HttpServletRequest getLastForwardRequest(
-		HttpServletRequest currentRequest) {
-
+	private HttpServletRequest getLastForwardRequest() {
+		HttpServletRequest currentRequest = _request;
 		HttpServletRequestWrapper currentRequestWrapper = null;
 		HttpServletRequest originalRequest = null;
 		HttpServletRequest nextRequest = null;
