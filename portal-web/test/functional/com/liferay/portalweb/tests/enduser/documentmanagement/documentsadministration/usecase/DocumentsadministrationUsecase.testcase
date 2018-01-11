@@ -2227,7 +2227,9 @@
 			<var name="dmDocumentTitle" value="DM Document Title" />
 		</execute>
 
-		<execute function="Type" locator1="DocumentsAndMediaEditDocument#TITLE_FIELD" value1="DM Document 2 Title" />
+		<execute macro="PortletEntry#inputTitle">
+			<var name="title" value="DM Document 2 Title" />
+		</execute>
 
 		<execute macro="PortletEntry#publish" />
 

@@ -1066,7 +1066,9 @@
 				<contains string="${dmDocumentTitleEdit}" substring="{dmDocumentTitleEdit}" />
 			</not>
 			<then>
-				<execute function="Type" locator1="DocumentsAndMediaEditDocument#TITLE_FIELD" value1="${dmDocumentTitleEdit}" />
+				<execute macro="PortletEntry#inputTitle">
+					<var name="title" value="${dmDocumentTitleEdit}" />
+				</execute>
 			</then>
 		</if>
 
@@ -1192,7 +1194,9 @@
 	<command name="editDocument">
 		<execute function="UploadCommonFile" locator1="TextInput#FILE" value1="${dmDocumentFile}" />
 
-		<execute function="Type" locator1="DocumentsAndMediaEditDocument#TITLE_FIELD" value1="${dmDocumentTitle}" />
+		<execute macro="PortletEntry#inputTitle">
+			<var name="title" value="${dmDocumentTitle}" />
+		</execute>
 
 		<if>
 			<isset var="dmDocumentDescription" />
@@ -1596,7 +1600,9 @@
 
 				<execute function="UploadCommonFile" locator1="TextInput#FILE" value1="${document}" />
 
-				<execute function="Type" locator1="DocumentsAndMediaEditDocument#TITLE_FIELD" value1="${dmDocumentTypeFieldData}" />
+				<execute macro="PortletEntry#inputTitle">
+					<var name="title" value="${dmDocumentTypeFieldData}" />
+				</execute>
 
 				<execute function="AssertClick" locator1="Button#PUBLISH" value1="Publish" />
 
