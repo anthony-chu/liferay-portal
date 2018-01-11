@@ -166,9 +166,7 @@
 
 		<execute function="Select" locator1="Select#DISPLAY_TEMPLATE" value1="${templateName}" />
 
-		<execute macro="Button#clickSave" />
-
-		<execute macro="Alert#viewSuccessMessage" />
+		<execute macro="PortletEntry#save" />
 
 		<execute function="SelectFrameTop" />
 	</command>
@@ -193,9 +191,7 @@
 
 				<execute function="Select" locator1="ApplicationDisplayTemplatesConfiguration#DISPLAY_TEMPLATE_SELECT" value1="${defaultADT}" />
 
-				<execute macro="Button#clickSave" />
-
-				<execute macro="Alert#viewSuccessMessage" />
+				<execute macro="PortletEntry#save" />
 
 				<execute function="SelectFrameTop" locator1="IFrame#DIALOG" value1="relative=top" />
 			</then>

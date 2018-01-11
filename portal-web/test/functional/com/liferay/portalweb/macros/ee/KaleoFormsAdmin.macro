@@ -633,9 +633,7 @@
 	</command>
 
 	<command name="saveFieldSet">
-		<execute function="AssertClick" locator1="KaleoFormsAdminEditProcess#SAVE_BUTTON" value1="Save" />
-
-		<execute macro="Alert#viewSuccessMessage" />
+		<execute macro="PortletEntry#save" />
 
 		<execute function="SelectFrame" value1="relative=top" />
 
@@ -656,7 +654,7 @@
 				<equals arg1="${workflowTask}" arg2="update" />
 			</or>
 			<then>
-				<execute function="AssertClick" locator1="KaleoFormsAdminEditProcessForm#SAVE_BUTTON" value1="Save" />
+				<execute macro="Button#clickSave" />
 			</then>
 			<else>
 				<execute macro="Button#clickSave" />
@@ -669,9 +667,7 @@
 	<command name="saveFormEdit">
 		<execute macro="DynamicDataMapping#selectDynamicDataMappingFrame" />
 
-		<execute function="AssertClick" locator1="KaleoFormsAdminEditProcessForm#SAVE_BUTTON" value1="Save" />
-
-		<execute macro="Alert#viewSuccessMessage" />
+		<execute macro="PortletEntry#save" />
 
 		<execute function="SelectFrame" value1="relative=top" />
 

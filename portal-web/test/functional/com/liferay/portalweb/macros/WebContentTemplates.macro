@@ -241,7 +241,7 @@
 	</command>
 
 	<command name="save">
-		<execute function="AssertClick" locator1="DDMEditTemplate#SAVE_BUTTON" value1="Save" />
+		<execute macro="Button#clickSave" />
 	</command>
 
 	<command name="tearDownCP">
