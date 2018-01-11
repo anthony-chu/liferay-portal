@@ -45,6 +45,7 @@
 		<execute macro="PortletEntry#inputName">
 			<var name="name" value="${dmFolderName}" />
 		</execute>
+
 		<execute macro="PortletEntry#inputDescription">
 			<var name="description" value="${dmFolderDescription}" />
 		</execute>
@@ -343,6 +344,7 @@
 		<execute macro="PortletEntry#inputName">
 			<var name="name" value="${dmFolderNameEdit}" />
 		</execute>
+
 		<execute macro="PortletEntry#inputDescription">
 			<var name="description" value="${dmFolderDescriptionEdit}" />
 		</execute>

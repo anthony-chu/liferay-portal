@@ -5,6 +5,7 @@
 		<execute macro="PortletEntry#inputName">
 			<var name="name" value="${dmDocumentTypeName}" />
 		</execute>
+
 		<execute macro="PortletEntry#inputDescription">
 			<var name="description" value="${dmDocumentTypeDescription}" />
 		</execute>

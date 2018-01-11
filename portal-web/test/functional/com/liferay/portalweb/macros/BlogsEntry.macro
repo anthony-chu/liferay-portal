@@ -211,6 +211,7 @@
 		<execute macro="PortletEntry#inputTitle">
 			<var name="title" value="${entryTitle}" />
 		</execute>
+
 		<execute function="Type" locator1="BlogsEntry#CONTENT" value1="${entryContent}" />
 
 		<execute function="AssertClick" locator1="Button#SUBMIT_FOR_PUBLICATION" value1="Submit for Publication" />
