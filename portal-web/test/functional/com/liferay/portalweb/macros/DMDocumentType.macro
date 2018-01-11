@@ -5,7 +5,9 @@
 		<execute macro="PortletEntry#inputName">
 			<var name="name" value="${dmDocumentTypeName}" />
 		</execute>
-		<execute function="Type" locator1="DocumentsAndMediaEditDocumentType#DETAILS_DESCRIPTION_FIELD" value1="${dmDocumentTypeDescription}" />
+		<execute macro="PortletEntry#inputDescription">
+			<var name="description" value="${dmDocumentTypeDescription}" />
+		</execute>
 
 		<execute macro="Panel#expandPanel">
 			<var name="panelHeading" value="Main Metadata Fields" />

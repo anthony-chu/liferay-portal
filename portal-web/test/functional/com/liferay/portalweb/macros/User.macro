@@ -336,7 +336,9 @@
 		<if>
 			<isset var="userProjectDescription" />
 			<then>
-				<execute function="Type" locator1="MyAccount#PROJECTS_DESCRIPTION_FIELD" value1="${userProjectDescription}" />
+				<execute macro="PortletEntry#inputDescription">
+					<var name="description" value="${userProjectDescription}" />
+				</execute>
 			</then>
 		</if>
 
