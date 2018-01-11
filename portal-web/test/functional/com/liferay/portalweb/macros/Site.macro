@@ -23,7 +23,7 @@
 			<var name="navItem" value="Users" />
 		</execute>
 
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
@@ -60,7 +60,7 @@
 	</command>
 
 	<command name="addCP">
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<if>
 			<not>
@@ -313,7 +313,7 @@
 			<var name="navItem" value="Organizations" />
 		</execute>
 
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
@@ -1039,7 +1039,7 @@
 	</command>
 
 	<command name="viewCannotAdd">
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Blank Site">
 			<var name="key_menuItem" value="Blank Site" />
@@ -1167,7 +1167,7 @@
 			<var name="navItem" value="Users" />
 		</execute>
 
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 

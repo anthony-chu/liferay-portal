@@ -80,7 +80,7 @@
 
 		<execute function="AssertElementPresent" locator1="NavBar#ACTIVE_NAV_ITEM_LINK" />
 
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<if>
 			<equals arg1="${orgType}" arg2="Location" />
@@ -129,7 +129,7 @@
 			<var name="searchToken" value="${orgName}" />
 		</execute>
 
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Assign Users">
 			<var name="key_menuItem" value="Assign Users" />

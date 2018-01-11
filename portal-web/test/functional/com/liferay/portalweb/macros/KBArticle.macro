@@ -1,6 +1,6 @@
 <definition>
 	<command name="_gotoAddArticleViaTemplate">
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="${kbTemplateTitle}">
 			<var name="key_menuItem" value="${kbTemplateTitle}" />
@@ -8,7 +8,7 @@
 	</command>
 
 	<command name="_gotoAddBasicArticle">
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Basic Article">
 			<var name="key_menuItem" value="Basic Article" />
@@ -25,7 +25,7 @@
 	</command>
 
 	<command name="_gotoImportArticle">
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Import">
 			<var name="key_menuItem" value="Import" />
@@ -279,7 +279,7 @@
 	</command>
 
 	<command name="addCPWithBooleanCustomField">
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Basic Article">
 			<var name="key_menuItem" value="Basic Article" />
@@ -304,7 +304,7 @@
 	</command>
 
 	<command name="addCPWithInvalidAttachmentSize">
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Basic Article">
 			<var name="key_menuItem" value="Basic Article" />
@@ -329,7 +329,7 @@
 	</command>
 
 	<command name="addCPWithInvalidTitle">
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Basic Article">
 			<var name="key_menuItem" value="Basic Article" />

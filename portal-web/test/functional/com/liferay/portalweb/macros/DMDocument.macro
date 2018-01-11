@@ -180,7 +180,7 @@
 	<command name="addDMMarketingBannerCP">
 		<var name="key_dmDocumentTitle" value="${dmDocumentTitle}" />
 
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Marketing Banner">
 			<var name="key_menuItem" value="Marketing Banner" />
@@ -1775,7 +1775,7 @@
 	</command>
 
 	<command name="saveAsDraftPG">
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Basic Document">
 			<var name="key_menuItem" value="Basic Document" />

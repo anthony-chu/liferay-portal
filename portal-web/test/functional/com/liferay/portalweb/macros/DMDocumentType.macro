@@ -1,6 +1,6 @@
 <definition>
 	<command name="add">
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute macro="PortletEntry#inputName">
 			<var name="name" value="${dmDocumentTypeName}" />
@@ -202,7 +202,7 @@
 	<command name="viewMenulistOption">
 		<var name="key_dmDocumentTypeName" value="${dmDocumentTypeName}" />
 
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute function="AssertTextEquals" locator1="MenuItem#ANY_MENU_ITEM" value1="${dmDocumentTypeName}">
 			<var name="key_menuItem" value="${dmDocumentTypeName}" />

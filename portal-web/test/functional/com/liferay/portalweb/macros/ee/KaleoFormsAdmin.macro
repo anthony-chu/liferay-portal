@@ -5,7 +5,7 @@
 			<then>
 				<execute macro="KaleoFormsNavigator#gotoManageFieldSets" />
 
-				<execute function="Click" locator1="Button#PLUS" />
+				<execute macro="LexiconEntry#gotoAdd" />
 
 				<execute macro="PortletEntry#inputName">
 					<var name="name" value="${kfFieldSetName}" />
@@ -35,7 +35,7 @@
 	<command name="addForm">
 		<execute function="SelectFrame" locator1="DDMEditStructure#IFRAME" />
 
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute function="Click" locator1="DDMEditStructure#NAME_FIELD" />
 
@@ -53,7 +53,7 @@
 	<command name="addProcess">
 		<execute function="AssertTextEquals" locator1="Portlet#HEADER" value1="Kaleo Forms Admin" />
 
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 	</command>
 
 	<command name="addProcessDetails">
@@ -706,7 +706,7 @@
 			<var name="kfProcessName" value="${kfProcessName}" />
 		</execute>
 
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 	</command>
 
 	<command name="tearDownProcess">

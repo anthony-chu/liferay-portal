@@ -33,7 +33,7 @@
 	</command>
 
 	<command name="addImageResolution">
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute macro="PortletEntry#inputName">
 			<var name="name" value="${imageName}" />
@@ -92,7 +92,7 @@
 	</command>
 
 	<command name="addNonNumericImageResolution">
-		<execute function="Click" locator1="Button#PLUS" />
+		<execute macro="LexiconEntry#gotoAdd" />
 
 		<execute macro="PortletEntry#inputName">
 			<var name="name" value="${imageName}" />
