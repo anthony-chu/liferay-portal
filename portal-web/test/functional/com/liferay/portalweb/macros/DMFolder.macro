@@ -12,7 +12,9 @@
 
 		<execute function="Pause" locator1="1000" />
 
-		<execute function="Type" locator1="DocumentsAndMediaEditFolder#NAME_FIELD" value1="${dmFolderName}" />
+		<execute macro="PortletEntry#inputName">
+			<var name="name" value="${dmFolderName}" />
+		</execute>
 
 		<if>
 			<isset var="dmFolderDescription" />
@@ -38,7 +40,9 @@
 
 		<execute function="Pause" locator1="1000" />
 
-		<execute function="Type" locator1="DocumentsAndMediaEditFolder#NAME_FIELD" value1="${dmFolderName}" />
+		<execute macro="PortletEntry#inputName">
+			<var name="name" value="${dmFolderName}" />
+		</execute>
 		<execute function="Type" locator1="DocumentsAndMediaEditFolder#DESCRIPTION_FIELD" value1="${dmFolderDescription}" />
 
 		<if>
@@ -112,7 +116,9 @@
 
 		<execute function="Pause" locator1="1000" />
 
-		<execute function="Type" locator1="DocumentsAndMediaEditFolder#NAME_FIELD" value1="${dmSubFolderName}" />
+		<execute macro="PortletEntry#inputName">
+			<var name="name" value="${dmSubFolderName}" />
+		</execute>
 
 		<if>
 			<isset var="dmSubFolderDescription" />
@@ -155,7 +161,9 @@
 
 		<execute function="Pause" locator1="1000" />
 
-		<execute function="Type" locator1="DocumentsAndMediaEditFolder#NAME_FIELD" value1="${dmSubFolderName}" />
+		<execute macro="PortletEntry#inputName">
+			<var name="name" value="${dmSubFolderName}" />
+		</execute>
 
 		<if>
 			<isset var="dmSubFolderDescription" />
@@ -324,7 +332,9 @@
 			<var name="key_menuItem" value="Edit" />
 		</execute>
 
-		<execute function="Type" locator1="DocumentsAndMediaEditFolder#NAME_FIELD" value1="${dmFolderNameEdit}" />
+		<execute macro="PortletEntry#inputName">
+			<var name="name" value="${dmFolderNameEdit}" />
+		</execute>
 		<execute function="Type" locator1="DocumentsAndMediaEditFolder#DESCRIPTION_FIELD" value1="${dmFolderDescriptionEdit}" />
 
 		<execute macro="PortletEntry#save" />

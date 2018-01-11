@@ -7,7 +7,9 @@
 
 				<execute function="Click" locator1="Button#PLUS" />
 
-				<execute function="Type" locator1="DDMEditStructure#NAME_FIELD" value1="${kfFieldSetName}" />
+				<execute macro="PortletEntry#inputName">
+					<var name="name" value="${kfFieldSetName}" />
+				</execute>
 			</then>
 			<else>
 				<execute macro="KaleoFormsAdmin#viewNewProcessProgressBar">
@@ -23,7 +25,9 @@
 
 				<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
-				<execute function="Type" locator1="DDMEditStructure#NAME_FIELD" value1="${kfFieldSetName}" />
+				<execute macro="PortletEntry#inputName">
+					<var name="name" value="${kfFieldSetName}" />
+				</execute>
 			</else>
 		</if>
 	</command>
@@ -35,7 +39,9 @@
 
 		<execute function="Click" locator1="DDMEditStructure#NAME_FIELD" />
 
-		<execute function="Type" locator1="DDMEditStructure#NAME_FIELD" value1="${kfFormName}" />
+		<execute macro="PortletEntry#inputName">
+			<var name="name" value="${kfFormName}" />
+		</execute>
 
 		<for list="Fieldset,Paragraph,Separator" param="field">
 			<execute macro="DynamicDataMapping#viewCanAddField">
@@ -355,7 +361,9 @@
 
 		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
-		<execute function="Type" locator1="DDMEditStructure#NAME_FIELD" value1="${kfFieldSetNameEdit}" />
+		<execute macro="PortletEntry#inputName">
+			<var name="name" value="${kfFieldSetNameEdit}" />
+		</execute>
 	</command>
 
 	<command name="editFieldSetPagination">
@@ -385,7 +393,9 @@
 
 		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
-		<execute function="Type" locator1="DDMEditStructure#NAME_FIELD" value1="${kfFormNameEdit}" />
+		<execute macro="PortletEntry#inputName">
+			<var name="name" value="${kfFormNameEdit}" />
+		</execute>
 
 		<for list="Fieldset,Paragraph,Separator" param="field">
 			<execute macro="DynamicDataMapping#viewCanAddField">
