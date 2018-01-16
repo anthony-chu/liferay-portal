@@ -33,6 +33,16 @@
 	<td>//select[contains(@id,'fullPageApplication')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>SIDEBAR</td>
+	<td>//div[contains(@class,'sidebar')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FUNCTION_RADIO</td>
+	<td>//div[normalize-space()='${key_function}']//input</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
