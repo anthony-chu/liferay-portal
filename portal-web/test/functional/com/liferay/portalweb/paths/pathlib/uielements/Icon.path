@@ -29,6 +29,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ANGLE_RIGHT</td>
+	<td>//a[span/*[contains(@class,'angle-right')]]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ASTERISK</td>
 	<td>//span[*[name()='svg'][contains(@class,'icon-asterisk')]] | //span[contains(@class,'icon-asterisk')] | //label[*[name()='svg'][contains(@class,'icon-asterisk')] and not(contains(@class,'required-warning'))]</td>
 	<td></td>
