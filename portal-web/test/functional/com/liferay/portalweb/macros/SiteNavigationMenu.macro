@@ -46,6 +46,28 @@
 		<execute function="Type" locator1="TextInput#URL" value1="${url}" />
 	</command>
 
+	<command name="_closeMenuSidebar">
+		<if>
+			<condition function="IsVisible" locator1="SiteNavigationMenu#SIDEBAR" />
+			<then>
+				<execute function="Click" locator1="Icon#ANGLE_RIGHT" />
+			</then>
+		</if>
+
+		<execute function="AssertNotVisible" locator1="SiteNavigationMenu#SIDEBAR" />
+	</command>
+
+	<command name="_openMenuSidebar">
+		<if>
+			<condition function="IsNotVisible" locator1="SiteNavigationMenu#SIDEBAR" />
+			<then>
+				<execute function="Click" locator1="Icon#COG" />
+			</then>
+		</if>
+
+		<execute function="AssertVisible" locator1="SiteNavigationMenu#SIDEBAR" />
+	</command>
+
 	<command name="addItem">
 		<if>
 			<condition function="IsElementNotPresent" locator1="Button#PLUS" />
@@ -111,6 +133,16 @@
 		<execute function="AssertClick" locator1="Button#MODAL_CONTENT_SUBMIT" value1="Submit" />
 	</command>
 
+	<command name="configureMenuFunction">
+		<execute macro="SiteNavigationMenu#_openMenuSidebar" />
+
+		<execute function="Check" locator1="SiteNavigationMenu#FUNCTION_RADIO">
+			<var name="key_function" value="${function}" />
+		</execute>
+
+		<execute macro="PortletEntry#save" />
+	</command>
+
 	<command name="moveItem">
 		<if>
 			<equals arg1="${direction}" arg2="up" />
@@ -169,6 +201,16 @@
 	<command name="viewItemNotNested">
 		<execute function="AssertAttributeValue" locator1="SiteNavigationMenu#ITEM_ENTRY" locator2="data-parent-site-navigation-menu-item-id" value1="0">
 			<var name="key_itemName" value="${itemName}" />
+		</execute>
+	</command>
+
+	<command name="viewPrimaryFunctionMessage">
+		<execute macro="SiteNavigationMenu#_openMenuSidebar" />
+
+		<execute function="AssertTextEquals" locator1="Message#ERROR_3" value1="The primary menu for this site is already defined." />
+
+		<execute function="AssertNotChecked" locator1="SiteNavigationMenu#FUNCTION_RADIO">
+			<var name="key_function" value="Primary" />
 		</execute>
 	</command>
 </definition>
