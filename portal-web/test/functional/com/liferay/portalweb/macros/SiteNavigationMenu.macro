@@ -6,6 +6,8 @@
 	<command name="_addItemPage">
 		<execute function="AssertClick" locator1="Button#CHOOSE" value1="Choose" />
 
+		<execute macro="IFrame#selectTopFrame" />
+
 		<execute macro="IFrame#selectConfigurationFrame" />
 
 		<if>
@@ -30,6 +32,8 @@
 		<execute function="MouseOver" locator1="Button#DONE" />
 
 		<execute macro="Button#clickDone" />
+
+		<execute macro="IFrame#selectConfigurationFrame" />
 	</command>
 
 	<command name="_addItemSubmenu">
@@ -83,6 +87,8 @@
 			</else>
 		</if>
 
+		<execute macro="IFrame#selectConfigurationFrame" />
+
 		<if>
 			<equals arg1="${item}" arg2="Application" />
 			<then>
@@ -119,6 +125,8 @@
 		</if>
 
 		<execute function="AssertClick" locator1="Button#ADD" value1="Add" />
+
+		<execute macro="IFrame#selectTopFrame" />
 
 		<execute macro="Alert#viewSuccessMessage" />
 	</command>
