@@ -179,7 +179,7 @@
 
 		<execute macro="ProductMenuHelper#closeProductMenu" />
 
-		<execute function="DragAndDrop#dragAndDrop" locator1="SiteNavigationMenu#ITEM_ENTRY_STICKER" value1="${coordString}">
+		<execute function="DragAndDrop#dragAndDrop" locator1="SiteNavigationMenu#ITEM_ENTRY_STICKER" value1="${coordString}|10,0|-10,0">
 			<var name="key_itemName" value="${itemName}" />
 		</execute>
 
