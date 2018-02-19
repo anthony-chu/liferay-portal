@@ -440,38 +440,6 @@ public class LayoutsAdminDisplayContext {
 		return orphanPortletsURL.toString();
 	}
 
-	public String getPagesName() {
-		if (_pagesName != null) {
-			return _pagesName;
-		}
-
-		Group liveGroup = getLiveGroup();
-
-		if (liveGroup.isLayoutPrototype() || liveGroup.isLayoutSetPrototype() ||
-			liveGroup.isUserGroup()) {
-
-			_pagesName = "pages";
-		}
-		else if (isPrivateLayout()) {
-			if (liveGroup.isUser()) {
-				_pagesName = "my-dashboard";
-			}
-			else {
-				_pagesName = "private-pages";
-			}
-		}
-		else {
-			if (liveGroup.isUser()) {
-				_pagesName = "my-profile";
-			}
-			else {
-				_pagesName = "public-pages";
-			}
-		}
-
-		return _pagesName;
-	}
-
 	public long getParentLayoutId() {
 		if (_parentLayoutId != null) {
 			return _parentLayoutId;
@@ -1077,7 +1045,6 @@ public class LayoutsAdminDisplayContext {
 	private String[] _navigationKeys;
 	private String _orderByCol;
 	private String _orderByType;
-	private String _pagesName;
 	private Long _parentLayoutId;
 	private Boolean _privateLayout;
 	private String _redirect;
