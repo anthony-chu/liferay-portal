@@ -52,7 +52,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -342,7 +342,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -398,7 +398,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -483,7 +483,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -543,7 +543,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -570,7 +570,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page 2" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -609,7 +609,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page 3" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -1205,7 +1205,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Site Page Name" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoSitePage">
@@ -1356,7 +1356,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -1480,7 +1480,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -1734,7 +1734,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -1856,7 +1856,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -1899,7 +1899,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -1943,7 +1943,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -2056,7 +2056,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -2147,7 +2147,7 @@
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
