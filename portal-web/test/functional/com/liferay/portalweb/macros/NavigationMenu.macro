@@ -9,6 +9,17 @@
 		</execute>
 	</command>
 
+	<command name="goToPropertiesSidebar">
+		<execute function="Click" locator1="ContentTargeting#CARD_CONTENT_TITLE">
+			<var name="key_contentTitle" value="${contentTitle}" />
+		</execute>
+
+		<execute function="AssertTextEquals" locator1="Navigation#SIDEBAR_HEADER" value1="${contentTitle}">
+			<var name="key_contentTitle" value="${contentTitle}" />
+		</execute>
+		<execute function="AssertTextEquals" locator1="TextInput#TITLE" value1="${contentTitle}" />
+	</command>
+
 	<command name="selectAndSaveConfiguration">
 		<execute function="SelectFrame" locator1="IFrame#CONFIGURATION" />
 
