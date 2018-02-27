@@ -23,6 +23,11 @@
 	<td>//section[contains(@id,'content')]//div[contains(@class,'nav-menu')]/h2/a[contains(.,'${key_pageName}')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>SIDEBAR_HEADER</td>
+	<td>//div[contains(@class,'sidebar-header')][contains(.,'${key_contentTitle}')]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>

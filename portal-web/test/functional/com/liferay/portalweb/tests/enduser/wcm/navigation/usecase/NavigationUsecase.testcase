@@ -154,6 +154,24 @@
 		<execute function="DragAndDrop#dragAndDropToObject" locator1="Home#PAGE_1" locator2="Home#PAGE_2" value1="Welcome" />
 	</command>
 
+	<command name="NavigationMenuPropertiesSidebarVisible" priority="5">
+		<description message="This is a use case for LPS-67191." />
+
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="category" value="Navigation" />
+			<var name="panel" value="Site Administration" />
+			<var name="portlet" value="Navigation Menus" />
+		</execute>
+
+		<execute macro="LexiconEntry#gotoEntry">
+			<var name="rowEntry" value="Default" />
+		</execute>
+
+		<execute macro="NavigationMenu#goToPropertiesSidebar">
+			<var name="contentTitle" value="Welcome" />
+		</execute>
+	</command>
+
 	<command name="ValidateReturnToDefaultStyle" priority="3">
 		<property name="custom.properties" value="display.style.default=from-level-1-with-title${line.separator}navigation.display.style[from-level-1-with-title]=root-layout,absolute,1,auto,true" />
 		<property name="testray.component.names" value="Navigation" />
