@@ -39,6 +39,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>SIDEBAR_ITEM_NAME</td>
+	<td>//div[contains(@class,'sidebar-header')][contains(.,'${key_itemName}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>FUNCTION_RADIO</td>
 	<td>//div[normalize-space()='${key_function}']//input</td>
 	<td></td>
