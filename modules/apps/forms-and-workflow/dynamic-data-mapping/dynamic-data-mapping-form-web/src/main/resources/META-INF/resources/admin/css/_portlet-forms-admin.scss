@@ -56,6 +56,10 @@
 
 .publish-popover-content {
 	display: none;
+
+	.arrow {
+		top: 40%;
+	}
 }
 
 .portlet-forms-admin {
@@ -392,7 +396,6 @@
 		border-color: #869CAD;
 		color: initial;
 		cursor: default;
-		opacity: 1;
 	}
 
 	.layout-builder-move-target-label,

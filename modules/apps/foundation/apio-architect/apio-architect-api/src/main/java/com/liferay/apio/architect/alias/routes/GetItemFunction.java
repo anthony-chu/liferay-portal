@@ -27,7 +27,6 @@ import java.util.function.Function;
  * @param  <T> the model's type
  * @param  <S> the type of the model's identifier (e.g., {@code Long}, {@code
  *         String}, etc.)
- * @review
  */
 @FunctionalInterface
 public interface GetItemFunction<T, S>

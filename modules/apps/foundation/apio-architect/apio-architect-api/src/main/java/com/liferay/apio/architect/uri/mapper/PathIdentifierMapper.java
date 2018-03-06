@@ -48,7 +48,6 @@ public interface PathIdentifierMapper<T> {
 	 * @param  name the resource's name
 	 * @param  t the identifier
 	 * @return the corresponding path
-	 * @review
 	 */
 	public Path map(String name, T t);
 

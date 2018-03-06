@@ -22,7 +22,7 @@ import com.liferay.apio.architect.identifier.Identifier;
 import com.liferay.apio.architect.unsafe.Unsafe;
 import com.liferay.apio.architect.uri.Path;
 import com.liferay.apio.architect.uri.mapper.PathIdentifierMapper;
-import com.liferay.apio.architect.wiring.osgi.internal.manager.base.SimpleBaseManager;
+import com.liferay.apio.architect.wiring.osgi.internal.manager.base.ClassNameBaseManager;
 import com.liferay.apio.architect.wiring.osgi.manager.PathIdentifierMapperManager;
 import com.liferay.apio.architect.wiring.osgi.manager.representable.IdentifierClassManager;
 
@@ -36,11 +36,11 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(immediate = true)
 public class PathIdentifierMapperManagerImpl
-	extends SimpleBaseManager<PathIdentifierMapper>
+	extends ClassNameBaseManager<PathIdentifierMapper>
 	implements PathIdentifierMapperManager {
 
 	public PathIdentifierMapperManagerImpl() {
-		super(PathIdentifierMapper.class);
+		super(PathIdentifierMapper.class, 0);
 	}
 
 	@Override

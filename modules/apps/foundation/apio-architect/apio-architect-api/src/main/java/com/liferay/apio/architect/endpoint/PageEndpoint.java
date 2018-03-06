@@ -32,10 +32,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 /**
- * Declares the endpoint for the page operations.
+ * Declares the endpoint for page operations.
  *
  * @author Alejandro Hernández
- * @review
  */
 public interface PageEndpoint<T> {
 

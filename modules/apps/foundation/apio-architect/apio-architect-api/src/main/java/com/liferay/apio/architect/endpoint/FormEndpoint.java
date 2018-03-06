@@ -31,10 +31,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
 /**
- * Declares the endpoint for the form operations.
+ * Declares the endpoint for form operations.
  *
  * @author Alejandro Hernández
- * @review
  */
 public class FormEndpoint {
 

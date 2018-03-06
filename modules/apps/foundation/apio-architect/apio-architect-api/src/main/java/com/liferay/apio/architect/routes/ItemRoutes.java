@@ -122,10 +122,9 @@ public class ItemRoutes<T, S> {
 	 * Creates the {@code ItemRoutes} of an {@link
 	 * com.liferay.apio.architect.router.ItemRouter}.
 	 *
-	 * @param  <T> the model's type
-	 * @param  <S> the model identifier's type. It must be a subclass of {@code
-	 *         Identifier}.
-	 * @review
+	 * @param <T> the model's type
+	 * @param <S> the model identifier's type. It must be a subclass of {@code
+	 *        Identifier}.
 	 */
 	@SuppressWarnings("unused")
 	public static class Builder<T, S> {
@@ -276,12 +275,11 @@ public class ItemRoutes<T, S> {
 		/**
 		 * Adds a route to a remover function with one extra parameter.
 		 *
-		 * @param  biConsumer the remover function that removes the item
+		 * @param  biConsumer the remover function
 		 * @param  aClass the class of the item remover function's second
 		 *         parameter
 		 * @param  permissionBiFunction the permission function for this route
 		 * @return the updated builder
-		 * @review
 		 */
 		public <A> Builder<T, S> addRemover(
 			BiConsumer<S, A> biConsumer, Class<A> aClass,
@@ -299,12 +297,11 @@ public class ItemRoutes<T, S> {
 		}
 
 		/**
-		 * Adds a route to a remover function with none extra parameters.
+		 * Adds a route to a remover function with no extra parameters.
 		 *
-		 * @param  consumer the remover function that removes the item
+		 * @param  consumer the remover function
 		 * @param  permissionBiFunction the permission function for this route
 		 * @return the updated builder
-		 * @review
 		 */
 		public Builder<T, S> addRemover(
 			Consumer<S> consumer,
@@ -320,7 +317,7 @@ public class ItemRoutes<T, S> {
 		/**
 		 * Adds a route to a remover function with four extra parameters.
 		 *
-		 * @param  pentaConsumer the remover function that removes the item
+		 * @param  pentaConsumer the remover function
 		 * @param  aClass the class of the item remover function's second
 		 *         parameter
 		 * @param  bClass the class of the item remover function's third
@@ -331,7 +328,6 @@ public class ItemRoutes<T, S> {
 		 *         parameter
 		 * @param  permissionBiFunction the permission function for this route
 		 * @return the updated builder
-		 * @review
 		 */
 		public <A, B, C, D> Builder<T, S> addRemover(
 			PentaConsumer<S, A, B, C, D> pentaConsumer, Class<A> aClass,
@@ -356,7 +352,7 @@ public class ItemRoutes<T, S> {
 		/**
 		 * Adds a route to a remover function with three extra parameters.
 		 *
-		 * @param  tetraConsumer the remover function that removes the item
+		 * @param  tetraConsumer the remover function
 		 * @param  aClass the class of the item remover function's second
 		 *         parameter
 		 * @param  bClass the class of the item remover function's third
@@ -365,7 +361,6 @@ public class ItemRoutes<T, S> {
 		 *         parameter
 		 * @param  permissionBiFunction the permission function for this route
 		 * @return the updated builder
-		 * @review
 		 */
 		public <A, B, C> Builder<T, S> addRemover(
 			TetraConsumer<S, A, B, C> tetraConsumer, Class<A> aClass,
@@ -388,14 +383,13 @@ public class ItemRoutes<T, S> {
 		/**
 		 * Adds a route to a remover function with two extra parameters.
 		 *
-		 * @param  triConsumer the remover function that removes the item
+		 * @param  triConsumer the remover function
 		 * @param  aClass the class of the item remover function's second
 		 *         parameter
 		 * @param  bClass the class of the item remover function's third
 		 *         parameter
 		 * @param  permissionBiFunction the permission function for this route
 		 * @return the updated builder
-		 * @review
 		 */
 		public <A, B> Builder<T, S> addRemover(
 			TriConsumer<S, A, B> triConsumer, Class<A> aClass, Class<B> bClass,
@@ -414,14 +408,13 @@ public class ItemRoutes<T, S> {
 		}
 
 		/**
-		 * Adds a route to a updater function with none extra parameters.
+		 * Adds a route to an updater function with no extra parameters.
 		 *
-		 * @param  biFunction the updater function that removes the item
+		 * @param  biFunction the updater function
 		 * @param  permissionBiFunction the permission function for this route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
-		 * @review
 		 */
 		public <R> Builder<T, S> addUpdater(
 			BiFunction<S, R, T> biFunction,
@@ -448,22 +441,17 @@ public class ItemRoutes<T, S> {
 		}
 
 		/**
-		 * Adds a route to a updater function with four extra parameters.
+		 * Adds a route to an updater function with four extra parameters.
 		 *
-		 * @param  hexaFunction the updater function that removes the item
-		 * @param  aClass the class of the item updater function's third
-		 *         parameter
-		 * @param  bClass the class of the item updater function's fourth
-		 *         parameter
-		 * @param  cClass the class of the item updater function's fifth
-		 *         parameter
-		 * @param  dClass the class of the item updater function's sixth
-		 *         parameter
+		 * @param  hexaFunction the updater function
+		 * @param  aClass the class of the updater function's third parameter
+		 * @param  bClass the class of the updater function's fourth parameter
+		 * @param  cClass the class of the updater function's fifth parameter
+		 * @param  dClass the class of the updater function's sixth parameter
 		 * @param  permissionBiFunction the permission function for this route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
-		 * @review
 		 */
 		public <A, B, C, D, R> Builder<T, S> addUpdater(
 			HexaFunction<S, R, A, B, C, D, T> hexaFunction, Class<A> aClass,
@@ -497,20 +485,16 @@ public class ItemRoutes<T, S> {
 		}
 
 		/**
-		 * Adds a route to a updater function with three extra parameters.
+		 * Adds a route to an updater function with three extra parameters.
 		 *
 		 * @param  pentaFunction the updater function that removes the item
-		 * @param  aClass the class of the item updater function's third
-		 *         parameter
-		 * @param  bClass the class of the item updater function's fourth
-		 *         parameter
-		 * @param  cClass the class of the item updater function's fifth
-		 *         parameter
+		 * @param  aClass the class of the updater function's third parameter
+		 * @param  bClass the class of the updater function's fourth parameter
+		 * @param  cClass the class of the updater function's fifth parameter
 		 * @param  permissionBiFunction the permission function for this route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
-		 * @review
 		 */
 		public <A, B, C, R> Builder<T, S> addUpdater(
 			PentaFunction<S, R, A, B, C, T> pentaFunction, Class<A> aClass,
@@ -543,18 +527,15 @@ public class ItemRoutes<T, S> {
 		}
 
 		/**
-		 * Adds a route to a updater function with two extra parameters.
+		 * Adds a route to an updater function with two extra parameters.
 		 *
-		 * @param  tetraFunction the updater function that removes the item
-		 * @param  aClass the class of the item updater function's third
-		 *         parameter
-		 * @param  bClass the class of the item updater function's fourth
-		 *         parameter
+		 * @param  tetraFunction the updater function
+		 * @param  aClass the class of the updater function's third parameter
+		 * @param  bClass the class of the updater function's fourth parameter
 		 * @param  permissionBiFunction the permission function for this route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
-		 * @review
 		 */
 		public <A, B, R> Builder<T, S> addUpdater(
 			TetraFunction<S, R, A, B, T> tetraFunction, Class<A> aClass,
@@ -586,16 +567,14 @@ public class ItemRoutes<T, S> {
 		}
 
 		/**
-		 * Adds a route to a updater function with one extra parameter.
+		 * Adds a route to an updater function with one extra parameter.
 		 *
 		 * @param  triFunction the updater function that removes the item
-		 * @param  aClass the class of the item updater function's third
-		 *         parameter
+		 * @param  aClass the class of the updater function's third parameter
 		 * @param  permissionBiFunction the permission function for this route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
-		 * @review
 		 */
 		public <A, R> Builder<T, S> addUpdater(
 			TriFunction<S, R, A, T> triFunction, Class<A> aClass,

@@ -23,9 +23,11 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -93,7 +95,7 @@ public class Entity implements Comparable<Entity> {
 			null, null, null, null, name, null, null, null, false, false, false,
 			true, null, null, null, null, null, true, false, false, false,
 			false, false, null, null, null, null, null, null, null, null, null,
-			null, false);
+			null, false, null);
 	}
 
 	public Entity(
@@ -111,15 +113,14 @@ public class Entity implements Comparable<Entity> {
 		List<EntityColumn> entityColumns, EntityOrder entityOrder,
 		List<EntityFinder> entityFinders, List<Entity> referenceEntities,
 		List<String> unresolvedReferenceEntityNames,
-		List<String> txRequiredMethodNames, boolean resourceActionModel) {
+		List<String> txRequiredMethodNames, boolean resourceActionModel,
+		String uadEntityTypeDescription) {
 
 		_packagePath = packagePath;
 		_apiPackagePath = apiPackagePath;
 		_portletName = portletName;
 		_portletShortName = portletShortName;
 		_name = name;
-		_humanName = GetterUtil.getString(
-			humanName, ServiceBuilder.toHumanName(name));
 		_table = table;
 		_alias = alias;
 		_uuid = uuid;
@@ -128,10 +129,6 @@ public class Entity implements Comparable<Entity> {
 		_remoteService = remoteService;
 		_persistenceClassName = persistenceClass;
 		_finderClassName = finderClassName;
-		_dataSource = GetterUtil.getString(dataSource, _DATA_SOURCE_DEFAULT);
-		_sessionFactory = GetterUtil.getString(
-			sessionFactory, _SESSION_FACTORY_DEFAULT);
-		_txManager = GetterUtil.getString(txManager, _TX_MANAGER_DEFAULT);
 		_dynamicUpdateEnabled = dynamicUpdateEnabled;
 		_jsonEnabled = jsonEnabled;
 		_mvccEnabled = mvccEnabled;
@@ -148,6 +145,14 @@ public class Entity implements Comparable<Entity> {
 		_unresolvedReferenceEntityNames = unresolvedReferenceEntityNames;
 		_txRequiredMethodNames = txRequiredMethodNames;
 		_resourceActionModel = resourceActionModel;
+		_uadEntityTypeDescription = uadEntityTypeDescription;
+
+		_humanName = GetterUtil.getString(
+			humanName, ServiceBuilder.toHumanName(name));
+		_dataSource = GetterUtil.getString(dataSource, _DATA_SOURCE_DEFAULT);
+		_sessionFactory = GetterUtil.getString(
+			sessionFactory, _SESSION_FACTORY_DEFAULT);
+		_txManager = GetterUtil.getString(txManager, _TX_MANAGER_DEFAULT);
 
 		if (_entityFinders != null) {
 			Set<EntityColumn> finderEntityColumns = new HashSet<>();
@@ -271,6 +276,11 @@ public class Entity implements Comparable<Entity> {
 		}
 
 		return entityFinders;
+	}
+
+	public String getConstantName() {
+		return TextFormatter.format(
+			TextFormatter.format(_name, TextFormatter.H), TextFormatter.A);
 	}
 
 	public String getDataSource() {
@@ -438,6 +448,43 @@ public class Entity implements Comparable<Entity> {
 
 	public List<String> getTxRequiredMethodNames() {
 		return _txRequiredMethodNames;
+	}
+
+	public Map<String, List<EntityColumn>>
+		getUADAnonymizableEntityColumnsMap() {
+
+		Map<String, List<EntityColumn>> uadAnonymizableEntityColumnsMap =
+			new HashMap<>();
+
+		for (EntityColumn entityColumn : _entityColumns) {
+			if (entityColumn.isUADUserId()) {
+				List<EntityColumn> uadAnonymizableEntityColumns =
+					new ArrayList<>();
+
+				uadAnonymizableEntityColumns.add(entityColumn);
+
+				uadAnonymizableEntityColumnsMap.put(
+					entityColumn.getName(), uadAnonymizableEntityColumns);
+			}
+		}
+
+		for (EntityColumn entityColumn : _entityColumns) {
+			if (entityColumn.isUADUserName()) {
+				List<EntityColumn> uadAnonymizableEntityColumns =
+					uadAnonymizableEntityColumnsMap.get(
+						entityColumn.getUADUserIdColumnName());
+
+				if (uadAnonymizableEntityColumns != null) {
+					uadAnonymizableEntityColumns.add(entityColumn);
+				}
+			}
+		}
+
+		return uadAnonymizableEntityColumnsMap;
+	}
+
+	public String getUADEntityTypeDescription() {
+		return _uadEntityTypeDescription;
 	}
 
 	public List<EntityColumn> getUADNonanonymizableEntityColumns() {
@@ -995,6 +1042,7 @@ public class Entity implements Comparable<Entity> {
 	private final boolean _trashEnabled;
 	private final String _txManager;
 	private final List<String> _txRequiredMethodNames;
+	private final String _uadEntityTypeDescription;
 	private List<String> _unresolvedReferenceEntityNames;
 	private final boolean _uuid;
 	private final boolean _uuidAccessor;

@@ -16,23 +16,20 @@ package com.liferay.apio.architect.wiring.osgi.internal.manager.router;
 
 import static com.liferay.apio.architect.alias.ProvideFunction.curry;
 import static com.liferay.apio.architect.unsafe.Unsafe.unsafeCast;
-import static com.liferay.apio.architect.wiring.osgi.internal.manager.ManagerCache.INSTANCE;
+import static com.liferay.apio.architect.wiring.osgi.internal.manager.cache.ManagerCache.INSTANCE;
 
 import com.liferay.apio.architect.logger.ApioLogger;
 import com.liferay.apio.architect.router.ReusableNestedCollectionRouter;
 import com.liferay.apio.architect.routes.ItemRoutes;
 import com.liferay.apio.architect.routes.NestedCollectionRoutes;
 import com.liferay.apio.architect.routes.NestedCollectionRoutes.Builder;
-import com.liferay.apio.architect.unsafe.Unsafe;
-import com.liferay.apio.architect.wiring.osgi.internal.manager.base.SimpleBaseManager;
+import com.liferay.apio.architect.wiring.osgi.internal.manager.base.ClassNameBaseManager;
 import com.liferay.apio.architect.wiring.osgi.manager.ProviderManager;
 import com.liferay.apio.architect.wiring.osgi.manager.representable.NameManager;
 import com.liferay.apio.architect.wiring.osgi.manager.router.ItemRouterManager;
 import com.liferay.apio.architect.wiring.osgi.manager.router.ReusableNestedCollectionRouterManager;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -46,36 +43,23 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(immediate = true)
 public class ReusableNestedCollectionRouterManagerImpl
-	extends SimpleBaseManager<ReusableNestedCollectionRouter>
+	extends ClassNameBaseManager<ReusableNestedCollectionRouter>
 	implements ReusableNestedCollectionRouterManager {
 
 	public ReusableNestedCollectionRouterManagerImpl() {
-		super(ReusableNestedCollectionRouter.class);
+		super(ReusableNestedCollectionRouter.class, 2);
 	}
 
 	@Override
 	public <T, S> Optional<NestedCollectionRoutes<T, S>>
 		getNestedCollectionRoutesOptional(String name) {
 
-		if (!INSTANCE.hasReusableNestedCollectionRoutes()) {
-			_generateNestedCollectionRoutes();
-		}
-
-		Optional<Map<String, NestedCollectionRoutes>> optional =
-			INSTANCE.getReusableNestedCollectionRoutesOptional();
-
-		return optional.map(
-			map -> map.get(name)
-		).map(
-			Unsafe::unsafeCast
-		);
+		return INSTANCE.getReusableNestedCollectionRoutesOptional(
+			name, this::_computeNestedCollectionRoutes);
 	}
 
-	private void _generateNestedCollectionRoutes() {
+	private void _computeNestedCollectionRoutes() {
 		Stream<String> stream = getKeyStream();
-
-		Map<String, NestedCollectionRoutes> nestedCollectionRoutes =
-			new HashMap<>();
 
 		stream.forEach(
 			className -> {
@@ -84,8 +68,7 @@ public class ReusableNestedCollectionRouterManagerImpl
 
 				if (!nameOptional.isPresent()) {
 					_apioLogger.warning(
-						"Could not found a Representable for classname " +
-							className);
+						"Unable to find a name for class name " + className);
 
 					return;
 				}
@@ -122,12 +105,10 @@ public class ReusableNestedCollectionRouterManagerImpl
 					return;
 				}
 
-				nestedCollectionRoutes.put(
+				INSTANCE.putReusableNestedCollectionRoutes(
 					name,
 					reusableNestedCollectionRouter.collectionRoutes(builder));
 			});
-
-		INSTANCE.setReusableNestedCollectionRoutes(nestedCollectionRoutes);
 	}
 
 	@Reference

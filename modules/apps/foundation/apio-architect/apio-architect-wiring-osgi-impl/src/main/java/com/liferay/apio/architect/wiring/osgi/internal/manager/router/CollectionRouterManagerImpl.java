@@ -16,25 +16,20 @@ package com.liferay.apio.architect.wiring.osgi.internal.manager.router;
 
 import static com.liferay.apio.architect.alias.ProvideFunction.curry;
 import static com.liferay.apio.architect.unsafe.Unsafe.unsafeCast;
-import static com.liferay.apio.architect.wiring.osgi.internal.manager.ManagerCache.INSTANCE;
+import static com.liferay.apio.architect.wiring.osgi.internal.manager.cache.ManagerCache.INSTANCE;
 
 import com.liferay.apio.architect.logger.ApioLogger;
 import com.liferay.apio.architect.router.CollectionRouter;
 import com.liferay.apio.architect.routes.CollectionRoutes;
 import com.liferay.apio.architect.routes.CollectionRoutes.Builder;
 import com.liferay.apio.architect.routes.ItemRoutes;
-import com.liferay.apio.architect.unsafe.Unsafe;
-import com.liferay.apio.architect.wiring.osgi.internal.manager.base.SimpleBaseManager;
+import com.liferay.apio.architect.wiring.osgi.internal.manager.base.ClassNameBaseManager;
 import com.liferay.apio.architect.wiring.osgi.manager.ProviderManager;
 import com.liferay.apio.architect.wiring.osgi.manager.representable.NameManager;
 import com.liferay.apio.architect.wiring.osgi.manager.router.CollectionRouterManager;
 import com.liferay.apio.architect.wiring.osgi.manager.router.ItemRouterManager;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -48,54 +43,28 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(immediate = true)
 public class CollectionRouterManagerImpl
-	extends SimpleBaseManager<CollectionRouter>
+	extends ClassNameBaseManager<CollectionRouter>
 	implements CollectionRouterManager {
 
 	public CollectionRouterManagerImpl() {
-		super(CollectionRouter.class);
+		super(CollectionRouter.class, 1);
 	}
 
 	@Override
 	public <T> Optional<CollectionRoutes<T>> getCollectionRoutesOptional(
 		String name) {
 
-		if (!INSTANCE.hasCollectionRoutes()) {
-			_generateCollectionRoutes();
-		}
-
-		Optional<Map<String, CollectionRoutes>> optional =
-			INSTANCE.getCollectionRoutesOptional();
-
-		return optional.map(
-			map -> map.get(name)
-		).map(
-			Unsafe::unsafeCast
-		);
-	}
-
-	@Override
-	public Integer getPrincipalTypeParamPosition() {
-		return 1;
+		return INSTANCE.getCollectionRoutesOptional(
+			name, this::_computeCollectionRoutes);
 	}
 
 	@Override
 	public List<String> getResourceNames() {
-		if (!INSTANCE.hasRootResourceNames()) {
-			_generateCollectionRoutes();
-		}
-
-		Optional<List<String>> optional =
-			INSTANCE.getRootResourceNamesOptional();
-
-		return optional.orElseGet(Collections::emptyList);
+		return INSTANCE.getRootResourceNames(this::_computeCollectionRoutes);
 	}
 
-	private void _generateCollectionRoutes() {
+	private void _computeCollectionRoutes() {
 		Stream<String> stream = getKeyStream();
-
-		List<String> resourceNames = new ArrayList<>();
-
-		Map<String, CollectionRoutes> collectionRoutes = new HashMap<>();
 
 		stream.forEach(
 			className -> {
@@ -104,8 +73,7 @@ public class CollectionRouterManagerImpl
 
 				if (!nameOptional.isPresent()) {
 					_apioLogger.warning(
-						"Could not found a Representable for classname " +
-							className);
+						"Unable to find a name for class name " + className);
 
 					return;
 				}
@@ -141,13 +109,10 @@ public class CollectionRouterManagerImpl
 					return;
 				}
 
-				resourceNames.add(name);
-				collectionRoutes.put(
+				INSTANCE.putRootResourceName(name);
+				INSTANCE.putCollectionRoutes(
 					name, collectionRouter.collectionRoutes(builder));
 			});
-
-		INSTANCE.setRootResourceNames(resourceNames);
-		INSTANCE.setCollectionRoutes(collectionRoutes);
 	}
 
 	@Reference

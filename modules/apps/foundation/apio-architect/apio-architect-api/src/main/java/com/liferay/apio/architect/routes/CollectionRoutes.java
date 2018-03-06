@@ -117,13 +117,12 @@ public class CollectionRoutes<T> {
 		/**
 		 * Adds a route to a creator function that has one extra parameter.
 		 *
-		 * @param  biFunction the creator function that adds the collection item
+		 * @param  biFunction the creator function
 		 * @param  aClass the class of the creator function's second parameter
 		 * @param  permissionFunction the permission function for this route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
-		 * @review
 		 */
 		public <A, R> Builder<T> addCreator(
 			BiFunction<R, A, T> biFunction, Class<A> aClass,
@@ -153,12 +152,11 @@ public class CollectionRoutes<T> {
 		/**
 		 * Adds a route to a creator function that has no extra parameters.
 		 *
-		 * @param  function the creator function that adds the collection item
+		 * @param  function the creator function
 		 * @param  permissionFunction the permission function for this route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
-		 * @review
 		 */
 		public <R> Builder<T> addCreator(
 			Function<R, T> function,
@@ -185,8 +183,7 @@ public class CollectionRoutes<T> {
 		/**
 		 * Adds a route to a creator function that has four extra parameters.
 		 *
-		 * @param  pentaFunction the creator function that adds the collection
-		 *         item
+		 * @param  pentaFunction the creator function
 		 * @param  aClass the class of the creator function's second parameter
 		 * @param  bClass the class of the creator function's third parameter
 		 * @param  cClass the class of the creator function's fourth parameter
@@ -195,7 +192,6 @@ public class CollectionRoutes<T> {
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
-		 * @review
 		 */
 		public <A, B, C, D, R> Builder<T> addCreator(
 			PentaFunction<R, A, B, C, D, T> pentaFunction, Class<A> aClass,
@@ -230,8 +226,7 @@ public class CollectionRoutes<T> {
 		/**
 		 * Adds a route to a creator function that has three extra parameters.
 		 *
-		 * @param  pentaFunction the creator function that adds the collection
-		 *         item
+		 * @param  pentaFunction the creator function
 		 * @param  aClass the class of the creator function's second parameter
 		 * @param  bClass the class of the creator function's third parameter
 		 * @param  cClass the class of the creator function's fourth parameter
@@ -239,7 +234,6 @@ public class CollectionRoutes<T> {
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
-		 * @review
 		 */
 		public <A, B, C, R> Builder<T> addCreator(
 			TetraFunction<R, A, B, C, T> pentaFunction, Class<A> aClass,
@@ -273,15 +267,13 @@ public class CollectionRoutes<T> {
 		/**
 		 * Adds a route to a creator function that has two extra parameters.
 		 *
-		 * @param  triFunction the creator function that adds the collection
-		 *         item
+		 * @param  triFunction the creator function
 		 * @param  aClass the class of the creator function's second parameter
 		 * @param  bClass the class of the creator function's third parameter
 		 * @param  permissionFunction the permission function for this route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
-		 * @review
 		 */
 		public <A, B, R> Builder<T> addCreator(
 			TriFunction<R, A, B, T> triFunction, Class<A> aClass,

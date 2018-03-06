@@ -35,8 +35,6 @@ public class RoutesTestUtil {
 
 	/**
 	 * A collection permission function that always returns {@code true}.
-	 *
-	 * @review
 	 */
 	public static final Function<Credentials, Boolean>
 		COLLECTION_PERMISSION_FUNCTION = __ -> true;
@@ -44,8 +42,6 @@ public class RoutesTestUtil {
 	/**
 	 * A {@code FormBuilderFunction} that creates a {@code Map<String, Object>}
 	 * {@code Form}.
-	 *
-	 * @review
 	 */
 	public static final FormBuilderFunction<Map<String, Object>>
 		FORM_BUILDER_FUNCTION = builder -> builder.title(
@@ -60,25 +56,19 @@ public class RoutesTestUtil {
 
 	/**
 	 * An item permission function that always returns {@code true}.
-	 *
-	 * @review
 	 */
 	public static final BiFunction<Credentials, Long, Boolean>
 		ITEM_PERMISSION_FUNCTION = (credentials, aLong) -> true;
 
 	/**
-	 * Mocked {@code Pagination}.
-	 *
-	 * @review
+	 * A mock {@code Pagination} object.
 	 */
 	public static final Pagination PAGINATION = new Pagination(4, 2);
 
 	/**
-	 * A function that is able to provide instances of {@code String}, {@code
-	 * Long}, {@code Integer}, {@code Boolean}, {@code Float}, {@code
-	 * Pagination} and {@code Credentials}.
-	 *
-	 * @review
+	 * A function that provides instances of {@code String}, {@code Long},
+	 * {@code Integer}, {@code Boolean}, {@code Float}, {@code Pagination}, and
+	 * {@code Credentials}.
 	 */
 	public static final Function<Class<?>, ?> PROVIDE_FUNCTION = aClass -> {
 		if (aClass.equals(String.class)) {
@@ -108,11 +98,9 @@ public class RoutesTestUtil {
 	};
 
 	/**
-	 * A {@code ProvideFunction} that is able to provide instances of {@code
-	 * String}, {@code Long}, {@code Integer}, {@code Boolean}, {@code Float}
-	 * and {@code Pagination}.
-	 *
-	 * @review
+	 * A {@code ProvideFunction} that provides instances of {@code String},
+	 * {@code Long}, {@code Integer}, {@code Boolean}, {@code Float}, and {@code
+	 * Pagination}.
 	 */
 	public static final ProvideFunction REQUEST_PROVIDE_FUNCTION =
 		__ -> PROVIDE_FUNCTION;
@@ -120,8 +108,6 @@ public class RoutesTestUtil {
 	/**
 	 * Returns a nested collection permission function that always returns
 	 * {@code true}.
-	 *
-	 * @review
 	 */
 	public static <S> BiFunction<Credentials, S, Boolean>
 		getNestedCollectionPermissionFunction() {

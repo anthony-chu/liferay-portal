@@ -34,8 +34,7 @@ public interface ProvideFunction
 	 *
 	 * @param  biFunction the non-currified version of the {@code
 	 *         ProvideFunction}
-	 * @return the {@code ProvideFunction}
-	 * @review
+	 * @return the currified {@code ProvideFunction}
 	 */
 	public static ProvideFunction curry(
 		BiFunction<HttpServletRequest, Class<?>, ?> biFunction) {

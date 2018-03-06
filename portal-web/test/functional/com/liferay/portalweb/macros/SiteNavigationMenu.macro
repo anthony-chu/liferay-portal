@@ -1,8 +1,4 @@
 <definition>
-	<command name="_addItemApplication">
-		<execute function="Select" locator1="SiteNavigationMenu#APPLICATION_SELECT" value1="${applicationName}" />
-	</command>
-
 	<command name="_addItemPage">
 		<execute function="AssertClick" locator1="Button#CHOOSE" value1="Choose" />
 
@@ -61,6 +57,39 @@
 		<execute function="AssertNotVisible" locator1="SiteNavigationMenu#SIDEBAR" />
 	</command>
 
+	<command name="_editItemPage">
+		<if>
+			<isset var="title" />
+			<then>
+				<execute function="Type" locator1="TextInput#TITLE" value1="${title}" />
+			</then>
+		</if>
+	</command>
+
+	<command name="_editItemSubmenu">
+		<if>
+			<isset var="name" />
+			<then>
+				<execute function="Type" locator1="TextInput#NAME" value1="${name}" />
+			</then>
+		</if>
+	</command>
+
+	<command name="_editItemURL">
+		<if>
+			<isset var="name" />
+			<then>
+				<execute function="Type" locator1="TextInput#NAME" value1="${name}" />
+			</then>
+			<elseif>
+				<isset var="url" />
+				<then>
+					<execute function="Type" locator1="TextInput#URL" value1="${URL}" />
+				</then>
+			</elseif>
+		</if>
+	</command>
+
 	<command name="_openMenuSidebar">
 		<if>
 			<condition function="IsNotVisible" locator1="SiteNavigationMenu#SIDEBAR" />
@@ -90,21 +119,13 @@
 		<execute macro="IFrame#selectConfigurationFrame" />
 
 		<if>
-			<equals arg1="${item}" arg2="Application" />
+			<equals arg1="${item}" arg2="Page" />
 			<then>
-				<execute macro="SiteNavigationMenu#_addItemApplication">
-					<var name="applicationName" value="${applicationName}" />
+				<execute macro="SiteNavigationMenu#_addItemPage">
+					<var name="pageName" value="${pageName}" />
+					<var name="privacy" value="${privacy}" />
 				</execute>
 			</then>
-			<elseif>
-				<equals arg1="${item}" arg2="Page" />
-				<then>
-					<execute macro="SiteNavigationMenu#_addItemPage">
-						<var name="pageName" value="${pageName}" />
-						<var name="privacy" value="${privacy}" />
-					</execute>
-				</then>
-			</elseif>
 			<elseif>
 				<equals arg1="${item}" arg2="Submenu" />
 				<then>
@@ -151,6 +172,40 @@
 		<execute macro="PortletEntry#save" />
 	</command>
 
+	<command name="editItem">
+		<execute macro="SiteNavigationMenu#openItemSidebar">
+			<var name="itemName" value="${itemName}" />
+		</execute>
+
+		<if>
+			<equals arg1="${item}" arg2="Page" />
+			<then>
+				<execute macro="SiteNavigationMenu#_editItemPage">
+					<var name="title" value="${title}" />
+				</execute>
+			</then>
+			<elseif>
+				<equals arg1="${item}" arg2="Submenu" />
+				<then>
+					<execute macro="SiteNavigationMenu#_editItemSubmenu">
+						<var name="submenuName" value="${submenuName}" />
+					</execute>
+				</then>
+			</elseif>
+			<elseif>
+				<equals arg1="${item}" arg2="URL" />
+				<then>
+					<execute macro="SiteNavigationMenu#_editItemURL">
+						<var name="name" value="${name}" />
+						<var name="url" value="${url" />
+					</execute>
+				</then>
+			</elseif>
+		</if>
+
+		<execute macro="PortletEntry#save" />
+	</command>
+
 	<command name="moveItem">
 		<if>
 			<equals arg1="${direction}" arg2="up" />
@@ -186,6 +241,17 @@
 		<execute function="Pause" value1="3000" />
 
 		<execute function="Refresh" />
+	</command>
+
+	<command name="openItemSidebar">
+		<execute function="Click" locator1="SiteNavigationMenu#ITEM_ENTRY">
+			<var name="key_itemName" value="${itemName}" />
+		</execute>
+
+		<execute function="AssertTextEquals" locator1="SiteNavigationMenu#SIDEBAR_ITEM_NAME" value1="${itemName}">
+			<var name="key_itemName" value="${itemName}" />
+		</execute>
+		<execute function="AssertElementPresent" locator1="SiteNavigationMenu#SIDEBAR" />
 	</command>
 
 	<command name="viewItem">

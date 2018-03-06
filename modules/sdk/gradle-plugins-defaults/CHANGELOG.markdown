@@ -2894,6 +2894,53 @@ applies the `com.liferay.app.jsdoc` plugin.
 - [LPS-78096]: Update the [Liferay Gradle Plugins Poshi Runner] dependency to
 version 2.1.0.
 
+## 5.3.7 - 2018-02-20
+
+### Changed
+- [LPS-78071]: Update the [Liferay Gradle Plugins] dependency to version 3.7.7.
+
+## 5.3.8 - 2018-02-21
+
+### Changed
+- [LPS-78033]: Update the [Liferay Gradle Plugins] dependency to version 3.7.8.
+
+## 5.3.9 - 2018-02-22
+
+### Changed
+- [LPS-78150]: Update the [Liferay Gradle Plugins] dependency to version 3.7.9.
+
+## 5.3.10 - 2018-02-25
+
+### Changed
+- [LPS-77532]: Update the [Liferay Gradle Plugins] dependency to version 3.8.0.
+
+## 5.3.11 - 2018-02-26
+
+### Changed
+- [LPS-78231]: Update the [Liferay Gradle Plugins] dependency to version 3.8.1.
+
+## 5.3.12 - 2018-02-26
+
+### Changed
+- [LPS-78261]: Update the [Liferay Gradle Plugins] dependency to version 3.8.2.
+
+## 5.3.13 - 2018-02-28
+
+### Changed
+- [LPS-78266]: Update the [Liferay Gradle Plugins] dependency to version 3.8.3.
+- [LPS-78266]: Update the [Liferay Gradle Plugins Poshi Runner] dependency to
+version 2.2.0.
+
+## 5.3.14 - 2018-03-01
+
+### Changed
+- [LPS-76926]: Update the [Liferay Gradle Plugins] dependency to version 3.8.4.
+
+## 5.3.15 - 2018-03-02
+
+### Changed
+- [LPS-78436]: Update the [Liferay Gradle Plugins] dependency to version 3.8.5.
+
 [Find Security Bugs]: https://github.com/liferay/liferay-portal/tree/master/modules/third-party/com-h3xstream-findsecbugs
 [Gradle License Report]: https://github.com/jk1/Gradle-License-Report
 [Liferay CDN]: https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public
@@ -3211,6 +3258,7 @@ version 2.1.0.
 [LPS-77402]: https://issues.liferay.com/browse/LPS-77402
 [LPS-77423]: https://issues.liferay.com/browse/LPS-77423
 [LPS-77441]: https://issues.liferay.com/browse/LPS-77441
+[LPS-77532]: https://issues.liferay.com/browse/LPS-77532
 [LPS-77630]: https://issues.liferay.com/browse/LPS-77630
 [LPS-77795]: https://issues.liferay.com/browse/LPS-77795
 [LPS-77797]: https://issues.liferay.com/browse/LPS-77797
@@ -3222,7 +3270,13 @@ version 2.1.0.
 [LPS-77996]: https://issues.liferay.com/browse/LPS-77996
 [LPS-78033]: https://issues.liferay.com/browse/LPS-78033
 [LPS-78038]: https://issues.liferay.com/browse/LPS-78038
+[LPS-78071]: https://issues.liferay.com/browse/LPS-78071
 [LPS-78096]: https://issues.liferay.com/browse/LPS-78096
+[LPS-78150]: https://issues.liferay.com/browse/LPS-78150
+[LPS-78231]: https://issues.liferay.com/browse/LPS-78231
+[LPS-78261]: https://issues.liferay.com/browse/LPS-78261
+[LPS-78266]: https://issues.liferay.com/browse/LPS-78266
+[LPS-78436]: https://issues.liferay.com/browse/LPS-78436
 [LRDOCS-2594]: https://issues.liferay.com/browse/LRDOCS-2594
 [LRDOCS-2841]: https://issues.liferay.com/browse/LRDOCS-2841
 [LRDOCS-2981]: https://issues.liferay.com/browse/LRDOCS-2981

@@ -394,6 +394,26 @@ AUI.add(
 						}
 					},
 
+					_addFieldButton: function() {
+						var instance = this;
+
+						var ruleButton = A.one('.lfr-ddm-add-rule');
+
+						if (ruleButton) {
+							ruleButton.replaceClass('lfr-ddm-add-rule', 'lfr-ddm-add-field');
+						}
+					},
+
+					_addRuleButton: function() {
+						var instance = this;
+
+						var addButton = A.one('.lfr-ddm-add-field');
+
+						if (addButton) {
+							addButton.replaceClass('lfr-ddm-add-field', 'lfr-ddm-add-rule');
+						}
+					},
+
 					_afterAutosave: function(event) {
 						var instance = this;
 
@@ -477,7 +497,11 @@ AUI.add(
 										method: 'POST',
 										on: {
 											failure: function(event, id, xhr) {
-												window.location.reload();
+												var sessionStatus = Liferay.Session.get('sessionState');
+
+												if (sessionStatus === 'expired' || xhr.status === 401) {
+													window.location.reload();
+												}
 											}
 										}
 									}
@@ -711,7 +735,7 @@ AUI.add(
 
 						instance._showFormBuilder();
 
-						instance._toogleAddFieldButton();
+						instance._addFieldButton();
 					},
 
 					_onNameEditorChange: function(event) {
@@ -775,7 +799,11 @@ AUI.add(
 										method: 'POST',
 										on: {
 											failure: function(event, id, xhr) {
-												window.location.reload();
+												var sessionStatus = Liferay.Session.get('sessionState');
+
+												if (sessionStatus === 'expired' || xhr.status === 401) {
+													window.location.reload();
+												}
 											}
 										}
 									}
@@ -812,7 +840,7 @@ AUI.add(
 
 						instance._showRuleBuilder();
 
-						instance._toogleAddFieldButton();
+						instance._addRuleButton();
 					},
 
 					_onSaveButtonClick: function(event) {
@@ -961,19 +989,6 @@ AUI.add(
 						localizedName[editingLanguageId] = name;
 
 						instance._setName(name);
-					},
-
-					_toogleAddFieldButton: function() {
-						var instance = this;
-
-						var addButton = A.one('.lfr-ddm-add-field');
-
-						if (addButton && !addButton.hasClass('hide')) {
-							addButton.addClass('hide');
-						}
-						else {
-							addButton.removeClass('hide');
-						}
 					}
 				}
 			}

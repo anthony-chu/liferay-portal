@@ -110,10 +110,9 @@ public class NestedCollectionRoutes<T, S> {
 	 * Creates the {@link NestedCollectionRoutes} of a {@link
 	 * com.liferay.apio.architect.router.NestedCollectionRouter}.
 	 *
-	 * @param  <T> the model's type
-	 * @param  <S> the type of the parent model's identifier (e.g., {@code
-	 *         Long}, {@code String}, etc.)
-	 * @review
+	 * @param <T> the model's type
+	 * @param <S> the type of the parent model's identifier (e.g., {@code Long},
+	 *        {@code String}, etc.)
 	 */
 	@SuppressWarnings("unused")
 	public static class Builder<T, S> {

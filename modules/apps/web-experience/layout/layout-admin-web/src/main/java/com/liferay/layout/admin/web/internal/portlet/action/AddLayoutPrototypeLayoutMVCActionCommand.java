@@ -35,7 +35,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropertiesParamUtil;
-import com.liferay.portal.kernel.util.ResourceBundleLoader;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -44,7 +43,6 @@ import com.liferay.sites.kernel.util.SitesUtil;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -107,10 +105,9 @@ public class AddLayoutPrototypeLayoutMVCActionCommand
 
 			Layout layout = _layoutService.addLayout(
 				groupId, privateLayout, parentLayoutId, nameMap,
-				new HashMap<Locale, String>(), new HashMap<Locale, String>(),
-				new HashMap<Locale, String>(), new HashMap<Locale, String>(),
-				type, typeSettingsProperties.toString(), false,
-				new HashMap<Locale, String>(), serviceContext);
+				new HashMap<>(), new HashMap<>(), new HashMap<>(),
+				new HashMap<>(), type, typeSettingsProperties.toString(), false,
+				new HashMap<>(), serviceContext);
 
 			// Force propagation from page template to page. See LPS-48430.
 
@@ -126,14 +123,10 @@ public class AddLayoutPrototypeLayoutMVCActionCommand
 				_log.debug(pe, pe);
 			}
 
-			ResourceBundle resourceBundle =
-				_resourceBundleLoader.loadResourceBundle(
-					themeDisplay.getLocale());
-
 			jsonObject.put(
 				"error",
 				LanguageUtil.get(
-					resourceBundle, "an-unexpected-error-occurred"));
+					themeDisplay.getLocale(), "an-unexpected-error-occurred"));
 
 			JSONPortletResponseUtil.writeJSON(
 				actionRequest, actionResponse, jsonObject);
@@ -162,11 +155,5 @@ public class AddLayoutPrototypeLayoutMVCActionCommand
 
 	@Reference
 	private Portal _portal;
-
-	@Reference(
-		target = "(bundle.symbolic.name=com.liferay.layout.admin.web)",
-		unbind = "-"
-	)
-	private ResourceBundleLoader _resourceBundleLoader;
 
 }

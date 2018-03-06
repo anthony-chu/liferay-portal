@@ -263,14 +263,13 @@ boolean showSearch = (categoriesAndItemsCount > 0);
 									<span><%= currencyFormat.format(curItem.getPrice()) %></span>
 								</c:when>
 								<c:otherwise>
-									<span><%= currencyFormat.format(ShoppingUtil.calculateActualPrice(curItem)) %></span>
+									<span><%= currencyFormat.format(curItem.getPrice() - ShoppingUtil.calculateDiscountPrice(curItem)) %></span>
 								</c:otherwise>
 							</c:choose>
 						</h6>
 					</liferay-ui:search-container-column-text>
 
 					<liferay-ui:search-container-column-jsp
-						cssClass="list-group-item-field"
 						path="/item_action.jsp"
 					/>
 				</c:when>
@@ -329,7 +328,6 @@ boolean showSearch = (categoriesAndItemsCount > 0);
 					</liferay-ui:search-container-column-text>
 
 					<liferay-ui:search-container-column-jsp
-						cssClass="list-group-item-field"
 						path="/category_action.jsp"
 					/>
 				</c:when>

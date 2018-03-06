@@ -1,32 +1,37 @@
+import 'frontend-taglib/contextual_sidebar/ContextualSidebar.es';
 import Component from 'metal-component';
+import Soy from 'metal-soy';
 import debounce from 'metal-debounce';
 import {Config} from 'metal-state';
 import {getUid} from 'metal';
-import Soy from 'metal-soy';
 
-import '../contextual_sidebar/ContextualSidebar.es';
-import './FragmentEntryLink.es';
 import './sidebar/SidebarAddedFragment.es';
 import './sidebar/SidebarFragmentCollection.es';
+import FragmentEntryLink from './FragmentEntryLink.es';
 import templates from './FragmentsEditor.soy';
 
 /**
  * FragmentsEditor
  * @review
  */
+
 class FragmentsEditor extends Component {
+
 	/**
 	 * @inheritDoc
 	 * @review
 	 */
+
 	created() {
 		this._updatePageTemplate = this._updatePageTemplate.bind(this);
 		this._updatePageTemplate = debounce(this._updatePageTemplate, 300);
 
 		this._dirty = true;
-		this._fetchFragmentsContent().then(() => {
-			this._dirty = false;
-		});
+		this._fetchFragmentsContent().then(
+			() => {
+				this._dirty = false;
+			}
+		);
 	}
 
 	/**
@@ -37,6 +42,7 @@ class FragmentsEditor extends Component {
 	 * @return {Promise<string>}
 	 * @review
 	 */
+
 	_fetchFragmentContent(fragmentEntryId, fragmentEntryLinkId) {
 		const formData = new FormData();
 
@@ -50,11 +56,14 @@ class FragmentsEditor extends Component {
 			fragmentEntryLinkId
 		);
 
-		return fetch(this.renderFragmentEntryURL, {
-			body: formData,
-			credentials: 'include',
-			method: 'POST',
-		})
+		return fetch(
+			this.renderFragmentEntryURL,
+			{
+				body: formData,
+				credentials: 'include',
+				method: 'POST'
+			}
+		)
 			.then(response => response.json())
 			.then(response => response.content);
 	}
@@ -67,6 +76,7 @@ class FragmentsEditor extends Component {
 	 * @review
 	 * @private
 	 */
+
 	_fetchFragmentsContent() {
 		return Promise.all(
 			this.fragmentEntryLinks
@@ -76,21 +86,25 @@ class FragmentsEditor extends Component {
 						fragmentEntryLink.fragmentEntryLinkId &&
 						!fragmentEntryLink.content
 				)
-				.map(fragmentEntryLink =>
-					this._fetchFragmentContent(
-						fragmentEntryLink.fragmentEntryId,
-						fragmentEntryLink.fragmentEntryLinkId
-					).then(content => {
-						const index = this.fragmentEntryLinks.findIndex(
-							_fragmentEntryLink =>
-								_fragmentEntryLink.fragmentEntryLinkId ===
-								fragmentEntryLink.fragmentEntryLinkId
-						);
+				.map(
+					fragmentEntryLink => {
+						return this._fetchFragmentContent(
+							fragmentEntryLink.fragmentEntryId,
+							fragmentEntryLink.fragmentEntryLinkId
+						).then(
+							content => {
+								const index = this.fragmentEntryLinks.findIndex(
+									_fragmentEntryLink =>
+										_fragmentEntryLink.fragmentEntryLinkId ===
+										fragmentEntryLink.fragmentEntryLinkId
+								);
 
-						if (index !== -1) {
-							this.fragmentEntryLinks[index].content = content;
-						}
-					})
+								if (index !== -1) {
+									this.fragmentEntryLinks[index].content = content;
+								}
+							}
+						);
+					}
 				)
 		);
 	}
@@ -105,6 +119,7 @@ class FragmentsEditor extends Component {
 	 * @private
 	 * @review
 	 */
+
 	_handleEditableChanged(data) {
 		const fragmentEntryLink = this.fragmentEntryLinks.find(
 			fragmentEntryLink =>
@@ -126,20 +141,53 @@ class FragmentsEditor extends Component {
 	 * @private
 	 * @review
 	 */
+
 	_handleFragmentCollectionEntryClick(event) {
 		this.fragmentEntryLinks = [
 			...this.fragmentEntryLinks,
 			{
-				fragmentEntryId: event.fragmentEntryId,
-				fragmentEntryLinkId: getUid().toString(),
-				name: event.fragmentName,
 				config: {},
 				content: '',
 				editableValues: {},
-			},
+				fragmentEntryId: event.fragmentEntryId,
+				fragmentEntryLinkId: getUid().toString(),
+				name: event.fragmentName
+			}
 		];
 
 		this._updatePageTemplate();
+	}
+
+	/**
+	 * Moves a fragment one position onto the specified direction.
+	 * @param {!{
+	 *   direction: !number,
+	 *   fragmentEntryLinkId: !string
+	 * }} data
+	 * @private
+	 * @review
+	 */
+
+	_handleFragmentMove(data) {
+		const direction = data.direction;
+		const index = this.fragmentEntryLinks.findIndex(
+			fragmentEntryLink =>
+				fragmentEntryLink.fragmentEntryLinkId ===
+				data.fragmentEntryLinkId
+		);
+
+		if (
+			(direction === FragmentEntryLink.MOVE_DIRECTIONS.DOWN && index < this.fragmentEntryLinks.length - 1) ||
+			(direction === FragmentEntryLink.MOVE_DIRECTIONS.UP && index > 0)
+		) {
+			this.fragmentEntryLinks = this._swapListElements(
+				[].slice(this.fragmentEntryLinks),
+				index,
+				index + direction
+			);
+
+			this._updatePageTemplate();
+		}
 	}
 
 	/**
@@ -151,7 +199,8 @@ class FragmentsEditor extends Component {
 	 * @private
 	 * @review
 	 */
-	_handleFragmentRemoveButtonClick(data) {
+
+	_handleFragmentRemove(data) {
 		const index = this.fragmentEntryLinks.findIndex(
 			fragmentEntryLink =>
 				fragmentEntryLink.fragmentEntryLinkId ===
@@ -161,7 +210,7 @@ class FragmentsEditor extends Component {
 		if (index !== -1) {
 			this.fragmentEntryLinks = [
 				...this.fragmentEntryLinks.slice(0, index),
-				...this.fragmentEntryLinks.slice(index + 1),
+				...this.fragmentEntryLinks.slice(index + 1)
 			];
 
 			this._updatePageTemplate();
@@ -173,6 +222,7 @@ class FragmentsEditor extends Component {
 	 * @private
 	 * @review
 	 */
+
 	_handleHideContextualSidebar() {
 		this._contextualSidebarVisible = false;
 	}
@@ -183,6 +233,7 @@ class FragmentsEditor extends Component {
 	 * @private
 	 * @review
 	 */
+
 	_handleSidebarTabClick(event) {
 		this._sidebarSelectedTab = event.delegateTarget.dataset.tabName;
 	}
@@ -192,8 +243,23 @@ class FragmentsEditor extends Component {
 	 * @private
 	 * @review
 	 */
+
 	_handleToggleContextualSidebarButtonClick() {
 		this._contextualSidebarVisible = !this._contextualSidebarVisible;
+	}
+
+	/**
+	 * Swap the positions of two fragmentEntryLinks
+	 * @param {Array} list
+	 * @param {number} indexA
+	 * @param {number} indexB
+	 * @private
+	 */
+
+	_swapListElements(list, indexA, indexB) {
+		[list[indexA], list[indexB]] = [list[indexB], list[indexA]];
+
+		return list;
 	}
 
 	/**
@@ -202,50 +268,66 @@ class FragmentsEditor extends Component {
 	 * @private
 	 * @review
 	 */
+
 	_updatePageTemplate() {
 		if (!this._dirty) {
 			this._dirty = true;
 
 			const formData = new FormData();
 
+			formData.append(
+				`${this.portletNamespace}classNameId`,
+				this.classNameId
+			);
+
 			formData.append(`${this.portletNamespace}classPK`, this.classPK);
 
 			const editableValues = {};
 
-			this.fragmentEntryLinks.forEach((fragmentEntryLink, index) => {
-				Object.keys(fragmentEntryLink.editableValues).forEach(
-					editableId => {
-						editableValues[index] = editableValues[index] || {};
+			this.fragmentEntryLinks.forEach(
+				(fragmentEntryLink, index) => {
+					Object.keys(fragmentEntryLink.editableValues).forEach(
+						editableId => {
+							editableValues[index] = editableValues[index] || {};
 
-						editableValues[index][editableId] =
-							fragmentEntryLink.editableValues[editableId];
-					}
-				);
-			});
+							editableValues[index][editableId] = fragmentEntryLink.editableValues[editableId];
+						}
+					);
+				}
+			);
 
 			formData.append(
 				`${this.portletNamespace}editableValues`,
 				JSON.stringify(editableValues)
 			);
 
-			this.fragmentEntryLinks.forEach(fragment => {
-				formData.append(
-					`${this.portletNamespace}fragmentIds`,
-					fragment.fragmentEntryId
-				);
-			});
+			this.fragmentEntryLinks.forEach(
+				fragment => {
+					formData.append(
+						`${this.portletNamespace}fragmentIds`,
+						fragment.fragmentEntryId
+					);
+				}
+			);
 
-			fetch(this.updateURL, {
-				body: formData,
-				credentials: 'include',
-				method: 'POST',
-			}).then(() => {
-				this._lastSaveDate = new Date().toLocaleTimeString();
+			fetch(
+				this.updateURL,
+				{
+					body: formData,
+					credentials: 'include',
+					method: 'POST'
+				}
+			).then(
+				() => {
+					this._lastSaveDate = new Date().toLocaleTimeString();
 
-				this._fetchFragmentsContent().then(() => {
-					this._dirty = false;
-				});
-			});
+					this._fetchFragmentsContent().then(
+						() => {
+							this._dirty = false;
+						}
+					);
+				}
+			);
 		}
 	}
 }
@@ -255,17 +337,18 @@ class FragmentsEditor extends Component {
  * @review
  * @see FragmentsEditor._sidebarTabs
  */
+
 const SIDEBAR_TABS = [
 	{
 		id: 'fragments',
 		name: Liferay.Language.get('fragments'),
-		visible: true,
+		visible: true
 	},
 	{
 		id: 'added',
 		name: Liferay.Language.get('added'),
-		visible: true,
-	},
+		visible: true
+	}
 ];
 
 /**
@@ -274,7 +357,20 @@ const SIDEBAR_TABS = [
  * @static
  * @type {!Object}
  */
+
 FragmentsEditor.STATE = {
+
+	/**
+	 * Class name id used for storing changes.
+	 * @default undefined
+	 * @instance
+	 * @memberOf FragmentsEditor
+	 * @review
+	 * @type {!string}
+	 */
+
+	classNameId: Config.string().required(),
+
 	/**
 	 * Class primary key used for storing changes.
 	 * @default undefined
@@ -283,6 +379,7 @@ FragmentsEditor.STATE = {
 	 * @review
 	 * @type {!string}
 	 */
+
 	classPK: Config.string().required(),
 
 	/**
@@ -293,17 +390,22 @@ FragmentsEditor.STATE = {
 	 * @review
 	 * @type {!Array<object>}
 	 */
+
 	fragmentCollections: Config.arrayOf(
-		Config.shapeOf({
-			fragmentCollectionId: Config.string().required(),
-			name: Config.string().required(),
-			entries: Config.arrayOf(
-				Config.shapeOf({
-					fragmentEntryId: Config.string().required(),
-					name: Config.string().required(),
-				})
-			).required(),
-		})
+		Config.shapeOf(
+			{
+				entries: Config.arrayOf(
+					Config.shapeOf(
+						{
+							fragmentEntryId: Config.string().required(),
+							name: Config.string().required()
+						}
+					)
+				).required(),
+				fragmentCollectionId: Config.string().required(),
+				name: Config.string().required()
+			}
+		)
 	).required(),
 
 	/**
@@ -314,6 +416,7 @@ FragmentsEditor.STATE = {
 	 * @review
 	 * @type {string}
 	 */
+
 	id: Config.string().value(''),
 
 	/**
@@ -325,15 +428,18 @@ FragmentsEditor.STATE = {
 	 * @review
 	 * @type {Array<string>}
 	 */
+
 	fragmentEntryLinks: Config.arrayOf(
-		Config.shapeOf({
-			fragmentEntryId: Config.string().required(),
-			fragmentEntryLinkId: Config.string().required(),
-			name: Config.string().required(),
-			config: Config.object().value({}),
-			content: Config.string().value(''),
-			editableValues: Config.object().value({}),
-		})
+		Config.shapeOf(
+			{
+				config: Config.object().value({}),
+				content: Config.string().value(''),
+				editableValues: Config.object().value({}),
+				fragmentEntryId: Config.string().required(),
+				fragmentEntryLinkId: Config.string().required(),
+				name: Config.string().required()
+			}
+		)
 	).value([]),
 
 	/**
@@ -344,6 +450,7 @@ FragmentsEditor.STATE = {
 	 * @review
 	 * @type {!string}
 	 */
+
 	portletNamespace: Config.string().required(),
 
 	/**
@@ -354,6 +461,7 @@ FragmentsEditor.STATE = {
 	 * @review
 	 * @type {!string}
 	 */
+
 	renderFragmentEntryURL: Config.string().required(),
 
 	/**
@@ -364,6 +472,7 @@ FragmentsEditor.STATE = {
 	 * @review
 	 * @type {!string}
 	 */
+
 	spritemap: Config.string().required(),
 
 	/**
@@ -374,6 +483,7 @@ FragmentsEditor.STATE = {
 	 * @review
 	 * @type {!string}
 	 */
+
 	updateURL: Config.string().required(),
 
 	/**
@@ -385,6 +495,7 @@ FragmentsEditor.STATE = {
 	 * @review
 	 * @type {boolean}
 	 */
+
 	_contextualSidebarVisible: Config.bool()
 		.internal()
 		.value(true),
@@ -398,6 +509,7 @@ FragmentsEditor.STATE = {
 	 * @review
 	 * @type {boolean}
 	 */
+
 	_dirty: Config.bool()
 		.internal()
 		.value(false),
@@ -410,6 +522,7 @@ FragmentsEditor.STATE = {
 	 * @private
 	 * @type {string}
 	 */
+
 	_lastSaveDate: Config.string()
 		.internal()
 		.value(''),
@@ -427,12 +540,15 @@ FragmentsEditor.STATE = {
 	 * 	 visible:boolean
 	 * }>}
 	 */
+
 	_sidebarTabs: Config.arrayOf(
-		Config.shapeOf({
-			id: Config.string(),
-			name: Config.string(),
-			visible: Config.bool(),
-		})
+		Config.shapeOf(
+			{
+				id: Config.string(),
+				name: Config.string(),
+				visible: Config.bool()
+			}
+		)
 	)
 		.internal()
 		.value(SIDEBAR_TABS),
@@ -446,9 +562,10 @@ FragmentsEditor.STATE = {
 	 * @review
 	 * @type {string}
 	 */
+
 	_sidebarSelectedTab: Config.oneOf(SIDEBAR_TABS.map(tab => tab.id))
 		.internal()
-		.value(SIDEBAR_TABS[0].id),
+		.value(SIDEBAR_TABS[0].id)
 };
 
 Soy.register(FragmentsEditor, templates);

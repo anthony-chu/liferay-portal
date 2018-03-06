@@ -16,22 +16,19 @@ package com.liferay.apio.architect.wiring.osgi.internal.manager.router;
 
 import static com.liferay.apio.architect.alias.ProvideFunction.curry;
 import static com.liferay.apio.architect.unsafe.Unsafe.unsafeCast;
-import static com.liferay.apio.architect.wiring.osgi.internal.manager.ManagerCache.INSTANCE;
+import static com.liferay.apio.architect.wiring.osgi.internal.manager.cache.ManagerCache.INSTANCE;
 
 import com.liferay.apio.architect.logger.ApioLogger;
 import com.liferay.apio.architect.router.ItemRouter;
 import com.liferay.apio.architect.routes.ItemRoutes;
 import com.liferay.apio.architect.routes.ItemRoutes.Builder;
-import com.liferay.apio.architect.unsafe.Unsafe;
-import com.liferay.apio.architect.wiring.osgi.internal.manager.base.SimpleBaseManager;
+import com.liferay.apio.architect.wiring.osgi.internal.manager.base.ClassNameBaseManager;
 import com.liferay.apio.architect.wiring.osgi.manager.PathIdentifierMapperManager;
 import com.liferay.apio.architect.wiring.osgi.manager.ProviderManager;
 import com.liferay.apio.architect.wiring.osgi.manager.representable.NameManager;
 import com.liferay.apio.architect.wiring.osgi.manager.router.ItemRouterManager;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -45,34 +42,21 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(immediate = true)
 public class ItemRouterManagerImpl
-	extends SimpleBaseManager<ItemRouter> implements ItemRouterManager {
+	extends ClassNameBaseManager<ItemRouter> implements ItemRouterManager {
 
 	public ItemRouterManagerImpl() {
-		super(ItemRouter.class);
+		super(ItemRouter.class, 2);
 	}
 
 	@Override
 	public <T, S> Optional<ItemRoutes<T, S>> getItemRoutesOptional(
 		String name) {
 
-		if (!INSTANCE.hasItemRoutes()) {
-			_generateItemRoutes();
-		}
-
-		Optional<Map<String, ItemRoutes>> optional =
-			INSTANCE.getItemRoutesOptional();
-
-		return optional.map(
-			map -> map.get(name)
-		).map(
-			Unsafe::unsafeCast
-		);
+		return INSTANCE.getItemRoutesOptional(name, this::_computeItemRoutes);
 	}
 
-	private void _generateItemRoutes() {
+	private void _computeItemRoutes() {
 		Stream<String> stream = getKeyStream();
-
-		Map<String, ItemRoutes> itemRoutes = new HashMap<>();
 
 		stream.forEach(
 			className -> {
@@ -81,8 +65,7 @@ public class ItemRouterManagerImpl
 
 				if (!nameOptional.isPresent()) {
 					_apioLogger.warning(
-						"Could not found a Representable for classname " +
-							className);
+						"Unable to find a name for class name " + className);
 
 					return;
 				}
@@ -119,10 +102,8 @@ public class ItemRouterManagerImpl
 					return;
 				}
 
-				itemRoutes.put(name, itemRouter.itemRoutes(builder));
+				INSTANCE.putItemRoutes(name, itemRouter.itemRoutes(builder));
 			});
-
-		INSTANCE.setItemRoutes(itemRoutes);
 	}
 
 	@Reference

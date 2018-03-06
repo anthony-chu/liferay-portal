@@ -25,7 +25,6 @@ import java.util.function.Consumer;
  * @author Alejandro Hernández
  * @param  <T> the type of the model's identifier (e.g., {@code Long}, {@code
  *         String}, etc.)
- * @review
  */
 @FunctionalInterface
 public interface DeleteItemConsumer<T> extends RequestFunction<Consumer<T>> {

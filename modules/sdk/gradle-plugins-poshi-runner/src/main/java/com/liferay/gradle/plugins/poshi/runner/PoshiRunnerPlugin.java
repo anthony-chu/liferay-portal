@@ -36,6 +36,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileTree;
@@ -63,6 +64,9 @@ public class PoshiRunnerPlugin implements Plugin<Project> {
 
 	public static final String POSHI_RUNNER_CONFIGURATION_NAME = "poshiRunner";
 
+	public static final String POSHI_RUNNER_RESOURCES_CONFIGURATION_NAME =
+		PoshiRunnerResourcesPlugin.POSHI_RUNNER_RESOURCES_CONFIGURATION_NAME;
+
 	public static final String RUN_POSHI_TASK_NAME = "runPoshi";
 
 	public static final String SIKULI_CONFIGURATION_NAME = "sikuli";
@@ -82,6 +86,8 @@ public class PoshiRunnerPlugin implements Plugin<Project> {
 
 		_addConfigurationPoshiRunner(project, poshiRunnerExtension);
 		_addConfigurationSikuli(project, poshiRunnerExtension);
+
+		_addConfigurationPoshiRunnerResources(project);
 
 		final JavaExec evaluatePoshiConsoleTask = _addTaskEvaluatePoshiConsole(
 			project);
@@ -145,6 +151,22 @@ public class PoshiRunnerPlugin implements Plugin<Project> {
 
 		configuration.setDescription(
 			"Configures Poshi Runner for this project.");
+		configuration.setVisible(false);
+
+		return configuration;
+	}
+
+	private Configuration _addConfigurationPoshiRunnerResources(
+		Project project) {
+
+		ConfigurationContainer configurationContainer =
+			project.getConfigurations();
+
+		Configuration configuration = configurationContainer.maybeCreate(
+			POSHI_RUNNER_RESOURCES_CONFIGURATION_NAME);
+
+		configuration.setDescription(
+			"Configures the Poshi Runner resources for this project.");
 		configuration.setVisible(false);
 
 		return configuration;
@@ -399,10 +421,16 @@ public class PoshiRunnerPlugin implements Plugin<Project> {
 		Configuration poshiRunnerConfiguration = GradleUtil.getConfiguration(
 			project, POSHI_RUNNER_CONFIGURATION_NAME);
 
+		Configuration poshiRunnerResourcesConfiguration =
+			GradleUtil.getConfiguration(
+				project, POSHI_RUNNER_RESOURCES_CONFIGURATION_NAME);
+
 		Configuration sikuliConfiguration = GradleUtil.getConfiguration(
 			project, SIKULI_CONFIGURATION_NAME);
 
-		return project.files(poshiRunnerConfiguration, sikuliConfiguration);
+		return project.files(
+			poshiRunnerConfiguration, poshiRunnerResourcesConfiguration,
+			sikuliConfiguration);
 	}
 
 	private void _populateSystemProperties(

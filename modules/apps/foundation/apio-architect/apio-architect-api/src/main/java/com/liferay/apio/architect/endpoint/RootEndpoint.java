@@ -36,8 +36,7 @@ public interface RootEndpoint {
 	/**
 	 * Returns the endpoint for binary operations.
 	 *
-	 * @return the endpoint for binary operations.
-	 * @review
+	 * @return the endpoint
 	 */
 	@Path("/b/")
 	public BinaryEndpoint binaryEndpoint();
@@ -45,8 +44,7 @@ public interface RootEndpoint {
 	/**
 	 * Returns the application profile.
 	 *
-	 * @return the application profile.
-	 * @review
+	 * @return the application profile
 	 */
 	@GET
 	@Path("/doc")
@@ -55,8 +53,7 @@ public interface RootEndpoint {
 	/**
 	 * Returns the endpoint for form operations.
 	 *
-	 * @return the endpoint for form operations.
-	 * @review
+	 * @return the endpoint
 	 */
 	@Path("/f/")
 	public FormEndpoint formEndpoint();
@@ -64,7 +61,7 @@ public interface RootEndpoint {
 	/**
 	 * Returns the string representation of the application's home.
 	 *
-	 * @return the string representation of the application's home
+	 * @return the string representation
 	 */
 	@GET
 	@Path("/")
@@ -73,8 +70,7 @@ public interface RootEndpoint {
 	/**
 	 * Returns the endpoint for page operations.
 	 *
-	 * @return the endpoint for page operations.
-	 * @review
+	 * @return the endpoint
 	 */
 	@Path("/p/{name}")
 	public PageEndpoint pageEndpoint(@PathParam("name") String name);
