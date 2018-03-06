@@ -57,6 +57,39 @@
 		<execute function="AssertNotVisible" locator1="SiteNavigationMenu#SIDEBAR" />
 	</command>
 
+	<command name="_editItemPage">
+		<if>
+			<isset var="title" />
+			<then>
+				<execute function="Type" locator1="TextInput#TITLE" value1="${title}" />
+			</then>
+		</if>
+	</command>
+
+	<command name="_editItemSubmenu">
+		<if>
+			<isset var="name" />
+			<then>
+				<execute function="Type" locator1="TextInput#NAME" value1="${name}" />
+			</then>
+		</if>
+	</command>
+
+	<command name="_editItemURL">
+		<if>
+			<isset var="name" />
+			<then>
+				<execute function="Type" locator1="TextInput#NAME" value1="${name}" />
+			</then>
+			<elseif>
+				<isset var="url" />
+				<then>
+					<execute function="Type" locator1="TextInput#URL" value1="${URL}" />
+				</then>
+			</elseif>
+		</if>
+	</command>
+
 	<command name="_openMenuSidebar">
 		<if>
 			<condition function="IsNotVisible" locator1="SiteNavigationMenu#SIDEBAR" />
@@ -135,6 +168,40 @@
 		<execute function="Check" locator1="SiteNavigationMenu#FUNCTION_RADIO">
 			<var name="key_function" value="${function}" />
 		</execute>
+
+		<execute macro="PortletEntry#save" />
+	</command>
+
+	<command name="editItem">
+		<execute macro="SiteNavigationMenu#openItemSidebar">
+			<var name="itemName" value="${itemName}" />
+		</execute>
+
+		<if>
+			<equals arg1="${item}" arg2="Page" />
+			<then>
+				<execute macro="SiteNavigationMenu#_editItemPage">
+					<var name="title" value="${title}" />
+				</execute>
+			</then>
+			<elseif>
+				<equals arg1="${item}" arg2="Submenu" />
+				<then>
+					<execute macro="SiteNavigationMenu#_editItemSubmenu">
+						<var name="submenuName" value="${submenuName}" />
+					</execute>
+				</then>
+			</elseif>
+			<elseif>
+				<equals arg1="${item}" arg2="URL" />
+				<then>
+					<execute macro="SiteNavigationMenu#_editItemURL">
+						<var name="name" value="${name}" />
+						<var name="url" value="${url" />
+					</execute>
+				</then>
+			</elseif>
+		</if>
 
 		<execute macro="PortletEntry#save" />
 	</command>
