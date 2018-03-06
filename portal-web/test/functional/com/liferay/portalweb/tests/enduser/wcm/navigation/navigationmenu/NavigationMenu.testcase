@@ -216,6 +216,66 @@
 		</execute>
 	</command>
 
+	<command name="AddSubmenuNavigationMenu" priority="5"> 
+		<description message="This is a use case for LPS-75061" />
+
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Test Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="category" value="Navigation" />
+			<var name="panel" value="Site Administration" />
+			<var name="portlet" value="Navigation Menus" />
+		</execute>
+
+		<execute macro="LexiconEntry#gotoEntry">
+			<var name="rowEntry" value="Default" />
+		</execute>
+
+		<execute macro="SiteNavigationMenu#addItem">
+			<var name="item" value="Submenu" />
+			<var name="submenuName" value="Test Submenu" />
+		</execute>
+
+		<execute macro="SiteNavigationMenu#viewItem">
+			<var name="itemName" value="Test Submenu" />
+		</execute>
+
+		<execute macro="SiteNavigationMenu#addItem">
+			<var name="item" value="URL" />
+			<var name="url" value="https://www.liferay.com/" />
+			<var name="urlName" value="Liferay" />
+		</execute>
+
+		<execute macro="SiteNavigationMenu#viewItem">
+			<var name="itemName" value="Liferay" />
+		</execute>
+
+		<execute macro="SiteNavigationMenu#moveItem">
+			<var name="direction" value="up" />
+			<var name="itemName" value="Liferay" />
+		</execute>
+
+		<execute macro="SiteNavigationMenu#moveItem">
+			<var name="direction" value="in" />
+			<var name="itemName" value="Liferay" />
+		</execute>
+
+		<execute macro="SiteNavigationMenu#viewItemNested">
+			<var name="itemName" value="Liferay" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Test Site Name" />
+		</execute>
+
+		<execute macro="Page#gotoChildPagePG">
+			<var name="childPageName" value="Liferay" />
+			<var name="pageName" value="Test Submenu" />
+		</execute>
+	</command>
+
 	<command name="AddURLNavigationMenu" priority="4">
 		<description message="This is a use case for LPS-75059." />
 
