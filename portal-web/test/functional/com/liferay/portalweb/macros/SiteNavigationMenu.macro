@@ -243,6 +243,17 @@
 		<execute function="Refresh" />
 	</command>
 
+	<command name="openItemSidebar">
+		<execute function="Click" locator1="SiteNavigationMenu#ITEM_ENTRY">
+			<var name="key_itemName" value="${itemName}" />
+		</execute>
+
+		<execute function="AssertTextEquals" locator1="SiteNavigationMenu#SIDEBAR_ITEM_NAME" value1="${itemName}">
+			<var name="key_itemName" value="${itemName}" />
+		</execute>
+		<execute function="AssertElementPresent" locator1="SiteNavigationMenu#SIDEBAR" />
+	</command>
+
 	<command name="viewItem">
 		<execute function="AssertElementPresent" locator1="SiteNavigationMenu#ITEM_ENTRY">
 			<var name="key_itemName" value="${itemName}" />
