@@ -1,8 +1,4 @@
 <definition>
-	<command name="_addItemApplication">
-		<execute function="Select" locator1="SiteNavigationMenu#APPLICATION_SELECT" value1="${applicationName}" />
-	</command>
-
 	<command name="_addItemPage">
 		<execute function="AssertClick" locator1="Button#CHOOSE" value1="Choose" />
 
@@ -90,21 +86,13 @@
 		<execute macro="IFrame#selectConfigurationFrame" />
 
 		<if>
-			<equals arg1="${item}" arg2="Application" />
+			<equals arg1="${item}" arg2="Page" />
 			<then>
-				<execute macro="SiteNavigationMenu#_addItemApplication">
-					<var name="applicationName" value="${applicationName}" />
+				<execute macro="SiteNavigationMenu#_addItemPage">
+					<var name="pageName" value="${pageName}" />
+					<var name="privacy" value="${privacy}" />
 				</execute>
 			</then>
-			<elseif>
-				<equals arg1="${item}" arg2="Page" />
-				<then>
-					<execute macro="SiteNavigationMenu#_addItemPage">
-						<var name="pageName" value="${pageName}" />
-						<var name="privacy" value="${privacy}" />
-					</execute>
-				</then>
-			</elseif>
 			<elseif>
 				<equals arg1="${item}" arg2="Submenu" />
 				<then>
