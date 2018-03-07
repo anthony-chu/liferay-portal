@@ -323,7 +323,7 @@
 		</execute>
 
 		<execute macro="SystemSettings#enableSetting">
-			<var name="checkboxSetting" value="ENABLED_CHECKBOX" />
+			<var name="checkboxSetting" value="Enabled" />
 		</execute>
 
 		<execute macro="PortletEntry#save" />
