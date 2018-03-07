@@ -1,4 +1,26 @@
 <definition>
+	<command name="click">
+		<execute function="ScrollWebElementIntoView" locator1="Button#ANY">
+			<var name="key_fieldLabel" value="${fieldLabel}" />
+		</execute>
+
+		<execute function="Click" locator1="Button#ANY">
+			<var name="key_fieldLabel" value="${fieldLabel}" />
+		</execute>
+	</command>
+
+	<command name="viewNotPresent">
+		<execute function="AssertElementNotPresent" locator1="Button#ANY">
+			<var name="key_fieldLabel" value="${fieldLabel}" />
+		</execute>
+	</command>
+
+	<command name="viewPresent">
+		<execute function="AssertElementPresent" locator1="Button#ANY">
+			<var name="key_fieldLabel" value="${fieldLabel}" />
+		</execute>
+	</command>
+
 	<command name="clickAddRow">
 		<execute function="Click" locator1="Button#ADD_ROW" />
 	</command>
