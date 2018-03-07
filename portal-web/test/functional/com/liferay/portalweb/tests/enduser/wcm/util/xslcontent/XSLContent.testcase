@@ -44,6 +44,10 @@
 			<var name="portlet" value="System Settings" />
 		</execute>
 
+		<execute macro="SystemSettings#editConfiguration">
+			<var name="configurationName" value="XSL Content Options" />
+		</execute>
+
 		<execute macro="XSLContent#configureConfigurationAdminXSL" />
 	</set-up>
 
