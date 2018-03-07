@@ -9,18 +9,6 @@
 		</execute>
 	</command>
 
-	<command name="viewNotPresent">
-		<execute function="AssertElementNotPresent" locator1="Button#ANY">
-			<var name="key_fieldLabel" value="${fieldLabel}" />
-		</execute>
-	</command>
-
-	<command name="viewPresent">
-		<execute function="AssertElementPresent" locator1="Button#ANY">
-			<var name="key_fieldLabel" value="${fieldLabel}" />
-		</execute>
-	</command>
-
 	<command name="clickAddRow">
 		<execute function="Click" locator1="Button#ADD_ROW" />
 	</command>
@@ -100,6 +88,18 @@
 	<command name="clickUpdate">
 		<execute macro="Button#click">
 			<var name="fieldLabel" value="Update" />
+		</execute>
+	</command>
+
+	<command name="viewNotPresent">
+		<execute function="AssertElementNotPresent" locator1="Button#ANY">
+			<var name="key_fieldLabel" value="${fieldLabel}" />
+		</execute>
+	</command>
+
+	<command name="viewPresent">
+		<execute function="AssertElementPresent" locator1="Button#ANY">
+			<var name="key_fieldLabel" value="${fieldLabel}" />
 		</execute>
 	</command>
 </definition>
