@@ -1,4 +1,5 @@
 <definition component-name="portal-wcm">
+	<property name="portal.acceptance" value="navigation-menu" />
 	<property name="portal.release" value="true" />
 	<property name="portal.upstream" value="true" />
 	<property name="testray.main.component.name" value="Navigation" />
@@ -216,7 +217,7 @@
 		</execute>
 	</command>
 
-	<command name="AddSubmenuNavigationMenu" priority="5"> 
+	<command name="AddSubmenuNavigationMenu" priority="5">
 		<description message="This is a use case for LPS-75061" />
 
 		<execute macro="ProductMenu#gotoSite">
