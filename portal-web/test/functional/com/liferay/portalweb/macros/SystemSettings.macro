@@ -40,7 +40,9 @@
 	</command>
 
 	<command name="enableSetting">
-		<execute function="Check" locator1="SystemSettings#${checkboxSetting}" />
+		<execute macro="Checkbox#enable">
+			<var name="fieldLabel" value="${checkboxSetting}" />
+		</execute>
 	</command>
 
 	<command name="exitEditConfiguration">
@@ -93,10 +95,14 @@
 				<if>
 					<equals arg1="${enableLDAP}" arg2="true" />
 					<then>
-						<execute function="AssertChecked" locator1="SystemSettings#ENABLED_CHECKBOX" />
+						<execute macro="Checkbox#viewEnabled">
+							<var name="fieldLabel" value="Enabled" />
+						</execute>
 					</then>
 					<else>
-						<execute function="AssertNotChecked" locator1="SystemSettings#ENABLED_CHECKBOX" />
+						<execute macro="Checkbox#viewDisabled">
+							<var name="fieldLabel" value="Enabled" />
+						</execute>
 					</else>
 				</if>
 			</then>
