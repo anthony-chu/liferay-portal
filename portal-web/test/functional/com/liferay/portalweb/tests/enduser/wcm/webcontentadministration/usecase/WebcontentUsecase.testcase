@@ -1280,7 +1280,7 @@
 		</execute>
 
 		<execute macro="SystemSettings#enableSetting">
-			<var name="checkboxSetting" value="WEB_CONTENT_ARTICLE_VIEW_PERMISSIONS_CHECK_ENABLED" />
+			<var name="checkboxSetting" value="Article View Permissions Check Enabled" />
 		</execute>
 
 		<execute macro="SystemSettings#saveConfiguration" />

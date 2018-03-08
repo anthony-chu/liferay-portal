@@ -1298,7 +1298,7 @@
 		</execute>
 
 		<execute macro="SystemSettings#enableSetting">
-			<var name="checkboxSetting" value="SERVER_ENABLED" />
+			<var name="checkboxSetting" value="Server Enabled" />
 		</execute>
 
 		<execute macro="SystemSettings#saveConfiguration" />
