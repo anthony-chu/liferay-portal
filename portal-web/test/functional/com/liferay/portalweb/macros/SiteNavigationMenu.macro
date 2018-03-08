@@ -1,11 +1,5 @@
 <definition>
 	<command name="_addItemPage">
-		<execute function="AssertClick" locator1="Button#CHOOSE" value1="Choose" />
-
-		<execute macro="IFrame#selectTopFrame" />
-
-		<execute macro="IFrame#selectConfigurationFrame" />
-
 		<if>
 			<contains string="${privacy}" substring="{privacy}" />
 			<then>
