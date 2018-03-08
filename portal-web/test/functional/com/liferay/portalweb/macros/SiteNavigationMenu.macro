@@ -1,16 +1,5 @@
 <definition>
 	<command name="_addItemPage">
-		<if>
-			<contains string="${privacy}" substring="{privacy}" />
-			<then>
-				<var name="privacy" value="Public" />
-			</then>
-		</if>
-
-		<execute macro="Navigator#gotoNavItem">
-			<var name="navItem" value="${privacy} Pages" />
-		</execute>
-
 		<execute macro="Portlet#expandTree" />
 
 		<execute macro="Portlet#selectTreeNode">
