@@ -148,8 +148,6 @@
 		<execute function="AssertClick" locator1="Button#ADD" value1="Add" />
 
 		<execute macro="IFrame#selectTopFrame" />
-
-		<execute macro="Alert#viewSuccessMessage" />
 	</command>
 
 	<command name="addMenu">
