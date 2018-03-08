@@ -10,7 +10,7 @@
 <tbody>
 <tr>
 	<td>ANY</td>
-	<td>//*[contains(@class,'btn')][normalize-space()='${key_button}']</td>
+	<td>//*[contains(@class,'btn')][normalize-space()='${key_fieldLabel}']</td>
 	<td></td>
 </tr>
 <tr>
