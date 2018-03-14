@@ -9,6 +9,11 @@
 </thead>
 <tbody>
 <tr>
+	<td>ANY</td>
+	<td>//label[normalize-space()='${key_fieldLabel}']//input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ACTIVE</td>
 	<td>//label[contains(.,'Active')]/input[@type='checkbox']</td>
 	<td></td>

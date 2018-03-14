@@ -40,7 +40,7 @@
 		</execute>
 
 		<execute macro="SystemSettings#enableSetting">
-			<var name="checkboxSetting" value="SHOW_INACTIVE_REQUEST_MESSAGE" />
+			<var name="checkboxSetting" value="Show Inactive Request Message" />
 		</execute>
 
 		<execute macro="SystemSettings#saveConfiguration" />

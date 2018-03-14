@@ -9,6 +9,11 @@
 </thead>
 <tbody>
 <tr>
+	<td>ANY</td>
+	<td>//*[contains(@class,'btn')][normalize-space()='${key_fieldLabel}']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ACTIVATE_ACCOUNT</td>
 	<td>//button[contains(.,'Activate Account')]</td>
 	<td></td>
@@ -141,11 +146,6 @@
 <tr>
 	<td>ADVANCED_REPLY</td>
 	<td>//button/span[contains(.,'Advanced Reply')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>ANY</td>
-	<td>//a[normalize-space()='${key_text}']</td>
 	<td></td>
 </tr>
 <tr>

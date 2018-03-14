@@ -1427,7 +1427,9 @@
 			<var name="configurationScope" value="Site Scope" />
 		</execute>
 
-		<execute macro="KBArticle#enableSourceURL" />
+		<execute macro="SystemSettings#enableSetting">
+			<var name="checkboxSetting" value="Source URL Enabled" />
+		</execute>
 
 		<execute macro="Navigator#openURL" />
 
@@ -1558,7 +1560,9 @@
 			<var name="configurationScope" value="Site Scope" />
 		</execute>
 
-		<execute macro="KBArticle#enableSourceURL" />
+		<execute macro="SystemSettings#enableSetting">
+			<var name="checkboxSetting" value="Enable Source URL" />
+		</execute>
 
 		<execute macro="Navigator#openURL" />
 

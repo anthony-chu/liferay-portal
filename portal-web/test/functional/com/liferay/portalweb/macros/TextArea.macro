@@ -1,0 +1,37 @@
+<definition>
+	<command name="viewNotPartialText">
+		<execute function="AssertTextNotEquals#assertNotPartialText" locator1="TextArea#ANY">
+			<var name="key_fieldLabel" value="${fieldLabel}" />
+		</execute>
+	</command>
+
+	<command name="viewNotPresent">
+		<execute function="AssertElementNotPresent" locator1="TextArea#ANY">
+			<var name="key_fieldLabel" value="${fieldLabel}" />
+		</execute>
+	</command>
+
+	<command name="viewPartialText">
+		<execute function="AssertTextEquals#assertPartialText" locator1="TextArea#ANY">
+			<var name="key_fieldLabel" value="${fieldLabel}" />
+		</execute>
+	</command>
+
+	<command name="viewPresent">
+		<execute function="AssertElementPresent" locator1="TextArea#ANY">
+			<var name="key_fieldLabel" value="${fieldLabel}" />
+		</execute>
+	</command>
+
+	<command name="viewText">
+		<execute function="AssertTextEquals" locator1="TextArea#ANY">
+			<var name="key_fieldLabel" value="${fieldLabel}" />
+		</execute>
+	</command>
+
+	<command name="write">
+		<execute function="Type" locator1="TextArea#ANY">
+			<var name="key_fieldLabel" value="${fieldLabel}" />
+		</execute>
+	</command>
+</definition>
