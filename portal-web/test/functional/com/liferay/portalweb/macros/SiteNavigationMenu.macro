@@ -8,9 +8,9 @@
 
 		<execute macro="IFrame#selectTopFrame" />
 
-		<execute function="MouseOver" locator1="Button#DONE" />
+		<execute function="MouseOver" locator1="Button#ADD" />
 
-		<execute macro="Button#clickDone" />
+		<execute function="AssertClick" locator1="Button#ADD" value1="Add" />
 
 		<execute macro="IFrame#selectConfigurationFrame" />
 	</command>
