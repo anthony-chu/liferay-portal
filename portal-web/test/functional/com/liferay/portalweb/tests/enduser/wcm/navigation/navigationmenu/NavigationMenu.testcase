@@ -346,7 +346,7 @@
 		</execute>
 
 		<execute macro="SiteNavigationMenu#addItem">
-			<var name="item" value= "Page" />
+			<var name="item" value="Page" />
 			<var name="pageName" value="Site Page Name 2" />
 			<var name="privacy" value="Public" />
 		</execute>
