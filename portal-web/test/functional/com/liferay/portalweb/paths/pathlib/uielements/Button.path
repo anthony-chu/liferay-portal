@@ -745,7 +745,7 @@
 </tr>
 <tr>
 	<td>SHARE</td>
-	<td>//button[contains(.,'Share')]</td>
+	<td>//button/*[name()='svg'][contains(@class,'lexicon-icon-share')]</td>
 	<td></td>
 </tr>
 <tr>
