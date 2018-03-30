@@ -15,7 +15,7 @@
 </tr>
 <tr>
 	<td>CLOSE_BUTTON</td>
-	<td>//div[h3[@class='modal-title']]//button[contains(@class,'close')]</td>
+	<td>//*[div[@class='modal-title' or contains(@class,'modal-header')]]//button[contains(@class,'close')]</td>
 	<td></td>
 </tr>
 <tr>
