@@ -8,7 +8,9 @@
 				<condition function="IsVisible" locator1="Panel#PANEL_COLLAPSED" />
 			</and>
 			<then>
-				<execute function="AssertClick" locator1="Panel#PANEL_COLLAPSED" value1="${panel}" />
+				<var method="StringUtil#toUpperCase('${panel}')" name="panelText" />
+
+				<execute function="AssertClick" locator1="Panel#PANEL_COLLAPSED" value1="${panelText}" />
 			</then>
 		</if>
 
