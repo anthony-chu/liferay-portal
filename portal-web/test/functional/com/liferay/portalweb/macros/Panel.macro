@@ -10,6 +10,13 @@
 			<then>
 				<var method="StringUtil#toUpperCase('${panel}')" name="panelText" />
 
+				<if>
+					<condition function="IsElementPresent" locator1="//div[contains(@title,'panel-heading')]" />
+					<then>
+						<var name="panelText" value="${panel}" />
+					</then>
+				</if>
+
 				<execute function="AssertClick" locator1="Panel#PANEL_COLLAPSED" value1="${panelText}" />
 			</then>
 		</if>
