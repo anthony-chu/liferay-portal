@@ -4,11 +4,20 @@
 
 		<if>
 			<and>
-				<condition function="IsElementPresent" locator1="Panel#PANEL_COLLAPSED" value1="${panel}" />
-				<condition function="IsVisible" locator1="Panel#PANEL_COLLAPSED" value1="${panel}" />
+				<condition function="IsElementPresent" locator1="Panel#PANEL_COLLAPSED" />
+				<condition function="IsVisible" locator1="Panel#PANEL_COLLAPSED" />
 			</and>
 			<then>
-				<execute function="AssertClick" locator1="Panel#PANEL_COLLAPSED" value1="${panel}" />
+				<var method="StringUtil#toUpperCase('${panel}')" name="panelText" />
+
+				<if>
+					<condition function="IsElementPresent" locator1="//div[contains(@title,'panel-heading')]" />
+					<then>
+						<var name="panelText" value="${panel}" />
+					</then>
+				</if>
+
+				<execute function="AssertClick" locator1="Panel#PANEL_COLLAPSED" value1="${panelText}" />
 			</then>
 		</if>
 
