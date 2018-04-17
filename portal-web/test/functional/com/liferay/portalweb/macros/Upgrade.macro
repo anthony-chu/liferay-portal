@@ -945,7 +945,7 @@
 			<var name="siteName" value="Staging Site" />
 		</execute>
 
-		<execute function="AssertTextEquals" locator1="Portlet#TITLE" value1="Nested Applications">
+		<execute function="AssertTextEquals#assertTextCaseInsensitive" locator1="Portlet#TITLE" value1="Nested Applications">
 			<var name="key_portletName" value="Nested Applications" />
 		</execute>
 
