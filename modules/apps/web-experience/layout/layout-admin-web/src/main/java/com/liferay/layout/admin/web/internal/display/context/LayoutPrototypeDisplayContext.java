@@ -86,20 +86,6 @@ public class LayoutPrototypeDisplayContext {
 		return _displayStyle;
 	}
 
-	public List<NavigationItem> getNavigationItems() {
-		return new NavigationItemList() {
-			{
-				add(
-					navigationItem -> {
-						navigationItem.setActive(true);
-						navigationItem.setHref(getPortletURL());
-						navigationItem.setLabel(
-							LanguageUtil.get(_request, "templates"));
-					});
-			}
-		};
-	}
-
 	public String getOrderByCol() {
 		if (Validator.isNotNull(_orderByCol)) {
 			return _orderByCol;
