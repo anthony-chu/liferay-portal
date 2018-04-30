@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.layout.prototype.web.internal.display.context;
+package com.liferay.layout.admin.web.internal.display.context;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
@@ -84,20 +84,6 @@ public class LayoutPrototypeDisplayContext {
 			"list");
 
 		return _displayStyle;
-	}
-
-	public List<NavigationItem> getNavigationItems() {
-		return new NavigationItemList() {
-			{
-				add(
-					navigationItem -> {
-						navigationItem.setActive(true);
-						navigationItem.setHref(getPortletURL());
-						navigationItem.setLabel(
-							LanguageUtil.get(_request, "templates"));
-					});
-			}
-		};
 	}
 
 	public String getOrderByCol() {
