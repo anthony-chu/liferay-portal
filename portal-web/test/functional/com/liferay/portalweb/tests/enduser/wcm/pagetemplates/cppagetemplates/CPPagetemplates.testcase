@@ -118,7 +118,7 @@
 
 		<execute function="Close#closeWindow" locator1="title=Page Template Name - ${siteName}" />
 
-		<execute function="SelectWindow" locator1="title=Page Templates - Control Panel - ${siteName}" />
+		<execute function="SelectWindow" locator1="title=Site Pages - Global - ${siteName}" />
 
 		<execute macro="Navigator#gotoSitePage">
 			<var name="pageName" value="Site Page" />
@@ -170,7 +170,7 @@
 
 		<execute function="Close#closeWindow" locator1="title=Page Template Name - ${siteName}" />
 
-		<execute function="SelectWindow" locator1="title=Page Templates - Control Panel - ${siteName}" />
+		<execute function="SelectWindow" locator1="title=Site Pages - Global - ${siteName}" />
 
 		<execute macro="Navigator#gotoSitePage">
 			<var name="pageName" value="Site Page" />
@@ -473,7 +473,7 @@
 
 		<execute function="Close#closeWindow" locator1="title=College Landing Page - ${siteName}" />
 
-		<execute function="SelectWindow" locator1="title=Page Templates - Control Panel - ${siteName}" />
+		<execute function="SelectWindow" locator1="title=Site Pages - Global - ${siteName}" />
 
 		<execute macro="Navigator#openURL" />
 
