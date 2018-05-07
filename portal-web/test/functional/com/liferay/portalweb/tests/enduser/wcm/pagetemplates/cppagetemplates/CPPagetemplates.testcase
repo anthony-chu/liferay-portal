@@ -26,6 +26,8 @@
 	</tear-down>
 
 	<command name="AddPageTemplate" priority="4">
+		<property name="portal.acceptance" value="page-templates" />
+
 		<execute macro="ProductMenu#gotoSite">
 			<var name="siteName" value="Global" />
 		</execute>
@@ -43,7 +45,7 @@
 	</command>
 
 	<command name="AddSitePageTemplate" priority="5">
-		<property name="portal.acceptance" value="quarantine" />
+		<property name="portal.acceptance" value="page-templates" />
 		<property name="testray.component.names" value="Training" />
 
 		<execute macro="ProductMenu#gotoSite">
@@ -275,7 +277,7 @@
 	</command>
 
 	<command name="DeletePageTemplate" priority="5">
-		<property name="portal.acceptance" value="quarantine" />
+		<property name="portal.acceptance" value="page-templates" />
 
 		<execute macro="ProductMenu#gotoSite">
 			<var name="siteName" value="Global" />
@@ -300,7 +302,7 @@
 	</command>
 
 	<command name="EditPageTemplate" priority="5">
-		<property name="portal.acceptance" value="quarantine" />
+		<property name="portal.acceptance" value="page-templates" />
 
 		<execute macro="ProductMenu#gotoSite">
 			<var name="siteName" value="Global" />
@@ -324,6 +326,8 @@
 	</command>
 
 	<command name="EditPageTemplateDescription" priority="4">
+		<property name="portal.acceptance" value="page-templates" />
+
 		<execute macro="ProductMenu#gotoSite">
 			<var name="siteName" value="Global" />
 		</execute>
@@ -351,6 +355,7 @@
 	</command>
 
 	<command name="ImportLAR" priority="5">
+		<property name="portal.acceptance" value="page-templates" />
 		<property name="testray.component.names" value="Training" />
 
 		<execute macro="ProductMenu#gotoSite">
@@ -508,6 +513,7 @@
 	</command>
 
 	<command name="ViewEditedPageTemplatePageName" priority="4">
+		<property name="portal.acceptance" value="page-templates" />
 		<property name="testray.component.names" value="Page Templates" />
 
 		<execute macro="ProductMenu#gotoSite">
