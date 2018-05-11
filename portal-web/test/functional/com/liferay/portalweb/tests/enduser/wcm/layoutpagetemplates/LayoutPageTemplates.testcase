@@ -27,14 +27,6 @@
 			<var name="collectionDescription" value="Collection Description" />
 			<var name="collectionName" value="Collection Name" />
 		</execute>
-
-		<execute macro="LexiconEntry#gotoEntry">
-			<var name="rowEntry" value="Collection Name" />
-		</execute>
-
-		<execute macro="Fragment#addFragment">
-			<var name="fragmentName" value="Fragment Name" />
-		</execute>
 	</set-up>
 
 	<tear-down>
@@ -52,12 +44,18 @@
 	</tear-down>
 
 	<command name="AddLayoutPageTemplateRemoveFragment" priority="5">
+		<execute macro="LexiconEntry#gotoEntry">
+			<var name="rowEntry" value="Collection Name" />
+		</execute>
+
+		<execute macro="Fragment#addFragment">
+			<var name="fragmentName" value="Fragment Name" />
+		</execute>
+
 		<var name="htmlSnippet"><![CDATA[
-<html>${line.separator}
 <div>${line.separator}
 <span class="test">This is a test.</span>${line.separator}
-</div>${line.separator}
-</html>]]></var>
+</div>${line.separator}]]></var>
 
 		<execute macro="Fragment#typeFragmentEditor">
 			<var name="editor" value="html" />
@@ -101,12 +99,385 @@
 
 		<execute macro="LayoutPageTemplates#viewAutoSaveMessage" />
 
-		<execute macro="Portlet#viewEmptyMessage">
-			<var name="message" value="This layout page template is empty." />
+		<execute macro="LayoutPageTemplates#viewEditorEmpty" />
+	</command>
+
+	<command name="ChangeEditableText" priority="5">
+		<execute macro="LexiconEntry#gotoEntry">
+			<var name="rowEntry" value="Collection Name" />
+		</execute>
+
+		<execute macro="Fragment#addFragment">
+			<var name="fragmentName" value="Fragment Name" />
+		</execute>
+
+		<var name="htmlSnippet"><![CDATA[
+<div>${line.separator}
+<lfr-editable id="test" type="text">Edit Me</lfr-editable>${line.separator}
+</div>${line.separator}]]></var>
+
+		<execute macro="Fragment#typeFragmentEditor">
+			<var name="editor" value="html" />
+			<var name="templateScript" value="${htmlSnippet}" />
+		</execute>
+
+		<execute macro="PortletEntry#publish" />
+
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="category" value="Navigation" />
+			<var name="panel" value="Site Administration" />
+			<var name="portlet" value="Site Pages" />
+		</execute>
+
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Page Templates" />
+		</execute>
+
+		<execute macro="Collection#addCollection">
+			<var name="collectionName" value="Page Template Collection" />
+		</execute>
+
+		<execute macro="LexiconEntry#gotoEntry">
+			<var name="rowEntry" value="Page Template Collection" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#add">
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#selectFragment">
+			<var name="collectionName" value="Collection Name" />
+			<var name="fragmentName" value="Fragment Name" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#editFragmentText">
+			<var name="fragmentName" value="Fragment Name" />
+			<var name="id" value="test" />
+			<var name="text" value="Editing Finished" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#viewFragment">
+			<var name="fragmentName" value="Editing Finished" />
+		</execute>
+	</command>
+
+	<command name="ChangeEditableImage" priority="5"><!--
+		<execute macro="LexiconEntry#gotoEntry">
+			<var name="rowEntry" value="Collection Name" />
+		</execute>
+
+		<execute macro="Fragment#addFragment">
+			<var name="fragmentName" value="Fragment Name" />
+		</execute>
+
+		<var name="htmlSnippet"><![CDATA[
+<div>${line.separator}
+<lfr-editable id="test" type="image"><img src="http://placehold.it/640x360" /></lfr-editable>${line.separator}
+</div>${line.separator}]]></var>
+
+		<execute macro="Fragment#typeFragmentEditor">
+			<var name="editor" value="html" />
+			<var name="templateScript" value="${htmlSnippet}" />
+		</execute>
+
+		<execute macro="PortletEntry#publish" />-->
+
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="category" value="Navigation" />
+			<var name="panel" value="Site Administration" />
+			<var name="portlet" value="Site Pages" />
+		</execute>
+
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Page Templates" />
+		</execute>
+
+		<execute macro="Collection#addCollection">
+			<var name="collectionName" value="Page Template Collection" />
+		</execute>
+
+		<execute macro="LexiconEntry#gotoEntry">
+			<var name="rowEntry" value="Page Template Collection" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#add">
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#selectFragment">
+			<var name="collectionName" value="Collection Name" />
+			<var name="fragmentName" value="Fragment Name" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#editFragmentImage">
+			<var name="fragmentName" value="Fragment Name" />
+			<var name="fileName" value="Document_1.png" />
+		</execute>
+	</command>
+
+	<command name="DeleteCollection" priority="4">
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="category" value="Navigation" />
+			<var name="panel" value="Site Administration" />
+			<var name="portlet" value="Site Pages" />
+		</execute>
+
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Page Templates" />
+		</execute>
+
+		<execute macro="Collection#addCollection">
+			<var name="collectionName" value="Collection Name" />
+		</execute>
+
+		<execute macro="LexiconEntry#delete">
+			<var name="rowEntry" value="Collection Name" />
+		</execute>
+
+		<execute macro="LexiconEntry#viewNoEntry">
+			<var name="rowEntry" value="Collection Name" />
+		</execute>
+	</command>
+
+	<command name="DeletePageTemplate" priority="5">
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="category" value="Navigation" />
+			<var name="panel" value="Site Administration" />
+			<var name="portlet" value="Site Pages" />
+		</execute>
+
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Page Templates" />
+		</execute>
+
+		<execute macro="Collection#addCollection">
+			<var name="collectionName" value="Page Template Collection" />
+		</execute>
+
+		<execute macro="LexiconEntry#gotoEntry">
+			<var name="rowEntry" value="Page Template Collection" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#add">
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="category" value="Navigation" />
+			<var name="panel" value="Site Administration" />
+			<var name="portlet" value="Site Pages" />
+		</execute>
+
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Page Templates" />
+		</execute>
+
+		<execute macro="LexiconEntry#gotoEntry">
+			<var name="rowEntry" value="Page Template Collection" />
+		</execute>
+
+		<execute macro="LexiconEntry#delete">
+			<var name="rowEntry" value="Page Template Name" />
+		</execute>
+
+		<execute macro="LexiconEntry#viewNoEntry">
+			<var name="rowEntry" value="Page Template Name" />
+		</execute>
+	</command>
+
+	<command name="RenameCollection" priority="4">
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="category" value="Navigation" />
+			<var name="panel" value="Site Administration" />
+			<var name="portlet" value="Site Pages" />
+		</execute>
+
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Page Templates" />
+		</execute>
+
+		<execute macro="Collection#addCollection">
+			<var name="collectionName" value="Collection Name Original" />
+			<var name="collectionDescription" value="Collection Description Original" />
+		</execute>
+
+		<execute macro="Collection#renameCollection">
+			<var name="collectionName" value="Collection Name New" />
+			<var name="collectionDescription" value="Collection Description New" />
+			<var name="rowEntry" value="Collection Name Original" />
+		</execute>
+
+		<execute macro="LexiconEntry#viewEntryName">
+			<var name="rowEntry" value="Collection Name New" />
+		</execute>
+	</command>
+
+	<command name="RenamePageTemplate" priority="4">
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="category" value="Navigation" />
+			<var name="panel" value="Site Administration" />
+			<var name="portlet" value="Site Pages" />
+		</execute>
+
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Page Templates" />
+		</execute>
+
+		<execute macro="Collection#addCollection">
+			<var name="collectionName" value="Page Template Collection" />
+		</execute>
+
+		<execute macro="LexiconEntry#gotoEntry">
+			<var name="rowEntry" value="Page Template Collection" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#add">
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="category" value="Navigation" />
+			<var name="panel" value="Site Administration" />
+			<var name="portlet" value="Site Pages" />
+		</execute>
+
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Page Templates" />
+		</execute>
+
+		<execute macro="LexiconEntry#gotoEntry">
+			<var name="rowEntry" value="Page Template Collection" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#rename">
+			<var name="pageTemplateName" value="Page Template Name New" />
+			<var name="rowEntry" value="Page Template Name" />
+		</execute>
+
+		<execute macro="LexiconEntry#viewEntryName">
+			<var name="rowEntry" value="Page Template Name New" />
+		</execute>
+	</command>
+
+	<command name="ReorderFragments" priority="5">
+		<execute macro="LexiconEntry#gotoEntry">
+			<var name="rowEntry" value="Collection Name" />
+		</execute>
+
+		<execute macro="Fragment#addFragment">
+			<var name="fragmentName" value="Fragment 1" />
+		</execute>
+
+		<var name="htmlSnippet"><![CDATA[
+<div>${line.separator}
+Test Content 1${line.separator}
+</div>${line.separator}]]></var>
+
+		<execute macro="Fragment#typeFragmentEditor">
+			<var name="editor" value="html" />
+			<var name="templateScript" value="${htmlSnippet}" />
+		</execute>
+
+		<execute macro="PortletEntry#publish" />
+
+		<execute macro="Fragment#addFragment">
+			<var name="fragmentName" value="Fragment 2" />
+		</execute>
+
+		<var name="htmlSnippet"><![CDATA[
+<div>${line.separator}
+Test Content 2${line.separator}
+</div>${line.separator}]]></var>
+
+		<execute macro="Fragment#typeFragmentEditor">
+			<var name="editor" value="html" />
+			<var name="templateScript" value="${htmlSnippet}" />
+		</execute>
+
+		<execute macro="PortletEntry#publish" />
+
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="category" value="Navigation" />
+			<var name="panel" value="Site Administration" />
+			<var name="portlet" value="Site Pages" />
+		</execute>
+
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Page Templates" />
+		</execute>
+
+		<execute macro="Collection#addCollection">
+			<var name="collectionName" value="Page Template Collection" />
+		</execute>
+
+		<execute macro="LexiconEntry#gotoEntry">
+			<var name="rowEntry" value="Page Template Collection" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#add">
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#selectFragment">
+			<var name="collectionName" value="Collection Name" />
+			<var name="fragmentName" value="Fragment 1" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#selectFragment">
+			<var name="collectionName" value="Collection Name" />
+			<var name="fragmentName" value="Fragment 2" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#viewFragmentOrder">
+			<var name="fragmentName" value="Fragment 1" />
+			<var name="position" value="1" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#viewFragmentOrder">
+			<var name="fragmentName" value="Fragment 2" />
+			<var name="position" value="2" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#moveFragment">
+			<var name="direction" value="down" />
+			<var name="fragmentName" value="Fragment 1" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#viewFragmentOrder">
+			<var name="fragmentName" value="Fragment 1" />
+			<var name="position" value="2" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#viewFragmentOrder">
+			<var name="fragmentName" value="Fragment 2" />
+			<var name="position" value="1" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#moveFragment">
+			<var name="direction" value="up" />
+			<var name="fragmentName" value="Fragment 1" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#viewFragmentOrder">
+			<var name="fragmentName" value="Fragment 1" />
+			<var name="position" value="1" />
+		</execute>
+
+		<execute macro="LayoutPageTemplates#viewFragmentOrder">
+			<var name="fragmentName" value="Fragment 2" />
+			<var name="position" value="2" />
 		</execute>
 	</command>
 
 	<command name="ViewDraftFragmentDoesNotDisplayInSidebar" priority="4">
+		<execute macro="LexiconEntry#gotoEntry">
+			<var name="rowEntry" value="Collection Name" />
+		</execute>
+
+		<execute macro="Fragment#addFragment">
+			<var name="fragmentName" value="Fragment Name" />
+		</execute>
+
 		<execute macro="ProductMenu#gotoPortlet">
 			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
