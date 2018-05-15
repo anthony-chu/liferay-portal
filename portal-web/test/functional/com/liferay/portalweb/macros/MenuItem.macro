@@ -10,7 +10,7 @@
 	<command name="clickNoError">
 		<execute function="AssertElementPresent" locator1="//script[contains(@src,'clay-dropdown')]" />
 
-		<execute function="Click" locator1="MenuItem#ANY_MENU_ITEM">
+		<execute function="ClickNoError" locator1="MenuItem#ANY_MENU_ITEM">
 			<var name="key_menuItem" value="${menuItem}" />
 		</execute>
 	</command>

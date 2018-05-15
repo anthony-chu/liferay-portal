@@ -564,8 +564,8 @@
 
 		<execute function="Click" locator1="Dropdown#FILTER" />
 
-		<execute function="Click" locator1="MenuItem#ANY_MENU_ITEM" value1="Completed">
-			<var name="key_menuItem" value="Completed" />
+		<execute macro="MenuItem#click">
+			<var name="menuItem" value="Completed" />
 		</execute>
 	</command>
 
@@ -635,8 +635,8 @@
 
 		<execute function="Click" locator1="Dropdown#FILTER_ORDER" />
 
-		<execute function="Click" locator1="MenuItem#ANY_MENU_ITEM" value1="Completion Date">
-			<var name="key_menuItem" value="Completion Date" />
+		<execute macro="MenuItem#click">
+			<var name="menuItem" value="Completion Date" />
 		</execute>
 	</command>
 
