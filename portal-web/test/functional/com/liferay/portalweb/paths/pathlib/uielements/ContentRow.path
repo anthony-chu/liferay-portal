@@ -66,37 +66,37 @@
 <!--ENTRY_CONTENT_ENTRY-->
 <tr>
 	<td>ENTRY_CONTENT_ENTRY</td>
-	<td>//*[contains(@*,'row')][*[contains(.,'${key_rowEntry}')]]</td>
+	<td>//*[normalize-space(text())='${key_rowEntry}'][last()]/ancestor::*[contains(@*,'row') or @data-qa-id='row'][1]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ENTRY_CONTENT_ENTRY_CHECKBOX</td>
-	<td>//*[contains(@*,'row')][*[contains(.,'${key_rowEntry}')]]//input[@title='Select']</td>
+	<td>//*[normalize-space(text())='${key_rowEntry}'][last()]/ancestor::*[contains(@*,'row') or @data-qa-id='row'][1]//input[@title='Select']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ENTRY_CONTENT_ENTRY_NAME</td>
-	<td>//*[contains(@*,'row')][*[contains(.,'${key_rowEntry}')]]</td>
+	<td>//*[normalize-space(text())='${key_rowEntry}'][last()]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ENTRY_CONTENT_ENTRY_NAME_LINK</td>
-	<td>//*[contains(@*,'row')][*[contains(.,'${key_rowEntry}')]]//a[normalize-space()='${key_rowEntry}']</td>
+	<td>//a[normalize-space(text())='${key_rowEntry}'][last()]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ENTRY_CONTENT_ENTRY_DESCRIPTION_TD3</td>
-	<td>//*[contains(@*,'row')][*[contains(.,'${key_rowEntry}')]]/td[3]</td>
+	<td>//*[normalize-space(text())='${key_rowEntry}'][last()]/ancestor::*[contains(@*,'row') or @data-qa-id='row'][1]/td[3]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ENTRY_CONTENT_ENTRY_ELLIPSIS</td>
-	<td>//*[contains(@*,'row')][*[contains(.,'${key_rowEntry}')]]//*[*[name()='svg'][contains(@class,'lexicon-icon-ellipsis-v')]]</td>
+	<td>//*[normalize-space(text())='${key_rowEntry}'][last()]/ancestor::*[contains(@*,'row') or @data-qa-id='row'][1]//*[*[name()='svg'][contains(@class,'lexicon-icon-ellipsis-v')]]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ENTRY_CONTENT_ENTRY_WORKFLOW_STATUS</td>
-	<td>//*[contains(@*,'row')][*[contains(.,'${key_rowEntry}')]]//span[contains(@class,'workflow-status')]/span</td>
+	<td>//*[normalize-space(text())='${key_rowEntry}'][last()]/ancestor::*[contains(@*,'row') or @data-qa-id='row'][1]//span[contains(@class,'workflow-status')]/span</td>
 	<td></td>
 </tr>
 <!--ENTRY_CONTENT_LIST-->
