@@ -256,6 +256,8 @@
 	</command>
 
 	<command name="togglePrivacy">
+		<execute function="AssertElementPresent" locator1="//script[contains(@src,'ManagementToolbar.es.js')]" />
+
 		<execute function="Click" locator1="Dropdown#FILTER_AND_ORDER" />
 
 		<execute macro="MenuItem#click">
