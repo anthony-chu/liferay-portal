@@ -188,6 +188,7 @@
 
 	<command name="ViewSiteCalendarFeed" priority="5">
 		<description message="This is a use case for LPS-67928." />
+		<property name="portal.acceptance" value="test" />
 
 		<execute macro="TestCase#getSiteName">
 			<return from="siteName" name="siteName" />
