@@ -74,6 +74,10 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 		return super.doStartTag();
 	}
 
+	public void setEmbed(boolean embed) {
+		_embed = embed;
+	}
+
 	public void setException(Class<?> exception) {
 		_exception = exception;
 
@@ -102,10 +106,6 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 		_targetNode = targetNode;
 	}
 
-	public void setToast(boolean toast) {
-		_toast = toast;
-	}
-
 	public void setTranslateMessage(boolean translateMessage) {
 		_translateMessage = translateMessage;
 	}
@@ -114,6 +114,7 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 	protected void cleanUp() {
 		super.cleanUp();
 
+		_embed = true;
 		_exception = null;
 		_focusField = null;
 		_hasError = false;
@@ -121,7 +122,6 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 		_message = null;
 		_rowBreak = StringPool.BLANK;
 		_targetNode = null;
-		_toast = false;
 		_translateMessage = true;
 	}
 
@@ -158,8 +158,8 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 			"liferay-ui:error:alertMessage", _getAlertMessage());
 		request.setAttribute("liferay-ui:error:alertStyle", _getAlertStyle());
 		request.setAttribute("liferay-ui:error:alertTitle", _getAlertTitle());
+		request.setAttribute("liferay-ui:error:embed", String.valueOf(_embed));
 		request.setAttribute("liferay-ui:error:rowBreak", _rowBreak);
-		request.setAttribute("liferay-ui:error:toast", String.valueOf(_toast));
 
 		if (SessionErrors.contains(portletRequest, _key)) {
 			String errorMarkerKey = (String)request.getAttribute(
@@ -314,6 +314,7 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 
 	private static final String _PAGE = "/html/taglib/ui/error/page.jsp";
 
+	private boolean _embed = true;
 	private Class<?> _exception;
 	private String _focusField;
 	private boolean _hasError;
@@ -321,7 +322,6 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 	private String _message;
 	private String _rowBreak = StringPool.BLANK;
 	private String _targetNode;
-	private boolean _toast;
 	private boolean _translateMessage = true;
 
 }

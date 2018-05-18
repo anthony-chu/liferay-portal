@@ -168,6 +168,12 @@
 		<tei-class>com.liferay.taglib.ui.ErrorTei</tei-class>
 		<body-content>JSP</body-content>
 		<attribute>
+			<name>embed</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>boolean</type>
+		</attribute>
+		<attribute>
 			<description>A class for the exception.</description>
 			<name>exception</name>
 			<required>false</required>
@@ -200,13 +206,6 @@
 			<name>targetNode</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<description></description>
-			<name>toast</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<type>boolean</type>
 		</attribute>
 		<attribute>
 			<description>Whether to translate the message into the user's language. The default value is <![CDATA[<code>true</code>]]>.</description>
@@ -3294,6 +3293,12 @@
 		<tag-class>com.liferay.taglib.ui.SuccessTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
+			<name>embed</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>boolean</type>
+		</attribute>
+		<attribute>
 			<description>A key to be placed in the <![CDATA[<code>SessionMessages</code>]]> object to trigger the success message.</description>
 			<name>key</name>
 			<required>true</required>
@@ -3314,13 +3319,6 @@
 			<name>timeout</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<description></description>
-			<name>toast</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<type>boolean</type>
 		</attribute>
 		<attribute>
 			<description>Whether to translate the success message into the user's language. The default value is <![CDATA[<code>true</code>]]>.</description>

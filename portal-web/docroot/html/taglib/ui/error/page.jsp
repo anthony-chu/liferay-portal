@@ -21,12 +21,25 @@ String alertMessage = (String)request.getAttribute("liferay-ui:error:alertMessag
 String alertIcon = (String)request.getAttribute("liferay-ui:error:alertIcon");
 String alertStyle = (String)request.getAttribute("liferay-ui:error:alertStyle");
 String alertTitle = (String)request.getAttribute("liferay-ui:error:alertTitle");
+boolean embed = GetterUtil.getBoolean((String)request.getAttribute("liferay-ui:error:embed"));
 String rowBreak = (String)request.getAttribute("liferay-ui:error:rowBreak");
-boolean toast = GetterUtil.getBoolean((String)request.getAttribute("liferay-ui:error:toast"));
 %>
 
 <c:choose>
-	<c:when test="<%= toast %>">
+	<c:when test="<%= embed %>">
+		<div class="alert alert-<%= alertStyle %>" role="alert">
+			<span class="alert-indicator">
+				<svg aria-hidden="true" class="lexicon-icon lexicon-icon-<%= alertIcon %>">
+					<use xlink:href="<%= themeDisplay.getPathThemeImages() %>/lexicon/icons.svg#<%= alertIcon %>"></use>
+				</svg>
+			</span>
+
+			<strong class="lead"><%= alertTitle %>:</strong><%= alertMessage %>
+		</div>
+
+		<%= rowBreak %>
+	</c:when>
+	<c:otherwise>
 		<aui:script require="metal-dom/src/all/dom as dom,clay-alert@2.0.2/lib/ClayToast as ClayToast">
 			var alertContainer = document.getElementById('alertContainer');
 
@@ -49,18 +62,5 @@ boolean toast = GetterUtil.getBoolean((String)request.getAttribute("liferay-ui:e
 				alertContainer
 			);
 		</aui:script>
-	</c:when>
-	<c:otherwise>
-		<div class="alert alert-<%= alertStyle %>" role="alert">
-			<span class="alert-indicator">
-				<svg aria-hidden="true" class="lexicon-icon lexicon-icon-<%= alertIcon %>">
-					<use xlink:href="<%= themeDisplay.getPathThemeImages() %>/lexicon/icons.svg#<%= alertIcon %>"></use>
-				</svg>
-			</span>
-
-			<strong class="lead"><%= alertTitle %>:</strong><%= alertMessage %>
-		</div>
-
-		<%= rowBreak %>
 	</c:otherwise>
 </c:choose>
