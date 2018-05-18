@@ -158,12 +158,12 @@ public class SuccessTag extends IncludeTag implements BodyTag {
 	protected void cleanUp() {
 		super.cleanUp();
 
+		_embed = true;
 		_hasMessage = false;
 		_key = null;
 		_message = null;
 		_targetNode = null;
 		_timeout = 5000;
-		_embed = true;
 		_translateMessage = true;
 	}
 
