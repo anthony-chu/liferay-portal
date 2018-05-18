@@ -1,4 +1,4 @@
-var alertContainer = document.getElementById('alertContainer');
+let alertContainer = document.getElementById('alertContainer');
 
 if (!alertContainer) {
     alertContainer = document.createElement('div');
@@ -7,9 +7,13 @@ if (!alertContainer) {
     dom.addClasses(alertContainer, 'alert-notifications alert-notifications-fixed');
     dom.enterDocument(alertContainer);
 }
+else {
+    dom.removeChildren(alertContainer);
+}
 
-new ClayToast.default(
+const clayToast = new ClayToast.default(
     {
+        autoClose: true,
         destroyOnHide: true,
         message: '#message#',
         spritemap: '#pathThemeImages#/lexicon/icons.svg',
@@ -17,4 +21,12 @@ new ClayToast.default(
         title: '#title#'
     },
     alertContainer
+);
+
+dom.removeClasses(clayToast.element, 'show');
+
+requestAnimationFrame(
+    function() {
+        dom.addClasses(clayToast.element, 'show');
+    }
 );

@@ -41,7 +41,7 @@ String rowBreak = (String)request.getAttribute("liferay-ui:error:rowBreak");
 	</c:when>
 	<c:otherwise>
 		<aui:script require="metal-dom/src/all/dom as dom,clay-alert@2.0.2/lib/ClayToast as ClayToast">
-			var alertContainer = document.getElementById('alertContainer');
+			let alertContainer = document.getElementById('alertContainer');
 
 			if (!alertContainer) {
 				alertContainer = document.createElement('div');
@@ -50,9 +50,13 @@ String rowBreak = (String)request.getAttribute("liferay-ui:error:rowBreak");
 				dom.addClasses(alertContainer, 'alert-notifications alert-notifications-fixed');
 				dom.enterDocument(alertContainer);
 			}
+			else {
+				dom.removeChildren(alertContainer);
+			}
 
-			new ClayToast.default(
+			const clayToast = new ClayToast.default(
 				{
+					autoClose: true,
 					destroyOnHide: true,
 					message: '<%= alertMessage %>',
 					spritemap: '<%= themeDisplay.getPathThemeImages() %>/lexicon/icons.svg',
@@ -60,6 +64,14 @@ String rowBreak = (String)request.getAttribute("liferay-ui:error:rowBreak");
 					title: '<%= alertTitle %>'
 				},
 				alertContainer
+			);
+
+			dom.removeClasses(clayToast.element, 'show');
+
+			requestAnimationFrame(
+				function() {
+					dom.addClasses(clayToast.element, 'show');
+				}
 			);
 		</aui:script>
 	</c:otherwise>
