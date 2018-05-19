@@ -98,6 +98,24 @@
 		</execute>
 	</command>
 
+	<command name="mapEditableTextToAsset">
+		<execute macro="LayoutPageTemplates#_gotoTab">
+			<var name="tabName" value="Mapping" />
+		</execute>
+
+		<execute function="MouseOver#mouseOverNotVisible" locator1="Fragment#PAGE_TEMPLATE_FRAGMENT_HEADER">
+			<var name="key_fragmentName" value="${fragmentName}" />
+		</execute>
+
+		<execute function="Click" locator1="Fragment#PAGE_TEMPLATE_FRAGMENT_HEADER">
+			<var name="key_fragmentName" value="${fragmentName}" />
+		</execute>
+
+		<execute function="AssertClick" locator1="Fragment#LIST_GROUP_ITEM" value1='${itemName}'>
+			<var name="key_itemName" value="${itemName}" />
+		</execute>
+	</command>
+
 	<command name="moveFragment">
 		<execute function="Refresh" />
 
