@@ -2,6 +2,8 @@
 	<property name="portal.release" value="true" />
 	<property name="portal.upstream" value="true" />
 	<property name="testray.main.component.name" value="RSS" />
+	<property name="osgi.module.configuration.file.names" value="com.liferay.rss.web.internal.portlet.RSSPortlet.config" />
+	<property name="osgi.module.configurations" value="com.liferay.portlet.display-category=&quot;category.news&quot;" />
 
 	<set-up>
 		<execute macro="TestCase#setUpPortalInstance" />
@@ -186,7 +188,7 @@
 	</command>
 
 	<command name="AddRSSFeed" priority="5">
-		<property name="portal.acceptance" value="quarantine" />
+		<property name="portal.acceptance" value="test" />
 		<property name="testray.component.names" value="RSS" />
 
 		<execute macro="Navigator#gotoSitePage">
