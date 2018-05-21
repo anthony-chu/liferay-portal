@@ -108,7 +108,7 @@ public class SuccessTag extends IncludeTag implements BodyTag {
 
 		if (_embed) {
 			String result = StringUtil.replace(
-				_EMBED_TMPL_CONTENT, StringPool.POUND, StringPool.POUND,
+				_EMBED_TMPL_CONTENT, StringPool.DOLLAR, StringPool.DOLLAR,
 				values);
 
 			JspWriter jspWriter = pageContext.getOut();
@@ -117,7 +117,7 @@ public class SuccessTag extends IncludeTag implements BodyTag {
 		}
 		else {
 			String result = StringUtil.replace(
-				_TOAST_TMPL_CONTENT, StringPool.POUND, StringPool.POUND,
+				_TOAST_TMPL_CONTENT, StringPool.DOLLAR, StringPool.DOLLAR,
 				values);
 
 			ScriptTag.doTag(
