@@ -1,0 +1,33 @@
+<definition>
+	<command name="click">
+		<execute function="AssertElementPresent" locator1="//script[contains(@src,'clay-dropdown')]" />
+
+		<execute function="Click" locator1="MenuItem#ANY_MENU_ITEM">
+			<var name="key_menuItem" value="${menuItem}" />
+		</execute>
+	</command>
+
+	<command name="clickNoError">
+		<execute function="AssertElementPresent" locator1="//script[contains(@src,'clay-dropdown')]" />
+
+		<execute function="ClickNoError" locator1="MenuItem#ANY_MENU_ITEM">
+			<var name="key_menuItem" value="${menuItem}" />
+		</execute>
+	</command>
+
+	<command name="viewNotPresent">
+		<execute function="AssertElementPresent" locator1="//script[contains(@src,'clay-dropdown')]" />
+
+		<execute function="AssertElementNotPresent" locator1="MenuItem#ANY_MENU_ITEM">
+			<var name="key_menuItem" value="${menuItem}" />
+		</execute>
+	</command>
+
+	<command name="viewPresent">
+		<execute function="AssertElementPresent" locator1="//script[contains(@src,'clay-dropdown')]" />
+
+		<execute function="AssertElementPresent" locator1="MenuItem#ANY_MENU_ITEM">
+			<var name="key_menuItem" value="${menuItem}" />
+		</execute>
+	</command>
+</definition>
