@@ -421,7 +421,7 @@
 
 		<execute macro="TestCase#getFileContent">
 			<return from="fileContent" name="htmlSnippet" />
-			<var name="fileName" value="Document_1.html" />
+			<var name="fileName" value="fragment_content.html" />
 		</execute>
 
 		<execute macro="Fragment#typeFragmentEditor">
@@ -485,7 +485,7 @@
 
 		<execute macro="TestCase#getFileContent">
 			<return from="fileContent" name="htmlSnippet" />
-			<var name="fileName" value="Document_1.html" />
+			<var name="fileName" value="fragment_content.html" />
 		</execute>
 
 		<execute macro="Fragment#typeFragmentEditor">
@@ -793,7 +793,7 @@
 
 		<execute macro="TestCase#getFileContent">
 			<return from="fileContent" name="htmlSnippet" />
-			<var name="fileName" value="Document_1.html" />
+			<var name="fileName" value="fragment_content.html" />
 		</execute>
 
 		<execute macro="Fragment#typeFragmentEditor">
@@ -906,7 +906,7 @@
 
 		<execute macro="TestCase#getFileContent">
 			<return from="fileContent" name="htmlSnippet" />
-			<var name="fileName" value="Document_1.html" />
+			<var name="fileName" value="fragment_content.html" />
 		</execute>
 
 		<execute macro="Fragment#typeFragmentEditor">
