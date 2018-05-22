@@ -264,7 +264,7 @@
 
 		<execute macro="LayoutPageTemplates#editFragmentText">
 			<var name="fragmentName" value="Fragment Name" />
-			<var name="id" value="test" />
+			<var name="id" value="title" />
 			<var name="text" value="Editing Finished" />
 		</execute>
 
@@ -421,7 +421,7 @@
 
 		<execute macro="TestCase#getFileContent">
 			<return from="fileContent" name="htmlSnippet" />
-			<var name="fileName" value="fragment_content.html" />
+			<var name="fileName" value="fragment_title.html" />
 		</execute>
 
 		<execute macro="Fragment#typeFragmentEditor">
@@ -457,6 +457,7 @@
 
 		<execute macro="DisplayPages#mapEditableTextToAsset">
 			<var name="fragmentName" value="Fragment Name" />
+			<var name="id" value="title" />
 			<var name="itemName" value="Title" />
 		</execute>
 
@@ -485,7 +486,7 @@
 
 		<execute macro="TestCase#getFileContent">
 			<return from="fileContent" name="htmlSnippet" />
-			<var name="fileName" value="fragment_content.html" />
+			<var name="fileName" value="fragment_title.html" />
 		</execute>
 
 		<execute macro="Fragment#typeFragmentEditor">
@@ -678,7 +679,7 @@
 
 		<execute macro="TestCase#getFileContent">
 			<return from="fileContent" name="htmlSnippet" />
-			<var name="fileName" value="fragment_content.html" />
+			<var name="fileName" value="fragment_title.html" />
 		</execute>
 
 		<execute macro="Fragment#typeFragmentEditor">
@@ -793,7 +794,7 @@
 
 		<execute macro="TestCase#getFileContent">
 			<return from="fileContent" name="htmlSnippet" />
-			<var name="fileName" value="fragment_content.html" />
+			<var name="fileName" value="fragment_title.html" />
 		</execute>
 
 		<execute macro="Fragment#typeFragmentEditor">
@@ -829,6 +830,7 @@
 
 		<execute macro="DisplayPages#mapEditableTextToAsset">
 			<var name="fragmentName" value="Fragment Name" />
+			<var name="id" value="title" />
 			<var name="itemName" value="Title" />
 		</execute>
 
@@ -906,7 +908,7 @@
 
 		<execute macro="TestCase#getFileContent">
 			<return from="fileContent" name="htmlSnippet" />
-			<var name="fileName" value="fragment_content.html" />
+			<var name="fileName" value="fragment_title.html" />
 		</execute>
 
 		<execute macro="Fragment#typeFragmentEditor">
@@ -942,6 +944,7 @@
 
 		<execute macro="DisplayPages#mapEditableTextToAsset">
 			<var name="fragmentName" value="Fragment Name" />
+			<var name="id" value="title" />
 			<var name="itemName" value="Title" />
 		</execute>
 
