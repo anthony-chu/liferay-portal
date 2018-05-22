@@ -34,10 +34,6 @@
 
 	<command name="viewErrorMessage">
 		<execute function="AssertTextEquals" locator1="Message#ERROR" value1="Error:${errorMessage}" />
-
-		<execute macro="Alert#_closeMessage">
-			<var name="messageType" value="ERROR" />
-		</execute>
 	</command>
 
 	<command name="viewExpireContentFailedMessage">
