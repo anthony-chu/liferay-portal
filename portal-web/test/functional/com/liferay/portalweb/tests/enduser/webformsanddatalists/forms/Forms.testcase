@@ -3782,7 +3782,7 @@
 			</execute>
 
 			<execute macro="FormPortlet#submitWithError">
-				<var name="errorMessage" value="Error:Text verification failed." />
+				<var name="errorMessage" value="Text verification failed." />
 			</execute>
 
 			<execute macro="FormFields#viewTextValue">
