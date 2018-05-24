@@ -21,6 +21,7 @@ import com.liferay.apio.architect.alias.ProvideFunction;
 import com.liferay.apio.architect.alias.form.FormBuilderFunction;
 import com.liferay.apio.architect.alias.routes.CreateItemFunction;
 import com.liferay.apio.architect.alias.routes.GetPageFunction;
+import com.liferay.apio.architect.alias.routes.permission.HasAddingPermissionFunction;
 import com.liferay.apio.architect.credentials.Credentials;
 import com.liferay.apio.architect.form.Form;
 import com.liferay.apio.architect.function.throwable.ThrowableBiFunction;
@@ -122,19 +123,20 @@ public class CollectionRoutes<T, S> {
 		 *
 		 * @param  throwableBiFunction the creator function
 		 * @param  aClass the class of the creator function's second parameter
-		 * @param  permissionFunction the permission function for this route
+		 * @param  hasAddingPermissionFunction the permission function for this
+		 *         route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
 		 */
 		public <A, R> Builder<T, S> addCreator(
 			ThrowableBiFunction<R, A, T> throwableBiFunction, Class<A> aClass,
-			ThrowableFunction<Credentials, Boolean> permissionFunction,
+			HasAddingPermissionFunction hasAddingPermissionFunction,
 			FormBuilderFunction<R> formBuilderFunction) {
 
 			_neededProviderConsumer.accept(aClass.getName());
 
-			_collectionPermissionFunction = permissionFunction;
+			_hasAddingPermissionFunction = hasAddingPermissionFunction;
 
 			Form<R> form = formBuilderFunction.apply(
 				new Form.Builder<>(Arrays.asList("c", _name)));
@@ -156,17 +158,18 @@ public class CollectionRoutes<T, S> {
 		 * Adds a route to a creator function that has no extra parameters.
 		 *
 		 * @param  throwableFunction the creator function
-		 * @param  permissionFunction the permission function for this route
+		 * @param  hasAddingPermissionFunction the permission function for this
+		 *         route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
 		 */
 		public <R> Builder<T, S> addCreator(
 			ThrowableFunction<R, T> throwableFunction,
-			ThrowableFunction<Credentials, Boolean> permissionFunction,
+			HasAddingPermissionFunction hasAddingPermissionFunction,
 			FormBuilderFunction<R> formBuilderFunction) {
 
-			_collectionPermissionFunction = permissionFunction;
+			_hasAddingPermissionFunction = hasAddingPermissionFunction;
 
 			Form<R> form = formBuilderFunction.apply(
 				new Form.Builder<>(Arrays.asList("c", _name)));
@@ -193,7 +196,8 @@ public class CollectionRoutes<T, S> {
 		 * @param  bClass the class of the creator function's third parameter
 		 * @param  cClass the class of the creator function's fourth parameter
 		 * @param  dClass the class of the creator function's fifth parameter
-		 * @param  permissionFunction the permission function for this route
+		 * @param  hasAddingPermissionFunction the permission function for this
+		 *         route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
@@ -201,7 +205,7 @@ public class CollectionRoutes<T, S> {
 		public <A, B, C, D, R> Builder<T, S> addCreator(
 			ThrowablePentaFunction<R, A, B, C, D, T> throwablePentaFunction,
 			Class<A> aClass, Class<B> bClass, Class<C> cClass, Class<D> dClass,
-			ThrowableFunction<Credentials, Boolean> permissionFunction,
+			HasAddingPermissionFunction hasAddingPermissionFunction,
 			FormBuilderFunction<R> formBuilderFunction) {
 
 			_neededProviderConsumer.accept(aClass.getName());
@@ -209,7 +213,7 @@ public class CollectionRoutes<T, S> {
 			_neededProviderConsumer.accept(cClass.getName());
 			_neededProviderConsumer.accept(dClass.getName());
 
-			_collectionPermissionFunction = permissionFunction;
+			_hasAddingPermissionFunction = hasAddingPermissionFunction;
 
 			Form<R> form = formBuilderFunction.apply(
 				new Form.Builder<>(Arrays.asList("c", _name)));
@@ -235,7 +239,8 @@ public class CollectionRoutes<T, S> {
 		 * @param  aClass the class of the creator function's second parameter
 		 * @param  bClass the class of the creator function's third parameter
 		 * @param  cClass the class of the creator function's fourth parameter
-		 * @param  permissionFunction the permission function for this route
+		 * @param  hasAddingPermissionFunction the permission function for this
+		 *         route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
@@ -243,14 +248,14 @@ public class CollectionRoutes<T, S> {
 		public <A, B, C, R> Builder<T, S> addCreator(
 			ThrowableTetraFunction<R, A, B, C, T> throwableTetraFunction,
 			Class<A> aClass, Class<B> bClass, Class<C> cClass,
-			ThrowableFunction<Credentials, Boolean> permissionFunction,
+			HasAddingPermissionFunction hasAddingPermissionFunction,
 			FormBuilderFunction<R> formBuilderFunction) {
 
 			_neededProviderConsumer.accept(aClass.getName());
 			_neededProviderConsumer.accept(bClass.getName());
 			_neededProviderConsumer.accept(cClass.getName());
 
-			_collectionPermissionFunction = permissionFunction;
+			_hasAddingPermissionFunction = hasAddingPermissionFunction;
 
 			Form<R> form = formBuilderFunction.apply(
 				new Form.Builder<>(Arrays.asList("c", _name)));
@@ -275,7 +280,8 @@ public class CollectionRoutes<T, S> {
 		 * @param  throwableTriFunction the creator function
 		 * @param  aClass the class of the creator function's second parameter
 		 * @param  bClass the class of the creator function's third parameter
-		 * @param  permissionFunction the permission function for this route
+		 * @param  hasAddingPermissionFunction the permission function for this
+		 *         route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
@@ -283,13 +289,13 @@ public class CollectionRoutes<T, S> {
 		public <A, B, R> Builder<T, S> addCreator(
 			ThrowableTriFunction<R, A, B, T> throwableTriFunction,
 			Class<A> aClass, Class<B> bClass,
-			ThrowableFunction<Credentials, Boolean> permissionFunction,
+			HasAddingPermissionFunction hasAddingPermissionFunction,
 			FormBuilderFunction<R> formBuilderFunction) {
 
 			_neededProviderConsumer.accept(aClass.getName());
 			_neededProviderConsumer.accept(bClass.getName());
 
-			_collectionPermissionFunction = permissionFunction;
+			_hasAddingPermissionFunction = hasAddingPermissionFunction;
 
 			Form<R> form = formBuilderFunction.apply(
 				new Form.Builder<>(Arrays.asList("c", _name)));
@@ -472,7 +478,7 @@ public class CollectionRoutes<T, S> {
 				_form
 			).filter(
 				__ -> Try.fromFallible(
-					() -> _collectionPermissionFunction.apply(credentials)
+					() -> _hasAddingPermissionFunction.apply(credentials)
 				).orElse(
 					false
 				)
@@ -485,11 +491,10 @@ public class CollectionRoutes<T, S> {
 			);
 		}
 
-		private ThrowableFunction<Credentials, Boolean>
-			_collectionPermissionFunction;
 		private CreateItemFunction<T> _createItemFunction;
 		private Form _form;
 		private GetPageFunction<T> _getPageFunction;
+		private HasAddingPermissionFunction _hasAddingPermissionFunction;
 		private final String _name;
 		private final Consumer<String> _neededProviderConsumer;
 		private final ProvideFunction _provideFunction;

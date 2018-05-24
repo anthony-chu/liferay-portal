@@ -9,5 +9,7 @@
 		<var method="StringUtil#upperCase('${breadcrumbName}')" name="breadcrumbNameUppercase" />
 
 		<execute function="AssertTextEquals" locator1="Breadcrumb#BREADCRUMB_ENTRY" value1="${breadcrumbNameUppercase}" />
+
+		<return value="${breadcrumbNameUppercase}" />
 	</command>
 </definition>

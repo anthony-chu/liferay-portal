@@ -11,5 +11,7 @@ definition {
 		var breadcrumbNameUppercase = StringUtil.upperCase('${breadcrumbName}');
 
 		AssertTextEquals(locator1 = "Breadcrumb#BREADCRUMB_ENTRY", value1 = "${breadcrumbNameUppercase}");
+
+		return "${breadcrumbNameUppercase}";
 	}
 }

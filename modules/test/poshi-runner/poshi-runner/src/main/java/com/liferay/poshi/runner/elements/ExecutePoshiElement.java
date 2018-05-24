@@ -86,15 +86,14 @@ public class ExecutePoshiElement extends PoshiElement {
 			return;
 		}
 
-		if (readableSyntax.contains("return(\n")) {
+		if (readableSyntax.startsWith("var ")) {
 			PoshiNode returnPoshiNode = PoshiNodeFactory.newPoshiNode(
 				this, readableSyntax);
 
 			if (returnPoshiNode instanceof ReturnPoshiElement) {
 				add(returnPoshiNode);
 
-				readableSyntax = RegexUtil.getGroup(
-					readableSyntax, "return\\((.*),", 1);
+				readableSyntax = getValueFromAssignment(readableSyntax);
 			}
 		}
 
@@ -372,8 +371,8 @@ public class ExecutePoshiElement extends PoshiElement {
 			return false;
 		}
 
-		if (readableSyntax.startsWith("var ") &&
-			readableSyntax.contains(" = return(")) {
+		if (isMacroReturnVar(readableSyntax) &&
+			readableSyntax.startsWith("var ")) {
 
 			return true;
 		}

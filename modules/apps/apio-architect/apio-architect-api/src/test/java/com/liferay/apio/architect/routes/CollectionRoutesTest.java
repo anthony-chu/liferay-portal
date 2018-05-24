@@ -15,8 +15,8 @@
 package com.liferay.apio.architect.routes;
 
 import static com.liferay.apio.architect.operation.Method.POST;
-import static com.liferay.apio.architect.routes.RoutesTestUtil.COLLECTION_PERMISSION_FUNCTION;
 import static com.liferay.apio.architect.routes.RoutesTestUtil.FORM_BUILDER_FUNCTION;
+import static com.liferay.apio.architect.routes.RoutesTestUtil.HAS_ADDING_PERMISSION_FUNCTION;
 import static com.liferay.apio.architect.routes.RoutesTestUtil.PAGINATION;
 import static com.liferay.apio.architect.routes.RoutesTestUtil.REQUEST_PROVIDE_FUNCTION;
 
@@ -83,7 +83,7 @@ public class CollectionRoutesTest {
 		CollectionRoutes<String, ?> collectionRoutes = builder.addCreator(
 			this::_testAndReturnFourParameterCreatorRoute, String.class,
 			Long.class, Boolean.class, Integer.class,
-			COLLECTION_PERMISSION_FUNCTION, FORM_BUILDER_FUNCTION
+			HAS_ADDING_PERMISSION_FUNCTION, FORM_BUILDER_FUNCTION
 		).addGetter(
 			this::_testAndReturnFourParameterGetterRoute, String.class,
 			Long.class, Boolean.class, Integer.class
@@ -107,7 +107,7 @@ public class CollectionRoutesTest {
 
 		CollectionRoutes<String, ?> collectionRoutes = builder.addCreator(
 			this::_testAndReturnThreeParameterCreatorRoute, String.class,
-			Long.class, Boolean.class, COLLECTION_PERMISSION_FUNCTION,
+			Long.class, Boolean.class, HAS_ADDING_PERMISSION_FUNCTION,
 			FORM_BUILDER_FUNCTION
 		).addGetter(
 			this::_testAndReturnThreeParameterGetterRoute, String.class,
@@ -132,7 +132,7 @@ public class CollectionRoutesTest {
 
 		CollectionRoutes<String, ?> collectionRoutes = builder.addCreator(
 			this::_testAndReturnNoParameterCreatorRoute,
-			COLLECTION_PERMISSION_FUNCTION, FORM_BUILDER_FUNCTION
+			HAS_ADDING_PERMISSION_FUNCTION, FORM_BUILDER_FUNCTION
 		).addGetter(
 			this::_testAndReturnNoParameterGetterRoute
 		).build();
@@ -151,7 +151,7 @@ public class CollectionRoutesTest {
 
 		CollectionRoutes<String, ?> collectionRoutes = builder.addCreator(
 			this::_testAndReturnTwoParameterCreatorRoute, String.class,
-			Long.class, COLLECTION_PERMISSION_FUNCTION, FORM_BUILDER_FUNCTION
+			Long.class, HAS_ADDING_PERMISSION_FUNCTION, FORM_BUILDER_FUNCTION
 		).addGetter(
 			this::_testAndReturnTwoParameterGetterRoute, String.class,
 			Long.class
@@ -173,7 +173,7 @@ public class CollectionRoutesTest {
 
 		CollectionRoutes<String, ?> collectionRoutes = builder.addCreator(
 			this::_testAndReturnOneParameterCreatorRoute, String.class,
-			COLLECTION_PERMISSION_FUNCTION, FORM_BUILDER_FUNCTION
+			HAS_ADDING_PERMISSION_FUNCTION, FORM_BUILDER_FUNCTION
 		).addGetter(
 			this::_testAndReturnOneParameterGetterRoute, String.class
 		).build();

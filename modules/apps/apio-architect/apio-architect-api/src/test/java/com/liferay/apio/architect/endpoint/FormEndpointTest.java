@@ -14,10 +14,10 @@
 
 package com.liferay.apio.architect.endpoint;
 
-import static com.liferay.apio.architect.routes.RoutesTestUtil.COLLECTION_PERMISSION_FUNCTION;
 import static com.liferay.apio.architect.routes.RoutesTestUtil.FORM_BUILDER_FUNCTION;
+import static com.liferay.apio.architect.routes.RoutesTestUtil.HAS_ADDING_PERMISSION_FUNCTION;
 import static com.liferay.apio.architect.routes.RoutesTestUtil.REQUEST_PROVIDE_FUNCTION;
-import static com.liferay.apio.architect.routes.RoutesTestUtil.getNestedCollectionPermissionFunction;
+import static com.liferay.apio.architect.routes.RoutesTestUtil.hasNestedAddingPermissionFunction;
 import static com.liferay.apio.architect.test.util.result.TryMatchers.aFailTry;
 import static com.liferay.apio.architect.test.util.result.TryMatchers.aSuccessTry;
 
@@ -154,7 +154,7 @@ public class FormEndpointTest {
 			});
 
 		return builder.addCreator(
-			__ -> null, COLLECTION_PERMISSION_FUNCTION, FORM_BUILDER_FUNCTION
+			__ -> null, HAS_ADDING_PERMISSION_FUNCTION, FORM_BUILDER_FUNCTION
 		).build();
 	}
 
@@ -206,7 +206,7 @@ public class FormEndpointTest {
 				});
 
 		return builder.addCreator(
-			(s, body) -> null, getNestedCollectionPermissionFunction(),
+			(s, body) -> null, hasNestedAddingPermissionFunction(),
 			FORM_BUILDER_FUNCTION
 		).build();
 	}

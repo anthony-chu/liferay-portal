@@ -16,9 +16,11 @@ package com.liferay.apio.architect.routes;
 
 import com.liferay.apio.architect.alias.ProvideFunction;
 import com.liferay.apio.architect.alias.form.FormBuilderFunction;
+import com.liferay.apio.architect.alias.routes.permission.HasAddingPermissionFunction;
+import com.liferay.apio.architect.alias.routes.permission.HasNestedAddingPermissionFunction;
+import com.liferay.apio.architect.alias.routes.permission.HasRemovePermissionFunction;
+import com.liferay.apio.architect.alias.routes.permission.HasUpdatePermissionFunction;
 import com.liferay.apio.architect.credentials.Credentials;
-import com.liferay.apio.architect.function.throwable.ThrowableBiFunction;
-import com.liferay.apio.architect.function.throwable.ThrowableFunction;
 import com.liferay.apio.architect.pagination.Pagination;
 
 import java.util.HashMap;
@@ -33,12 +35,6 @@ import javax.ws.rs.NotFoundException;
  * @author Alejandro Hernández
  */
 public class RoutesTestUtil {
-
-	/**
-	 * A collection permission function that always returns {@code true}.
-	 */
-	public static final ThrowableFunction<Credentials, Boolean>
-		COLLECTION_PERMISSION_FUNCTION = __ -> true;
 
 	/**
 	 * A {@code FormBuilderFunction} that creates a {@code Map<String, Object>}
@@ -56,10 +52,22 @@ public class RoutesTestUtil {
 		).build();
 
 	/**
+	 * A collection permission function that always returns {@code true}.
+	 */
+	public static final HasAddingPermissionFunction
+		HAS_ADDING_PERMISSION_FUNCTION = __ -> true;
+
+	/**
 	 * An item permission function that always returns {@code true}.
 	 */
-	public static final ThrowableBiFunction<Credentials, Long, Boolean>
-		ITEM_PERMISSION_FUNCTION = (credentials, aLong) -> true;
+	public static final HasRemovePermissionFunction<Long>
+		HAS_REMOVE_PERMISSION_FUNCTION = (credentials, aLong) -> true;
+
+	/**
+	 * An item permission function that always returns {@code true}.
+	 */
+	public static final HasUpdatePermissionFunction<Long>
+		HAS_UPDATE_PERMISSION_FUNCTION = (credentials, aLong) -> true;
 
 	/**
 	 * A mock {@code Pagination} object.
@@ -110,8 +118,8 @@ public class RoutesTestUtil {
 	 * Returns a nested collection permission function that always returns
 	 * {@code true}.
 	 */
-	public static <S> ThrowableBiFunction<Credentials, S, Boolean>
-		getNestedCollectionPermissionFunction() {
+	public static <S> HasNestedAddingPermissionFunction<S>
+		hasNestedAddingPermissionFunction() {
 
 		return (credentials, s) -> true;
 	}
