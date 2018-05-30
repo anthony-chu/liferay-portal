@@ -96,9 +96,9 @@
 	</command>
 
 	<command name="clickSaveAsDraft">
-		 <execute macro="Button#click">
-		 	<var name="button" value="Save as Draft" />
-		 </execute>
+		<execute macro="Button#click">
+			<var name="button" value="Save as Draft" />
+		</execute>
 	</command>
 
 	<command name="clickSelect">
@@ -108,9 +108,9 @@
 	</command>
 
 	<command name="clickSubmitForPublication">
-		 <execute macro="Button#click">
-		 	<var name="button" value="Submit for Publication" />
-		 </execute>
+		<execute macro="Button#click">
+			<var name="button" value="Submit for Publication" />
+		</execute>
 	</command>
 
 	<command name="clickSubmitLocalized">
