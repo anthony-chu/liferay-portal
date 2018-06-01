@@ -20,6 +20,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>DROPDOWN_LANGUAGE_LOCALE</td>
+	<td>//button[contains(@id,'${key_portletName}') and contains(@id,'_menu')]//span[contains(@class,'btn-section') and contains(.,'${key_locale}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>LANGUAGE</td>
 	<td>//div[ul[contains(@aria-labelledby,'${key_portletName}')]][contains(@class,'open')]//a[span[normalize-space(text())='${key_locale}']]</td>
 	<td></td>
