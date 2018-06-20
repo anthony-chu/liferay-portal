@@ -343,18 +343,8 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 			String instanceId, String defaultPreferences)
 		throws PortalException {
 
-		long groupId = fragmentEntryLink.getGroupId();
-
-		if (groupId == 0) {
-			ServiceContext serviceContext =
-				ServiceContextThreadLocal.getServiceContext();
-
-			if (serviceContext != null) {
-				groupId = serviceContext.getScopeGroupId();
-			}
-		}
-
-		Group group = _groupLocalService.getGroup(groupId);
+		Group group = _groupLocalService.getGroup(
+			fragmentEntryLink.getGroupId());
 
 		long defaultPlid = _portal.getControlPanelPlid(group.getCompanyId());
 
