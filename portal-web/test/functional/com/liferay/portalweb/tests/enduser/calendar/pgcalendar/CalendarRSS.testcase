@@ -3,6 +3,8 @@
 	<property name="portal.upstream" value="true" />
 	<property name="custom.properties" value="default.layout.template.id=1_column${line.separator}company.default.time.zone=America/Los_Angeles" />
 	<property name="testray.main.component.name" value="Calendar" />
+	<property name="osgi.module.configuration.file.names" value="com.liferay.journal.content.search.web.internal.portlet.RSSPortlet.config" />
+	<property name="osgi.module.configurations" value="com.liferay.portlet.display-category=&quot;category.news&quot;" />
 
 	<var name="pageName" value="Calendar Page" />
 	<var name="portletName" value="Calendar" />

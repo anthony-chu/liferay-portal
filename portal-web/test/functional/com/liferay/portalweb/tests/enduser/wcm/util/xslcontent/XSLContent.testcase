@@ -5,6 +5,9 @@
 	<property name="portal.upstream" value="true" />
 	<property name="testray.component.names" value="XSL" />
 	<property name="testray.main.component.name" value="XSL" />
+	<property name="osgi.module.configuration.file.names" value="com.liferay.journal.content.search.web.internal.portlet.XSLContentPortlet.config" />
+	<property name="osgi.module.configurations" value="com.liferay.portlet.display-category=&quot;category.cms&quot;" />
+	<property name="osgi.module.configurations" value="com.liferay.portlet.display.include=&quot;true&quot;" />
 
 	<set-up>
 		<execute macro="TestCase#setUpPortalInstance" />

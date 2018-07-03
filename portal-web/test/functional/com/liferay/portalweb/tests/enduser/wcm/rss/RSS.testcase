@@ -4,6 +4,8 @@
 	<property name="portal.release" value="true" />
 	<property name="portal.upstream" value="true" />
 	<property name="testray.main.component.name" value="RSS" />
+	<property name="osgi.module.configuration.file.names" value="com.liferay.journal.content.search.web.internal.portlet.RSSPortlet.config" />
+	<property name="osgi.module.configurations" value="com.liferay.portlet.display-category=&quot;category.news&quot;" />
 
 	<set-up>
 		<execute macro="TestCase#setUpPortalInstance" />
