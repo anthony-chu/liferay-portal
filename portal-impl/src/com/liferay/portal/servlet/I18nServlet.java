@@ -17,7 +17,6 @@ package com.liferay.portal.servlet;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -136,8 +135,12 @@ public class I18nServlet extends HttpServlet {
 		}
 	}
 
-	protected I18nData getI18nData(HttpServletRequest request)
-		throws PortalException {
+	protected I18nData getI18nData(HttpServletRequest request) {
+		String path = GetterUtil.getString(request.getPathInfo());
+
+		if (Validator.isNull(path)) {
+			path = "/";
+		}
 
 		String i18nLanguageId = request.getServletPath();
 
@@ -153,66 +156,67 @@ public class I18nServlet extends HttpServlet {
 			return null;
 		}
 
-		pos = i18nLanguageId.indexOf(CharPool.UNDERLINE);
+		String i18nPath = StringPool.SLASH + i18nLanguageId;
+
+		Locale locale = LocaleUtil.fromLanguageId(i18nLanguageId, true, false);
 
 		String i18nLanguageCode = i18nLanguageId;
 
-		if (pos > 0) {
-			i18nLanguageCode = i18nLanguageId.substring(0, pos);
-		}
+		if (locale != null) {
+			Locale siteDefaultLocale = null;
 
-		Locale siteDefaultLocale = LanguageUtil.getLocale(i18nLanguageCode);
+			try {
+				int[] friendlyURLIndices = PortalUtil.getGroupFriendlyURLIndex(
+					path);
 
-		Group siteGroup = null;
-
-		String path = GetterUtil.getString(request.getPathInfo());
-
-		if (Validator.isNull(path)) {
-			path = "/";
-		}
-		else {
-			int[] friendlyURLIndices = PortalUtil.getGroupFriendlyURLIndex(
-				path);
-
-			if (friendlyURLIndices != null) {
 				String friendlyURL = path.substring(
 					friendlyURLIndices[0], friendlyURLIndices[1]);
 
-				siteGroup = GroupLocalServiceUtil.getFriendlyURLGroup(
+				Group siteGroup = GroupLocalServiceUtil.getFriendlyURLGroup(
 					GetterUtil.getLong(
 						request.getAttribute(WebKeys.COMPANY_ID)),
 					friendlyURL);
 
-				siteDefaultLocale = LanguageUtil.getLocale(
-					siteGroup.getGroupId(), i18nLanguageCode);
-			}
-		}
-
-		String i18nPath = StringPool.SLASH + i18nLanguageId;
-
-		if (siteDefaultLocale == null) {
-			if (PropsValues.LOCALE_USE_DEFAULT_IF_NOT_AVAILABLE) {
 				siteDefaultLocale = PortalUtil.getSiteDefaultLocale(siteGroup);
 
-				i18nLanguageCode = siteDefaultLocale.getLanguage();
-
-				i18nPath = StringPool.SLASH + i18nLanguageCode;
-
-				i18nLanguageId = LocaleUtil.toLanguageId(siteDefaultLocale);
+				if (!LanguageUtil.isSameLanguage(locale, siteDefaultLocale)) {
+					siteDefaultLocale = LanguageUtil.getLocale(
+						siteGroup.getGroupId(), locale.getLanguage());
+				}
 			}
-			else {
-				return null;
+			catch (Exception e) {
+				siteDefaultLocale = LocaleUtil.getDefault();
+
+				if (!LanguageUtil.isSameLanguage(locale, siteDefaultLocale)) {
+					siteDefaultLocale = LanguageUtil.getLocale(
+						locale.getLanguage());
+				}
 			}
-		}
-		else {
-			String siteDefaultLanguageId = LocaleUtil.toLanguageId(
+
+			String siteDefaultLanguageId = LanguageUtil.getLanguageId(
 				siteDefaultLocale);
 
 			if (siteDefaultLanguageId.startsWith(i18nLanguageId)) {
-				i18nPath = StringPool.SLASH + i18nLanguageCode;
+				locale = siteDefaultLocale;
 
-				i18nLanguageId = siteDefaultLanguageId;
+				i18nPath = StringPool.SLASH + locale.getLanguage();
 			}
+
+			String country = locale.getCountry();
+
+			if (country.isEmpty()) {
+				locale = LanguageUtil.getLocale(locale.getLanguage());
+			}
+
+			i18nLanguageId = LocaleUtil.toLanguageId(locale);
+
+			i18nLanguageCode = locale.getLanguage();
+		}
+
+		if (!PropsValues.LOCALE_USE_DEFAULT_IF_NOT_AVAILABLE &&
+			!LanguageUtil.isAvailableLocale(i18nLanguageId)) {
+
+			return null;
 		}
 
 		String redirect = path;
@@ -225,15 +229,22 @@ public class I18nServlet extends HttpServlet {
 			i18nPath, i18nLanguageCode, i18nLanguageId, redirect);
 	}
 
-	protected I18nData getI18nData(Locale locale) throws PortalException {
+	protected I18nData getI18nData(Locale locale) {
 		String languageId = LocaleUtil.toLanguageId(locale);
 
 		String i18nPath = StringPool.SLASH + languageId;
 
-		Locale defaultLocale = LanguageUtil.getLocale(locale.getLanguage());
+		Locale defaultLocale = LocaleUtil.getDefault();
 
 		if (LocaleUtil.equals(defaultLocale, locale)) {
 			i18nPath = StringPool.SLASH + defaultLocale.getLanguage();
+		}
+		else if (!LanguageUtil.isSameLanguage(defaultLocale, locale)) {
+			defaultLocale = LanguageUtil.getLocale(locale.getLanguage());
+
+			if (LocaleUtil.equals(defaultLocale, locale)) {
+				i18nPath = StringPool.SLASH + defaultLocale.getLanguage();
+			}
 		}
 
 		return new I18nData(
