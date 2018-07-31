@@ -1410,6 +1410,7 @@
 	</command>
 
 	<command name="AddWebContentViaWCDWithGlobalStructureAndLocalTemplate" priority="4">
+		<property name="portal.acceptance" value="kyle-miho" />
 		<property name="testray.component.names" value="Web Content Administration" />
 
 		<execute macro="ProductMenu#gotoSite">
@@ -1832,6 +1833,7 @@
 	</command>
 
 	<command name="EditArticleMadeFromGlobalStructure" priority="4">
+		<property name="portal.acceptance" value="kyle-miho" />
 		<property name="testray.component.names" value="Web Content Administration" />
 
 		<execute macro="ProductMenu#gotoSite">
@@ -2039,6 +2041,7 @@
 	</command>
 
 	<command name="EditGlobalWebContentTemplate" priority="4">
+		<property name="portal.acceptance" value="kyle-miho" />
 		<property name="testray.component.names" value="Web Content Administration" />
 
 		<execute macro="ProductMenu#gotoSite">
