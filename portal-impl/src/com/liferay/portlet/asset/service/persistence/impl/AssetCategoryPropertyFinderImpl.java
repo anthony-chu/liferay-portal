@@ -30,12 +30,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author     Brian Wing Shun Chan
- * @author     Jorge Ferrer
- * @deprecated As of Judson (7.1.x), replaced by {@link
- *             com.liferay.asset.category.property.service.persistence.impl.AssetCategoryPropertyFinderImpl}
+ * @author Brian Wing Shun Chan
+ * @author Jorge Ferrer
  */
-@Deprecated
 public class AssetCategoryPropertyFinderImpl
 	extends AssetCategoryPropertyFinderBaseImpl
 	implements AssetCategoryPropertyFinder {
