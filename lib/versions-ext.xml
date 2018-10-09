@@ -1897,6 +1897,18 @@
 				</licenses>
 			</library>
 			<library>
+				<file-name>lib/portal/jaxb-core.jar</</file-name>
+				<version>2.3.0</version>
+				<project-name>Old JAXB Core</project-name>
+				<project-url>http://jaxb.dev.java.net</project-url>
+				<licenses>
+					<license>
+						<license-name>CDDL 1.1</license-name>
+						<license-url>http://glassfish.java.net/public/CDDLv1.1.html</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
 				<file-name>lib/portal/jaxen.jar</file-name>
 				<version>1.1.1</version>
 				<project-name>Jaxen</project-name>
@@ -1911,7 +1923,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/jaxb-impl.jar</file-name>
-				<version>2.1.11</version>
+				<version>2.3.0</version>
 				<project-name>Java Architecture for XML Binding</project-name>
 				<project-url>http://jaxb.dev.java.net</project-url>
 				<licenses>
