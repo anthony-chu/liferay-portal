@@ -157,6 +157,7 @@
 /portal/java-libpst.jar
 /portal/javassist.jar
 /portal/jaxb-api.jar
+/portal/jaxb-core.jar
 /portal/jaxb-impl.jar
 /portal/jaxen.jar
 /portal/jaxrpc.jar
