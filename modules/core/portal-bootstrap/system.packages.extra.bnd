@@ -110,6 +110,9 @@ Export-Package:\
 	com.sun.syndication.io;version='1.0',\
 	com.sun.syndication.io.impl;version='1.0',\
 	com.sun.ws.tools.ws;version='2.3.0',\
+	com.sun.ws.xml.ws.api;version='2.3.0',\
+	com.sun.ws.xml.ws.api.policy;version='2.3.0',\
+	com.sun.ws.xml.ws.policy;version='2.3.0',\
 	\
 	com.thoughtworks.xstream.*;version='1.4.10',\
 	\
