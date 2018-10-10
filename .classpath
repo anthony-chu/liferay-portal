@@ -118,6 +118,8 @@
 	<classpathentry kind="lib" path="lib/development/xmltask.jar"/>
 	<classpathentry kind="lib" path="lib/global/portlet.jar"/>
 	<classpathentry kind="lib" path="lib/portal/abdera.jar"/>
+	<classpathentry kind="lib" path="lib/portal/activation.jar" />
+	<classpathentry kind="lib" path="lib/portal/annotation.jar"/>
 	<classpathentry kind="lib" path="lib/portal/ant.jar"/>
 	<classpathentry kind="lib" path="lib/portal/antlr2.jar"/>
 	<classpathentry kind="lib" path="lib/portal/antlr3.jar"/>
@@ -191,10 +193,15 @@
 	<classpathentry kind="lib" path="lib/portal/java-diff.jar"/>
 	<classpathentry kind="lib" path="lib/portal/java-libpst.jar"/>
 	<classpathentry kind="lib" path="lib/portal/javassist.jar"/>
+	<classpathentry kind="lib" path="lib/portal/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="lib/portal/jaxb-core.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jaxb-impl.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jaxen.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jaxrpc.jar"/>
+	<classpathentry kind="lib" path="lib/portal/jaxrs-api.jar"/>
+	<classpathentry kind="lib" path="lib/portal/jaxws-api.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jaxws-rt.jar"/>
+	<classpathentry kind="lib" path="lib/portal/jaxws-tools.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jazzy.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jcifs.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jcommon.jar"/>
@@ -225,6 +232,7 @@
 	<classpathentry kind="lib" path="lib/portal/juh.jar"/>
 	<classpathentry kind="lib" path="lib/portal/juniversalchardet.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jurt.jar"/>
+	<classpathentry kind="lib" path="lib/portal/jws-api.jar"/>
 	<classpathentry kind="lib" path="lib/portal/kxml2.jar"/>
 	<classpathentry kind="lib" path="lib/portal/liferay-icu4j.jar"/>
 	<classpathentry kind="lib" path="lib/portal/log4j.jar"/>
@@ -235,6 +243,7 @@
 	<classpathentry kind="lib" path="lib/portal/mime4j-dom.jar"/>
 	<classpathentry kind="lib" path="lib/portal/mimepull.jar"/>
 	<classpathentry kind="lib" path="lib/portal/monte-cc.jar"/>
+	<classpathentry kind="lib" path="lib/portal/namespace.jar"/>
 	<classpathentry kind="lib" path="lib/portal/nekohtml.jar"/>
 	<classpathentry kind="lib" path="lib/portal/netcdf.jar"/>
 	<classpathentry kind="lib" path="lib/portal/netty-all.jar"/>
@@ -249,12 +258,14 @@
 	<classpathentry kind="lib" path="lib/portal/rdffilter.jar"/>
 	<classpathentry kind="lib" path="lib/portal/rhino.jar"/>
 	<classpathentry kind="lib" path="lib/portal/ridl.jar"/>
+	<classpathentry kind="lib" path="lib/portal/rmi-api.jar"/>
 	<classpathentry kind="lib" path="lib/portal/rome.jar"/>
 	<classpathentry kind="lib" path="lib/portal/rometools.jar"/>
 	<classpathentry kind="lib" path="lib/portal/saaj-api.jar"/>
 	<classpathentry kind="lib" path="lib/portal/saaj-impl.jar"/>
 	<classpathentry kind="lib" path="lib/portal/scribe.jar"/>
 	<classpathentry kind="lib" path="lib/portal/serializer.jar"/>
+	<classpathentry kind="lib" path="lib/portal/servlet.jar"/>
 	<classpathentry kind="lib" path="lib/portal/sigar.jar"/>
 	<classpathentry kind="lib" path="lib/portal/simplecaptcha.jar"/>
 	<classpathentry kind="lib" path="lib/portal/slf4j-api.jar"/>
@@ -284,6 +295,7 @@
 	<classpathentry kind="lib" path="lib/portal/tika-parsers.jar"/>
 	<classpathentry kind="lib" path="lib/portal/tomcat-jdbc.jar"/>
 	<classpathentry kind="lib" path="lib/portal/tomcat-juli.jar"/>
+	<classpathentry kind="lib" path="lib/portal/transaction.jar"/>
 	<classpathentry kind="lib" path="lib/portal/truezip.jar"/>
 	<classpathentry kind="lib" path="lib/portal/unoil.jar"/>
 	<classpathentry kind="lib" path="lib/portal/urlrewritefilter.jar"/>
