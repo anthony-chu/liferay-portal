@@ -1897,7 +1897,7 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>lib/portal/jaxb-core.jar</</file-name>
+				<file-name>lib/portal/jaxb-core.jar</file-name>
 				<version>2.3.0</version>
 				<project-name>Old JAXB Core</project-name>
 				<project-url>http://jaxb.dev.java.net</project-url>
