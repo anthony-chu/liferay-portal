@@ -191,6 +191,8 @@ public class AsyncPortletServletRequest extends HttpServletRequestWrapper {
 		for (ServletRegistration servletRegistration :
 				servletRegistrationMap.values()) {
 
+			System.out.println("#########" + servletRegistration.getMappings());
+
 			_portalServletURLPatterns.addAll(servletRegistration.getMappings());
 		}
 	}
