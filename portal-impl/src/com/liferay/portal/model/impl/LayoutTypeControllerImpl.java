@@ -164,7 +164,13 @@ public class LayoutTypeControllerImpl implements LayoutTypeController {
 		UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
 
 		PipingServletResponse pipingServletResponse = new PipingServletResponse(
-			response, unsyncStringWriter);
+			response, unsyncStringWriter) {
+
+			@Override
+			public void flushBuffer() {
+			}
+
+		};
 
 		String contentType = pipingServletResponse.getContentType();
 
