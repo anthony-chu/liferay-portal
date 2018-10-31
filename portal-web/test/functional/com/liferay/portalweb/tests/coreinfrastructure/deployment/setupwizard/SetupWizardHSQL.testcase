@@ -76,6 +76,7 @@
 
 	<command name="HSQLtoMariaDB" priority="4">
 		<property name="database.types" value="mariadb" />
+		<property name="portal.acceptance" value="mariadb" />
 		<property name="test.name.skip.portal.instance" value="SetupWizardHSQL#HSQLtoMariaDB" />
 
 		<execute macro="SetupWizard#configurePG">
@@ -100,6 +101,7 @@
 
 	<command name="HSQLtoMariaDBSampleDataDisabled" priority="4">
 		<property name="database.types" value="mariadb" />
+		<property name="portal.acceptance" value="mariadb" />
 		<property name="test.name.skip.portal.instance" value="SetupWizardHSQL#HSQLtoMariaDBSampleDataDisabled" />
 
 		<execute macro="SetupWizard#configurePG">
