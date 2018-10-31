@@ -5,8 +5,6 @@ Import-Package:\
 	!org.junit,\
 	!org.junit.*,\
 	\
-	!org.omg.CORBA_2_3.*,\
-	\
 	!org.slf4j,\
 	!org.slf4j.*,\
 	\
