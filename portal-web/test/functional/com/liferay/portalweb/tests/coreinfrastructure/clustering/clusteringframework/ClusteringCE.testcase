@@ -31,7 +31,7 @@
 	</tear-down>
 
 	<command name="AddAndDeleteBlogEntriesOnSeparateNodes" priority="5">
-		<property name="portal.acceptance" value="true" />
+		<property name="portal.acceptance" value="cluster" />
 		<property name="test.name.skip.portal.instance" value="ClusteringCE#AddAndDeleteBlogEntriesOnSeparateNodes" />
 
 		<execute macro="Clustering#viewClusterStatusInConsole" />
@@ -208,6 +208,7 @@
 	</command>
 
 	<command name="ShutdownAndStartupNodes" priority="5">
+		<property name="portal.acceptance" value="cluster" />
 		<property name="test.name.skip.portal.instance" value="ClusteringCE#ShutdownAndStartupNodes" />
 
 		<execute macro="Clustering#viewClusterStatusInConsole" />
@@ -295,6 +296,7 @@
 	</command>
 
 	<command name="ValidateDocumentOnSeparateNodes" priority="4">
+		<property name="portal.acceptance" value="cluster" />
 		<property name="test.name.skip.portal.instance" value="ClusteringCE#ValidateDocumentOnSeparateNodes" />
 
 		<execute macro="Clustering#viewClusterStatusInConsole" />
