@@ -130,6 +130,8 @@ public class WebDriverUtil extends PropsValues {
 
 		chromeOptions.setCapability("chrome.prefs", preferences);
 
+		chromeOptions.setBinary("/Users/vicnate5/OLD CHROME/Google Chrome.app/Contents/MacOS/Google Chrome");
+
 		if (Validator.isNotNull(PropsValues.BROWSER_CHROME_BIN_ARGS)) {
 			chromeOptions.addArguments(PropsValues.BROWSER_CHROME_BIN_ARGS);
 		}

@@ -1425,7 +1425,7 @@ sendPasswordCaptchaEnabled=&quot;false&quot;</echo>
 			<if>
 				<os family="mac" />
 				<then>
-					<property name="selenium.chrome.driver.zip" value="chromedriver_mac32.zip" />
+					<property name="selenium.chrome.driver.zip" value="chromedriver_mac64.zip" />
 				</then>
 				<elseif>
 					<os family="unix" />
@@ -1436,7 +1436,7 @@ sendPasswordCaptchaEnabled=&quot;false&quot;</echo>
 				<elseif>
 					<os family="windows" />
 					<then>
-						<property name="selenium.chrome.driver.zip" value="chromedriver_win32.zip" />
+						<property name="selenium.chrome.driver.zip" value="chromedriver_win64.zip" />
 					</then>
 				</elseif>
 				<else>
