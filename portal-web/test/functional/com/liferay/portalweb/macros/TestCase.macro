@@ -41,7 +41,9 @@
 				<if>
 					<and>
 						<equals arg1="${testPortalInstance}" arg2="true" />
-						<isset var="testNameSkipPortalInstance" />
+						<not>
+							<equals arg1="${testNameSkipPortalInstance}" arg2="" />
+						</not>
 						<not>
 							<condition function="IsTestName" locator1="" value1="${testNameSkipPortalInstance}" />
 						</not>
