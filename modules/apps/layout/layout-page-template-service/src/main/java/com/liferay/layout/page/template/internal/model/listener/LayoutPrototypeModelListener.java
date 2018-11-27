@@ -120,16 +120,23 @@ public class LayoutPrototypeModelListener
 			Locale defaultLocale = LocaleUtil.fromLanguageId(
 				LocalizationUtil.getDefaultLanguageId(nameXML));
 
-			int status = WorkflowConstants.STATUS_INACTIVE;
+			String name = nameMap.get(defaultLocale);
+
+			int status;
 
 			if (layoutPrototype.isActive()) {
 				status = WorkflowConstants.STATUS_APPROVED;
 			}
+			else {
+				status = WorkflowConstants.STATUS_INACTIVE;
+			}
+
+			long layoutPageTemplateEntryId =
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId();
+			long userId = layoutPageTemplateEntry.getUserId();
 
 			_layoutPageTemplateEntryLocalService.updateLayoutPageTemplateEntry(
-				layoutPageTemplateEntry.getUserId(),
-				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-				nameMap.get(defaultLocale), status);
+				userId, layoutPageTemplateEntryId, name, status);
 		}
 		catch (PortalException pe) {
 			if (_log.isDebugEnabled()) {

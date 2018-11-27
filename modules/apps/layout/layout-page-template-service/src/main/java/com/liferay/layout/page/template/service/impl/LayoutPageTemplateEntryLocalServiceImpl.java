@@ -77,10 +77,13 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		long groupId = company.getGroupId();
+		long groupId;
 
 		if (serviceContext != null) {
 			groupId = serviceContext.getScopeGroupId();
+		}
+		else {
+			groupId = company.getGroupId();
 		}
 
 		return addLayoutPageTemplateEntry(
@@ -128,10 +131,12 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 		layoutPageTemplateEntry.setPreviewFileEntryId(previewFileEntryId);
 		layoutPageTemplateEntry.setDefaultTemplate(defaultTemplate);
 		layoutPageTemplateEntry.setLayoutPrototypeId(layoutPrototypeId);
-		layoutPageTemplateEntry.setStatus(status);
-		layoutPageTemplateEntry.setStatusByUserId(userId);
-		layoutPageTemplateEntry.setStatusByUserName(user.getScreenName());
-		layoutPageTemplateEntry.setStatusDate(new Date());
+
+		String userName = user.getFullName();
+		Date statusDate = new Date();
+
+		setStatusFields(
+			layoutPageTemplateEntry, userId, userName, status, statusDate);
 
 		layoutPageTemplateEntryPersistence.update(layoutPageTemplateEntry);
 
@@ -460,17 +465,20 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 			long userId, long layoutPageTemplateEntryId, int status)
 		throws PortalException {
 
-		User user = userLocalService.getUser(userId);
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			layoutPageTemplateEntryPersistence.findByPrimaryKey(
 				layoutPageTemplateEntryId);
 
 		layoutPageTemplateEntry.setModifiedDate(new Date());
-		layoutPageTemplateEntry.setStatus(status);
-		layoutPageTemplateEntry.setStatusByUserId(userId);
-		layoutPageTemplateEntry.setStatusByUserName(user.getScreenName());
-		layoutPageTemplateEntry.setStatusDate(new Date());
+
+		User user = userLocalService.getUser(userId);
+
+		String userName = user.getScreenName();
+
+		Date statusDate = new Date();
+
+		setStatusFields(
+			layoutPageTemplateEntry, userId, userName, status, statusDate);
 
 		return layoutPageTemplateEntryLocalService.
 			updateLayoutPageTemplateEntry(layoutPageTemplateEntry);
@@ -508,8 +516,6 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 			int status)
 		throws PortalException {
 
-		User user = userLocalService.getUser(userId);
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			layoutPageTemplateEntryPersistence.findByPrimaryKey(
 				layoutPageTemplateEntryId);
@@ -520,10 +526,15 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 
 		layoutPageTemplateEntry.setModifiedDate(new Date());
 		layoutPageTemplateEntry.setName(name);
-		layoutPageTemplateEntry.setStatus(status);
-		layoutPageTemplateEntry.setStatusByUserId(userId);
-		layoutPageTemplateEntry.setStatusByUserName(user.getScreenName());
-		layoutPageTemplateEntry.setStatusDate(new Date());
+
+		User user = userLocalService.getUser(userId);
+
+		String userName = user.getScreenName();
+
+		Date statusDate = new Date();
+
+		setStatusFields(
+			layoutPageTemplateEntry, userId, userName, status, statusDate);
 
 		return layoutPageTemplateEntryLocalService.
 			updateLayoutPageTemplateEntry(layoutPageTemplateEntry);
@@ -583,6 +594,16 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 			serviceContext);
 
 		return layoutPageTemplateEntry;
+	}
+
+	protected void setStatusFields(
+		LayoutPageTemplateEntry layoutPageTemplateEntry, long userId,
+		String userName, int status, Date statusDate) {
+
+		layoutPageTemplateEntry.setStatus(status);
+		layoutPageTemplateEntry.setStatusByUserId(userId);
+		layoutPageTemplateEntry.setStatusByUserName(userName);
+		layoutPageTemplateEntry.setStatusDate(statusDate);
 	}
 
 	protected void validate(long groupId, String name) throws PortalException {

@@ -17,7 +17,6 @@ package com.liferay.layout.admin.web.internal.portlet.action;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.page.template.exception.DuplicateLayoutPageTemplateEntryException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateEntryNameException;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -86,20 +85,22 @@ public class UpdateLayoutPrototypeMVCActionCommand
 
 			jsonObject.put("redirectURL", redirect);
 		}
-		catch (PortalException pe) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(pe, pe);
-			}
+		catch (Throwable t) {
+			_log.error(t, t);
 
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
 			String errorMessage = "an-unexpected-error-occurred";
 
-			if (pe instanceof LayoutPageTemplateEntryNameException) {
+			Throwable cause = t.getCause();
+
+			if (cause instanceof LayoutPageTemplateEntryNameException) {
 				errorMessage = "please-enter-a-valid-name";
 			}
-			else if (pe instanceof DuplicateLayoutPageTemplateEntryException) {
+			else if (cause instanceof
+						DuplicateLayoutPageTemplateEntryException) {
+
 				errorMessage =
 					"a-page-template-entry-with-that-name-already-exists";
 			}
