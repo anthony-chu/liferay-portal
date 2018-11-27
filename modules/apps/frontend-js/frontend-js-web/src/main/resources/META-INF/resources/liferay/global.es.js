@@ -1,10 +1,9 @@
 import {
 	component,
-	componentReady,
-	destroyComponent,
-	destroyComponents,
-	destroyUnfulfilledPromises,
-	getComponentCache
+    componentReady,
+    destroyComponent,
+    destroyComponents,
+	destroyUnfulfilledPromises
 } from './component.es';
 import escape from 'lodash.escape';
 import groupBy from 'lodash.groupby';
@@ -21,7 +20,6 @@ Liferay.componentReady = componentReady;
 Liferay.destroyComponent = destroyComponent;
 Liferay.destroyComponents = destroyComponents;
 Liferay.destroyUnfulfilledPromises = destroyUnfulfilledPromises;
-Liferay.getComponentCache = getComponentCache;
 
 Liferay.Util.escape = escape;
 Liferay.Util.groupBy = groupBy;
