@@ -23,7 +23,6 @@ import com.liferay.dynamic.data.mapping.exception.StructureDefinitionException;
 import com.liferay.dynamic.data.mapping.exception.StructureDuplicateElementException;
 import com.liferay.dynamic.data.mapping.exception.StructureDuplicateStructureKeyException;
 import com.liferay.dynamic.data.mapping.exception.StructureNameException;
-import com.liferay.dynamic.data.mapping.internal.search.util.DDMSearchHelper;
 import com.liferay.dynamic.data.mapping.internal.util.DDMFormTemplateSynchonizer;
 import com.liferay.dynamic.data.mapping.io.DDMFormDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeRequest;
@@ -64,11 +63,8 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.DDMStructureIndexer;
-import com.liferay.portal.kernel.search.Indexable;
-import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
@@ -129,7 +125,6 @@ import java.util.regex.Pattern;
 public class DDMStructureLocalServiceImpl
 	extends DDMStructureLocalServiceBaseImpl {
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public DDMStructure addStructure(
 			long userId, long groupId, long parentStructureId, long classNameId,
@@ -484,12 +479,9 @@ public class DDMStructureLocalServiceImpl
 	 *
 	 * @param structure the structure to be deleted
 	 */
-	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
-	public DDMStructure deleteStructure(DDMStructure structure)
-		throws PortalException {
-
+	public void deleteStructure(DDMStructure structure) throws PortalException {
 		if (!GroupThreadLocal.isDeleteInProcess()) {
 			if (ddmStructureLinkPersistence.countByStructureId(
 					structure.getStructureId()) > 0) {
@@ -562,8 +554,6 @@ public class DDMStructureLocalServiceImpl
 		backgroundTaskmanager.deleteGroupBackgroundTasks(
 			structure.getGroupId(), backgroundTaskName,
 			DDMStructureIndexerBackgroundTaskExecutor.class.getName());
-
-		return structure;
 	}
 
 	/**
@@ -1235,15 +1225,9 @@ public class DDMStructureLocalServiceImpl
 			OrderByComparator<DDMStructure> orderByComparator)
 		throws PortalException {
 
-		SearchContext searchContext =
-			ddmSearchHelper.buildStructureSearchContext(
-				companyId, groupIds, classNameId, classPK, keywords, keywords,
-				StringPool.BLANK, null, WorkflowConstants.STATUS_ANY, start,
-				end, orderByComparator);
-
-		return ddmSearchHelper.doSearch(
-			searchContext, DDMStructure.class,
-			ddmStructurePersistence::findByPrimaryKey);
+		return ddmStructureFinder.findByKeywords(
+			companyId, groupIds, classNameId, classPK, keywords, start, end,
+			orderByComparator);
 	}
 
 	/**
@@ -1279,14 +1263,9 @@ public class DDMStructureLocalServiceImpl
 		int status, int start, int end,
 		OrderByComparator<DDMStructure> orderByComparator) {
 
-		SearchContext searchContext =
-			ddmSearchHelper.buildStructureSearchContext(
-				companyId, groupIds, classNameId, null, keywords, keywords,
-				StringPool.BLANK, null, status, start, end, orderByComparator);
-
-		return ddmSearchHelper.doSearch(
-			searchContext, DDMStructure.class,
-			ddmStructurePersistence::findByPrimaryKey);
+		return ddmStructureFinder.findByKeywords(
+			companyId, groupIds, classNameId, keywords, status, start, end,
+			orderByComparator);
 	}
 
 	/**
@@ -1328,14 +1307,9 @@ public class DDMStructureLocalServiceImpl
 		boolean andOperator, int start, int end,
 		OrderByComparator<DDMStructure> orderByComparator) {
 
-		SearchContext searchContext =
-			ddmSearchHelper.buildStructureSearchContext(
-				companyId, groupIds, classNameId, null, name, description,
-				storageType, type, status, start, end, orderByComparator);
-
-		return ddmSearchHelper.doSearch(
-			searchContext, DDMStructure.class,
-			ddmStructurePersistence::findByPrimaryKey);
+		return ddmStructureFinder.findByC_G_C_N_D_S_T_S(
+			companyId, groupIds, classNameId, name, description, storageType,
+			type, status, andOperator, start, end, orderByComparator);
 	}
 
 	@Override
@@ -1344,13 +1318,8 @@ public class DDMStructureLocalServiceImpl
 			String keywords)
 		throws PortalException {
 
-		SearchContext searchContext =
-			ddmSearchHelper.buildStructureSearchContext(
-				companyId, groupIds, classNameId, classPK, keywords, keywords,
-				StringPool.BLANK, null, WorkflowConstants.STATUS_ANY,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-		return ddmSearchHelper.doSearchCount(searchContext, DDMStructure.class);
+		return ddmStructureFinder.countByKeywords(
+			companyId, groupIds, classNameId, classPK, keywords);
 	}
 
 	/**
@@ -1370,13 +1339,8 @@ public class DDMStructureLocalServiceImpl
 		long companyId, long[] groupIds, long classNameId, String keywords,
 		int status) {
 
-		SearchContext searchContext =
-			ddmSearchHelper.buildStructureSearchContext(
-				companyId, groupIds, classNameId, null, keywords, keywords,
-				StringPool.BLANK, null, status, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null);
-
-		return ddmSearchHelper.doSearchCount(searchContext, DDMStructure.class);
+		return ddmStructureFinder.countByKeywords(
+			companyId, groupIds, classNameId, keywords, status);
 	}
 
 	/**
@@ -1402,16 +1366,11 @@ public class DDMStructureLocalServiceImpl
 		String description, String storageType, int type, int status,
 		boolean andOperator) {
 
-		SearchContext searchContext =
-			ddmSearchHelper.buildStructureSearchContext(
-				companyId, groupIds, classNameId, null, name, description,
-				storageType, type, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-				null);
-
-		return ddmSearchHelper.doSearchCount(searchContext, DDMStructure.class);
+		return ddmStructureFinder.countByC_G_C_N_D_S_T_S(
+			companyId, groupIds, classNameId, name, description, storageType,
+			type, status, andOperator);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public DDMStructure updateStructure(
 			long userId, long structureId, DDMForm ddmForm,
@@ -1427,7 +1386,6 @@ public class DDMStructureLocalServiceImpl
 			serviceContext, structure);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public DDMStructure updateStructure(
 			long userId, long groupId, long parentStructureId, long classNameId,
@@ -1446,7 +1404,6 @@ public class DDMStructureLocalServiceImpl
 			ddmFormLayout, serviceContext, structure);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public DDMStructure updateStructure(
 			long userId, long structureId, long parentStructureId,
@@ -2178,9 +2135,6 @@ public class DDMStructureLocalServiceImpl
 
 	@ServiceReference(type = DDMPermissionSupport.class)
 	protected DDMPermissionSupport ddmPermissionSupport;
-
-	@ServiceReference(type = DDMSearchHelper.class)
-	protected DDMSearchHelper ddmSearchHelper;
 
 	@ServiceReference(type = DDMXML.class)
 	protected DDMXML ddmXML;
