@@ -4,8 +4,7 @@ import {
 	destroyComponent,
 	destroyComponents,
 	destroyUnfulfilledPromises,
-	getComponentCache,
-	initComponentCache
+	getComponentCache
 } from './component.es';
 import escape from 'lodash.escape';
 import groupBy from 'lodash.groupby';
@@ -23,7 +22,6 @@ Liferay.destroyComponent = destroyComponent;
 Liferay.destroyComponents = destroyComponents;
 Liferay.destroyUnfulfilledPromises = destroyUnfulfilledPromises;
 Liferay.getComponentCache = getComponentCache;
-Liferay.initComponentCache = initComponentCache;
 
 Liferay.Util.escape = escape;
 Liferay.Util.groupBy = groupBy;

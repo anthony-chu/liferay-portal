@@ -310,13 +310,7 @@ const getComponentCache = function(componentId) {
 	return componentCache ? componentCache.state : {};
 };
 
-/**
- * Initializes the component cache mechanism
- */
-
-const initComponentCache = function() {
-	Liferay.on('startNavigate', _onStartNavigate);
-};
+Liferay.on('startNavigate', _onStartNavigate);
 
 export {
 	component,
@@ -324,7 +318,6 @@ export {
 	destroyComponent,
 	destroyComponents,
 	destroyUnfulfilledPromises,
-	getComponentCache,
-	initComponentCache
+	getComponentCache
 };
 export default component;
