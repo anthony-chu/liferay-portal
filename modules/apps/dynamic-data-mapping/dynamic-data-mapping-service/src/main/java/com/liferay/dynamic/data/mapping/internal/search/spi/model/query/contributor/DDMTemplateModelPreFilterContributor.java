@@ -51,9 +51,9 @@ public class DDMTemplateModelPreFilterContributor
 		addRequiredTerms(
 			booleanFilter, searchContext, Field.CLASS_PK, "classPKs");
 
+		addRequiredTerm(booleanFilter, searchContext, "resourceClassNameId");
 		addRequiredTerm(booleanFilter, searchContext, "language");
 		addRequiredTerm(booleanFilter, searchContext, "mode");
-		addRequiredTerm(booleanFilter, searchContext, "resourceClassNameId");
 		addRequiredTerm(booleanFilter, searchContext, "type");
 
 		addWorkflowStatusFilter(
