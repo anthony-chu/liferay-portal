@@ -617,9 +617,9 @@ MapBase.get = function(id, callback) {
  * @review
  */
 MapBase.register = function(id, map, portletId) {
-	const componentConfig = portletId ? {portletId} : {destroyOnNavigate: true};
+	const destroyConfig = portletId ? {portletId} : {destroyOnNavigate: true};
 
-	Liferay.component(id, map, componentConfig);
+	Liferay.component(id, map, destroyConfig);
 
 	const idPendingCallbacks = pendingCallbacks[id];
 
