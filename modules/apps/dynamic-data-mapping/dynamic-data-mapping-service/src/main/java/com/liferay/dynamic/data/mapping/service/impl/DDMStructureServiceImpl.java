@@ -14,28 +14,20 @@
 
 package com.liferay.dynamic.data.mapping.service.impl;
 
-import com.liferay.dynamic.data.mapping.internal.search.util.DDMSearchHelper;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.security.permission.DDMPermissionSupport;
 import com.liferay.dynamic.data.mapping.service.base.DDMStructureServiceBaseImpl;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionFactory;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -426,24 +418,9 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 	public List<DDMStructure> getStructures(
 		long companyId, long[] groupIds, long classNameId, int status) {
 
-		try {
-			SearchContext searchContext =
-				_ddmSearchHelper.buildStructureSearchContext(
-					companyId, groupIds, getUserId(), classNameId, null,
-					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, null,
-					status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-			return _ddmSearchHelper.doSearch(
-				searchContext, DDMStructure.class,
-				ddmStructurePersistence::findByPrimaryKey);
-		}
-		catch (PrincipalException pe) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(pe, pe);
-			}
-		}
-
-		return Collections.emptyList();
+		return ddmStructureFinder.filterFindByC_G_C_S(
+			companyId, groupIds, classNameId, status, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
 	}
 
 	@Override
@@ -451,24 +428,9 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 		long companyId, long[] groupIds, long classNameId, int status,
 		int start, int end, OrderByComparator<DDMStructure> orderByComparator) {
 
-		try {
-			SearchContext searchContext =
-				_ddmSearchHelper.buildStructureSearchContext(
-					companyId, groupIds, getUserId(), classNameId, null,
-					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, null,
-					status, start, end, orderByComparator);
-
-			return _ddmSearchHelper.doSearch(
-				searchContext, DDMStructure.class,
-				ddmStructurePersistence::findByPrimaryKey);
-		}
-		catch (PrincipalException pe) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(pe, pe);
-			}
-		}
-
-		return Collections.emptyList();
+		return ddmStructureFinder.filterFindByC_G_C_S(
+			companyId, groupIds, classNameId, status, start, end,
+			orderByComparator);
 	}
 
 	@Override
@@ -519,24 +481,9 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 		int type, int status, int start, int end,
 		OrderByComparator<DDMStructure> orderByComparator) {
 
-		try {
-			SearchContext searchContext =
-				_ddmSearchHelper.buildStructureSearchContext(
-					companyId, groupIds, getUserId(), classNameId, null,
-					keywords, keywords, StringPool.BLANK, type, status, start,
-					end, orderByComparator);
-
-			return _ddmSearchHelper.doSearch(
-				searchContext, DDMStructure.class,
-				ddmStructurePersistence::findByPrimaryKey);
-		}
-		catch (PrincipalException pe) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(pe, pe);
-			}
-		}
-
-		return Collections.emptyList();
+		return ddmStructureFinder.filterFindByKeywords(
+			companyId, groupIds, classNameId, keywords, type, status, start,
+			end, orderByComparator);
 	}
 
 	/**
@@ -573,24 +520,9 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 		int status, int start, int end,
 		OrderByComparator<DDMStructure> orderByComparator) {
 
-		try {
-			SearchContext searchContext =
-				_ddmSearchHelper.buildStructureSearchContext(
-					companyId, groupIds, getUserId(), classNameId, null,
-					keywords, keywords, StringPool.BLANK, null, status, start,
-					end, orderByComparator);
-
-			return _ddmSearchHelper.doSearch(
-				searchContext, DDMStructure.class,
-				ddmStructurePersistence::findByPrimaryKey);
-		}
-		catch (PrincipalException pe) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(pe, pe);
-			}
-		}
-
-		return Collections.emptyList();
+		return ddmStructureFinder.filterFindByKeywords(
+			companyId, groupIds, classNameId, keywords, status, start, end,
+			orderByComparator);
 	}
 
 	/**
@@ -634,24 +566,9 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 		boolean andOperator, int start, int end,
 		OrderByComparator<DDMStructure> orderByComparator) {
 
-		try {
-			SearchContext searchContext =
-				_ddmSearchHelper.buildStructureSearchContext(
-					companyId, groupIds, getUserId(), classNameId, null, name,
-					description, storageType, type, status, start, end,
-					orderByComparator);
-
-			return _ddmSearchHelper.doSearch(
-				searchContext, DDMStructure.class,
-				ddmStructurePersistence::findByPrimaryKey);
-		}
-		catch (PrincipalException pe) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(pe, pe);
-			}
-		}
-
-		return Collections.emptyList();
+		return ddmStructureFinder.filterFindByC_G_C_N_D_S_T_S(
+			companyId, groupIds, classNameId, name, description, storageType,
+			type, status, andOperator, start, end, orderByComparator);
 	}
 
 	/**
@@ -672,24 +589,8 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 		long companyId, long[] groupIds, long classNameId, String keywords,
 		int status) {
 
-		try {
-			SearchContext searchContext =
-				_ddmSearchHelper.buildStructureSearchContext(
-					companyId, groupIds, getUserId(), classNameId, null,
-					keywords, keywords, StringPool.BLANK, null,
-					WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS, null);
-
-			return _ddmSearchHelper.doSearchCount(
-				searchContext, DDMStructure.class);
-		}
-		catch (PrincipalException pe) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(pe, pe);
-			}
-		}
-
-		return 0;
+		return ddmStructureFinder.filterCountByKeywords(
+			companyId, groupIds, classNameId, keywords, status);
 	}
 
 	/**
@@ -712,23 +613,8 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 		long companyId, long[] groupIds, long classNameId, String keywords,
 		int type, int status) {
 
-		try {
-			SearchContext searchContext =
-				_ddmSearchHelper.buildStructureSearchContext(
-					companyId, groupIds, getUserId(), classNameId, null,
-					keywords, keywords, StringPool.BLANK, type, status,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-			return _ddmSearchHelper.doSearchCount(
-				searchContext, DDMStructure.class);
-		}
-		catch (PrincipalException pe) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(pe, pe);
-			}
-		}
-
-		return 0;
+		return ddmStructureFinder.filterCountByKeywords(
+			companyId, groupIds, classNameId, keywords, type, status);
 	}
 
 	/**
@@ -756,23 +642,9 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 		String description, String storageType, int type, int status,
 		boolean andOperator) {
 
-		try {
-			SearchContext searchContext =
-				_ddmSearchHelper.buildStructureSearchContext(
-					companyId, groupIds, getUserId(), classNameId, null, name,
-					description, storageType, type, status, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS, null);
-
-			return _ddmSearchHelper.doSearchCount(
-				searchContext, DDMStructure.class);
-		}
-		catch (PrincipalException pe) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(pe, pe);
-			}
-		}
-
-		return 0;
+		return ddmStructureFinder.filterCountByC_G_C_N_D_S_T_S(
+			companyId, groupIds, classNameId, name, description, storageType,
+			type, status, andOperator);
 	}
 
 	@Override
@@ -884,9 +756,6 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 			serviceContext);
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		DDMStructureServiceImpl.class);
-
 	private static volatile ModelResourcePermission<DDMStructure>
 		_ddmStructureModelResourcePermission =
 			ModelResourcePermissionFactory.getInstance(
@@ -895,8 +764,5 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 
 	@ServiceReference(type = DDMPermissionSupport.class)
 	private DDMPermissionSupport _ddmPermissionSupport;
-
-	@ServiceReference(type = DDMSearchHelper.class)
-	private DDMSearchHelper _ddmSearchHelper;
 
 }
