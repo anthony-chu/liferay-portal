@@ -12,7 +12,6 @@ import {
 	getDropSectionPosition,
 	getFragmentColumn,
 	getFragmentRowIndex,
-	remove,
 	setIn,
 	updateIn,
 	updateLayoutData
@@ -203,13 +202,18 @@ function removeFragmentEntryLinkReducer(state, actionType, payload) {
 			if (actionType === REMOVE_FRAGMENT_ENTRY_LINK) {
 				const {fragmentEntryLinkId} = payload;
 
-				let nextData = setIn(
+				const nextData = setIn(
 					state.layoutData,
 					['structure'],
 					[...state.layoutData.structure]
 				);
 
-				nextData = _removeFragment(nextData, fragmentEntryLinkId);
+				const index = getFragmentRowIndex(
+					nextData.structure,
+					fragmentEntryLinkId
+				);
+
+				nextData.structure.splice(index, 1);
 
 				_removeFragmentEntryLink(
 					state.deleteFragmentEntryLinkURL,
@@ -598,38 +602,6 @@ function _moveFragmentEntryLink(
 			credentials: 'include',
 			method: 'POST'
 		}
-	);
-}
-
-function _removeFragment(layoutData, fragmentEntryLinkId) {
-	const {structure} = layoutData;
-
-	const column = getFragmentColumn(structure, fragmentEntryLinkId);
-	const section = structure.find(
-		section => section.columns.find(
-			_column => column === _column
-		)
-	);
-
-	const columnIndex = section.columns.indexOf(column);
-	const fragmentIndex = column.fragmentEntryLinkIds.indexOf(
-		fragmentEntryLinkId
-	);
-	const sectionIndex = structure.indexOf(section);
-
-	return updateIn(
-		layoutData,
-		[
-			'structure',
-			sectionIndex,
-			'columns',
-			columnIndex,
-			'fragmentEntryLinkIds'
-		],
-		fragmentEntryLinkIds => remove(
-			fragmentEntryLinkIds,
-			fragmentIndex
-		)
 	);
 }
 
