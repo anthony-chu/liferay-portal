@@ -122,14 +122,14 @@ public class DDMSearchHelper {
 
 		SearchContext searchContext = new SearchContext();
 
-		searchContext.setAttribute(Field.DESCRIPTION, description);
-		searchContext.setAttribute(Field.NAME, name);
-		searchContext.setAttribute(Field.STATUS, status);
 		searchContext.setAttribute("classNameIds", classNameIds);
 		searchContext.setAttribute("classPKs", classPKs);
+		searchContext.setAttribute(Field.DESCRIPTION, description);
 		searchContext.setAttribute("language", language);
+		searchContext.setAttribute(Field.NAME, name);
 		searchContext.setAttribute("mode", mode);
 		searchContext.setAttribute("resourceClassNameId", resourceClassNameId);
+		searchContext.setAttribute(Field.STATUS, status);
 		searchContext.setAttribute("type", type);
 		searchContext.setCompanyId(companyId);
 		searchContext.setEnd(end);
