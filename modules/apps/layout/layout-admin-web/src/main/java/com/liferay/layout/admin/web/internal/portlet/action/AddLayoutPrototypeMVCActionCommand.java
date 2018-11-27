@@ -15,7 +15,6 @@
 package com.liferay.layout.admin.web.internal.portlet.action;
 
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
-import com.liferay.layout.page.template.exception.DuplicateLayoutPageTemplateEntryException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateEntryNameException;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
@@ -141,16 +140,8 @@ public class AddLayoutPrototypeMVCActionCommand extends BaseMVCActionCommand {
 
 			String errorMessage = "an-unexpected-error-occurred";
 
-			Throwable cause = t.getCause();
-
-			if (cause instanceof LayoutPageTemplateEntryNameException) {
+			if (t.getCause() instanceof LayoutPageTemplateEntryNameException) {
 				errorMessage = "please-enter-a-valid-name";
-			}
-			else if (cause instanceof
-						DuplicateLayoutPageTemplateEntryException) {
-
-				errorMessage =
-					"a-page-template-entry-with-that-name-already-exists";
 			}
 
 			jsonObject.put(
