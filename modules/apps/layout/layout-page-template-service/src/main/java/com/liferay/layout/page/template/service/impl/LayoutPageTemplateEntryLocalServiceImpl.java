@@ -80,11 +80,7 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 		long groupId = company.getGroupId();
 
 		if (serviceContext != null) {
-			long scopeGroupId = serviceContext.getScopeGroupId();
-
-			if (scopeGroupId != 0) {
-				groupId = scopeGroupId;
-			}
+			groupId = serviceContext.getScopeGroupId();
 		}
 
 		return addLayoutPageTemplateEntry(
