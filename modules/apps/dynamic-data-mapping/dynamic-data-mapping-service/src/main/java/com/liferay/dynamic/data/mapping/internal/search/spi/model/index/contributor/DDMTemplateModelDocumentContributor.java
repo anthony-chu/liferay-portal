@@ -63,9 +63,9 @@ public class DDMTemplateModelDocumentContributor
 			}
 		}
 
-		document.addKeyword("language", ddmTemplate.getLanguage());
-		document.addKeyword("mode", ddmTemplate.getMode());
 		document.addKeyword("type", ddmTemplate.getType());
+		document.addKeyword("mode", ddmTemplate.getMode());
+		document.addKeyword("language", ddmTemplate.getLanguage());
 
 		Locale defaultLocale = LocaleUtil.getSiteDefault();
 
