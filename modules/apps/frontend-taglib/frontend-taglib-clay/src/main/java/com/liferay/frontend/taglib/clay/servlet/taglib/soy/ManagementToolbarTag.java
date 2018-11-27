@@ -54,14 +54,12 @@ public class ManagementToolbarTag extends BaseClayTag {
 
 		Map<String, Object> context = getContext();
 
-		String searchContainerId = (String)context.get("searchContainerId");
+		String componentId = (String)context.get("componentId");
 
-		if (Validator.isNotNull(searchContainerId)) {
-			String componentId = getComponentId();
+		if (Validator.isNull(componentId)) {
+			String searchContainerId = (String)context.get("searchContainerId");
 
-			putValue("cacheState", true);
-
-			if (Validator.isNull(componentId)) {
+			if (Validator.isNotNull(searchContainerId)) {
 				setComponentId("managementToolbar_" + searchContainerId);
 			}
 		}
