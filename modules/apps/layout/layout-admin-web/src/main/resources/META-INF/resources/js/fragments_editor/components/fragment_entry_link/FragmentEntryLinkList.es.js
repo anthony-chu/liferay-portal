@@ -175,25 +175,21 @@ class FragmentEntryLinkList extends Component {
 
 	/**
 	 * Callback that is executed when an item is being dragged.
-	 * @param {object} eventData
-	 * @param {MouseEvent} eventData.originalEvent
+	 * @param {object} data
+	 * @param {MouseEvent} data.originalEvent
 	 * @private
 	 * @review
 	 */
-	_handleDrag(eventData) {
-		if (FragmentEntryLinkList._dropValid(eventData)) {
-			const mouseY = eventData.originalEvent.clientY;
-			const targetItemRegion = position.getRegion(eventData.target);
+	_handleDrag(data) {
+		const targetItem = data.target;
 
-			const {
-				hoveredElementId,
-				hoveredElementType
-			} = FragmentEntryLinkList._getHoveredElementData(eventData);
+		if (targetItem && 'fragmentEntryLinkId' in targetItem.dataset) {
+			const mouseY = data.originalEvent.clientY;
+			const targetItemRegion = position.getRegion(targetItem);
 
 			this._targetBorder = DRAG_POSITIONS.bottom;
 
-			if (Math.abs(mouseY - targetItemRegion.top) <=
-				Math.abs(mouseY - targetItemRegion.bottom)) {
+			if (Math.abs(mouseY - targetItemRegion.top) <= Math.abs(mouseY - targetItemRegion.bottom)) {
 				this._targetBorder = DRAG_POSITIONS.top;
 			}
 
@@ -201,8 +197,8 @@ class FragmentEntryLinkList extends Component {
 				UPDATE_DRAG_TARGET,
 				{
 					hoveredElementBorder: this._targetBorder,
-					hoveredElementId,
-					hoveredElementType
+					hoveredElementId: targetItem.dataset.fragmentEntryLinkId,
+					hoveredElementType: DROP_TARGET_TYPES.fragment
 				}
 			);
 		}
