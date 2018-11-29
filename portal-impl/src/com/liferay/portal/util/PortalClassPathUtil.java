@@ -62,6 +62,9 @@ public class PortalClassPathUtil {
 
 		builder.setBootstrapClassPath(classpath);
 
+		builder.setJavaExecutable(
+			System.getProperty("java.home") + "/bin/java");
+
 		builder.setProcessLogConsumer(
 			processLog -> {
 				if (ProcessLog.Level.DEBUG == processLog.getLevel()) {
