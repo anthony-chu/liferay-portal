@@ -3921,9 +3921,7 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 						/>
 					</delete>
 
-					<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
-
-					<get-java-jdk-home version="${java.jdk.bundle.version}" />
+					<property name="java.jdk.home" value="/opt/java/openjdk11" />
 
 					<if>
 						<equals arg1="${test.ant.launched.by.selenium}" arg2="true" />
