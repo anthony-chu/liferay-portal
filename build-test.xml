@@ -6704,6 +6704,8 @@ osb.lcs.portlet.oauth.consumer.secret=${osb.lcs.portlet.oauth.consumer.secret}</
 			</then>
 		</if>
 
+		<echo message="### ReleaseLocalServiceImpl log level: ${release.local.service.impl.log.level}" />
+
 		<echo file="${app.server.classes.portal.dir}/META-INF/portal-log4j-ext.xml"><![CDATA[<?xml version="1.0"?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
