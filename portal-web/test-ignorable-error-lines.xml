@@ -186,7 +186,7 @@
 		</ignore-error>
 		<ignore-error description="LPS-88391, LPS-88412, LPS-88417 - temporarily ignore until fixed">
 			<contains></contains>
-			<matches>Attempting to upgrade table .* by recreating the table.*</matches>
+			<matches>Attempting to upgrade table .* by recreating the table [\s\S]*</matches>
 		</ignore-error>
 		<ignore-error description="LPS-88391, LPS-88412, LPS-88417 - temporarily ignore until fixed">
 			<contains></contains>
@@ -194,7 +194,7 @@
 		</ignore-error>
 		<ignore-error description="LPS-88418 - temporarily ignore until fixed">
 			<contains></contains>
-			<matches>There is already an index on table '.*' named '.*' : create index .* on .*</matches>
+			<matches>There is already an index on table '.*' named '.*'[\s\S]: create index .* on .*</matches>
 		</ignore-error>
 		<ignore-error description="LRQA-24859">
 			<contains>No binary licenses found</contains>
