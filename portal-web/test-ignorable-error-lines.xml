@@ -182,7 +182,7 @@
 		</ignore-error>
 		<ignore-error description="LPS-88395 - temporarily ignore until fixed">
 			<contains></contains>
-			<matches>Can't DROP '.*'; check that column/key exists;.*</matches>
+			<matches>Can't DROP '.*'; check that column/key exists:.*</matches>
 		</ignore-error>
 		<ignore-error description="LPS-88391, LPS-88412, LPS-88417 - temporarily ignore until fixed">
 			<contains></contains>
