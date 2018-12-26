@@ -11115,11 +11115,13 @@ module.framework.properties.blacklist.portal.profile.names=${blacklist.portal.pr
 					</else>
 				</if>
 			</try>
+
 			<catch>
 				<get-jstack-output process.name="DBUpgrader" />
 
 				<fail message="${upgrade.error}${line.separator}${jstack.output}" />
 			</catch>
+
 			<finally>
 				<ant dir="portal-kernel" inheritAll="false" target="test-class">
 					<property name="test.class" value="PortalLogAssertorTest" />
