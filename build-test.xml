@@ -11120,6 +11120,11 @@ module.framework.properties.blacklist.portal.profile.names=${blacklist.portal.pr
 
 				<fail message="${upgrade.error}${line.separator}${jstack.output}" />
 			</catch>
+			<finally>
+				<ant dir="portal-kernel" inheritAll="false" target="test-class">
+					<property name="test.class" value="PortalLogAssertorTest" />
+				</ant>
+			</finally>
 		</trycatch>
 
 		<echo file="${liferay.home}/osgi/configs/com.liferay.portal.search.configuration.IndexStatusManagerConfiguration.cfg">indexReadOnly=false</echo>
