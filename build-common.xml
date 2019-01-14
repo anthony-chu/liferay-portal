@@ -779,7 +779,7 @@ information.
 				<elseif>
 					<contains string="@{test.batch.name}" substring="-open11" />
 					<then>
-						<property name="java.jdk.bundle.version" value="1.11" />
+						<property name="java.jdk.bundle.version" value="11" />
 					</then>
 				</elseif>
 			</if>
@@ -814,7 +814,7 @@ information.
 				</elseif>
 				<elseif>
 					<and>
-						<equals arg1="@{version}" arg2="1.11" />
+						<equals arg1="@{version}" arg2="11" />
 						<isset property="java.jdk.11.@{architecture}.home" />
 					</and>
 					<then>
