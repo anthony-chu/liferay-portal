@@ -935,6 +935,15 @@ information.
 				<then>
 					<trycatch>
 						<try>
+							<echo>----------------------------1--------------------------</echo>
+							<echo>java.jdk.home=${java.jdk.home}</echo>
+							<echo>junit.java.gc=${junit.java.gc}</echo>
+							<echo>gradleopts=@{gradleopts}</echo>
+							<echo>ANT_OPTS=${env.ANT_OPTS}</echo>
+							<echo>JAVA_HOME=${env.JAVA_HOME}</echo>
+							<echo>JAVA_OPTS=${env.JAVA_OPTS}</echo>
+							<echo>-------------------------------------------------------</echo>
+
 							<exec dir="@{dir}" executable="${project.dir}/gradlew${gradlew.suffix}" failonerror="@{failonerror}">
 								<args />
 								<arg value="--no-daemon" />
@@ -1098,8 +1107,16 @@ information.
 
 			<get-java-jdk-home version="${java.jdk.bundle.version}" />
 
+			<echo>---------------------------2----------------------------</echo>
+			<echo>java.jdk.home=${java.jdk.home}</echo>
+			<echo>junit.java.gc=${junit.java.gc}</echo>
+			<echo>ANT_OPTS=${env.ANT_OPTS}</echo>
+			<echo>JAVA_HOME=${env.JAVA_HOME}</echo>
+			<echo>JAVA_OPTS=${env.JAVA_OPTS}</echo>
+			<echo>-------------------------------------------------------</echo>
+
 			<junit dir="${project.dir}" fork="on" forkmode="@{forkmode}" haltonfailure="${junit.halt.on.failure}" jvm="${java.jdk.home}/bin/java" outputtoformatters="false" printsummary="on" showoutput="true">
-				<env key="JAVA_HOME" value="${java.jdk.home}/bin/java" />
+				<env key="JAVA_HOME" value="${java.jdk.home}" />
 				<sysproperty if:true="${aspectj.weaver.enabled}" key="aspectj.agent" value="${aspectj.agent}" />
 				<sysproperty key="catalina.base" value="." />
 				<sysproperty file="woven-classes" key="junit.aspectj.dump" />
