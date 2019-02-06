@@ -5442,7 +5442,7 @@ ${output.content}</echo>
 					<move
 						file="bundles"
 						tofile="bun dles"
-					>
+					/>
 
 					<antcall inheritAll="false" target="prepare-portal-ext-properties">
 						<param name="liferay.home" value="${project.dir}/bun dles" />
