@@ -5378,8 +5378,8 @@ ${output.content}</echo>
 									<generate-backend-batch-junit-report
 										junit.failure.count="${junit.failure.count}"
 										junit.failure.message.element="${junit.failure.message.element}"
-										test.class.name="PortalStartupSpaceInPath"
-										test.command.name="portalStartupSpaceInPath"
+										test.class.name="PortalSecondStartupSpaceInPath"
+										test.command.name="portalSecondStartupSpaceInPath"
 									/>
 								</finally>
 							</trycatch>
