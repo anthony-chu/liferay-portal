@@ -5366,7 +5366,9 @@ ${output.content}</echo>
 
 							<trycatch property="junit.failure.message">
 								<try>
-									<antcall inheritAll="false" target="start-app-server" />
+									<antcall inheritAll="false" target="start-app-server">
+										<param name="delete.liferay.home" value="false" />
+									</antcall>
 								</try>
 								<finally>
 									<condition else="0" property="junit.failure.count" value="1">
@@ -5435,7 +5437,9 @@ ${output.content}</echo>
 
 					<antcall inheritAll="false" target="prepare-system-ext-properties" />
 
-					<antcall inheritAll="false" target="start-app-server" />
+					<antcall inheritAll="false" target="start-app-server">
+						<param name="delete.liferay.home" value="false" />
+					</antcall>
 
 					<antcall inheritall="false" target="stop-app-server" />
 
