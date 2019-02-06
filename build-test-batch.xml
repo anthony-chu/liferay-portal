@@ -5448,7 +5448,7 @@ ${output.content}</echo>
 						<param name="liferay.home" value="${project.dir}/bun dles" />
 					</antcall>
 
-					<local name="new.portal.ext.properties">
+					<local name="new.portal.ext.properties" />
 
 					<loadfile
 						property="new.portal.ext.properties"
