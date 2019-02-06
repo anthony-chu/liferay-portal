@@ -5447,6 +5447,23 @@ ${output.content}</echo>
 					<antcall inheritAll="false" target="prepare-portal-ext-properties">
 						<param name="liferay.home" value="${project.dir}/bun dles" />
 					</antcall>
+
+					<local name="new.portal.ext.properties">
+
+					<loadfile
+						property="new.portal.ext.properties"
+						srcfile="${test.app.server.classes.portal.dir}/portal-ext.properties"
+					/>
+
+					<echo>###</echo>
+					<echo>###</echo>
+					<echo>###</echo>
+					<echo></echo>
+					<echo>${new.portal.ext.properties}</echo>
+					<echo></echo>
+					<echo>###</echo>
+					<echo>###</echo>
+					<echo>###</echo>
 				</test-set-up>
 			</run-batch-test>
 		</sequential>
