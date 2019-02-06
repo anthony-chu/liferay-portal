@@ -5400,6 +5400,14 @@ ${output.content}</echo>
 												tofile="bun dles"
 											/>
 
+											<propertyfile file="app.server.${env.HOSTNAME}.properties">
+												<entry key="app.server.parent.dir" value="${project.dir}/bun dles" />
+											</propertyfile>
+
+											<propertyfile file="build.${env.HOSTNAME}.properties">
+												<entry key="liferay.home" value="${project.dir}/bun dles" />
+											</propertyfile>
+
 											<antcall inheritAll="false" target="start-app-server">
 												<param name="delete.liferay.home" value="false" />
 											</antcall>
