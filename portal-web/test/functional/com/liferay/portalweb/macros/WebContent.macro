@@ -27,8 +27,6 @@ definition {
 
 	macro addCP {
 		if (isSet(webContentTitle)) {
-			Click(locator1 = "TextInput#TITLE");
-
 			PortletEntry.inputTitle(title = "${webContentTitle}");
 		}
 
@@ -498,8 +496,6 @@ definition {
 	}
 
 	macro addWithStructureCP {
-		Click(locator1 = "TextInput#TITLE");
-
 		PortletEntry.inputTitle(title = "${webContentTitle}");
 
 		if (isSet(webContentBoolean)) {

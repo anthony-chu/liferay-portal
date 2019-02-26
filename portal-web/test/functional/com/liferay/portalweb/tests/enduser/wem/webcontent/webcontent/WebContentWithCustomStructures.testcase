@@ -1383,8 +1383,6 @@ definition {
 
 		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
 
-		Click(locator1 = "TextInput#TITLE");
-
 		PortletEntry.inputTitle(title = "WC WebContent Title");
 
 		AlloyEditor.typeEditor(content = "WC WebContent Content", editor = "HTML");
