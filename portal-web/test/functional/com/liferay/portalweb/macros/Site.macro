@@ -62,6 +62,10 @@ definition {
 				var siteTemplateName = "${siteType} Site";
 			}
 
+			MetalComponent.waitForComponent(
+				locator = '''//div[contains(@class,'card')][contains(.,'${siteTemplateName}')]'''
+			);
+
 			LexiconCard.clickCard(
 				card = "${siteTemplateName}"
 			);
