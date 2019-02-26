@@ -89,6 +89,10 @@ definition {
 	}
 
 	macro inputTitle {
+		MetalComponent.waitForComponent(
+			locator = '''//input[contains(@id,'title')]'''
+		);
+
 		Click(locator1 = "TextInput#TITLE");
 
 		Type(locator1 = "TextInput#TITLE", value1 = "${title}");
