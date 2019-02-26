@@ -28,15 +28,15 @@ return isReady;
 	}
 
 	macro waitForLayout {
-		AssertVisible(locator1 = "//div[@class='portlet-body']/form/div");
-
-		MetalComponent.waitForMetalComponent(id = '''document.querySelector("div.portlet-body > form > div").id''');
+		MetalComponent.waitForComponent(
+			locator = '''//div[@class='portlet-body']/form/div'''
+		);
 	}
 
 	macro waitForManagementBar {
-		AssertVisible(locator1 = "//nav[contains(@class,'management-bar')]");
-
-		MetalComponent.waitForMetalComponent(id = '''document.querySelector("nav.management-bar").parentNode.id''');
+		MetalComponent.waitForComponent(
+			locator = '''//div[nav[contains(@class,'management-bar')]]'''
+		);
 	}
 
 	macro waitForMetalComponent {
