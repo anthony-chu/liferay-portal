@@ -1,4 +1,32 @@
 definition {
+	macro waitForComponent {
+		AssertElementPresent(locator1 = "${locator}");
+
+		AssertVisible(locator1 = "${locator}");
+
+		var id = selenium.getAttribute("${locator}@id");
+
+		var javaScript = '''
+var isReady = "false";
+
+if (Liferay.component("${id}") !== undefined) {
+	Liferay.componentReady("${id}").then(
+		isReady = "true"
+	);
+}
+
+return isReady;
+''';
+
+		var componentReady = "";
+
+		while (!("${componentReady}" == "true") && (maxIterations = "30")) {
+			var componentReady = selenium.getEval("${javaScript}");
+
+			Pause(locator1 = "1000");
+		}
+	}
+
 	macro waitForLayout {
 		AssertVisible(locator1 = "//div[@class='portlet-body']/form/div");
 
