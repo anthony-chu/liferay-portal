@@ -73,6 +73,8 @@ definition {
 	}
 
 	macro gotoNavItem {
+		MetalComponent.waitForNavigationBar();
+
 		var key_navItem = "${navItem}";
 
 		AssertClick(locator1 = "NavBar#NAV_ITEM_LINK", value1 = "${navItem}");
