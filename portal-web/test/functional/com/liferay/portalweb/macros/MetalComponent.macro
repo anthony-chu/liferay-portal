@@ -35,7 +35,7 @@ return isReady;
 
 	macro waitForManagementBar {
 		MetalComponent.waitForComponent(
-				locator = '''//div[nav[contains(@class,'management-bar')]]'''
+			locator = '''//div[nav[contains(@class,'management-bar')]]'''
 		);
 	}
 }
