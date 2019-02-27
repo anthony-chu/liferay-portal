@@ -38,4 +38,10 @@ return isReady;
 			locator = '''//div[nav[contains(@class,'management-bar')]]'''
 		);
 	}
+
+	macro waitForNavigationBar {
+		MetalComponent.waitForComponent(
+			locator = '''//nav[contains(@class,'navigation-bar')]'''
+		);
+	}
 }
