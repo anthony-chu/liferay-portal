@@ -371,6 +371,10 @@ definition {
 	}
 
 	macro clickEllipsisItemPG {
+		MetalComponent.waitForComponent(
+			locator = '''//div[contains(@class,'widget-mode')]//div[contains(.,'${entryTitle}')]//div[contains(@class,'dropdown')]'''
+		);
+
 		Click(
 			locator1 = "Blogs#WIDGET_VIEW_ENTRY_ELLIPSIS",
 			key_entryTitle = "${entryTitle}"
