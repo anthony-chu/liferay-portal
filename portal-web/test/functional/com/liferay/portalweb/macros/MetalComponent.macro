@@ -28,16 +28,42 @@ return isReady;
 	}
 
 	macro waitForLayout {
-		MetalComponent.waitForComponent(
+		MetalComponent.waitForMetalComponent(
 			locator = '''//div[@class='portlet-body']/form/div'''
 		);
 	}
 
 	macro waitForManagementBar {
-		MetalComponent.waitForComponent(
+		MetalComponent.waitForMetalComponent(
 			locator = '''//div[nav[contains(@class,'management-bar')]]'''
 		);
 	}
+
+	macro waitForMetalComponent {
+		var javaScript = '''
+var metalComponent = Liferay.component(${id});
+
+if (metalComponent !== undefined) {
+	if (metalComponent.wasRendered) {
+		return 'ready';
+	}
+	else {
+		return 'pending';
+	}
+}
+else {
+	return 'pending';
+}
+		''';
+		var metalComponentReady = "";
+
+		while (!("${metalComponentReady}" == "ready") && (maxIterations = "30")) {
+			var metalComponentReady = selenium.getEval("${javaScript}");
+
+			Pause(locator1 = "1000");
+		}
+	}
+}
 
 	macro waitForNavigationBar {
 		MetalComponent.waitForComponent(
