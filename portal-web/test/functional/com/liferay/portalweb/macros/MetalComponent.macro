@@ -20,7 +20,7 @@ return isReady;
 
 		var componentReady = "";
 
-		while (!("${componentReady}" == "true") && (maxIterations = "30")) {
+		while (!("${componentReady}" == "true") && (maxIterations = "60")) {
 			var componentReady = selenium.getEval("${javaScript}");
 
 			Pause(locator1 = "1000");
