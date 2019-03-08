@@ -11,6 +11,8 @@ Liferay.on('endNavigate',
 return isReady;
 ''';
 
+		selenium.waitForElementPresent("//body");
+
 		selenium.runScript("${javaScript}");
 	}
 }
