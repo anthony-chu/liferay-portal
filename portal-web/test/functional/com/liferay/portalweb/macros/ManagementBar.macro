@@ -40,6 +40,8 @@ definition {
 	}
 
 	macro clickInfo {
+		MetalComponent.waitForManagementBar();
+
 		Click.clickNoMouseOver(
 			locator1 = "Icon#INFO"
 		);
