@@ -2235,11 +2235,18 @@ log.sanitizer.enabled=false</echo>
 
 							<echo>Executing Gradle task in directory "modules": testIntegration.</echo>
 
+							<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
+
+							<get-java-jdk-bundle-type test.batch.name="${test.batch.name}" />
+
+							<get-java-jdk-home type="${java.jdk.bundle.type}" version="${java.jdk.bundle.version}" />
+
 							<gradle-execute dir="modules" refreshdependencies="@{refreshdependencies}" task="testIntegration">
 								<arg value="-Dapp.server.start.executable.arg.line=${test.batch.app.server.start.executable.arg.line}" />
 								<arg value="-Ddatabase.type=@{database.type}" />
 								<arg value="-Dbuild.exclude.ant.plugin=true" />
 								<arg value="-Dtest.class.group.index=${axis.variable}" />
+								<env key="JAVA_HOME" path="${java.jdk.home}" />
 							</gradle-execute>
 
 							<if>
@@ -4882,6 +4889,10 @@ log.sanitizer.enabled=false</echo>
 	</target>
 
 	<target name="modules-integration-mysql57-jdk8">
+		<run-modules-integration-test database.type="mysql" database.version="5.7" />
+	</target>
+
+	<target name="modules-integration-mysql57-jdk11_open">
 		<run-modules-integration-test database.type="mysql" database.version="5.7" />
 	</target>
 

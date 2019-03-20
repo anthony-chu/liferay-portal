@@ -342,7 +342,7 @@ public class CentralizedThreadLocalTest {
 	}
 
 	@Test
-	public void testThreadLocalMap() throws InterruptedException {
+	public void testThreadLocalMap() {
 
 		// Auto expanding with hashcode confliction
 
