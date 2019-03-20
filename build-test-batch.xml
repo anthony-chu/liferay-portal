@@ -2246,6 +2246,7 @@ log.sanitizer.enabled=false</echo>
 								<and>
 									<available file="${app.server.parent.dir}/logs" />
 									<available file="${app.server.parent.dir}/osgi/state" />
+								<env key="JAVA_HOME" path="${java.jdk.home}" />
 								</and>
 								<then>
 									<if>
