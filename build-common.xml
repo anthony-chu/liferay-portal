@@ -1102,6 +1102,10 @@ information.
 			<local name="aspectj.weaver.enabled" />
 			<local name="junit.java.gc" />
 
+			<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
+
+			<get-java-jdk-home version="${java.jdk.bundle.version}" />
+
 			<if>
 				<equals arg1="@{test.type}" arg2="unit" />
 				<then>
@@ -1148,6 +1152,7 @@ information.
 			</if>
 
 			<junit dir="${project.dir}" fork="on" forkmode="@{forkmode}" haltonfailure="${junit.halt.on.failure}" jvm="${junit.jvm}" outputtoformatters="false" printsummary="on" showoutput="true">
+				<env key="JAVA_HOME" value="${java.jdk.home}" />
 				<sysproperty if:true="${aspectj.weaver.enabled}" key="aspectj.agent" value="${aspectj.agent}" />
 				<sysproperty key="catalina.base" value="." />
 				<sysproperty file="woven-classes" key="junit.aspectj.dump" />
