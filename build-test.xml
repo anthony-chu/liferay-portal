@@ -473,12 +473,27 @@ jdbc.counter.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 
 			<var name="java.jdk.bundle.version" unset="true" />
 
+			<var name="java.jdk.bundle.major.version" unset="true" />
+
 			<propertyregex
 				input="${test.batch.name}"
-				property="java.jdk.bundle.version"
+				property="java.jdk.bundle.major.version"
 				regexp="-jdk([0-9]+)(_(adopt|open|oracle|redhat|zulu))?"
-				select="1.\1"
+				select="\1"
 			/>
+
+			<beanshell>
+				<![CDATA[
+					int javaMajorVersion = Integer.parseInt(project.getProperty("java.jdk.bundle.major.version"));
+
+					if (javaMajorVersion > 8) {
+						project.setProperty("java.jdk.bundle.version", javaMajorVersion.toString());
+					}
+					else {
+						project.setProperty("java.jdk.bundle.version", "1" + javaMajorVersion.toString());
+					}
+				]]>
+			</beanshell>
 
 			<property name="java.jdk.bundle.version" value="${ant.java.version}" />
 		</sequential>
