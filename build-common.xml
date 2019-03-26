@@ -785,6 +785,96 @@ information.
 		</sequential>
 	</macrodef>
 
+	<macrodef name="get-java-jdk-bundle-type">
+		<attribute default="" name="test.batch.name" />
+
+		<sequential>
+			<local name="test.batch.name" />
+
+			<condition else="@{test.batch.name}" property="test.batch.name" value="${env.TEST_BATCH_NAME}">
+				<contains string="@{test.batch.name}" substring="{test.batch.name}" />
+			</condition>
+
+			<var name="java.jdk.bundle.type" unset="true" />
+
+			<propertyregex
+				input="${test.batch.name}"
+				property="java.jdk.bundle.type"
+				regexp="-jdk[0-9]+_(\w+)"
+				select="\1"
+			/>
+
+			<condition property="java.jdk.bundle.type" value="oracle">
+				<matches pattern="-jdk[0-9]+$" string="${test.batch.name}" />
+			</condition>
+
+			<property name="java.jdk.bundle.type" value="oracle" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="get-java-jdk-bundle-version">
+		<attribute default="" name="test.batch.name" />
+
+		<sequential>
+			<local name="test.batch.name" />
+
+			<condition else="@{test.batch.name}" property="test.batch.name" value="${env.TEST_BATCH_NAME}">
+				<contains string="@{test.batch.name}" substring="{test.batch.name}" />
+			</condition>
+
+			<var name="java.jdk.bundle.version" unset="true" />
+
+			<var name="java.jdk.bundle.major.version" unset="true" />
+
+			<propertyregex
+				input="${test.batch.name}"
+				property="java.jdk.bundle.major.version"
+				regexp="-jdk([0-9]+)(_(adopt|open|oracle|redhat|zulu))?"
+				select="\1"
+			/>
+
+			<beanshell>
+				<![CDATA[
+					int javaMajorVersion = Integer.parseInt(project.getProperty("java.jdk.bundle.major.version"));
+
+					if (javaMajorVersion > 8) {
+						project.setProperty("java.jdk.bundle.version", javaMajorVersion.toString());
+					}
+					else {
+						project.setProperty("java.jdk.bundle.version", "1" + javaMajorVersion.toString());
+					}
+				]]>
+			</beanshell>
+
+			<property name="java.jdk.bundle.version" value="${ant.java.version}" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="get-java-jdk-home">
+		<attribute default="${java.jdk.architecture}" name="architecture" />
+		<attribute default="oracle" name="type" />
+		<attribute default="${ant.java.version}" name="version" />
+
+		<sequential>
+			<var name="java.jdk.home" unset="true" />
+
+			<propertycopy from="java.jdk.home[@{version}][@{architecture}][@{type}]" property="java.jdk.home" silent="true" />
+
+			<property name="java.jdk.home" value="${java.home}" />
+
+			<if>
+				<not>
+					<available file="${java.jdk.home}" />
+				</not>
+				<then>
+					<var name="java.jdk.home" unset="true" />
+
+					<property name="java.jdk.home" value="${java.home}" />
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="get-junit-failure-message-element">
 		<sequential>
 			<var name="junit.failure.message.element" unset="true" />
