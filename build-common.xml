@@ -833,6 +833,11 @@ information.
 				select="\1"
 			/>
 
+			<antelope:stringutil property="java.jdk.bundle.major.version" string="${java.version}">
+				<antelope:replace regex="1\." replacement="" />
+				<antelope:replace regex="\..*" replacement="" />
+			</antelope:stringutil>
+
 			<beanshell>
 				<![CDATA[
 					int javaMajorVersion = Integer.parseInt(project.getProperty("java.jdk.bundle.major.version"));
@@ -845,8 +850,6 @@ information.
 					}
 				]]>
 			</beanshell>
-
-			<property name="java.jdk.bundle.version" value="${ant.java.version}" />
 		</sequential>
 	</macrodef>
 
