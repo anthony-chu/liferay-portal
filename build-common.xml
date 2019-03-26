@@ -1110,9 +1110,9 @@ information.
 				<equals arg1="@{test.type}" arg2="unit" />
 				<then>
 					<if>
-						<isset property="junit.java.unit.gc[${java.specification.version}]" />
+						<isset property="junit.java.unit.gc[${java.jdk.bundle.version}]" />
 						<then>
-							<propertycopy from="junit.java.unit.gc[${java.specification.version}]" name="junit.java.unit.gc" override="true" />
+							<propertycopy from="junit.java.unit.gc[${java.jdk.bundle.version}]" name="junit.java.unit.gc" override="true" />
 						</then>
 					</if>
 
@@ -1128,9 +1128,9 @@ information.
 				</then>
 				<else>
 					<if>
-						<isset property="junit.java.integration.gc[${java.specification.version}]" />
+						<isset property="junit.java.integration.gc[${java.jdk.bundle.version}]" />
 						<then>
-							<propertycopy from="junit.java.integration.gc[${java.specification.version}]" name="junit.java.integration.gc" override="true" />
+							<propertycopy from="junit.java.integration.gc[${java.jdk.bundle.version}]" name="junit.java.integration.gc" override="true" />
 						</then>
 					</if>
 
@@ -1145,9 +1145,9 @@ information.
 			</if>
 
 			<if>
-				<isset property="junit.java.add.opens[${java.specification.version}]" />
+				<isset property="junit.java.add.opens[${java.jdk.bundle.version}]" />
 				<then>
-					<propertycopy from="junit.java.add.opens[${java.specification.version}]" name="junit.java.add.opens" override="true" />
+					<propertycopy from="junit.java.add.opens[${java.jdk.bundle.version}]" name="junit.java.add.opens" override="true" />
 				</then>
 			</if>
 
