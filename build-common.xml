@@ -846,7 +846,7 @@ information.
 						project.setProperty("java.jdk.bundle.version", javaMajorVersion.toString());
 					}
 					else {
-						project.setProperty("java.jdk.bundle.version", "1" + javaMajorVersion.toString());
+						project.setProperty("java.jdk.bundle.version", "1." + javaMajorVersion.toString());
 					}
 				]]>
 			</beanshell>
