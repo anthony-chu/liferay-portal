@@ -1110,6 +1110,7 @@ information.
 
 	<macrodef name="junit-cmd">
 		<attribute name="forkmode" />
+		<attribute default="${junit.jvm}" name="junit.jvm.override" />
 		<attribute name="test.type" />
 		<element name="misc" optional="yes" />
 		<element name="test.classes" />
@@ -1171,7 +1172,7 @@ information.
 
 			<get-java-jdk-home type="${java.jdk.bundle.type}" version="${java.jdk.bundle.version}" />
 
-			<junit dir="${project.dir}" fork="on" forkmode="@{forkmode}" haltonfailure="${junit.halt.on.failure}" jvm="${java.jdk.home}/bin/java" outputtoformatters="false" printsummary="on" showoutput="true">
+			<junit dir="${project.dir}" fork="on" forkmode="@{forkmode}" haltonfailure="${junit.halt.on.failure}" jvm="${junit.jvm.override}" outputtoformatters="false" printsummary="on" showoutput="true">
 				<sysproperty if:true="${aspectj.weaver.enabled}" key="aspectj.agent" value="${aspectj.agent}" />
 				<sysproperty key="catalina.base" value="." />
 				<sysproperty file="woven-classes" key="junit.aspectj.dump" />
@@ -1886,6 +1887,7 @@ rerun your task.
 		<attribute name="test.includes" />
 		<attribute name="test.type" />
 		<attribute default="" name="test.excludes" />
+		<attribute default="${junit.jvm}" name="junit.jvm.override" />
 
 		<sequential>
 			<if>
@@ -1915,6 +1917,7 @@ rerun your task.
 
 					<junit-cmd
 						forkmode="@{junit.forkmode}"
+						junit.jvm.override="@{junit.jvm.override}"
 						test.type="@{test.type}"
 					>
 						<misc>
@@ -2465,6 +2468,15 @@ rerun your task.
 		<propertycopy from="TEST_CLASS_GROUP_${test.class.group.index}" name="test.classes" />
 
 		<if>
+			<not>
+				<isset property="junit.jvm.override" />
+			</not>
+			<then>
+				<property name="junit.jvm.override" value="${junit.jvm}" />
+			</then>
+		</if>
+
+		<if>
 			<or>
 				<not>
 					<isset property="test.type" />
@@ -2474,6 +2486,7 @@ rerun your task.
 			<then>
 				<test-cmd
 					junit.forkmode="perTest"
+					junit.jvm.override="${junit.jvm.override}"
 					test.includes="${test.classes}"
 					test.type="unit"
 				/>
@@ -2490,6 +2503,7 @@ rerun your task.
 			<then>
 				<test-cmd
 					junit.forkmode="once"
+					junit.jvm.override="${junit.jvm.override}"
 					test.includes="${test.classes}"
 					test.type="integration"
 				/>
