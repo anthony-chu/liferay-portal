@@ -1114,10 +1114,6 @@ information.
 
 			<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
 
-			<get-java-jdk-bundle-type test.batch.name="${test.batch.name}" />
-
-			<get-java-jdk-home type="${java.jdk.bundle.type}" version="${java.jdk.bundle.version}" />
-
 			<if>
 				<equals arg1="@{test.type}" arg2="unit" />
 				<then>
@@ -1164,6 +1160,10 @@ information.
 					<propertycopy from="junit.java.add.opens[${java.jdk.bundle.version}]" name="junit.java.add.opens" override="true" />
 				</then>
 			</if>
+
+			<get-java-jdk-bundle-type test.batch.name="${test.batch.name}" />
+
+			<get-java-jdk-home type="${java.jdk.bundle.type}" version="${java.jdk.bundle.version}" />
 
 			<junit dir="${project.dir}" fork="on" forkmode="@{forkmode}" haltonfailure="${junit.halt.on.failure}" jvm="${java.jdk.home}/bin/java" outputtoformatters="false" printsummary="on" showoutput="true">
 				<sysproperty if:true="${aspectj.weaver.enabled}" key="aspectj.agent" value="${aspectj.agent}" />
