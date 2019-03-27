@@ -31,6 +31,12 @@
 	<property file="${project.dir}/release.${env.HOSTNAME}.properties" />
 	<property file="${project.dir}/release.properties" />
 
+	<property file="${project.dir}/test.${user.name}.properties" />
+	<property file="${project.dir}/test.${env.COMPUTERNAME}.properties" />
+	<property file="${project.dir}/test.${env.HOST}.properties" />
+	<property file="${project.dir}/test.${env.HOSTNAME}.properties" />
+	<property file="${project.dir}/test.properties" />
+
 	<property file="${project.dir}/benchmarks/benchmarks.${user.name}.properties" />
 	<property file="${project.dir}/benchmarks/benchmarks.${env.COMPUTERNAME}.properties" />
 	<property file="${project.dir}/benchmarks/benchmarks.${env.HOST}.properties" />

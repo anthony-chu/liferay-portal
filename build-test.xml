@@ -17,13 +17,6 @@
 		</then>
 	</if>
 
-	<property file="${project.dir}/test.generated.properties" />
-	<property file="${project.dir}/test.${user.name}.properties" />
-	<property file="${project.dir}/test.${env.COMPUTERNAME}.properties" />
-	<property file="${project.dir}/test.${env.HOST}.properties" />
-	<property file="${project.dir}/test.${env.HOSTNAME}.properties" />
-	<property file="${project.dir}/test.properties" />
-
 	<propertycopy from="app.server.${app.server.type}.start.executable" name="app.server.start.executable" />
 	<propertycopy from="app.server.${app.server.type}.start.executable.arg.line" name="app.server.start.executable.arg.line" />
 	<propertycopy from="app.server.${app.server.type}.stop.executable" name="app.server.stop.executable" />
