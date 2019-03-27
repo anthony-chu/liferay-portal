@@ -1114,7 +1114,9 @@ information.
 
 			<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
 
-			<get-java-jdk-home version="${java.jdk.bundle.version}" />
+			<get-java-jdk-bundle-type test.batch.name="${test.batch.name}" />
+
+			<get-java-jdk-home type="${java.jdk.bundle.type}" version="${java.jdk.bundle.version}" />
 
 			<if>
 				<equals arg1="@{test.type}" arg2="unit" />
