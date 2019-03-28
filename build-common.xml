@@ -2368,6 +2368,15 @@ rerun your task.
 		</if>
 
 		<if>
+			<not>
+				<isset property="junit.jvm.version}" />
+			</not>
+			<then>
+				<property name="junit.jvm.version" value="${ant.java.version}" />
+			</then>
+		</if>
+
+		<if>
 			<or>
 				<not>
 					<isset property="test.type" />
@@ -2378,6 +2387,7 @@ rerun your task.
 				<test-cmd
 					junit.forkmode="perTest"
 					junit.jvm.override="${junit.jvm.override}"
+					junit.jvm.version="${junit.jvm.version}"
 					test.includes="${test.classes}"
 					test.type="unit"
 				/>
@@ -2395,6 +2405,7 @@ rerun your task.
 				<test-cmd
 					junit.forkmode="once"
 					junit.jvm.override="${junit.jvm.override}"
+					junit.jvm.version="${junit.jvm.version}"
 					test.includes="${test.classes}"
 					test.type="integration"
 				/>
