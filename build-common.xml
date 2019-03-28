@@ -1005,6 +1005,7 @@ information.
 	<macrodef name="junit-cmd">
 		<attribute name="forkmode" />
 		<attribute default="${junit.jvm}" name="junit.jvm.override" />
+		<attribute default="${ant.java.version}" name="junit.jvm.version" />
 		<attribute name="test.type" />
 		<element name="misc" optional="yes" />
 		<element name="test.classes" />
@@ -1776,6 +1777,7 @@ rerun your task.
 		<attribute name="test.type" />
 		<attribute default="" name="test.excludes" />
 		<attribute default="${junit.jvm}" name="junit.jvm.override" />
+		<attribute default="${ant.java.version}" name="junit.jvm.version" />
 
 		<sequential>
 			<if>
@@ -1806,6 +1808,7 @@ rerun your task.
 					<junit-cmd
 						forkmode="@{junit.forkmode}"
 						junit.jvm.override="@{junit.jvm.override}"
+						junit.jvm.version="@{junit.jvm.version}"
 						test.type="@{test.type}"
 					>
 						<misc>
