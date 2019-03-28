@@ -1018,9 +1018,9 @@ information.
 				<equals arg1="@{test.type}" arg2="unit" />
 				<then>
 					<if>
-						<isset property="junit.java.unit.gc[${java.jdk.bundle.version}]" />
+						<isset property="junit.java.unit.gc[@{junit.jvm.version}]" />
 						<then>
-							<propertycopy from="junit.java.unit.gc[${java.jdk.bundle.version}]" name="junit.java.unit.gc" override="true" />
+							<propertycopy from="junit.java.unit.gc[@{junit.jvm.version}]" name="junit.java.unit.gc" override="true" />
 						</then>
 					</if>
 
@@ -1036,9 +1036,9 @@ information.
 				</then>
 				<else>
 					<if>
-						<isset property="junit.java.integration.gc[${java.jdk.bundle.version}]" />
+						<isset property="junit.java.integration.gc[@{junit.jvm.version}]" />
 						<then>
-							<propertycopy from="junit.java.integration.gc[${java.jdk.bundle.version}]" name="junit.java.integration.gc" override="true" />
+							<propertycopy from="junit.java.integration.gc[@{junit.jvm.version}]" name="junit.java.integration.gc" override="true" />
 						</then>
 					</if>
 
@@ -1049,15 +1049,15 @@ information.
 					<basename file="${project.dir}" property="project.dir.name" />
 
 					<condition else="${junit.java.integration.gc} -verbose:gc -Xloggc:/tmp/${project.dir.name}-@{test.type}-gc.log -XX:+PrintGCCause -XX:+PrintGCDetails" property="junit.java.gc" value="${junit.java.integration.gc} -Xlog:gc:/tmp/${project.dir.name}-@{test.type}-gc.log">
-						<isset property="junit.java.integration.gc[${java.jdk.bundle.version}]" />
+						<isset property="junit.java.integration.gc[@{junit.jvm.version}]" />
 					</condition>
 				</else>
 			</if>
 
 			<if>
-				<isset property="junit.java.add.opens[${java.jdk.bundle.version}]" />
+				<isset property="junit.java.add.opens[@{junit.jvm.version}]" />
 				<then>
-					<propertycopy from="junit.java.add.opens[${java.jdk.bundle.version}]" name="junit.java.add.opens" override="true" />
+					<propertycopy from="junit.java.add.opens[@{junit.jvm.version}]" name="junit.java.add.opens" override="true" />
 				</then>
 			</if>
 
