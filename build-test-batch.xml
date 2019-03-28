@@ -1437,7 +1437,7 @@ app.server.type=@{app.server.type}]]></echo>
 							<ant dir="portal-impl" inheritAll="false" target="test-class-group">
 								<property name="database.type" value="@{database.type}" />
 								<property name="junit.code.coverage" value="${test.batch.code.coverage}" />
-								<property name="junit.jvm.override" value="${java.jdk.home}" />
+								<property name="junit.jvm.override" value="${java.jdk.home}/bin/java" />
 								<property name="test.class.group.index" value="${axis.variable}" />
 								<property name="test.type" value="integration" />
 							</ant>
