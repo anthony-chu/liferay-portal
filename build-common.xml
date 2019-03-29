@@ -1010,13 +1010,13 @@ information.
 		<element name="misc" optional="yes" />
 		<element name="test.classes" />
 
-		<echo message="" />
-		<echo message="### junit-cmd junit.jvm.override: ${junit.jvm.override}" />
-		<echo message="" />
-
 		<sequential>
 			<local name="aspectj.weaver.enabled" />
 			<local name="junit.java.gc" />
+
+			<echo message="" />
+			<echo message="### junit-cmd junit.jvm.override: ${junit.jvm.override}" />
+			<echo message="" />
 
 			<if>
 				<equals arg1="@{test.type}" arg2="unit" />
@@ -1783,11 +1783,11 @@ rerun your task.
 		<attribute default="${junit.jvm}" name="junit.jvm.override" />
 		<attribute default="${ant.java.version}" name="junit.jvm.version" />
 
-		<echo message="" />
-		<echo message="### test-cmd junit.jvm.override: ${junit.jvm.override}" />
-		<echo message="" />
-
 		<sequential>
+			<echo message="" />
+			<echo message="### test-cmd junit.jvm.override: ${junit.jvm.override}" />
+			<echo message="" />
+
 			<if>
 				<isset property="test.dir" />
 				<then>
