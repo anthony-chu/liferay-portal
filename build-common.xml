@@ -2341,6 +2341,10 @@ rerun your task.
 			</then>
 		</if>
 
+		<echo message="" />
+		<echo message="### test-class junit.jvm.override: ${junit.jvm.override}" />
+		<echo message="" />
+
 		<if>
 			<not>
 				<isset property="test.class" />
