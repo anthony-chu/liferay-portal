@@ -6,6 +6,8 @@ definition {
 
 		selenium.waitForVisible();
 
+		selenium.mouseOver();
+
 		selenium.click();
 
 		selenium.assertJavaScriptErrors();
@@ -17,6 +19,8 @@ definition {
 		WaitForSPARefresh();
 
 		selenium.waitForVisible();
+
+		selenium.mouseOver();
 
 		selenium.clickAt();
 
@@ -33,6 +37,8 @@ definition {
 		selenium.waitForElementPresent(
 			"//*[@data-qa-id='controlMenu']//*[@data-qa-id='add']"
 		);
+
+		selenium.mouseOver();
 
 		selenium.waitForElementPresent(
 			"//script[contains(@src,'/liferay/node.js')] | //script[contains(@src,'/js/control_menu.js')]"
@@ -72,6 +78,8 @@ definition {
 	function clickNoSPARefresh {
 		selenium.waitForVisible();
 
+		selenium.mouseOver();
+
 		selenium.click();
 
 		selenium.assertJavaScriptErrors();
@@ -81,6 +89,8 @@ definition {
 
 	function clickNoWaitForVisible {
 		WaitForSPARefresh();
+
+		selenium.mouseOver();
 
 		selenium.click();
 
@@ -139,6 +149,8 @@ definition {
 		WaitForSPARefresh();
 
 		selenium.pause("1000");
+
+		selenium.mouseOver();
 
 		Click.clickAt();
 
