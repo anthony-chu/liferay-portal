@@ -8,6 +8,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		selenium.clickAt();
 
 		selenium.pause("1000");
@@ -32,6 +34,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		selenium.sendKeys();
 
 		selenium.assertJavaScriptErrors();
@@ -45,6 +49,8 @@ definition {
 		selenium.waitForElementPresent();
 
 		selenium.mouseOver();
+
+		selenium.pause("3000");
 
 		selenium.sendKeysAceEditor();
 
@@ -74,6 +80,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		selenium.type();
 
 		selenium.assertJavaScriptErrors();
@@ -88,6 +96,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		selenium.typeAceEditor();
 
 		selenium.assertJavaScriptErrors();
@@ -101,6 +111,8 @@ definition {
 		selenium.waitForElementPresent();
 
 		selenium.mouseOver();
+
+		selenium.pause("3000");
 
 		selenium.typeAceEditor();
 	}
@@ -123,6 +135,8 @@ definition {
 		selenium.waitForVisible();
 
 		selenium.mouseOver();
+
+		selenium.pause("3000");
 
 		selenium.typeCKEditor();
 
@@ -156,6 +170,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		selenium.type();
 
 		selenium.clickAt();
@@ -171,6 +187,8 @@ definition {
 		selenium.waitForElementPresent();
 
 		selenium.mouseOver();
+
+		selenium.pause("3000");
 
 		selenium.typeEditor();
 
@@ -195,6 +213,8 @@ definition {
 		selenium.waitForVisible();
 
 		selenium.mouseOver();
+
+		selenium.pause("3000");
 
 		selenium.type();
 

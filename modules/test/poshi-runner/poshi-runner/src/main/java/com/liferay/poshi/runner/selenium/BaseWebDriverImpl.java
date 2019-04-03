@@ -2090,7 +2090,7 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 	}
 
 	@Override
-	public void mouseOver(String locator) {
+	public void mouseOver(String locator) throws Exception {
 		WebElement webElement = getWebElement(locator);
 
 		scrollWebElementIntoView(webElement);

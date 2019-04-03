@@ -8,6 +8,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		selenium.click();
 	}
 

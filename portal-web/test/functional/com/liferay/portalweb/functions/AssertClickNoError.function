@@ -19,6 +19,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		selenium.clickAt();
 	}
 
@@ -33,6 +35,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		selenium.click();
 	}
 
@@ -46,6 +50,8 @@ definition {
 		selenium.assertValue();
 
 		selenium.mouseOver();
+
+		selenium.pause("3000");
 
 		selenium.click();
 	}

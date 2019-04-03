@@ -19,6 +19,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		selenium.clickAt();
 
 		selenium.assertJavaScriptErrors();
@@ -45,6 +47,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		selenium.clickAt();
 
 		selenium.assertJavaScriptErrors();
@@ -58,6 +62,8 @@ definition {
 		AssertTextEquals.assertText();
 
 		selenium.mouseOver();
+
+		selenium.pause("3000");
 
 		selenium.clickAt();
 
@@ -74,6 +80,8 @@ definition {
 		AssertTextEquals.assertText();
 
 		selenium.mouseOver();
+
+		selenium.pause("3000");
 
 		selenium.clickAt();
 
@@ -101,6 +109,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		selenium.click();
 
 		selenium.assertJavaScriptErrors();
@@ -126,6 +136,8 @@ definition {
 		AssertTextEquals.assertValue();
 
 		selenium.mouseOver();
+
+		selenium.pause("3000");
 
 		selenium.clickAt();
 

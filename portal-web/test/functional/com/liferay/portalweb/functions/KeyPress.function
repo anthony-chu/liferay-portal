@@ -5,6 +5,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		selenium.keyDown();
 
 		selenium.assertJavaScriptErrors();
@@ -16,6 +18,8 @@ definition {
 		WaitForSPARefresh();
 
 		selenium.mouseOver();
+
+		selenium.pause("3000");
 
 		selenium.keyPress();
 
@@ -29,6 +33,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		selenium.keyPress();
 	}
 
@@ -36,6 +42,8 @@ definition {
 		WaitForSPARefresh();
 
 		selenium.mouseOver();
+
+		selenium.pause("3000");
 
 		selenium.keyUp();
 

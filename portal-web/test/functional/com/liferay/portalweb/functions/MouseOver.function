@@ -8,6 +8,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		selenium.assertJavaScriptErrors();
 
 		selenium.assertLiferayErrors();
@@ -37,6 +39,8 @@ definition {
 		selenium.waitForElementPresent();
 
 		selenium.mouseOver();
+
+		selenium.pause("3000");
 
 		selenium.waitForVisible();
 

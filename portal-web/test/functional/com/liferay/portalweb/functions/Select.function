@@ -19,6 +19,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		selenium.select();
 
 		selenium.assertJavaScriptErrors();

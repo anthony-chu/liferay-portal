@@ -7,6 +7,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		if (selenium.isNotChecked()) {
 			selenium.clickAt();
 		}
@@ -27,6 +29,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		if (selenium.isNotChecked("xpath=(${locator1})/../../input")) {
 			selenium.clickAt();
 		}
@@ -44,6 +48,8 @@ definition {
 		selenium.waitForElementPresent();
 
 		selenium.mouseOver();
+
+		selenium.pause("3000");
 
 		if (selenium.isNotChecked()) {
 			selenium.clickAt();
@@ -63,6 +69,8 @@ definition {
 
 		selenium.mouseOver();
 
+		selenium.pause("3000");
+
 		if (selenium.isNotChecked()) {
 			selenium.clickAt();
 		}
@@ -80,6 +88,8 @@ definition {
 		selenium.waitForElementPresent();
 
 		selenium.mouseOver();
+
+		selenium.pause("3000");
 
 		if (selenium.isNotChecked()) {
 			selenium.clickAt();
