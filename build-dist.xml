@@ -98,8 +98,8 @@
 				file="${app.server.websphere.instance.dir}/config/cells/liferay-cell/nodes/liferay-node/servers/server1/server.xml"
 			>
 				<replacefilter
-					token="maximumHeapSize=&quot;1024&quot;"
-					value="maximumHeapSize=&quot;2048&quot;"
+					token="maximumHeapSize=&quot;1024&quot;&gt;"
+					value="maximumHeapSize=&quot;3072&quot; initialHeapSize=&quot;3072&quot;&gt;"
 				/>
 			</replace>
 		</sequential>
