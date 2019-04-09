@@ -76,6 +76,10 @@ definition {
 	}
 
 	macro expandFragmentCollection {
+		if (IsElementNotPresent(locator1 = "PageEditor#FRAGMENT_SIDEBAR_COLLECTION_PANEL", key_collectionName = "${collectionName}")) {
+			Refresh();
+		}
+
 		AssertVisible(
 			locator1 = "PageEditor#FRAGMENT_SIDEBAR_COLLECTION_PANEL",
 			key_collectionName = "${collectionName}"
