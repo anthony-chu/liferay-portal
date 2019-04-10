@@ -117,9 +117,7 @@ definition {
 			portlet = "Message Boards"
 		);
 
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Thread");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Thread");
 
 		Type(locator1 = "TextInput#SUBJECT", value1 = "CKEditor Entry Subject");
 

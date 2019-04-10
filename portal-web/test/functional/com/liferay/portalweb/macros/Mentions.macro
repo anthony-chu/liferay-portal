@@ -63,9 +63,7 @@ definition {
 	}
 
 	macro addMentionViaMessageBoardThread {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Thread");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Thread");
 
 		var key_mentionsUserScreenName = "${mentionsUserScreenName}";
 

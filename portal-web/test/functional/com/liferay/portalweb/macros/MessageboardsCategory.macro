@@ -2,9 +2,7 @@ definition {
 	var assetType = "Message Boards Category";
 
 	macro addCP {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Category");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Category");
 
 		PortletEntry.inputName(name = "${categoryName}");
 
@@ -47,9 +45,7 @@ definition {
 			value1 = "${categoryName}"
 		);
 
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Subcategory");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Subcategory");
 
 		PortletEntry.inputName(name = "${subCategoryName}");
 

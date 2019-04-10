@@ -2,9 +2,7 @@ definition {
 	var assetType = "Bookmarks Folder";
 
 	macro addCP {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Folder");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Folder");
 
 		PortletEntry.inputName(name = "${folderName}");
 
@@ -19,9 +17,7 @@ definition {
 	}
 
 	macro addNullCP {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Folder");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Folder");
 
 		Button.clickSave();
 
@@ -49,9 +45,7 @@ definition {
 
 		AssertTextEquals(locator1 = "Portlet#HEADER", value1 = "${folderName}");
 
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Subfolder");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Subfolder");
 
 		Button.clickSave();
 
@@ -95,9 +89,7 @@ definition {
 
 		AssertTextEquals(locator1 = "Portlet#HEADER", value1 = "${folderName}");
 
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Subfolder");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Subfolder");
 
 		var key_folderName = "${subfolderName}";
 

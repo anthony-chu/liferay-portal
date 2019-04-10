@@ -3,9 +3,7 @@ definition {
 	var userName = "Test Test";
 
 	macro addCP {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Thread");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Thread");
 
 		AssertElementPresent(locator1 = "TextInput#SUBJECT");
 
@@ -17,9 +15,7 @@ definition {
 	}
 
 	macro addCPWithAttachment {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Thread");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Thread");
 
 		Click(locator1 = "TextInput#SUBJECT");
 
@@ -165,9 +161,7 @@ definition {
 	}
 
 	macro addWithWorkflowCP {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Thread");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Thread");
 
 		AssertElementPresent(locator1 = "TextInput#SUBJECT");
 
@@ -800,9 +794,7 @@ definition {
 	}
 
 	macro viewAnonymousPostingCheckboxCP {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Thread");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Thread");
 
 		AssertElementPresent(locator1 = "Checkbox#ANONYMOUS");
 	}
@@ -1014,9 +1006,7 @@ definition {
 	}
 
 	macro viewMarkAsQuestionCheckedCP {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Thread");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Thread");
 
 		AssertVisible(locator1 = "Button#PUBLISH");
 
@@ -1030,9 +1020,7 @@ definition {
 	}
 
 	macro viewMarkAsQuestionNotCheckedCP {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Thread");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Thread");
 
 		AssertVisible(locator1 = "Button#PUBLISH");
 
@@ -1072,9 +1060,7 @@ definition {
 	}
 
 	macro viewNoAnonymousPostingCheckboxCP {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Thread");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Thread");
 
 		AssertElementNotPresent(locator1 = "Checkbox#ANONYMOUS");
 	}

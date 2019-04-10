@@ -12,9 +12,7 @@ definition {
 	macro gotoAddRepositoryCP {
 		AssertVisible(locator1 = "Button#PLUS");
 
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Repository");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Repository");
 	}
 
 	macro gotoAddRepositoryPG {

@@ -47,9 +47,7 @@ definition {
 		var bookmarkName = "${bookmarkName}";
 		var bookmarkURL = "${bookmarkURL}";
 
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Bookmark");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Bookmark");
 
 		if (isSet(bookmarkName)) {
 			PortletEntry.inputName(name = "${bookmarkName}");
@@ -74,9 +72,7 @@ definition {
 	}
 
 	macro addIncorrectURLCP {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Bookmark");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Bookmark");
 
 		PortletEntry.inputName(name = "${bookmarkName}");
 
@@ -114,9 +110,7 @@ definition {
 	}
 
 	macro addNullCP {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Bookmark");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Bookmark");
 
 		if (isSet(bookmarkName)) {
 			PortletEntry.inputName(name = "${bookmarkName}");
@@ -206,9 +200,7 @@ definition {
 
 		AssertTextEquals(locator1 = "Portlet#HEADER", value1 = "${subfolderName}");
 
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Bookmark");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Bookmark");
 
 		PortletEntry.inputName(name = "${bookmarkName}");
 
@@ -230,9 +222,7 @@ definition {
 		var bookmarkURL = "${bookmarkURL}";
 		var tagNameList = "${tagNameList}";
 
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Bookmark");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Bookmark");
 
 		if (isSet(bookmarkName)) {
 			PortletEntry.inputName(name = "${bookmarkName}");
@@ -577,9 +567,7 @@ definition {
 	}
 
 	macro viewNoCategoryCP {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Bookmark");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Bookmark");
 
 		Panel.expandPanel(panel = "Categorization");
 

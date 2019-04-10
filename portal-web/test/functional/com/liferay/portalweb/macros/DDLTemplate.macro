@@ -134,9 +134,7 @@ definition {
 			value1 = "Templates"
 		);
 
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Add Form Template");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Add Form Template");
 
 		Type.clickAtType(locator1 = "TextInput#NAME", value1 = "${ddlFormTemplateName}");
 	}
@@ -146,9 +144,7 @@ definition {
 
 		Click(locator1 = "Icon#ANGLE_LEFT_BACK");
 
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Add Form Template");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Add Form Template");
 
 		Type.clickAtType(locator1 = "TextInput#NAME", value1 = "${ddlFormTemplateName}");
 	}

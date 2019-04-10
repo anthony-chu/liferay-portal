@@ -149,9 +149,7 @@ definition {
 	macro addMemberCP {
 		Organization.gotoCP(orgName = "${orgName}", searchToken = "${orgName}");
 
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Assign Users");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Assign Users");
 
 		AssertElementPresent.assertVisible(locator1 = "Button#DONE");
 

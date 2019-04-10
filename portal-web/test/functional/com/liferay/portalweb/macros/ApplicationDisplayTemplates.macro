@@ -4,9 +4,7 @@ definition {
 
 		Portlet.viewEmptyMessage(message = "There are no templates.");
 
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "${adtType} Template");
+		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "${adtType} Template");
 
 		SiteAdmin.viewPortletTitle(portletTitle = "New ${adtType} Template");
 
