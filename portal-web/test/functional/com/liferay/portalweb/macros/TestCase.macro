@@ -22,11 +22,12 @@ definition {
 	}
 
 	macro getSiteName {
+		var testBatchRunType = PropsUtil.get("test.batch.run.type");
 		var testNameSkipPortalInstance = PropsUtil.get("test.name.skip.portal.instance");
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
 		if (("${siteName}" == "Liferay") || (!(isSet(siteName)))) {
-			if (("${testPortalInstance}" == "true") && (!(IsTestName(locator1 = "", value1 = "${testNameSkipPortalInstance}")))) {
+			if ((("${testPortalInstance}" == "true") && (!(IsTestName(locator1 = "", value1 = "${testNameSkipPortalInstance}")))) || (!("${testBatchRunType}" == "single"))) {
 				var portalURL = PropsUtil.get("portal.url");
 				var portalURL = StringUtil.replace("${portalURL}", "http://", "");
 				var portalURL = StringUtil.replace("${portalURL}", ":8080", "");
@@ -57,10 +58,11 @@ definition {
 	}
 
 	macro setUpPortalInstance {
+		var testBatchRunType = PropsUtil.get("test.batch.run.type");
 		var testNameSkipPortalInstance = PropsUtil.get("test.name.skip.portal.instance");
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
-		if (("${testPortalInstance}" == "true") && (!(IsTestName(locator1 = "", value1 = "${testNameSkipPortalInstance}")))) {
+		if ((("${testPortalInstance}" == "true") && (!(IsTestName(locator1 = "", value1 = "${testNameSkipPortalInstance}")))) || (!("${testBatchRunType}" == "single"))) {
 			SignIn.signInPortalInstanceSetUp();
 		}
 	}
