@@ -300,6 +300,14 @@ definition {
 			locator1 = "Dropdown#EMPTY_MESSAGE_DROPDOWN"
 		);
 
+		if (IsElementNotPresent(locator1 = "//div[@id='clay_dropdown_portal']//div[contains(@class,'show')]")) {
+			Refresh();
+
+			Click(
+				locator1 = "Dropdown#EMPTY_MESSAGE_DROPDOWN"
+			);
+		}
+
 		Click(
 			locator1 = "MenuItem#DROPDOWN_MENU_ITEM"
 		);
