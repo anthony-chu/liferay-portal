@@ -62,7 +62,7 @@ definition {
 		LexiconEntry.gotoAdd();
 
 		if (IsElementNotPresent(locator1 = "//div[@id='clay_dropdown_portal']//div[contains(@class,'show')]")) {
-			Refresh();
+			Page.reload();
 
 			LexiconEntry.gotoAdd();
 		}
