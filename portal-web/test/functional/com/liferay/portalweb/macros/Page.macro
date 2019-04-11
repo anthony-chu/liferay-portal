@@ -299,6 +299,14 @@ definition {
 		AssertLocation(value1 = "${localizationPageURL}");
 	}
 
+	macro reload {
+		var javaScript = '''
+document.location.reload;
+''';
+
+		RunScript(locator1 = "${javaScript}");
+	}
+
 	macro selectMobileDeviceFamily {
 		AssertClick(locator1 = "Button#SELECT_MOBILE_DEVICE_RULES", value1 = "Select");
 
