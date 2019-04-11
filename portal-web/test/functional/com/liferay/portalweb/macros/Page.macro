@@ -301,7 +301,7 @@ definition {
 
 	macro reload {
 		var javaScript = '''
-document.location.reload;
+document.location.reload();
 ''';
 
 		RunScript(locator1 = "${javaScript}");
