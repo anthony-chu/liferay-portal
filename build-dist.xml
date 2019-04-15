@@ -99,7 +99,7 @@
 			>
 				<replacefilter
 					token="maximumHeapSize=&quot;1024&quot;"
-					value="maximumHeapSize=&quot;2048&quot;"
+					value="maximumHeapSize=&quot;8192&quot;"
 				/>
 			</replace>
 		</sequential>
