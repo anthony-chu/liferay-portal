@@ -469,6 +469,10 @@ public interface LiferaySelenium {
 
 	public void waitForConsoleTextPresent(String text) throws Exception;
 
+	public void waitForEditable(String locator) throws Exception;
+
+	public void waitForNotEditable(String locator) throws Exception;
+
 	public void waitForElementNotPresent(String locator) throws Exception;
 
 	public void waitForElementPresent(String locator) throws Exception;
