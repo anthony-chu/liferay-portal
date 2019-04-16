@@ -6,6 +6,8 @@ definition {
 
 		selenium.waitForVisible();
 
+		selenium.waitForEditable();
+
 		selenium.mouseOver();
 
 		selenium.clickAt();
@@ -29,6 +31,8 @@ definition {
 		WaitForSPARefresh();
 
 		selenium.waitForVisible();
+
+		selenium.waitForEditable();
 
 		selenium.mouseOver();
 
@@ -60,6 +64,8 @@ definition {
 			"//script[contains(@src,'/autocomplete-filters/autocomplete-filters')]"
 		);
 
+		selenium.waitForEditable();
+
 		Type.sendKeys();
 
 		selenium.assertJavaScriptErrors();
@@ -71,6 +77,8 @@ definition {
 		WaitForSPARefresh();
 
 		selenium.waitForVisible();
+
+		selenium.waitForEditable();
 
 		selenium.mouseOver();
 
@@ -154,6 +162,8 @@ definition {
 
 		selenium.waitForVisible();
 
+		selenium.waitForEditable();
+
 		selenium.mouseOver();
 
 		selenium.type();
@@ -182,6 +192,8 @@ definition {
 	function typeNotVisibleNoMouseOver {
 		WaitForSPARefresh();
 
+		selenium.waitForEditable();
+
 		selenium.type();
 
 		selenium.assertJavaScriptErrors();
@@ -193,6 +205,8 @@ definition {
 		WaitForSPARefresh();
 
 		selenium.waitForVisible();
+
+		selenium.waitForEditable();
 
 		selenium.mouseOver();
 
