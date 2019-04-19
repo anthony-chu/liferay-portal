@@ -99,7 +99,7 @@
 			>
 				<replacefilter
 					token="maximumHeapSize=&quot;1024&quot;"
-					value="initialHeapSize=&quot;6144&quot; maximumHeapSize=&quot;6144&quot;"
+					value="initialHeapSize=&quot;8192&quot; maximumHeapSize=&quot;8192&quot;"
 				/>
 			</replace>
 
