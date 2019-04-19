@@ -2238,7 +2238,7 @@ closeTemplate()
 							@echo off
 
 							set "MW_HOME=${app.server.weblogic.dir.windows}"
-							set "USER_MEM_ARGS=-Xms2560m -Xmx2560m -XX:MaxNewSize=1536m -XX:MaxMetaspaceSize=512m -XX:MetaspaceSize=512m -XX:NewSize=1536m -XX:SurvivorRatio=7"
+							set "USER_MEM_ARGS=-Xms4096m -Xmx4096m -XX:MaxNewSize=8192m -XX:MaxMetaspaceSize=1024m -XX:MetaspaceSize=1024m -XX:NewSize=1536m -XX:SurvivorRatio=7"
 							set "WL_HOME=${app.server.weblogic.wlserver.dir.windows}"
 
 							call %MW_HOME%/oracle_common/common/bin/commEnv.cmd
@@ -2260,7 +2260,7 @@ closeTemplate()
 							@echo off
 
 							set "MW_HOME=${app.server.weblogic.dir.windows}"
-							set "USER_MEM_ARGS=-Xms2560m -Xmx2560m -XX:MaxNewSize=1536m -XX:MaxMetaspaceSize=512m -XX:MetaspaceSize=512m -XX:NewSize=1536m -XX:SurvivorRatio=7"
+							set "USER_MEM_ARGS=-Xms4096m -Xmx4096m -XX:MaxNewSize=8192m -XX:MaxMetaspaceSize=1024m -XX:MetaspaceSize=1024m -XX:NewSize=1536m -XX:SurvivorRatio=7"
 							set "WL_HOME=${app.server.weblogic.wlserver.dir.windows}"
 
 							call %WL_HOME%/common/bin/commEnv.cmd
@@ -2288,7 +2288,7 @@ closeTemplate()
 							set DERBY_FLAG="false"
 							set "JAVA_OPTIONS=%JAVA_OPTIONS% -Dfile.encoding=UTF-8 -Duser.timezone=GMT -da:org.apache.lucene... -da:org.aspectj..."
 							set "MW_HOME=${app.server.weblogic.dir.windows}"
-							set "USER_MEM_ARGS=-Xms2560m -Xmx2560m -XX:MaxNewSize=1536m -XX:MaxMetaspaceSize=512m -XX:MetaspaceSize=512m -XX:NewSize=1536m -XX:SurvivorRatio=7"
+							set "USER_MEM_ARGS=-Xms4096m -Xmx4096m -XX:MaxNewSize=8192m -XX:MaxMetaspaceSize=1024m -XX:MetaspaceSize=1024m -XX:NewSize=1536m -XX:SurvivorRatio=7"
 						]]>
 					</replacevalue>
 				</replace>
@@ -2415,7 +2415,7 @@ closeTemplate()
 							#!/bin/sh
 
 							export MW_HOME="${app.server.weblogic.dir}"
-							export USER_MEM_ARGS="-Xms2560m -Xmx2560m -XX:MaxNewSize=1536m -XX:MaxMetaspaceSize=512m -XX:MetaspaceSize=512m -XX:NewSize=1536m -XX:SurvivorRatio=7"
+							export USER_MEM_ARGS="-Xms4096m -Xmx4096m -XX:MaxNewSize=8192m -XX:MaxMetaspaceSize=1024m -XX:MetaspaceSize=1024m -XX:NewSize=1536m -XX:SurvivorRatio=7"
 							export WL_HOME="${app.server.weblogic.wlserver.dir}"
 
 							${source.command} ${MW_HOME}/oracle_common/common/bin/commEnv.sh
@@ -2430,7 +2430,7 @@ closeTemplate()
 							#!/bin/sh
 
 							export MW_HOME="${app.server.weblogic.dir}"
-							export USER_MEM_ARGS="-Xms2560m -Xmx2560m -XX:MaxNewSize=1536m -XX:MaxMetaspaceSize=512m -XX:MetaspaceSize=512m -XX:NewSize=1536m -XX:SurvivorRatio=7"
+							export USER_MEM_ARGS="-Xms4096m -Xmx4096m -XX:MaxNewSize=8192m -XX:MaxMetaspaceSize=1024m -XX:MetaspaceSize=1024m -XX:NewSize=1536m -XX:SurvivorRatio=7"
 							export WL_HOME="${app.server.weblogic.wlserver.dir}"
 
 							${source.command} ${WL_HOME}/common/bin/commEnv.sh
@@ -2462,7 +2462,7 @@ closeTemplate()
 							export DERBY_FLAG="false"
 							export JAVA_OPTIONS="${JAVA_OPTIONS} -Dfile.encoding=UTF-8 -Duser.timezone=GMT -da:org.apache.lucene... -da:org.aspectj... "
 							export MW_HOME="${app.server.weblogic.dir}"
-							export USER_MEM_ARGS="-Xms2560m -Xmx2560m -XX:MaxNewSize=1536m -XX:MaxMetaspaceSize=512m -XX:MetaspaceSize=512m -XX:NewSize=1536m -XX:SurvivorRatio=7"
+							export USER_MEM_ARGS="-Xms4096m -Xmx4096m -XX:MaxNewSize=8192m -XX:MaxMetaspaceSize=1024m -XX:MetaspaceSize=1024m -XX:NewSize=1536m -XX:SurvivorRatio=7"
 						]]>
 					</replacevalue>
 				</replace>
@@ -2582,7 +2582,7 @@ this task.
 					file="${app.server.weblogic.instance.dir}/startWebLogic.sh"
 				>
 					<replacetoken><![CDATA[-Xmx1024m]]></replacetoken>
-					<replacevalue><![CDATA[-Xms2560m -Xmx2560m -XX:MaxNewSize=1536m -XX:MaxMetaspaceSize=512m -XX:MetaspaceSize=512m -XX:NewSize=1536m -XX:SurvivorRatio=7]]></replacevalue>
+					<replacevalue><![CDATA[-Xms4096m -Xmx4096m -XX:MaxNewSize=8192m -XX:MaxMetaspaceSize=1024m -XX:MetaspaceSize=1024m -XX:NewSize=1536m -XX:SurvivorRatio=7]]></replacevalue>
 				</replace>
 			</then>
 			<elseif>
