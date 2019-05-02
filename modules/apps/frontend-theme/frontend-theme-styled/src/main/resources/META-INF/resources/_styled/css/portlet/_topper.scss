@@ -86,20 +86,14 @@
 }
 
 .portlet-title-default {
-	box-flex: 1;
-	-moz-flex: 1 1 auto;
-	-ms-flex: 1 1 auto;
-	flex: 1 1 auto;
-	line-height: 2;
-
+	@include flex(1 1 auto);
 	@include text-overflow;
+
+	line-height: 2;
 }
 
 .portlet-title-menu {
-	box-flex: 0;
-	-moz-flex: 0 1 auto;
-	-ms-flex: 0 1 auto;
-	flex: 0 1 auto;
+	@include flex(0 1 auto);
 
 	> span > a {
 		display: inline-block;
@@ -114,12 +108,9 @@
 	border-style: solid;
 	border-width: $portlet-topper-border-width;
 	color: $portlet-topper-color;
-	display: -webkit-box;
-	display: -moz-box;
-	display: box;
-	display: -moz-flex;
-	display: -ms-flexbox;
-	display: flex;
+
+	@include display(flex);
+
 	padding: 3px 12px 3px 24px;
 	position: relative;
 }
@@ -152,12 +143,7 @@
 
 	.portlet-topper {
 		@include media-query(null, $screen-xs-max) {
-			display: -webkit-box;
-			display: -moz-box;
-			display: box;
-			display: -moz-flex;
-			display: -ms-flexbox;
-			display: flex;
+			@include display(flex);
 		}
 	}
 
