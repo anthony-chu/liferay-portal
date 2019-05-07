@@ -23,6 +23,12 @@ definition {
 
 		LexiconEntry.gotoAdd();
 
+		if (!(IsElementPresent(locator1 = "MenuItem#DROPDOWN_MENU_CONTAINER"))) {
+			Refresh();
+
+			LexiconEntry.gotoAdd();
+		}
+
 		MenuItem.click(menuItem = "Basic Web Content");
 
 		AssertVisible(locator1 = "TextInput#TITLE");
