@@ -6,6 +6,8 @@ definition {
 
 		selenium.waitForVisible();
 
+		selenium.waitForEditable();
+
 		selenium.mouseOver();
 
 		selenium.clickAt();
@@ -30,6 +32,8 @@ definition {
 
 		selenium.waitForVisible();
 
+		selenium.waitForEditable();
+
 		selenium.mouseOver();
 
 		selenium.sendKeys();
@@ -43,6 +47,8 @@ definition {
 		WaitForSPARefresh();
 
 		selenium.waitForElementPresent();
+
+		selenium.waitForEditable();
 
 		selenium.mouseOver();
 
@@ -60,6 +66,8 @@ definition {
 			"//script[contains(@src,'/autocomplete-filters/autocomplete-filters')]"
 		);
 
+		selenium.waitForEditable();
+
 		Type.sendKeys();
 
 		selenium.assertJavaScriptErrors();
@@ -71,6 +79,8 @@ definition {
 		WaitForSPARefresh();
 
 		selenium.waitForVisible();
+
+		selenium.waitForEditable();
 
 		selenium.mouseOver();
 
@@ -86,6 +96,8 @@ definition {
 
 		selenium.waitForElementPresent();
 
+		selenium.waitForEditable();
+
 		selenium.mouseOver();
 
 		selenium.typeAceEditor();
@@ -100,6 +112,8 @@ definition {
 
 		selenium.waitForElementPresent();
 
+		selenium.waitForEditable();
+
 		selenium.mouseOver();
 
 		selenium.typeAceEditor();
@@ -109,6 +123,8 @@ definition {
 		WaitForSPARefresh();
 
 		selenium.waitForElementPresent();
+
+		selenium.waitForEditable();
 
 		selenium.typeAceEditor();
 
@@ -121,6 +137,8 @@ definition {
 		WaitForSPARefresh();
 
 		selenium.waitForVisible();
+
+		selenium.waitForEditable();
 
 		selenium.mouseOver();
 
@@ -140,6 +158,8 @@ definition {
 
 		selenium.pause("1000");
 
+		selenium.waitForEditable();
+
 		Type.typeCKEditor();
 
 		selenium.pause("1000");
@@ -153,6 +173,8 @@ definition {
 		WaitForSPARefresh();
 
 		selenium.waitForVisible();
+
+		selenium.waitForEditable();
 
 		selenium.mouseOver();
 
@@ -170,6 +192,8 @@ definition {
 
 		selenium.waitForElementPresent();
 
+		selenium.waitForEditable();
+
 		selenium.mouseOver();
 
 		selenium.typeEditor();
@@ -182,6 +206,8 @@ definition {
 	function typeNotVisibleNoMouseOver {
 		WaitForSPARefresh();
 
+		selenium.waitForEditable();
+
 		selenium.type();
 
 		selenium.assertJavaScriptErrors();
@@ -193,6 +219,8 @@ definition {
 		WaitForSPARefresh();
 
 		selenium.waitForVisible();
+
+		selenium.waitForEditable();
 
 		selenium.mouseOver();
 
@@ -211,6 +239,8 @@ definition {
 		selenium.waitForElementPresent(
 			"//script[contains(@src,'ckeditor/config.js') or contains(@id,'ckEditorScript')]"
 		);
+
+		selenium.waitForEditable();
 
 		Type.type();
 
