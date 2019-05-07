@@ -19,6 +19,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>DROPDOWN_MENU_CONTAINER</td>
+	<td>//div[contains(@class,'dropdown-menu')][contains(@class,'show')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>DOWNLOAD</td>
 	<td>//ul[contains(@role,'menu')]//a[contains(.,'Download')]</td>
 	<td></td>
