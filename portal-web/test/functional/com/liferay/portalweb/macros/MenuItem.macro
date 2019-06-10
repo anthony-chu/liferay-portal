@@ -1,7 +1,7 @@
 definition {
 
 	macro click {
-		Click(
+		Click.clickNoMouseOver(
 			key_menuItem = "${menuItem}",
 			locator1 = "MenuItem#ANY_MENU_ITEM");
 	}
