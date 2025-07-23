@@ -494,6 +494,9 @@ public class GitUtil {
 		dir = dir.getAbsoluteFile();
 
 		for (int i = 0; i <= ToolsUtil.PORTAL_MAX_DIR_LEVEL; i++) {
+			System.out.println("ANTHONY'S TEST MESSAGE");
+			System.out.println(dir.toString());
+
 			if ((dir == null) || !dir.exists()) {
 				continue;
 			}
