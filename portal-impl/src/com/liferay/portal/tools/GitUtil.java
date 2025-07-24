@@ -493,13 +493,14 @@ public class GitUtil {
 
 		dir = dir.getAbsoluteFile();
 
-		for (int i = 0; i <= ToolsUtil.PORTAL_MAX_DIR_LEVEL; i++) {
-			System.out.println("ANTHONY'S TEST MESSAGE");
-			System.out.println(dir.toString());
+		List<String> fileNames = new ArrayList<>();
 
+		for (int i = 0; i <= ToolsUtil.PORTAL_MAX_DIR_LEVEL; i++) {
 			if ((dir == null) || !dir.exists()) {
 				continue;
 			}
+
+			fileNames.add(dir.toString());
 
 			File gitFile = new File(dir, ".git");
 
@@ -510,8 +511,7 @@ public class GitUtil {
 			dir = dir.getParentFile();
 		}
 
-		throw new GitException(
-			"Unable to retrieve files because .git directory is missing");
+		throw new GitException(" ~~~ " + String.join(", ", fileNames));
 	}
 
 	protected static String getLatestAuthorCommitId() throws Exception {
