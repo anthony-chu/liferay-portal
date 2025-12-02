@@ -99,7 +99,8 @@ public class ProjectTemplatesRestTest implements BaseProjectTemplatesTestCase {
 		testGradlePortalReleaseDependency(gradleProjectDir, _liferayVersion);
 
 		if (!_liferayVersion.startsWith("7.0") &&
-			!VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+			!VersionUtil.isJakartaCompatibleVersion(
+				_liferayProduct, _liferayVersion)) {
 
 			testContains(
 				gradleProjectDir, "build.gradle",
@@ -107,7 +108,9 @@ public class ProjectTemplatesRestTest implements BaseProjectTemplatesTestCase {
 					"\"org.osgi.service.jaxrs");
 		}
 
-		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(
+				_liferayProduct, _liferayVersion)) {
+
 			testContains(
 				gradleProjectDir, "build.gradle",
 				"group: \"com.liferay\", name: \"org.osgi.service.jaxrs\", " +
@@ -151,7 +154,9 @@ public class ProjectTemplatesRestTest implements BaseProjectTemplatesTestCase {
 			gradleProjectDir, applicationFilePath,
 			"public class MyRestApplication extends Application");
 
-		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(
+				_liferayProduct, _liferayVersion)) {
+
 			testFileUpdatedForJakarta(gradleProjectDir, applicationFilePath);
 		}
 

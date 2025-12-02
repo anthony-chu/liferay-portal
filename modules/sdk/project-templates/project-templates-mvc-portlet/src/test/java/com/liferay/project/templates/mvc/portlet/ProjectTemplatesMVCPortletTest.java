@@ -81,7 +81,8 @@ public class ProjectTemplatesMVCPortletTest
 			gradleProjectDir, "src/main/java/foo/constants/FooPortletKeys.java",
 			"public class FooPortletKeys", "public static final String FOO");
 
-		String packagePrefix = getJavaxOrJakartaPackagePrefix(_liferayVersion);
+		String packagePrefix = getJavaxOrJakartaPackagePrefix(
+			_liferayProduct, _liferayVersion);
 
 		testContains(
 			gradleProjectDir, "src/main/java/foo/portlet/FooPortlet.java",

@@ -128,7 +128,8 @@ public class ProjectTemplatesSpringPortletMVCTest
 		File gradleWorkspaceModulesDir = new File(
 			gradleWorkspaceDir, "modules");
 
-		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion) &&
+		if (VersionUtil.isJakartaCompatibleVersion(
+				_liferayProduct, _liferayVersion) &&
 			_framework.equals("springportletmvc")) {
 
 			Assert.assertThrows(
@@ -156,7 +157,9 @@ public class ProjectTemplatesSpringPortletMVCTest
 
 		testExists(gradleProjectDir, userControllerFilePath);
 
-		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(
+				_liferayProduct, _liferayVersion)) {
+
 			testFileUpdatedForJakarta(gradleProjectDir, userControllerFilePath);
 			testFileUpdatedForJakarta(
 				gradleProjectDir, "src/main/java/com/test/dto/User.java");
@@ -167,7 +170,9 @@ public class ProjectTemplatesSpringPortletMVCTest
 
 		testTemplateWarPortletDTD(gradleProjectDir, _liferayVersion);
 
-		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(
+				_liferayProduct, _liferayVersion)) {
+
 			testContains(
 				gradleProjectDir, "src/main/webapp/WEB-INF/web.xml",
 				"version=\"6.0\" xmlns=\"https://jakarta.ee/xml/ns/jakartaee",

@@ -226,7 +226,9 @@ public class ProjectTemplatesRESTBuilderWorkspaceTest
 				gradleProjectDir, _name + "-impl/build.gradle",
 				DEPENDENCY_RELEASE_DXP_API);
 
-			if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+			if (VersionUtil.isJakartaCompatibleVersion(
+					_liferayProduct, _liferayVersion)) {
+
 				testContains(
 					gradleProjectDir, _name + "-client/build.gradle",
 					"group: \"jakarta.annotation\", name: " +

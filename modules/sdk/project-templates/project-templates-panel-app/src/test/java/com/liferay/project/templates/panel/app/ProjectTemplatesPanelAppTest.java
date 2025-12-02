@@ -115,7 +115,8 @@ public class ProjectTemplatesPanelAppTest
 			"src/main/java/gradle/test/constants/FooPortletKeys.java",
 			"public class FooPortletKeys", "public static final String FOO");
 
-		String packagePrefix = getJavaxOrJakartaPackagePrefix(_liferayVersion);
+		String packagePrefix = getJavaxOrJakartaPackagePrefix(
+			_liferayProduct, _liferayVersion);
 
 		testContains(
 			gradleProjectDir,
@@ -158,7 +159,9 @@ public class ProjectTemplatesPanelAppTest
 				"public Portlet getPortlet(");
 		}
 
-		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(
+				_liferayProduct, _liferayVersion)) {
+
 			testPortletUpdatedForJakarta(gradleProjectDir, name, className);
 		}
 

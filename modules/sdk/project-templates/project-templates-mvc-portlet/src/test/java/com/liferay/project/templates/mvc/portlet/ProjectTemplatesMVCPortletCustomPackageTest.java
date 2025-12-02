@@ -81,7 +81,7 @@ public class ProjectTemplatesMVCPortletCustomPackageTest
 
 		testContains(
 			gradleProjectDir, portletFilePath,
-			getJavaxOrJakartaPackagePrefix(_liferayVersion) +
+			getJavaxOrJakartaPackagePrefix(_liferayVersion, _liferayVersion) +
 				".portlet.name=\" + FooPortletKeys.FOO",
 			"public class FooPortlet extends MVCPortlet {");
 	}

@@ -24,6 +24,8 @@ public class JakartaCompatibilityUtil {
 			return true;
 		}
 
+		String product = workspaceExtension.getProduct();
+
 		String targetPlatformVersion =
 			workspaceExtension.getTargetPlatformVersion();
 
@@ -31,7 +33,7 @@ public class JakartaCompatibilityUtil {
 			return false;
 		}
 
-		return VersionUtil.isJakartaCompatibleVersion(targetPlatformVersion);
+		return VersionUtil.isJakartaCompatibleVersion(product, targetPlatformVersion);
 	}
 
 }

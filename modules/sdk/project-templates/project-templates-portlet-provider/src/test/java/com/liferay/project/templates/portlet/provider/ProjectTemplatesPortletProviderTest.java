@@ -112,7 +112,8 @@ public class ProjectTemplatesPortletProviderTest
 			"public static final String PROVIDERTEST",
 			"\"provider_test_ProviderTestPortlet\";");
 
-		String packagePrefix = getJavaxOrJakartaPackagePrefix(_liferayVersion);
+		String packagePrefix = getJavaxOrJakartaPackagePrefix(
+			_liferayProduct, _liferayVersion);
 
 		testContains(
 			gradleProjectDir,
@@ -129,7 +130,9 @@ public class ProjectTemplatesPortletProviderTest
 
 		testNotContains(gradleProjectDir, "build.gradle", "version: \"[0-9].*");
 
-		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(
+				_liferayProduct, _liferayVersion)) {
+
 			testPortletUpdatedForJakarta(
 				gradleProjectDir, name, "ProviderTest");
 		}

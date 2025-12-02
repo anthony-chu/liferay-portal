@@ -125,6 +125,7 @@ public class SpringMVCPortletProjectTemplateCustomizer
 			springMVCPortletProjectTemplatesArgsExt.getViewType());
 
 		boolean jakartaCompatible = VersionUtil.isJakartaCompatibleVersion(
+			projectTemplatesArgs.getLiferayProduct(),
 			projectTemplatesArgs.getLiferayVersion());
 
 		setProperty(

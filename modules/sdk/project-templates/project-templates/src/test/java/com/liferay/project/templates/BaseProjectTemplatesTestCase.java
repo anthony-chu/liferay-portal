@@ -1155,9 +1155,11 @@ public interface BaseProjectTemplatesTestCase {
 	}
 
 	public default String getJavaxOrJakartaPackagePrefix(
-		String liferayVersion) {
+		String liferayProduct, String liferayVersion) {
 
-		if (VersionUtil.isJakartaCompatibleVersion(liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(
+				liferayProduct, liferayVersion)) {
+
 			return "jakarta";
 		}
 
@@ -1354,7 +1356,9 @@ public interface BaseProjectTemplatesTestCase {
 			gradleProjectDir, "package.json",
 			"target/classes/META-INF/resources");
 
-		if (VersionUtil.isJakartaCompatibleVersion(liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(
+				liferayProduct, liferayVersion)) {
+
 			testPortletUpdatedForJakarta(
 				gradleProjectDir, packageName, className);
 		}
@@ -1456,7 +1460,9 @@ public interface BaseProjectTemplatesTestCase {
 				"resources/META-INF/resources/css/main.scss"
 			};
 
-			if (VersionUtil.isJakartaCompatibleVersion(liferayVersion)) {
+			if (VersionUtil.isJakartaCompatibleVersion(
+					liferayProduct, liferayVersion)) {
+
 				testPortletUpdatedForJakarta(
 					gradleProjectDir, packageName, className);
 			}

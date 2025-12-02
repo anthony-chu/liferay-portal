@@ -109,7 +109,9 @@ public class ProjectTemplatesControlMenuEntryTest
 			"extends BaseProductNavigationControlMenuEntry",
 			"implements ProductNavigationControlMenuEntry");
 
-		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(
+				_liferayProduct, _liferayVersion)) {
+
 			testFileUpdatedForJakarta(gradleProjectDir, generatedJavaClassPath);
 		}
 

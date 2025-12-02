@@ -99,7 +99,8 @@ public class ProjectTemplatesTemplateContextContributorTest
 
 		testGradlePortalReleaseDependency(gradleProjectDir, _liferayVersion);
 
-		String importPrefix = getJavaxOrJakartaPackagePrefix(_liferayVersion);
+		String importPrefix = getJavaxOrJakartaPackagePrefix(
+			_liferayProduct, _liferayVersion);
 		String templateContextContributorFilePath =
 			"src/main/java/blade/test/context/contributor" +
 				"/BladeTestTemplateContextContributor.java";
@@ -110,7 +111,9 @@ public class ProjectTemplatesTemplateContextContributorTest
 			"public class BladeTestTemplateContextContributor",
 			"implements TemplateContextContributor");
 
-		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(
+				_liferayProduct, _liferayVersion)) {
+
 			testFileUpdatedForJakarta(
 				gradleProjectDir, templateContextContributorFilePath);
 		}

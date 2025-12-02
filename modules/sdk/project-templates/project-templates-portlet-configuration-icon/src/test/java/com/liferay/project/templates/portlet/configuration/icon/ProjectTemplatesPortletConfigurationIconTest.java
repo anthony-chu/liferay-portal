@@ -109,9 +109,12 @@ public class ProjectTemplatesPortletConfigurationIconTest
 			gradleProjectDir, portletConfigurationIconFile,
 			"public class IcontestPortletConfigurationIcon",
 			"extends BasePortletConfigurationIcon",
-			getJavaxOrJakartaPackagePrefix(_liferayVersion) + ".portlet.name=");
+			getJavaxOrJakartaPackagePrefix(_liferayProduct, _liferayVersion) +
+				".portlet.name=");
 
-		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(
+				_liferayProduct, _liferayVersion)) {
+
 			testFileUpdatedForJakarta(
 				gradleProjectDir, portletConfigurationIconFile);
 		}

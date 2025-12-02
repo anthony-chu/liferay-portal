@@ -75,7 +75,9 @@ public class ProjectTemplatesWarHookTest
 			temporaryFolder, _gradleDistribution, mavenExecutor, template, name,
 			_liferayVersion);
 
-		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(
+				_liferayProduct, _liferayVersion)) {
+
 			testFileUpdatedForJakarta(
 				gradleProjectDir,
 				"/src/main/java/warhook/WarHookLoginPostAction.java");

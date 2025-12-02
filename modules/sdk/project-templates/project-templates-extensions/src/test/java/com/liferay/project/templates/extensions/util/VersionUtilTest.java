@@ -46,7 +46,8 @@ public class VersionUtilTest {
 		for (TestCase testCase : _testCases) {
 			Assert.assertEquals(
 				testCase.input, testCase.jakartaCompatible,
-				VersionUtil.isJakartaCompatibleVersion(testCase.input));
+				VersionUtil.isJakartaCompatibleVersion(
+					testCase.product, testCase.input));
 		}
 	}
 
@@ -77,10 +78,10 @@ public class VersionUtilTest {
 		new TestCase("7.4.11.1-1", 7, 4, 11),
 		new TestCase("2023.q1.2", 2023, 1, 2),
 		new TestCase("2025.q1.1-lts", 2025, 1, 1),
-		new TestCase("2025.q2.1", 2025, 2, 1, false),
-		new TestCase("2025.q3.1", 2025, 3, 1, true),
-		new TestCase("2025.q4.1", 2025, 4, 1, true),
-		new TestCase("2026.q1.0", 2026, 1, 0, true)
+		new TestCase("dxp", "2025.q2.1", 2025, 2, 1, false),
+		new TestCase("dxp", "2025.q3.1", 2025, 3, 1, true),
+		new TestCase("dxp", "2025.q4.1", 2025, 4, 1, true),
+		new TestCase("dxp", "2026.q1.0", 2026, 1, 0, true)
 	};
 
 	private static class TestCase {
@@ -90,20 +91,23 @@ public class VersionUtilTest {
 		public final int expectedMinorVersion;
 		public final String input;
 		public final boolean jakartaCompatible;
+		public final String product;
 
 		private TestCase(
 			String input, int expectedMajorVersion, int expectedMinorVersion,
 			int expectedMicroVersion) {
 
 			this(
-				input, expectedMajorVersion, expectedMinorVersion,
+				"dxp", input, expectedMajorVersion, expectedMinorVersion,
 				expectedMicroVersion, false);
 		}
 
 		private TestCase(
-			String input, int expectedMajorVersion, int expectedMinorVersion,
-			int expectedMicroVersion, boolean jakartaCompatible) {
+			String product, String input, int expectedMajorVersion,
+			int expectedMinorVersion, int expectedMicroVersion,
+			boolean jakartaCompatible) {
 
+			this.product = product;
 			this.input = input;
 			this.expectedMajorVersion = expectedMajorVersion;
 			this.expectedMinorVersion = expectedMinorVersion;

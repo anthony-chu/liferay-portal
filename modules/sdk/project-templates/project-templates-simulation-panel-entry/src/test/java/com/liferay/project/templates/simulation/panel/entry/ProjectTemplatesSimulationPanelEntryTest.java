@@ -118,7 +118,9 @@ public class ProjectTemplatesSimulationPanelEntryTest
 			"public class SimulatorSimulationPanelApp",
 			"extends BaseJSPPanelApp");
 
-		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(
+				_liferayProduct, _liferayVersion)) {
+
 			testFileUpdatedForJakarta(
 				gradleProjectDir, simulationPanelAppFilePath);
 		}

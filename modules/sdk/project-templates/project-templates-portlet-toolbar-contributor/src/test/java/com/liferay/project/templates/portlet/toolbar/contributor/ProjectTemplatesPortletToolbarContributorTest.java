@@ -107,13 +107,16 @@ public class ProjectTemplatesPortletToolbarContributorTest
 
 		testContains(
 			gradleProjectDir, portletToolbarContributorFilePath,
-			getJavaxOrJakartaPackagePrefix(_liferayVersion) + ".portlet.name=",
+			getJavaxOrJakartaPackagePrefix(_liferayProduct, _liferayVersion) +
+				".portlet.name=",
 			"public class ToolbartestPortletToolbarContributor",
 			"implements PortletToolbarContributor");
 
 		testNotContains(gradleProjectDir, "build.gradle", "version: \"[0-9].*");
 
-		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(
+				_liferayProduct, _liferayVersion)) {
+
 			testFileUpdatedForJakarta(
 				gradleProjectDir, portletToolbarContributorFilePath);
 		}

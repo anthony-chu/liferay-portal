@@ -79,7 +79,9 @@ public class ProjectTemplatesWarMVCPortletCustomPackageTest
 
 		testTemplateWarPortletDTD(gradleProjectDir, _liferayVersion);
 
-		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(
+				_liferayProduct, _liferayVersion)) {
+
 			testTLDUpdatedForJakarta(
 				gradleProjectDir, "src/main/webapp/WEB-INF/tld/liferay-ui.tld");
 		}
