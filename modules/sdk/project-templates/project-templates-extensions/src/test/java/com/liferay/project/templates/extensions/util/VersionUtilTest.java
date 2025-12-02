@@ -18,8 +18,8 @@ public class VersionUtilTest {
 	public void testGetMajorVersion() throws Exception {
 		for (TestCase testCase : _testCases) {
 			Assert.assertEquals(
-				testCase.input, testCase.expectedMajorVersion,
-				VersionUtil.getMajorVersion(testCase.input));
+				testCase.version, testCase.expectedMajorVersion,
+				VersionUtil.getMajorVersion(testCase.version));
 		}
 	}
 
@@ -27,8 +27,8 @@ public class VersionUtilTest {
 	public void testGetMicroVersion() throws Exception {
 		for (TestCase testCase : _testCases) {
 			Assert.assertEquals(
-				testCase.input, testCase.expectedMicroVersion,
-				VersionUtil.getMicroVersion(testCase.input));
+				testCase.version, testCase.expectedMicroVersion,
+				VersionUtil.getMicroVersion(testCase.version));
 		}
 	}
 
@@ -36,8 +36,8 @@ public class VersionUtilTest {
 	public void testGetMinorVersion() throws Exception {
 		for (TestCase testCase : _testCases) {
 			Assert.assertEquals(
-				testCase.input, testCase.expectedMinorVersion,
-				VersionUtil.getMinorVersion(testCase.input));
+				testCase.version, testCase.expectedMinorVersion,
+				VersionUtil.getMinorVersion(testCase.version));
 		}
 	}
 
@@ -45,9 +45,9 @@ public class VersionUtilTest {
 	public void testIsJakartaCompatibleVersion() throws Exception {
 		for (TestCase testCase : _testCases) {
 			Assert.assertEquals(
-				testCase.input, testCase.jakartaCompatible,
+				testCase.version, testCase.jakartaCompatible,
 				VersionUtil.isJakartaCompatibleVersion(
-					testCase.product, testCase.input));
+					testCase.product, testCase.version));
 		}
 	}
 
@@ -62,7 +62,8 @@ public class VersionUtilTest {
 
 		for (TestCase testCase : _testCases) {
 			Assert.assertTrue(
-				testCase.input, VersionUtil.isLiferayVersion(testCase.input));
+				testCase.version,
+				VersionUtil.isLiferayVersion(testCase.version));
 		}
 	}
 
@@ -89,26 +90,26 @@ public class VersionUtilTest {
 		public final int expectedMajorVersion;
 		public final int expectedMicroVersion;
 		public final int expectedMinorVersion;
-		public final String input;
 		public final boolean jakartaCompatible;
 		public final String product;
+		public final String version;
 
 		private TestCase(
-			String input, int expectedMajorVersion, int expectedMinorVersion,
+			String version, int expectedMajorVersion, int expectedMinorVersion,
 			int expectedMicroVersion) {
 
 			this(
-				"dxp", input, expectedMajorVersion, expectedMinorVersion,
+				"dxp", version, expectedMajorVersion, expectedMinorVersion,
 				expectedMicroVersion, false);
 		}
 
 		private TestCase(
-			String product, String input, int expectedMajorVersion,
+			String product, String version, int expectedMajorVersion,
 			int expectedMinorVersion, int expectedMicroVersion,
 			boolean jakartaCompatible) {
 
 			this.product = product;
-			this.input = input;
+			this.version = version;
 			this.expectedMajorVersion = expectedMajorVersion;
 			this.expectedMinorVersion = expectedMinorVersion;
 			this.expectedMicroVersion = expectedMicroVersion;
