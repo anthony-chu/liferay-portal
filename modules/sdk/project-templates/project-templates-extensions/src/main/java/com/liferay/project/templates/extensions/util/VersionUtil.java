@@ -70,8 +70,12 @@ public class VersionUtil {
 		return 0;
 	}
 
-	public static boolean isJakartaCompatibleVersion(String liferayVersion) {
-		if (!isLiferayQuarterlyVersion(liferayVersion)) {
+	public static boolean isJakartaCompatibleVersion(
+		String liferayProduct, String liferayVersion) {
+
+		if (liferayProduct.equals("portal") ||
+			!isLiferayQuarterlyVersion(liferayVersion)) {
+
 			return false;
 		}
 
