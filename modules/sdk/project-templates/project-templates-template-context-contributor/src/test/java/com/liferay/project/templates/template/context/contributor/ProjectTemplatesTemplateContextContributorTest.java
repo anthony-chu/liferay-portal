@@ -97,7 +97,7 @@ public class ProjectTemplatesTemplateContextContributorTest
 
 		testExists(gradleProjectDir, "bnd.bnd");
 
-		testGradlePortalReleaseDependency(gradleProjectDir, _liferayVersion);
+		testGradlePortalReleaseDependency(gradleProjectDir, _liferayProduct, _liferayVersion);
 
 		String importPrefix = getJavaxOrJakartaPackagePrefix(
 			_liferayProduct, _liferayVersion);

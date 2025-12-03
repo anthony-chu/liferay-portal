@@ -97,7 +97,7 @@ public class ProjectTemplatesControlMenuEntryTest
 
 		testExists(gradleProjectDir, "bnd.bnd");
 
-		testGradlePortalReleaseDependency(gradleProjectDir, _liferayVersion);
+		testGradlePortalReleaseDependency(gradleProjectDir, _liferayProduct, _liferayVersion);
 
 		String generatedJavaClassPath =
 			"src/main/java/foo/bar/control/menu" +

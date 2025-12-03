@@ -108,7 +108,7 @@ public class ProjectTemplatesPanelAppTest
 			gradleProjectDir, "bnd.bnd",
 			"Export-Package: gradle.test.constants");
 
-		testGradlePortalReleaseDependency(gradleProjectDir, _liferayVersion);
+		testGradlePortalReleaseDependency(gradleProjectDir, _liferayProduct, _liferayVersion);
 
 		testContains(
 			gradleProjectDir,

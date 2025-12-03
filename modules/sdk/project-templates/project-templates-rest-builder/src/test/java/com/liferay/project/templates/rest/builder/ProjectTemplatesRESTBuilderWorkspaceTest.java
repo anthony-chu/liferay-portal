@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
@@ -218,7 +219,7 @@ public class ProjectTemplatesRESTBuilderWorkspaceTest
 				"compileOnly group: \"javax.servlet\", name: " +
 					"\"javax.servlet-api\"");
 		}
-		else if (VersionUtil.isLiferayQuarterlyVersion(_liferayVersion)) {
+		else if (Objects.equals(_liferayProduct, "dxp")) {
 			testContains(
 				gradleProjectDir, _name + "-api/build.gradle",
 				DEPENDENCY_RELEASE_DXP_API);

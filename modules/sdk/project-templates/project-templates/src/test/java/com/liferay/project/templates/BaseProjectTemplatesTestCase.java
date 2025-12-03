@@ -1364,7 +1364,7 @@ public interface BaseProjectTemplatesTestCase {
 			gradleWorkspaceModulesDir, template, name, "--liferay-product",
 			liferayProduct, "--liferay-version", liferayVersion);
 
-		testGradlePortalReleaseDependency(gradleProjectDir, liferayVersion);
+		testGradlePortalReleaseDependency(gradleProjectDir, liferayProduct, liferayVersion);
 
 		testContains(
 			gradleProjectDir, "package.json",
@@ -1946,10 +1946,10 @@ public interface BaseProjectTemplatesTestCase {
 	}
 
 	public default void testGradlePortalReleaseDependency(
-			File gradleProjectDir, String liferayVersion)
+			File gradleProjectDir, String liferayProduct, String liferayVersion)
 		throws IOException {
 
-		if (VersionUtil.isLiferayQuarterlyVersion(liferayVersion) ||
+		if (Objects.equals(liferayProduct, "dxp") ||
 			(VersionUtil.getMinorVersion(liferayVersion) < 3)) {
 
 			testContains(

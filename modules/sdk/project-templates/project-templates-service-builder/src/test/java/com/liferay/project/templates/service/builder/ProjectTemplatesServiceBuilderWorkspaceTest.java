@@ -209,7 +209,7 @@ public class ProjectTemplatesServiceBuilderWorkspaceTest
 				"dependency-injector=\"ds\"");
 		}
 
-		if (VersionUtil.isLiferayQuarterlyVersion(_liferayVersion) ||
+		if (Objects.equals(_liferayProduct, "dxp") ||
 			(VersionUtil.getMinorVersion(_liferayVersion) < 3)) {
 
 			testContains(
