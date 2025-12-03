@@ -129,8 +129,8 @@ public class ProjectTemplatesArgs {
 		_groupId = groupId;
 	}
 
-	public void setLiferayProduct(String liferayiProduct) {
-		_liferayProduct = liferayiProduct;
+	public void setLiferayProduct(String liferayProduct) {
+		_liferayProduct = liferayProduct;
 	}
 
 	public void setLiferayVersion(String version) {
