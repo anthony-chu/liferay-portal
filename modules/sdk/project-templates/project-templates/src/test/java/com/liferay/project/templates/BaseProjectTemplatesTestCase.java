@@ -589,12 +589,19 @@ public interface BaseProjectTemplatesTestCase {
 		completeArgs.add("-DgroupId=" + groupId);
 		completeArgs.add("-Dversion=1.0.0");
 
+		String liferayProduct = "";
 		String liferayVersion = "";
+		boolean liferayProductSet = false;
 		boolean liferayVersionSet = false;
 		boolean projectTypeSet = false;
 
 		for (String arg : args) {
 			completeArgs.add(arg);
+
+			if (arg.startsWith("-DliferayProduct=")) {
+				liferayProduct = arg.substring("-DliferayProduct=".length());
+				liferayProductSet = true;
+			}
 
 			if (arg.startsWith("-DliferayVersion=")) {
 				liferayVersion = arg.substring("-DliferayVersion=".length());
@@ -603,6 +610,12 @@ public interface BaseProjectTemplatesTestCase {
 			else if (arg.startsWith("-DprojectType=")) {
 				projectTypeSet = true;
 			}
+		}
+
+		if (!liferayProductSet) {
+			liferayProduct = getDefaultLiferayProduct();
+
+			completeArgs.add("-DliferayProduct=" + liferayProduct);
 		}
 
 		if (!liferayVersionSet) {
