@@ -1148,6 +1148,12 @@ public interface BaseProjectTemplatesTestCase {
 		return executeMaven(projectDir, false, mavenExecutor, args);
 	}
 
+	public default String getDefaultLiferayProduct() {
+		ProjectTemplatesArgs projectTemplatesArgs = new ProjectTemplatesArgs();
+
+		return projectTemplatesArgs.getLiferayProduct();
+	}
+
 	public default String getDefaultLiferayVersion() {
 		ProjectTemplatesArgs projectTemplatesArgs = new ProjectTemplatesArgs();
 
