@@ -628,7 +628,7 @@ public interface BaseProjectTemplatesTestCase {
 			completeArgs.add("-DprojectType=standalone");
 		}
 
-		if (VersionUtil.isJakartaCompatibleVersion(liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(liferayProduct, liferayVersion)) {
 			completeArgs.add("-DjakartaCompatible=true");
 		}
 		else {
@@ -1616,7 +1616,7 @@ public interface BaseProjectTemplatesTestCase {
 			gradleProjectDir, "build.gradle", true, "^repositories \\{.*");
 		testNotContains(gradleProjectDir, "build.gradle", "version: \"[0-9].*");
 
-		if (VersionUtil.isJakartaCompatibleVersion(liferayVersion)) {
+		if (VersionUtil.isJakartaCompatibleVersion(liferayProduct, liferayVersion)) {
 			testContains(
 				gradleProjectDir, "src/main/webapp/WEB-INF/web.xml",
 				"version=\"6.0\" xmlns=\"https://jakarta.ee/xml/ns/jakartaee",
