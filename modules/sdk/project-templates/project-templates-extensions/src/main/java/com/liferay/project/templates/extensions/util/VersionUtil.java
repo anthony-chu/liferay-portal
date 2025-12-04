@@ -6,6 +6,7 @@
 package com.liferay.project.templates.extensions.util;
 
 import java.util.regex.Matcher;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -73,7 +74,7 @@ public class VersionUtil {
 	public static boolean isJakartaCompatibleVersion(
 		String liferayProduct, String liferayVersion) {
 
-		if (liferayProduct.equals("portal") ||
+		if (Objects.equals(liferayProduct, "portal") ||
 			!isLiferayQuarterlyVersion(liferayVersion)) {
 
 			return false;
