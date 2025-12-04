@@ -82,7 +82,9 @@ public class VersionUtilTest {
 		new TestCase("dxp", "2025.q2.1", 2025, 2, 1, false),
 		new TestCase("dxp", "2025.q3.1", 2025, 3, 1, true),
 		new TestCase("dxp", "2025.q4.1", 2025, 4, 1, true),
-		new TestCase("dxp", "2026.q1.0", 2026, 1, 0, true)
+		new TestCase("dxp", "2026.q1.0", 2026, 1, 0, true),
+		new TestCase("portal", "7.3.8", 7, 3, 8, false),
+		new TestCase("portal", "2025.q3.0", 2025, 3, 0, false)
 	};
 
 	private static class TestCase {
