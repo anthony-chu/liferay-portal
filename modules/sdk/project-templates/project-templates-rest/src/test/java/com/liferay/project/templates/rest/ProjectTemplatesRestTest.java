@@ -96,7 +96,8 @@ public class ProjectTemplatesRestTest implements BaseProjectTemplatesTestCase {
 
 		testExists(gradleProjectDir, "bnd.bnd");
 
-		testGradlePortalReleaseDependency(gradleProjectDir, _liferayProduct, _liferayVersion);
+		testGradlePortalReleaseDependency(
+			gradleProjectDir, _liferayProduct, _liferayVersion);
 
 		if (!_liferayVersion.startsWith("7.0") &&
 			!VersionUtil.isJakartaCompatibleVersion(

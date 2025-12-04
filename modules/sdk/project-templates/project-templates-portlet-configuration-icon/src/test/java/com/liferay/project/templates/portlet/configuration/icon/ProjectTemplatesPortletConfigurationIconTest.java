@@ -99,7 +99,8 @@ public class ProjectTemplatesPortletConfigurationIconTest
 
 		testExists(gradleProjectDir, "bnd.bnd");
 
-		testGradlePortalReleaseDependency(gradleProjectDir, _liferayProduct, _liferayVersion);
+		testGradlePortalReleaseDependency(
+			gradleProjectDir, _liferayProduct, _liferayVersion);
 
 		String portletConfigurationIconFile =
 			"src/main/java/blade/test/portlet/configuration/icon" +

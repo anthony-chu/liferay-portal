@@ -101,7 +101,8 @@ public class ProjectTemplatesPortletProviderTest
 			gradleProjectDir,
 			"src/main/resources/META-INF/resources/css/main.scss");
 
-		testGradlePortalReleaseDependency(gradleProjectDir, _liferayProduct, _liferayVersion);
+		testGradlePortalReleaseDependency(
+			gradleProjectDir, _liferayProduct, _liferayVersion);
 
 		testContains(
 			gradleProjectDir,

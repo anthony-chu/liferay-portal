@@ -41,8 +41,9 @@ public class ProjectTemplatesWarHookTest
 	public static Iterable<Object[]> data() {
 		return Arrays.asList(
 			new Object[][] {
-				{"dxp", "7.0.10.17"}, {"dxp", "7.1.10.7"}, {"dxp", "7.2.10.7"}, {"portal", "7.3.7"},
-				{"dxp", "7.4.3.56"}, {"dxp", "2024.q1.1"}, {"dxp", "2025.q3.1"}
+				{"dxp", "7.0.10.17"}, {"dxp", "7.1.10.7"}, {"dxp", "7.2.10.7"},
+				{"portal", "7.3.7"}, {"dxp", "7.4.3.56"}, {"dxp", "2024.q1.1"},
+				{"dxp", "2025.q3.1"}
 			});
 	}
 
@@ -62,7 +63,9 @@ public class ProjectTemplatesWarHookTest
 		_gradleDistribution = URI.create(gradleDistribution);
 	}
 
-	public ProjectTemplatesWarHookTest(String liferayProduct, String liferayVersion) {
+	public ProjectTemplatesWarHookTest(
+		String liferayProduct, String liferayVersion) {
+
 		_liferayProduct = liferayProduct;
 		_liferayVersion = liferayVersion;
 	}
@@ -93,7 +96,6 @@ public class ProjectTemplatesWarHookTest
 	private static URI _gradleDistribution;
 
 	private final String _liferayProduct;
-
 	private final String _liferayVersion;
 
 }
