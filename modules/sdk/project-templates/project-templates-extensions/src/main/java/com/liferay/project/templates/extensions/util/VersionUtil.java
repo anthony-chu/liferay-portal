@@ -74,8 +74,8 @@ public class VersionUtil {
 	public static boolean isJakartaCompatibleVersion(
 		String liferayProduct, String liferayVersion) {
 
-		if (!Objects.equals(liferayProduct, "dxp") ||
-			!isLiferayQuarterlyVersion(liferayVersion)) {
+		if (!(Objects.equals(liferayProduct, "dxp") &&
+			  isLiferayQuarterlyVersion(liferayVersion))) {
 
 			return false;
 		}
