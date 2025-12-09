@@ -8,6 +8,8 @@ package com.liferay.gradle.plugins.workspace.internal.util;
 import com.liferay.gradle.plugins.workspace.WorkspaceExtension;
 import com.liferay.project.templates.extensions.util.VersionUtil;
 
+import com.liferay.release.util.ReleaseEntry;
+import com.liferay.release.util.ReleaseUtil;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
 
@@ -31,8 +33,11 @@ public class JakartaCompatibilityUtil {
 			return false;
 		}
 
+		String product = workspaceExtension.getProduct();
+
 		return VersionUtil.isJakartaCompatibleVersion(
-			workspaceExtension.getProduct(), targetPlatformVersion);
+			ReleaseUtil.getFromReleaseEntry(
+				product, ReleaseEntry::getProduct), targetPlatformVersion);
 	}
 
 }
