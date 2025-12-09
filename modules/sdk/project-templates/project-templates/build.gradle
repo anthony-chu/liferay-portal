@@ -71,7 +71,7 @@ dependencies {
 	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.control.menu.entry", version: "1.0.202"
 	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.form.field", version: "1.0.206"
 	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.fragment", version: "1.0.201"
-	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.layout.template", version: "1.0.197"
+	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.layout.template", version: "1.0.198"
 	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.modules.ext", version: "1.0.186"
 	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.mvc.portlet", version: "1.0.198"
 	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.npm.react.portlet", version: "1.0.198"
