@@ -110,6 +110,13 @@ public class ClientExtensionUpgradeStepRegistrator
 				"lastPublishDate DATE null"));
 
 		registry.register("3.5.0", "3.5.1", new DummyUpgradeProcess());
+
+		registry.register(
+			"3.5.1", "3.5.2",
+			UpgradeProcessFactory.runSQL(
+				"delete from Configuration_ where configurationId like " +
+					"'com.liferay.client.extension.type.configuration." +
+						"CETConfiguration%'"));
 	}
 
 	@Reference
