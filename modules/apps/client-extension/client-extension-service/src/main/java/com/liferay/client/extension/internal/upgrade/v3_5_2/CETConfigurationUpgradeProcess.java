@@ -29,7 +29,7 @@ public class CETConfigurationUpgradeProcess extends UpgradeProcess {
 			StringBundler.concat(
 				"(", Constants.SERVICE_PID,
 				"=com.liferay.client.extension.type.configuration.",
-				"CETConfiguration*)"));
+				"CETConfiguration~*)"));
 
 		if (configurations == null) {
 			return;

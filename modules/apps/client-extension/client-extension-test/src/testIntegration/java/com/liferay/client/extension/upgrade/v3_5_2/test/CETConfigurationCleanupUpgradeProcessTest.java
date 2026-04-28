@@ -103,11 +103,23 @@ public class CETConfigurationCleanupUpgradeProcessTest {
 
 		_upgradeStepRegistrator.register(
 			(fromSchemaVersionString, toSchemaVersionString, upgradeSteps) -> {
-				if (Objects.equals(fromSchemaVersionString, "3.5.1") &&
-					Objects.equals(toSchemaVersionString, "3.5.2") &&
-					(upgradeSteps.length > 0)) {
+				if (!Objects.equals(fromSchemaVersionString, "3.5.1") ||
+					!Objects.equals(toSchemaVersionString, "3.5.2")) {
 
-					upgradeProcesses[0] = (UpgradeProcess)upgradeSteps[0];
+					return;
+				}
+
+				for (Object upgradeStep : upgradeSteps) {
+					Class<?> upgradeStepClass = upgradeStep.getClass();
+
+					if (Objects.equals(
+							upgradeStepClass.getName(),
+							_CLASS_NAME_CET_CONFIGURATION_UPGRADE_PROCESS)) {
+
+						upgradeProcesses[0] = (UpgradeProcess)upgradeStep;
+
+						return;
+					}
 				}
 			});
 
@@ -116,6 +128,10 @@ public class CETConfigurationCleanupUpgradeProcessTest {
 
 	private static final String _CET_CONFIGURATION_PID_PREFIX =
 		"com.liferay.client.extension.type.configuration.CETConfiguration~";
+
+	private static final String _CLASS_NAME_CET_CONFIGURATION_UPGRADE_PROCESS =
+		"com.liferay.client.extension.internal.upgrade.v3_5_2." +
+			"CETConfigurationUpgradeProcess";
 
 	private static final String _STALE_CET_PID_1 =
 		_CET_CONFIGURATION_PID_PREFIX + "upgrade-test-cet-1/liferay.com";
