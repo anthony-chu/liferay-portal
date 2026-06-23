@@ -1,8 +1,12 @@
 assemble:
     -   from: assets
-        hashify: global.js
+        hashify: global*.js
         into: static
 liferay-sample-global-js-1:
     name: Liferay Sample Global JS 1
     type: globalJS
     url: global.*.js
+liferay-sample-global2-js-2:
+    name: Liferay Sample Global2 JS 2
+    type: globalJS
+    url: global2.*.js
