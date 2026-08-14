@@ -1,15 +1,13 @@
 import 'dotenv/config';
 
-import { NodeSDK } from "@opentelemetry/sdk-node";
 import type { Evaluator, ExperimentItem } from "@langfuse/client"
 import { LangfuseClient } from "@langfuse/client";
-import { LangfuseSpanProcessor } from "@langfuse/otel";
 
 import { createAgentTask } from "./lib/agent-task.ts";
 import { skillsInvokedEvaluator } from "./lib/evaluators.ts";
 import { liferay } from "./lib/liferay.ts";
+import { otelSdk } from "./lib/otel.ts";
 
-const otelSdk = new NodeSDK({ spanProcessors: [new LangfuseSpanProcessor()] });
 otelSdk.start();
 
 const langfuse = new LangfuseClient();
