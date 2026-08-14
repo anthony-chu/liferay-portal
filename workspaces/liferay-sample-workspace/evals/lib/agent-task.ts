@@ -57,8 +57,6 @@ export const createAgentTask = (schema: Record<string, unknown>): ExperimentTask
                 for (const block of message.message.content) {
                     if (block.type !== "tool_use") continue;
 
-                    toolCalls.push({ input: block.input, name: block.name });
-
                     if (block.name === "Skill") {
                         const input = block.input as { skill?: string };
 
@@ -67,17 +65,8 @@ export const createAgentTask = (schema: Record<string, unknown>): ExperimentTask
                 }
             }
 
-            if (message.type === "user" && Array.isArray(message.message.content)) {
-                for (const block of message.message.content) {
-                    if (block.type === "tool_result") {
-                        toolResults.push(block.content);
-                    }
-                }
-            }
-
             if (message.type !== "result") continue;
 
-            costUSD = message.total_cost_usd;
             modelUsage = message.modelUsage;
             numTurns = message.num_turns;
 
@@ -94,13 +83,10 @@ export const createAgentTask = (schema: Record<string, unknown>): ExperimentTask
     }
 
     return {
-        costUSD,
         failure: failure ?? null,
         modelUsage,
         numTurns,
         result,
         skillsInvoked,
-        toolCalls,
-        toolResults,
     };
 };
