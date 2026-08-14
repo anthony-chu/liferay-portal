@@ -1,6 +1,7 @@
 import { readdirSync } from "node:fs";
 
-import { query } from "@anthropic-ai/claude-agent-sdk";
+import * as ClaudeAgentSDK from "@anthropic-ai/claude-agent-sdk";
+import { ClaudeAgentSDKInstrumentation } from "@arizeai/openinference-instrumentation-claude-agent-sdk";
 import type { ExperimentTask } from "@langfuse/client";
 
 import { LIFERAY_AUTH, LIFERAY_URL } from "./liferay.ts";
@@ -13,21 +14,22 @@ if (PROJECT_SKILLS.length === 0) {
     throw new Error("No skills found in .claude/skills — run this eval from the workspace root.");
 }
 
+const instrumentation = new ClaudeAgentSDKInstrumentation();
+
+const claudeAgentSDK = instrumentation.manuallyInstrument(ClaudeAgentSDK);
+
 export const createAgentTask = (schema: Record<string, unknown>): ExperimentTask => async (item) => {
     const prompt = item.input;
 
     const skillsInvoked: string[] = [];
-    const toolCalls: { input: any; name: string }[] = [];
-    const toolResults: any[] = [];
 
-    let costUSD = 0;
     let failure;
     let modelUsage;
     let numTurns = 0;
     let result;
 
     try {
-        for await (const message of query({
+        for await (const message of claudeAgentSDK.query({
             options: {
                 allowDangerouslySkipPermissions: true,
                 maxTurns: 50,
