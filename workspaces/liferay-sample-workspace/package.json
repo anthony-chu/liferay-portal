@@ -1,4 +1,12 @@
 {
+	"dependencies": {
+		"@anthropic-ai/claude-agent-sdk": "^0.3.232",
+		"@langfuse/client": "^5.10.0",
+		"@langfuse/otel": "^5.10.0",
+		"@opentelemetry/sdk-node": "^0.221.0",
+		"axios": "^1.19.0",
+		"dotenv": "^17.4.2"
+	},
 	"devDependencies": {
 		"@liferay/eslint-plugin": "1.6.0",
 		"@liferay/prettier-plugin": "1.1.5",
@@ -12,6 +20,7 @@
 		"typescript": "4.4.2"
 	},
 	"private": true,
+	"type": "module",
 	"workspaces": {
 		"packages": [
 			"client-extensions/liferay-sample-commerce-checkout-step",
@@ -19,6 +28,7 @@
 			"client-extensions/liferay-sample-custom-element-3",
 			"client-extensions/liferay-sample-custom-element-4",
 			"client-extensions/liferay-sample-custom-element-5",
+			"client-extensions/liferay-sample-custom-element-6",
 			"client-extensions/liferay-sample-etc-frontend",
 			"client-extensions/liferay-sample-etc-node",
 			"client-extensions/liferay-sample-fds-cell-renderer",
@@ -28,22 +38,12 @@
 			"client-extensions/liferay-sample-theme-css-2",
 			"client-extensions/liferay-sample-theme-css-3",
 			"client-extensions/liferay-sample-theme-spritemap-2",
-			"client-extensions/liferay-sample-custom-element-6",
 			"client-extensions/liferay-sample-editor-config-contributor-1",
 			"client-extensions/liferay-sample-editor-config-contributor-2",
-			"client-extensions/liferay-sample-custom-element-7",
 			"client-extensions/liferay-sample-editor-config-contributor-3",
+			"client-extensions/liferay-sample-custom-element-7",
 			"client-extensions/liferay-sample-editor-config-contributor-4",
 			"client-extensions/liferay-sample-editor-config-contributor-5"
 		]
-	},
-	"dependencies": {
-		"@anthropic-ai/claude-agent-sdk": "^0.3.232",
-		"@langfuse/client": "^5.10.0",
-		"@langfuse/otel": "^5.10.0",
-		"@opentelemetry/sdk-node": "^0.221.0",
-		"axios": "^1.19.0",
-		"dotenv": "^17.4.2"
-	},
-	"type": "module"
+	}
 }
