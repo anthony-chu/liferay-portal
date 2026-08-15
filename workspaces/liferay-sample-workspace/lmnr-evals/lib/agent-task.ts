@@ -1,0 +1,87 @@
+import { readdirSync } from "node:fs";
+
+import { query  } from "@anthropic-ai/claude-agent-sdk";
+import { Laminar } from "@lmnr-ai/lmnr";
+
+import { LIFERAY_AUTH, LIFERAY_URL } from "./liferay.ts";
+
+const PROJECT_SKILLS = readdirSync(".claude/skills", { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name);
+
+if (PROJECT_SKILLS.length === 0) {
+    throw new Error("No skills found in .claude/skills — run this eval from the workspace root.");
+}
+
+const wrappedQuery = Laminar.wrapClaudeAgentQuery(query);
+
+export const createAgentTask = (schema: Record<string, unknown>) => async (prompt: string) => {
+    const skillsInvoked: string[] = [];
+
+    let failure;
+    let modelUsage;
+    let numTurns = 0;
+    let result;
+
+    try {
+        for await (const message of wrappedQuery({
+            options: {
+                allowDangerouslySkipPermissions: true,
+                maxTurns: 50,
+                mcpServers: {
+                    liferay: {
+                        headers: {
+                            Authorization: LIFERAY_AUTH
+                        },
+                        type: "http",
+                        url: `${LIFERAY_URL}/o/mcp`,
+                    },
+                },
+                model: "sonnet",
+                outputFormat: {
+                    schema,
+                    type: "json_schema",
+                },
+                permissionMode: "bypassPermissions",
+                settingSources: ["project"],
+                skills: PROJECT_SKILLS,
+            },
+            prompt,
+        })) {
+            if (message.type === "assistant") {
+                for (const block of message.message.content) {
+                    if (block.type !== "tool_use") continue;
+
+                    if (block.name === "Skill") {
+                        const input = block.input as { skill?: string };
+
+                        if (input.skill) skillsInvoked.push(input.skill);
+                    }
+                }
+            }
+
+            if (message.type !== "result") continue;
+
+            modelUsage = message.modelUsage;
+            numTurns = message.num_turns;
+
+            if (message.subtype === "success" && message.structured_output) {
+                result = message.structured_output;
+            }
+            else if (message.subtype !== "success") {
+                failure = message.subtype;
+            }
+        }
+    }
+    catch (error) {
+        failure = error instanceof Error ? error.message : String(error);
+    }
+
+    return {
+        failure: failure ?? null,
+        modelUsage,
+        numTurns,
+        result,
+        skillsInvoked,
+    };
+};
