@@ -1,0 +1,23 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.rest.dto.v1_0.ObjectEntry",
+		"multiCompany": true,
+		"parameters": {
+			"createStrategy": "UPSERT",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "C_Registration"
+	},
+	"items": [
+		{
+			"emailAddress": "joe.bloggs@liferay.com",
+			"externalReferenceCode": "REGISTRATION_JOE_BLOGGS",
+			"name": "Joe Bloggs",
+			"r_eventRegistrations_c_eventERC": "EVENT_LIFERAY_DEVCON_2026",
+			"registrationStatus": {
+				"key": "pending"
+			}
+		}
+	]
+}

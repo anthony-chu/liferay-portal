@@ -1,0 +1,21 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.rest.dto.v1_0.ObjectEntry",
+		"multiCompany": true,
+		"parameters": {
+			"createStrategy": "UPSERT",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "C_Event"
+	},
+	"items": [
+		{
+			"endDate": "2026-11-05",
+			"externalReferenceCode": "EVENT_LIFERAY_DEVCON_2026",
+			"location": "London, UK",
+			"name": "Liferay DEVCON",
+			"startDate": "2026-11-02"
+		}
+	]
+}
