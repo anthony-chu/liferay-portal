@@ -49,6 +49,8 @@ export const createAgentTask = (schema: Record<string, unknown>) => async (promp
 					claudeMdExcludes: [
 						"/home/me/dev/projects/liferay-portal/.claude/CLAUDE.md",
 						"/home/me/dev/projects/liferay-portal/.claude/rules/**",
+						"/home/me/CLAUDE.md",
+						"/home/me/.claude/**",
 					],
 				},
 				skills: PROJECT_SKILLS,
