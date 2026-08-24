@@ -78,6 +78,26 @@
 					},
 					"name": "capacity",
 					"required": false
+				},
+				{
+					"businessType": "Integer",
+					"externalReferenceCode": "EVENT_SPOTS_REMAINING",
+					"indexed": true,
+					"label": {
+						"en_US": "Spots Remaining"
+					},
+					"name": "spotsRemaining",
+					"required": false
+				},
+				{
+					"businessType": "Text",
+					"externalReferenceCode": "EVENT_DATE_RANGE_LABEL",
+					"indexed": true,
+					"label": {
+						"en_US": "Date Range Label"
+					},
+					"name": "dateRangeLabel",
+					"required": false
 				}
 			],
 			"panelCategoryKey": "control_panel.applications",

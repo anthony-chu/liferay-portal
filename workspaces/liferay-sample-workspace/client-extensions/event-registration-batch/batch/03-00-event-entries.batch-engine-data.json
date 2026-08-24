@@ -12,38 +12,46 @@
 	"items": [
 		{
 			"capacity": 500,
+			"dateRangeLabel": "Nov 2-5, 2026",
 			"description": "Liferay's flagship global conference. Three days of keynotes, technical sessions, and hands-on workshops with the Liferay engineering team and community.",
 			"endDate": "2026-11-05",
 			"externalReferenceCode": "EVENT_LIFERAY_DEVCON_2026",
 			"location": "London, UK",
 			"name": "Liferay DEVCON",
+			"spotsRemaining": 498,
 			"startDate": "2026-11-02"
 		},
 		{
 			"capacity": 300,
+			"dateRangeLabel": "Sep 15-17, 2026",
 			"description": "A regional gathering for North American customers and partners covering DXP roadmap, upgrades, and customer case studies.",
 			"endDate": "2026-09-17",
 			"externalReferenceCode": "EVENT_LIFERAY_SYMPOSIUM_NA_2026",
 			"location": "Chicago, IL, USA",
 			"name": "Liferay Symposium North America",
+			"spotsRemaining": 299,
 			"startDate": "2026-09-15"
 		},
 		{
 			"capacity": 200,
+			"dateRangeLabel": "Oct 5-6, 2026",
 			"description": "Liferay's APAC regional summit, focused on digital experience trends and customer success stories across the region.",
 			"endDate": "2026-10-06",
 			"externalReferenceCode": "EVENT_LIFERAY_APAC_SUMMIT_2026",
 			"location": "Singapore",
 			"name": "Liferay APAC Summit",
+			"spotsRemaining": 200,
 			"startDate": "2026-10-05"
 		},
 		{
 			"capacity": 150,
+			"dateRangeLabel": "Dec 3, 2026",
 			"description": "A local meetup for the Liferay developer community: lightning talks, demos, and networking.",
 			"endDate": "2026-12-03",
 			"externalReferenceCode": "EVENT_LIFERAY_COMMUNITY_DAY_2026",
 			"location": "Austin, TX, USA",
 			"name": "Liferay Community Day",
+			"spotsRemaining": 150,
 			"startDate": "2026-12-03"
 		}
 	]
