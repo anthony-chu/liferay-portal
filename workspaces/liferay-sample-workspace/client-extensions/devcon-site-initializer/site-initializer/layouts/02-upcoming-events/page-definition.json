@@ -1,0 +1,101 @@
+{
+	"pageElement": {
+		"pageElements": [
+			{
+				"definition": {
+					"fragment": {
+						"key": "section-heading",
+						"siteKey": "[$GROUP_KEY$]"
+					}
+				},
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"collectionConfig": {
+						"collectionReference": {
+							"className": "[$OBJECT_DEFINITION_CLASS_NAME:Event$]"
+						},
+						"collectionType": "CollectionProvider"
+					},
+					"numberOfItems": 20,
+					"numberOfColumns": 1,
+					"paginationType": "Numeric"
+				},
+				"type": "Collection",
+				"pageElements": [
+					{
+						"type": "CollectionItem",
+						"pageElements": [
+							{
+								"definition": {
+									"fragment": {
+										"key": "event-card",
+										"siteKey": "[$GROUP_KEY$]"
+									},
+									"fragmentFields": [
+										{
+											"id": "eventName",
+											"value": {
+												"text": {
+													"mapping": {
+														"fieldKey": "ObjectField_name",
+														"itemReference": {
+															"contextSource": "CollectionItem"
+														}
+													}
+												}
+											}
+										},
+										{
+											"id": "eventDate",
+											"value": {
+												"text": {
+													"mapping": {
+														"fieldKey": "ObjectField_dateRangeLabel",
+														"itemReference": {
+															"contextSource": "CollectionItem"
+														}
+													}
+												}
+											}
+										},
+										{
+											"id": "eventLocation",
+											"value": {
+												"text": {
+													"mapping": {
+														"fieldKey": "ObjectField_location",
+														"itemReference": {
+															"contextSource": "CollectionItem"
+														}
+													}
+												}
+											}
+										},
+										{
+											"id": "eventSpots",
+											"value": {
+												"text": {
+													"mapping": {
+														"fieldKey": "ObjectField_spotsRemaining",
+														"itemReference": {
+															"contextSource": "CollectionItem"
+														}
+													}
+												}
+											}
+										}
+									]
+								},
+								"type": "Fragment"
+							}
+						]
+					}
+				]
+			}
+		],
+		"type": "Root"
+	},
+	"version": "1.0"
+}

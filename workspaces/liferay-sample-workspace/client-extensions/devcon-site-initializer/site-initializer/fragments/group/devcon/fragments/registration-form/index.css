@@ -1,0 +1,72 @@
+#wrapper .devcon-registration-form {
+	max-width: 560px;
+	margin: 0 auto;
+	padding: var(--spacer-6);
+}
+
+#wrapper .devcon-registration-form__field {
+	margin-bottom: var(--spacer-4);
+	border: none;
+	padding: 0;
+}
+
+#wrapper .devcon-registration-form__field label,
+#wrapper .devcon-registration-form__field legend {
+	display: block;
+	font-weight: 600;
+	margin-bottom: var(--spacer-2);
+	color: var(--gray-900);
+}
+
+#wrapper .devcon-registration-form__field input[type="text"],
+#wrapper .devcon-registration-form__field input[type="email"],
+#wrapper .devcon-registration-form__field select {
+	width: 100%;
+	padding: var(--spacer-2) var(--spacer-3);
+	border: 1px solid var(--gray-400);
+	border-radius: 0.25rem;
+	font-size: 1rem;
+}
+
+#wrapper .devcon-registration-form__hint {
+	font-size: 0.8125rem;
+	color: var(--gray-600);
+	margin-top: var(--spacer-1);
+}
+
+#wrapper .devcon-registration-form__checkboxes {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--spacer-2);
+}
+
+#wrapper .devcon-registration-form__checkboxes label {
+	font-weight: 400;
+	display: flex;
+	align-items: center;
+	gap: var(--spacer-1);
+}
+
+#wrapper .devcon-registration-form__submit {
+	padding: var(--spacer-3) var(--spacer-6);
+	font-weight: 600;
+	border-radius: 0.25rem;
+}
+
+#wrapper .devcon-registration-form__submit:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+#wrapper .devcon-registration-form__message {
+	margin-top: var(--spacer-3);
+	font-weight: 600;
+}
+
+#wrapper .devcon-registration-form__message--success {
+	color: var(--success);
+}
+
+#wrapper .devcon-registration-form__message--error {
+	color: var(--danger);
+}
