@@ -18,6 +18,24 @@
 			"registrationStatus": {
 				"key": "pending"
 			}
+		},
+		{
+			"emailAddress": "jane.smith@liferay.com",
+			"externalReferenceCode": "REGISTRATION_JANE_SMITH",
+			"name": "Jane Smith",
+			"r_eventRegistrations_c_eventERC": "EVENT_LIFERAY_DEVCON_2026",
+			"registrationStatus": {
+				"key": "confirmed"
+			}
+		},
+		{
+			"emailAddress": "carlos.diaz@liferay.com",
+			"externalReferenceCode": "REGISTRATION_CARLOS_DIAZ",
+			"name": "Carlos Diaz",
+			"r_eventRegistrations_c_eventERC": "EVENT_LIFERAY_SYMPOSIUM_NA_2026",
+			"registrationStatus": {
+				"key": "confirmed"
+			}
 		}
 	]
 }
