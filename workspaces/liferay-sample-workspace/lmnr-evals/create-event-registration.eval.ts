@@ -20,7 +20,7 @@ const data = [
     }
 ];
 
-const OBJECT_REPORT_SCHEMA = {
+const STRUCTURED_OUTPUT_SCHEMA = {
     additionalProperties: false,
     properties: {
         objects: {
@@ -117,5 +117,5 @@ evaluate({
         "Skills invoked": skillsInvokedEvaluator,
         "Objects created": objectsCreatedEvaluator,
     },
-    executor: createAgentTask(OBJECT_REPORT_SCHEMA),
+    executor: createAgentTask(STRUCTURED_OUTPUT_SCHEMA),
 });
