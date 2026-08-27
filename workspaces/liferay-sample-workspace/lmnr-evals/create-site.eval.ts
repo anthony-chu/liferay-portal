@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 import { evaluate } from '@lmnr-ai/lmnr';
 
 import { createAgentTask } from './lib/agent-task';
+import { projectApiKey } from './lib/bootstrap';
 import { skillsInvokedEvaluator } from './lib/evaluators';
 import { liferay } from './lib/liferay';
 
@@ -10,7 +11,7 @@ const config = {
     baseUrl: 'http://localhost',
     grpcPort: 8001,
     httpPort: 8000,
-    projectApiKey: 'c7DpvjYUP0ciV1i7gDE2ariT7pZ24tcEFbfTvpe1EACt7D6GTx6RY1ffTiAlVixM',
+    projectApiKey: projectApiKey.value,
 };
 
 const data = [
@@ -31,7 +32,7 @@ const STRUCTURED_OUTPUT_SCHEMA = {
             type: "array",
         },
         site: {
-            description: "Name of the site created, e.g. 'DEVCON'.",
+            description: "Exact display name of the site created, copied verbatim from the `siteName` field of the site initializer's client-extension.yaml. Not the external reference code (`siteExternalReferenceCode`) and not the initializer's own `name` — e.g. for an initializer named 'DEVCON Site Initializer' with siteExternalReferenceCode 'DEVCON_SITE' and siteName 'DEVCON', the correct value is 'DEVCON'.",
             type: "string",
         },
         siteInitializer: {
