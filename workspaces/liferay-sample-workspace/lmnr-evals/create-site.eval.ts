@@ -110,4 +110,5 @@ evaluate({
         "Pages created": pagesCreatedEvaluator,
     },
     executor: createAgentTask(STRUCTURED_OUTPUT_SCHEMA),
+    groupName: "Create registration site",
 })
