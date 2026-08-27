@@ -1,6 +1,7 @@
 import { evaluate } from '@lmnr-ai/lmnr';
 
 import { createAgentTask } from './lib/agent-task.ts';
+import { projectApiKey } from './lib/bootstrap.ts';
 import { skillsInvokedEvaluator } from './lib/evaluators.ts'
 import { liferay } from './lib/liferay.ts'
 
@@ -8,7 +9,7 @@ const config = {
     baseUrl: 'http://localhost',
     grpcPort: 8001,
     httpPort: 8000,
-    projectApiKey: 'c7DpvjYUP0ciV1i7gDE2ariT7pZ24tcEFbfTvpe1EACt7D6GTx6RY1ffTiAlVixM',
+    projectApiKey: projectApiKey.value,
 };
 
 const data = [
