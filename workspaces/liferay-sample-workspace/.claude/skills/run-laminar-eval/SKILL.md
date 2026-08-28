@@ -1,11 +1,11 @@
 ---
 
 description: Bring up the local eval stack — Laminar via Docker Compose, a clean Liferay bundle, workspace dependencies — and run an eval file against it. Use when the user asks to run an eval, run the Laminar/lmnr evals, or start the eval environment from scratch.
-name: run-eval
+name: run-laminar-eval
 
 ---
 
-# Run Eval
+# Run Laminar Eval
 
 Stand up everything an eval needs, in order, then run it: Laminar for observability, a Liferay bundle with cleared runtime state, and the workspace's Node dependencies.
 
@@ -23,6 +23,14 @@ Every step is idempotent, so the skill is safe to rerun against a stack that is 
 ## Workflow
 
 ### Start Laminar
+
+The stack reads its credentials from `lmnr/.env`, and `lmnr/docker-compose.yml` writes every one of them as a bare `${VAR}` with no fallback. That file is gitignored, so a fresh checkout will not have it. Recreate it from the committed template before starting anything:
+
+```bash
+[ -f lmnr/.env ] || cp lmnr/.env.example lmnr/.env
+```
+
+`.env.example` ships working local-dev values, so the copy needs no editing. Skipping this step does not fail loudly — postgres exits with `Database is uninitialized and superuser password is not specified`, and app-server and quickwit then report a dependency failure rather than the real cause.
 
 ```bash
 cd lmnr && docker compose up --detach
@@ -44,6 +52,16 @@ Poll the dashboard until it answers:
 curl --fail --output /dev/null --silent http://localhost:5667
 ```
 
+Do not wait for a literal `200` — the dashboard answers `307`, redirecting to sign-in. `curl --fail` treats that as success, which is why the check is written this way. On a wiped Postgres volume the frontend also runs its migrations on first boot (`Applying ClickHouse schema. This may take a while...`), so several minutes of refused connections here is normal. The endpoint that actually has to work is the one `lib/bootstrap.ts` calls:
+
+```bash
+curl --silent --request POST http://localhost:5667/api/auth/sign-in/local-email \
+    --header 'Content-Type: application/json' \
+    --data '{"email":"test@liferay.com","name":"Test"}'
+```
+
+A `200` with a `token` in the body means Laminar is genuinely ready.
+
 **Port conflict**: the workspace's own `docker-compose.yaml` (the `liferay-stack` Postgres + Liferay containers) also binds host port 8000, for JPDA. Do not run that stack and Laminar at the same time — this skill starts Liferay through Blade, not through that compose file.
 
 ### Ensure a Liferay Bundle Exists
@@ -60,22 +78,26 @@ ls -d bundles
 ### Clear Runtime State
 
 ```bash
-rm -rf bundles/data bundles/logs
+rm -rf bundles/logs bundles/portal-env.properties
+find bundles/data -mindepth 1 -maxdepth 1 ! -name license -exec rm -rf {} +
 ```
 
-This clears the embedded database, the search indexes, and the logs. Note the scope: when `configs/local/portal-env.properties` points `jdbc.default.url` at an external database, the portal's data lives in that database and survives this step. Reset that database separately when the eval needs a genuinely empty portal.
+`data` and `logs` hold the database, the search indexes, and the log files, so removing them is what makes the run start from an empty portal.
+
+**Spare `bundles/data/license`.** A registered license lives there as a `.li` file, and the portal reads it back on the next boot — verified: with `bundles/deploy/` empty, a boot off a preserved `bundles/data/license` logs `DXP Development license validation passed` from `[main]` at startup. A plain `rm -rf bundles/data` destroys that registration, and the portal then boots unlicensed.
+
+`portal-env.properties` has to go too. `blade server init` copies it out of `configs/local`, where it points `jdbc.default.url` at `jdbc:postgresql://database/lportal` — `database` is a Docker Compose service name from the workspace's `docker-compose.yaml` and does not resolve from a Tomcat that Blade started on the host. `portal-ext.properties` pulls it in through `include-and-override`, which tolerates the file being absent, so removing it drops the bundle back to the embedded Hypersonic database and the boot needs no external database at all.
 
 ### License Checkpoint
 
-Run this **only when the bundle was just initialized** in the step above. A bundle that already existed is assumed to be licensed.
+Run this on **every** run, not only after a fresh `blade server init`. Do not infer that an existing bundle is licensed — a previous run's clear step may have destroyed the registration, and the boot that follows fails quietly rather than loudly.
 
-Liferay identifies a license by XML content, not by filename. Look for any `.xml` file in `bundles/deploy/` whose root element is `<license>` or `<licenses>`. If none is there, **stop and ask the user to drop their license file into `bundles/deploy/`**, and wait for them to confirm. Do not start the server without it.
+The product is DXP (`liferay.workspace.product` in `gradle.properties`), so a license is required. It counts as present when either of these holds:
 
-### Confirm the Database Is Reachable
+- a `.li` file under `bundles/data/license/` — a registration the portal reads at startup, and what the clear step above preserves.
+- an `.xml` file in `bundles/deploy/` whose root element is `<license>` or `<licenses>` — an activation key that auto-deploy processes during boot. Liferay identifies these by content, not by filename. Note that auto-deploy consumes the file, so `bundles/deploy/` is empty again afterwards.
 
-`blade server init` copies `configs/common` and `configs/local` into the bundle, so the bundle's JDBC settings come from `configs/local/portal-env.properties`. Read the copied `bundles/portal-env.properties` and check the `jdbc.default.url` host.
-
-The current local config points at `jdbc:postgresql://database/lportal`. `database` is a Docker Compose service name from the workspace's `docker-compose.yaml`; it does not resolve from a Tomcat started by Blade on the host. When the host does not resolve, raise it with the user and let them choose how to resolve it — starting the compose `database` service and making the name resolve, or pointing `jdbc.default.url` at a host that is reachable. Do not edit their config unprompted.
+When neither is there, **stop and ask the user for a license**, and wait for them to confirm before starting the server. The durable place to keep one is `configs/local/deploy/`: `blade server init` copies `configs/<environment>/` into the bundle root with its subdirectories intact, so a key there lands in `bundles/deploy/` on the next init. That copy runs only at init time, so on an already-initialized bundle put the key straight into `bundles/deploy/`.
 
 ### Start the Bundle
 
@@ -133,6 +155,6 @@ Give the user the per-evaluator scores from the run output and the dashboard lin
 
 ## Related Skills
 
-- `stop-eval` — take the same stack back down when the run is finished.
+- `stop-laminar-eval` — take the same stack back down when the run is finished.
 - `workspace-init` — full workspace bootstrap, BasicAuth verifier, and first login setup.
 - `deploy-and-verify` — deploying client extensions to the bundle this skill starts.
