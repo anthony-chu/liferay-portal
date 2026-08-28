@@ -119,4 +119,5 @@ evaluate({
         "Objects created": objectsCreatedEvaluator,
     },
     executor: createAgentTask(STRUCTURED_OUTPUT_SCHEMA),
+    groupName: "Create event registration",
 });

@@ -84,4 +84,5 @@ evaluate({
         "Objects created": objectsCreatedEvaluator,
     },
     executor: createAgentTask(OBJECT_REPORT_SCHEMA),
+    groupName: "Manage objects",
 });
