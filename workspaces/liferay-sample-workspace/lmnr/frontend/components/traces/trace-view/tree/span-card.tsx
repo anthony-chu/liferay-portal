@@ -1,0 +1,203 @@
+import { isNil } from "lodash";
+import { ChevronDown, ChevronRight, X } from "lucide-react";
+import { memo, useRef } from "react";
+
+import { SnippetPreview } from "@/components/traces/snippet-preview";
+import { ContentPreview } from "@/components/traces/trace-view/content-preview";
+import { type TraceViewSpan } from "@/components/traces/trace-view/store/base";
+import { getLLMMetrics, getSpanDisplayName } from "@/components/traces/trace-view/utils";
+import { Skeleton } from "@/components/ui/skeleton.tsx";
+import { isStringDateOld } from "@/lib/traces/utils";
+import { cn } from "@/lib/utils";
+
+import { NoSpanTooltip } from "../../no-span-tooltip";
+import SpanTypeIcon from "../../span-type-icon";
+import { PreviewLoadingPlaceholder } from "../preview-loading-placeholder";
+import { SpanDisplayTooltip } from "../span-display-tooltip";
+import { SpanStatsShield } from "../span-stats-shield";
+import { BranchConnector } from "./branch-connector";
+
+const ROW_HEIGHT = 32;
+const SQUARE_SIZE = 22;
+const SQUARE_ICON_SIZE = 14;
+
+interface SpanCardProps {
+  span: TraceViewSpan;
+  branchMask: boolean[];
+  output: any | undefined;
+  depth: number;
+  /** Structural children exist (precomputed by the flattener). */
+  hasChildren: boolean;
+  isSelected: boolean;
+  showTreeContent: boolean;
+  onToggleCollapse: (spanId: string) => void;
+  onSpanSelect?: (span?: TraceViewSpan) => void;
+}
+
+function SpanCardInner({
+  span,
+  branchMask,
+  output,
+  onSpanSelect,
+  depth,
+  hasChildren,
+  isSelected,
+  showTreeContent,
+  onToggleCollapse,
+}: SpanCardProps) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Replayed spans are tagged CACHED by the SDK (shared spec §9).
+  const isCached = span.spanType === "CACHED";
+
+  const llmMetrics = getLLMMetrics(span);
+
+  const hasSnippet = !!(span.inputSnippet || span.outputSnippet || span.attributesSnippet);
+
+  const isExpandable =
+    hasChildren || ((span.spanType === "LLM" || span.spanType === "CACHED") && showTreeContent) || hasSnippet;
+
+  const showContent =
+    showTreeContent && !span.collapsed && (span.spanType === "LLM" || span.spanType === "CACHED" || hasSnippet);
+
+  const isLoadingOutput = output === undefined;
+
+  const outerClasses = cn(
+    "group flex flex-row w-full min-w-full cursor-pointer transition-all border-l-2",
+    "hover:bg-red-100/5",
+    isSelected ? "bg-primary/15 hover:bg-primary/20 border-l-primary" : "border-l-transparent",
+    { "opacity-60": isCached }
+  );
+
+  return (
+    <div
+      ref={ref}
+      className={outerClasses}
+      onClick={() => {
+        if (!span.pending) {
+          onSpanSelect?.(span);
+        }
+      }}
+    >
+      <div className="flex flex-row flex-1 min-w-0 text-md pl-2">
+        <BranchConnector depth={depth} branchMask={branchMask} isSelected={isSelected} />
+
+        <div className="flex flex-col items-center shrink-0 pt-1.5 self-stretch">
+          <SpanTypeIcon
+            iconClassName="min-w-4 min-h-4"
+            spanType={span.spanType}
+            containerWidth={SQUARE_SIZE}
+            containerHeight={SQUARE_SIZE}
+            size={SQUARE_ICON_SIZE}
+            status={span.status}
+            className={cn("min-w-[22px]", { "text-muted-foreground bg-muted ": span.pending })}
+          />
+          {hasChildren && !span.collapsed && (
+            <div
+              className={cn("h-full flex-1 border-l-2 group-hover:border-[hsl(240_6%_26%)]", {
+                "border-[hsl(240_6%_34%)] group-hover:border-[hsl(240_6%_40%)] ": isSelected,
+              })}
+            />
+          )}
+        </div>
+
+        <div className="flex flex-col flex-1 min-w-0">
+          <div className="flex items-center space-x-2 group pl-2 pr-1" style={{ height: ROW_HEIGHT }}>
+            <SpanDisplayTooltip isLLM={span.spanType === "LLM"} name={span.name}>
+              <div
+                className={cn(
+                  "text-ellipsis overflow-hidden whitespace-nowrap text-sm truncate",
+                  span.pending && "text-muted-foreground"
+                )}
+              >
+                {getSpanDisplayName(span)}
+              </div>
+            </SpanDisplayTooltip>
+            {span.pending ? (
+              isStringDateOld(span.startTime) ? (
+                <NoSpanTooltip>
+                  <div className="flex rounded bg-secondary p-1">
+                    <X className="w-4 h-4 text-secondary-foreground" />
+                  </div>
+                </NoSpanTooltip>
+              ) : (
+                <Skeleton className="w-10 h-4 text-secondary-foreground px-2 py-0.5 bg-secondary rounded-md text-xs" />
+              )
+            ) : (
+              <SpanStatsShield
+                startTime={span.startTime}
+                endTime={span.endTime}
+                inputTokens={llmMetrics?.inputTokens}
+                outputTokens={llmMetrics?.outputTokens}
+                cost={llmMetrics?.cost}
+                cacheReadInputTokens={llmMetrics?.cacheReadInputTokens}
+              />
+            )}
+            {isExpandable && (
+              <button
+                className="p-1 hover:bg-muted transition-all text-muted-foreground rounded-sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleCollapse(span.spanId);
+                }}
+              >
+                {span.collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              </button>
+            )}
+            <div className="grow" />
+          </div>
+
+          {showContent && (
+            <div className="px-2 pt-0">
+              {hasSnippet ? (
+                <div className="pb-2">
+                  <SnippetPreview
+                    inputSnippet={span.inputSnippet}
+                    outputSnippet={span.outputSnippet}
+                    attributesSnippet={span.attributesSnippet}
+                    variant="span"
+                  />
+                </div>
+              ) : (
+                <>
+                  {isLoadingOutput && (
+                    <div className="w-full pb-2">
+                      <PreviewLoadingPlaceholder />
+                    </div>
+                  )}
+                  {!isLoadingOutput && !isNil(output) && output !== "" && <ContentPreview output={output} scrollable />}
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function arraysShallowEqual(a: boolean[], b: boolean[]) {
+  if (a === b) return true;
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
+// `branchMask` is a fresh array per getTreeSpans() run, so compare it by content.
+function areSpanCardPropsEqual(prev: SpanCardProps, next: SpanCardProps) {
+  return (
+    prev.span === next.span &&
+    prev.output === next.output &&
+    prev.depth === next.depth &&
+    prev.hasChildren === next.hasChildren &&
+    prev.isSelected === next.isSelected &&
+    prev.showTreeContent === next.showTreeContent &&
+    prev.onToggleCollapse === next.onToggleCollapse &&
+    prev.onSpanSelect === next.onSpanSelect &&
+    arraysShallowEqual(prev.branchMask, next.branchMask)
+  );
+}
+
+export const SpanCard = memo(SpanCardInner, areSpanCardPropsEqual);

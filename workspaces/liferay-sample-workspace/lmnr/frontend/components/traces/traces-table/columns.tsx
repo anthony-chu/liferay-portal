@@ -1,0 +1,318 @@
+import { type ColumnDef } from "@tanstack/react-table";
+import { capitalize } from "lodash";
+
+import ClientTimestampFormatter from "@/components/client-timestamp-formatter";
+import TagsCell from "@/components/tags/tags-cell";
+import TraceTagsCell from "@/components/tags/trace-tags-cell";
+import { CostCell, DurationCell, TokensCell } from "@/components/traces/cells";
+import { SnippetPreview } from "@/components/traces/snippet-preview";
+import SpanTypeIcon, { createSpanTypeIcon } from "@/components/traces/span-type-icon";
+import CopyTooltip from "@/components/ui/copy-tooltip.tsx";
+import { type ColumnFilter } from "@/components/ui/infinite-datatable/ui/datatable-filter/utils";
+import JsonTooltip from "@/components/ui/json-tooltip";
+import Mono from "@/components/ui/mono";
+import { Skeleton } from "@/components/ui/skeleton.tsx";
+import { SpanType, type TraceRow } from "@/lib/traces/types";
+import { isStringDateOld } from "@/lib/traces/utils.ts";
+import { cn } from "@/lib/utils";
+
+export const PREVIEW_COLUMN: ColumnDef<TraceRow, any> = {
+  id: "preview",
+  header: "Preview",
+  enableResizing: true,
+  size: 420,
+  cell: (row) => (
+    <SnippetPreview
+      inputSnippet={row.row.original.inputSnippet}
+      outputSnippet={row.row.original.outputSnippet}
+      attributesSnippet={row.row.original.attributesSnippet}
+      snippetsCount={row.row.original.snippetsCount}
+      variant="table"
+    />
+  ),
+};
+
+export const columns: ColumnDef<TraceRow, any>[] = [
+  {
+    cell: (row) => (
+      <div
+        className={cn("min-h-6 w-1.5 rounded-[2.5px] bg-success-bright", {
+          "bg-destructive-bright": row.getValue() === "error",
+        })}
+      />
+    ),
+    accessorKey: "status",
+    header: () => <div />,
+    id: "status",
+    enableSorting: true,
+    meta: { sql: "status" },
+    size: 40,
+  },
+  {
+    cell: (row) => (
+      <CopyTooltip value={row.getValue()} className="block truncate">
+        <Mono className="text-xs">{row.getValue()}</Mono>
+      </CopyTooltip>
+    ),
+    header: "ID",
+    accessorKey: "id",
+    id: "id",
+    size: 150,
+    meta: { sql: "id" },
+  },
+  {
+    accessorKey: "topSpanType",
+    header: "Root span",
+    id: "top_span_type",
+    enableSorting: true,
+    meta: { sql: "top_span_type" },
+    cell: (row) => {
+      const topSpanId = row.row.original.topSpanId;
+      const hasTopSpan = !!topSpanId && topSpanId !== "00000000-0000-0000-0000-000000000000";
+      const isOld = isStringDateOld(row.row.original.endTime);
+      const shouldAnimate = !hasTopSpan && !isOld;
+
+      return (
+        <div className="cursor-pointer flex gap-2 items-center">
+          <div className="flex items-center gap-2">
+            {hasTopSpan ? (
+              <SpanTypeIcon className="z-10" spanType={row.getValue()} />
+            ) : (
+              <SpanTypeIcon className={cn("z-10", shouldAnimate && "animate-pulse")} spanType={SpanType.DEFAULT} />
+            )}
+          </div>
+          {hasTopSpan ? (
+            <div title={row.row.original.topSpanName} className="text-sm truncate">
+              {row.row.original.topSpanName}
+            </div>
+          ) : row.row.original.topSpanName ? (
+            <div
+              title={row.row.original.topSpanName}
+              className={cn("text-sm truncate text-muted-foreground", shouldAnimate && "animate-pulse")}
+            >
+              {row.row.original.topSpanName}
+            </div>
+          ) : (
+            <Skeleton className="w-14 h-4 text-secondary-foreground py-0.5 bg-secondary rounded-full text-sm" />
+          )}
+        </div>
+      );
+    },
+    size: 150,
+  },
+  {
+    cell: (row) => <JsonTooltip data={row.getValue()} columnSize={row.column.getSize()} />,
+    accessorKey: "agentInput",
+    header: "Input",
+    id: "agent_input",
+    enableSorting: true,
+    meta: { sql: "agent_input" },
+    size: 150,
+  },
+  {
+    accessorFn: (row) => row.startTime,
+    header: "Timestamp",
+    cell: (row) => <ClientTimestampFormatter timestamp={String(row.getValue())} />,
+    id: "start_time",
+    enableSorting: true,
+    meta: { sql: "start_time" },
+    size: 150,
+  },
+  {
+    header: "Duration",
+    id: "duration",
+    enableSorting: true,
+    meta: { sql: "duration" },
+    cell: (row) => <DurationCell startTime={row.row.original.startTime} endTime={row.row.original.endTime} />,
+    size: 100,
+  },
+  {
+    accessorFn: (row) => row.totalCost,
+    header: "Cost",
+    id: "cost",
+    enableSorting: true,
+    meta: { sql: "total_cost" },
+    cell: (row) => <CostCell stats={row.row.original} />,
+    size: 100,
+  },
+  {
+    accessorFn: (row) => row.totalTokens ?? 0,
+    header: "Tokens",
+    id: "total_tokens",
+    enableSorting: true,
+    meta: { sql: "total_tokens" },
+    cell: (row) => <TokensCell stats={row.row.original} showCacheInline />,
+    size: 220,
+  },
+  {
+    accessorFn: (row) => row.spanTags,
+    cell: (row) => {
+      const tags = row.getValue() as string[];
+      if (tags?.length > 0) return <TagsCell tags={tags} />;
+      return "-";
+    },
+    header: "Span tags",
+    accessorKey: "spanTags",
+    id: "span_tags",
+    enableSorting: true,
+    meta: { sql: "tags" },
+  },
+  {
+    cell: (row) => <TraceTagsCell traceId={row.row.original.id} />,
+    header: "Tags",
+    id: "trace_tags",
+    enableSorting: true,
+    meta: { sql: "trace_tags" },
+  },
+  {
+    accessorFn: (row) => row.metadata,
+    header: "Metadata",
+    id: "metadata",
+    enableSorting: true,
+    meta: { sql: "metadata" },
+    cell: (row) => <JsonTooltip data={row.getValue()} columnSize={row.column.getSize()} />,
+    size: 100,
+  },
+  {
+    cell: (row) => (
+      <CopyTooltip value={row.getValue()} className="block truncate">
+        <Mono className="text-xs">{row.getValue()}</Mono>
+      </CopyTooltip>
+    ),
+    header: "Session ID",
+    accessorKey: "sessionId",
+    id: "session_id",
+    enableSorting: true,
+    meta: { sql: "session_id" },
+  },
+  {
+    cell: (row) => (
+      <CopyTooltip value={row.getValue()} className="block truncate">
+        <Mono className="text-xs">{row.getValue()}</Mono>
+      </CopyTooltip>
+    ),
+    header: "User ID",
+    accessorKey: "userId",
+    id: "user_id",
+    enableSorting: true,
+    meta: { sql: "user_id" },
+  },
+];
+
+export const filters: ColumnFilter[] = [
+  {
+    name: "ID",
+    key: "id",
+    dataType: "string",
+  },
+  {
+    name: "Session ID",
+    key: "session_id",
+    dataType: "string",
+  },
+  {
+    name: "Duration",
+    key: "duration",
+    dataType: "number",
+  },
+  {
+    name: "Root span",
+    key: "top_span_type",
+    dataType: "enum",
+    options: Object.values(SpanType).map((v) => ({
+      label: v,
+      value: v,
+      icon: createSpanTypeIcon(v, "w-4 h-4", 14),
+    })),
+  },
+  {
+    name: "Root span name",
+    key: "top_span_name",
+    dataType: "string",
+  },
+  {
+    name: "Span names",
+    key: "span_names",
+    dataType: "array",
+  },
+  {
+    name: "Input",
+    key: "agent_input",
+    dataType: "string",
+  },
+  {
+    name: "Input cost",
+    key: "input_cost",
+    dataType: "number",
+  },
+  {
+    name: "Output cost",
+    key: "output_cost",
+    dataType: "number",
+  },
+  {
+    name: "Total cost",
+    key: "total_cost",
+    dataType: "number",
+  },
+  {
+    name: "Input tokens",
+    key: "input_tokens",
+    dataType: "number",
+  },
+  {
+    name: "Output tokens",
+    key: "output_tokens",
+    dataType: "number",
+  },
+  {
+    name: "Total tokens",
+    key: "total_tokens",
+    dataType: "number",
+  },
+  {
+    name: "Status",
+    dataType: "enum",
+    key: "status",
+    options: ["success", "error"].map((v) => ({
+      label: capitalize(v),
+      value: v,
+    })),
+  },
+  {
+    name: "Span tags",
+    dataType: "array",
+    key: "tags",
+  },
+  {
+    name: "Tags",
+    dataType: "array",
+    key: "trace_tags",
+  },
+  {
+    name: "Metadata",
+    key: "metadata",
+    dataType: "json",
+  },
+  {
+    name: "User ID",
+    key: "user_id",
+    dataType: "string",
+  },
+];
+
+export const defaultTracesColumnOrder = [
+  "status",
+  "id",
+  "top_span_type",
+  "agent_input",
+  "start_time",
+  "duration",
+  "cost",
+  "total_tokens",
+  "trace_tags",
+  "span_tags",
+  "metadata",
+  "session_id",
+  "user_id",
+];

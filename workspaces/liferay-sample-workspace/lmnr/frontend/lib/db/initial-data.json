@@ -1,0 +1,12 @@
+[
+  {
+    "table": "subscription_tiers",
+    "data": [
+      {
+        "id": 1,
+        "name": "unlimited",
+        "log_retention_days": 365
+      }
+    ]
+  }
+]

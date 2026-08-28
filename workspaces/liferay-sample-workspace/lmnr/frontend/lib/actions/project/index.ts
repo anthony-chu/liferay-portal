@@ -1,0 +1,317 @@
+import { eq } from "drizzle-orm";
+import { z } from "zod/v4";
+
+import { getWorkspaceUsage } from "@/lib/actions/workspace/usage-summary";
+import { cache, PROJECT_API_KEY_CACHE_KEY, PROJECT_CACHE_KEY } from "@/lib/cache";
+import { clickhouseClient } from "@/lib/clickhouse/client";
+import { db } from "@/lib/db/drizzle";
+import { projectApiKeys, projects, subscriptionTiers, workspaces } from "@/lib/db/migrations/schema";
+
+import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings, ProjectSettingsSchema } from "./settings";
+
+export const DeleteProjectSchema = z.object({
+  projectId: z.guid(),
+});
+
+export const UpdateProjectSchema = z.object({
+  projectId: z.guid(),
+  name: z.string().min(1, { error: "Project name is required" }),
+});
+
+export async function deleteProject(input: z.infer<typeof DeleteProjectSchema>) {
+  const { projectId } = DeleteProjectSchema.parse(input);
+
+  // A workspace must always retain at least one project — refuse to delete the last one.
+  // Guard + delete run in one transaction with the sibling rows locked FOR UPDATE, so two
+  // concurrent deletes can't both pass the count check and empty the workspace.
+  // A missing row is NOT an error: a prior attempt may have committed the Postgres delete
+  // and then failed on the ClickHouse purge, so the retry must be able to re-run the purge
+  // instead of throwing "Project not found" forever.
+  const deleted = await db.transaction(async (tx) => {
+    const projectRow = await tx.query.projects.findFirst({
+      where: eq(projects.id, projectId),
+      columns: { workspaceId: true },
+    });
+    if (!projectRow) {
+      return null;
+    }
+
+    const siblingProjects = await tx
+      .select({ id: projects.id })
+      .from(projects)
+      .where(eq(projects.workspaceId, projectRow.workspaceId))
+      .for("update");
+    if (siblingProjects.length <= 1) {
+      throw new Error("Cannot delete the only project in a workspace");
+    }
+
+    // Capture the api key hashes before the cascade delete removes the rows — we still
+    // need them to evict the matching cache entries afterwards.
+    const apiKeys = await tx.query.projectApiKeys.findMany({
+      where: eq(projectApiKeys.projectId, projectId),
+      columns: { hash: true },
+    });
+
+    await tx.delete(projects).where(eq(projects.id, projectId));
+    const apiKeyHashes = apiKeys.flatMap((k) => (k.hash ? [k.hash] : []));
+    return { workspaceId: projectRow.workspaceId, apiKeyHashes };
+  });
+
+  if (deleted) {
+    try {
+      const result = await deleteProjectApiKeysFromCache(deleted.apiKeyHashes);
+      if (!result.success) {
+        console.error("Failed to delete project api keys from cache. Failed keys:", result.failedKeys);
+      }
+    } catch (error) {
+      console.error("Failed to delete project api keys from cache", error);
+    }
+
+    await deleteAllProjectsWorkspaceInfoFromCache(deleted.workspaceId);
+  }
+
+  // The Postgres delete has already committed, but a failed ClickHouse purge must still
+  // surface to the caller — success here would stop the user from retrying, and there is
+  // no background reconciliation for the retained rows. The retry is what re-runs the
+  // purge (the missing-row path above makes it reachable).
+  const result = await deleteProjectDataFromClickHouse(projectId);
+
+  if (!result.success) {
+    throw new Error(`Failed to delete project data for ${result.tables.join(",")}`);
+  }
+}
+
+export async function updateProject(input: z.infer<typeof UpdateProjectSchema>) {
+  const { projectId, name } = UpdateProjectSchema.parse(input);
+
+  const result = await db.update(projects).set({ name }).where(eq(projects.id, projectId));
+
+  if (result.count === 0) {
+    throw new Error("Project not found");
+  }
+
+  return { success: true, message: "Project renamed successfully" };
+}
+
+async function deleteProjectDataFromClickHouse(
+  projectId: string
+): Promise<{ success: true } | { success: false; tables: string[] }> {
+  // Every project-scoped physical ClickHouse table must be listed here so deleting
+  // a project fully purges its data. Keep in sync with the schema: when a migration
+  // drops a table, remove it from this list too — an ALTER ... DELETE against a
+  // dropped table throws and aborts the purge after Postgres has already committed.
+  const tables = [
+    "default.spans",
+    "default.traces_replacing",
+    "default.traces_agg",
+    "default.traces_static",
+    "default.trace_tags",
+    "default.browser_session_events",
+    "default.deduped_content",
+    "default.llm_messages",
+    "default.logs",
+    "default.evaluation_datapoints",
+    "default.dataset_datapoints",
+    "default.labeling_queue_items",
+    "default.notifications",
+    "default.notification_deliveries",
+    "default.signal_events",
+    "default.signal_event_clusters",
+    "default.signal_runs",
+    "default.signal_run_messages",
+    "default.events_to_clusters",
+    "default.system_prompt_versions",
+    "default.system_prompt_version_defs",
+  ];
+
+  const deletionPromises = tables.map(async (table) => {
+    try {
+      await clickhouseClient.command({
+        query: `ALTER TABLE ${table} DELETE WHERE project_id = {project_id: UUID}`,
+        query_params: {
+          project_id: projectId,
+        },
+      });
+      return { table, success: true };
+    } catch (error) {
+      return { table, success: false, error: error instanceof Error ? error.message : String(error) };
+    }
+  });
+
+  const results = await Promise.allSettled(deletionPromises);
+
+  return results.reduce<{ success: true } | { success: false; tables: string[] }>(
+    (acc, curr, index) => {
+      const table = tables[index];
+
+      if (curr.status === "rejected" || (curr.status === "fulfilled" && !curr.value.success)) {
+        if ("tables" in acc) {
+          return { success: false, tables: [...acc.tables, table] };
+        } else {
+          return { success: false, tables: [table] };
+        }
+      }
+
+      return acc;
+    },
+    { success: true }
+  );
+}
+
+async function deleteProjectApiKeysFromCache(apiKeyHashes: string[]) {
+  const results = await Promise.allSettled(
+    apiKeyHashes.map(async (hash) => {
+      const cacheKey = `${PROJECT_API_KEY_CACHE_KEY}:${hash}`;
+      try {
+        await cache.remove(cacheKey);
+        return { success: true };
+      } catch (error) {
+        return { success: false, error: error instanceof Error ? error.message : String(error) };
+      }
+    })
+  );
+
+  return results.reduce<{ success: true } | { success: false; failedKeys: string[] }>(
+    (acc, curr, index) => {
+      const cacheKey = `${PROJECT_API_KEY_CACHE_KEY}:${apiKeyHashes[index]}`;
+      if (curr.status === "rejected" || (curr.status === "fulfilled" && !curr.value.success)) {
+        if ("failedKeys" in acc) {
+          return { success: false, failedKeys: [...acc.failedKeys, cacheKey] };
+        } else {
+          return { success: false, failedKeys: [cacheKey] };
+        }
+      }
+      return acc;
+    },
+    { success: true }
+  );
+}
+
+export async function deleteAllProjectsWorkspaceInfoFromCache(workspaceId: string) {
+  // Cache carries information about the projects in the workspace, so we need to delete it
+  // when we delete or create a project in the workspace.
+  const projectRows = await db.query.projects.findMany({
+    where: eq(projects.workspaceId, workspaceId),
+    columns: {
+      id: true,
+    },
+  });
+
+  await Promise.allSettled(
+    projectRows.map(async (project) => {
+      await deleteProjectWorkspaceInfoFromCache(project.id);
+    })
+  );
+}
+
+async function deleteProjectWorkspaceInfoFromCache(projectId: string) {
+  const cacheKey = `${PROJECT_CACHE_KEY}:${projectId}`;
+  await cache.remove(cacheKey);
+}
+
+export interface ProjectDetails {
+  id: string;
+  name: string;
+  workspaceId: string;
+  gbUsedThisMonth: number;
+  gbLimit: number;
+  signalCostUsedThisMonth: number;
+  signalCostLimit: number;
+  logRetentionDays: number;
+  isFreeTier: boolean;
+  settings: ProjectSettings;
+}
+
+export const getProjectDetails = async (projectId: string): Promise<ProjectDetails> => {
+  const projectResult = await db
+    .select({
+      id: projects.id,
+      name: projects.name,
+      workspaceId: projects.workspaceId,
+      settings: projects.settings,
+    })
+    .from(projects)
+    .where(eq(projects.id, projectId))
+    .limit(1);
+
+  if (projectResult.length === 0) {
+    throw new Error("Project not found");
+  }
+
+  const project = projectResult[0];
+  // Tolerate older / hand-edited rows: anything the schema doesn't recognise
+  // falls back to defaults. `.partial()` lets the stored row omit keys.
+  const settingsParse = ProjectSettingsSchema.partial().safeParse(project.settings ?? {});
+  const settings: ProjectSettings = {
+    ...DEFAULT_PROJECT_SETTINGS,
+    ...(settingsParse.success ? settingsParse.data : {}),
+  };
+
+  const workspaceResult = await db
+    .select({
+      id: workspaces.id,
+      tierId: workspaces.tierId,
+    })
+    .from(workspaces)
+    .where(eq(workspaces.id, project.workspaceId))
+    .limit(1);
+
+  if (workspaceResult.length === 0) {
+    throw new Error("Workspace not found for project");
+  }
+  const workspace = workspaceResult[0];
+
+  const tierResult = await db
+    .select({
+      name: subscriptionTiers.name,
+      bytesLimit: subscriptionTiers.bytesIngested,
+      signalCostLimit: subscriptionTiers.signalCostIncludedMicroUsd,
+      logRetentionDays: subscriptionTiers.logRetentionDays,
+    })
+    .from(subscriptionTiers)
+    .where(eq(subscriptionTiers.id, workspace.tierId))
+    .limit(1);
+
+  if (tierResult.length === 0) {
+    throw new Error("Subscription tier not found for workspace");
+  }
+  const tier = tierResult[0];
+  const isFreeTier = tier.name.toLowerCase().trim() === "free";
+
+  const bytesToGB = (bytes: number): number => bytes / (1024 * 1024 * 1024);
+  const gbLimit = bytesToGB(Number(tier.bytesLimit));
+  const signalCostLimit = Number(tier.signalCostLimit);
+
+  if (!isFreeTier) {
+    return {
+      id: project.id,
+      name: project.name,
+      workspaceId: project.workspaceId,
+      logRetentionDays: tier.logRetentionDays,
+      // not used in ui
+      gbUsedThisMonth: 0,
+      gbLimit,
+      signalCostLimit,
+      signalCostUsedThisMonth: 0,
+      isFreeTier,
+      settings,
+    };
+  }
+
+  const usageResult = await getWorkspaceUsage(project.workspaceId);
+  const gbUsedThisMonth = bytesToGB(usageResult.totalBytesIngested);
+  const signalCostUsedThisMonth = usageResult.totalSignalCostMicroUsd;
+
+  return {
+    id: project.id,
+    name: project.name,
+    workspaceId: project.workspaceId,
+    logRetentionDays: tier.logRetentionDays,
+    gbUsedThisMonth,
+    gbLimit,
+    signalCostUsedThisMonth,
+    signalCostLimit,
+    isFreeTier,
+    settings,
+  };
+};

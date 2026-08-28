@@ -1,0 +1,171 @@
+import { and, eq } from "drizzle-orm";
+import { isNil } from "lodash";
+import { notFound, redirect } from "next/navigation";
+
+import { getServerSession } from "@/lib/auth-session";
+import { cache, PROJECT_MEMBER_CACHE_KEY, WORKSPACE_MEMBER_CACHE_KEY } from "@/lib/cache.ts";
+import { db } from "@/lib/db/drizzle.ts";
+import { membersOfWorkspaces, projects } from "@/lib/db/migrations/schema.ts";
+
+export async function requireWorkspaceAccess(workspaceId: string) {
+  const session = await getServerSession();
+  if (!session) {
+    return redirect("/sign-in");
+  }
+
+  const cacheKey = WORKSPACE_MEMBER_CACHE_KEY(workspaceId, session.user.id);
+
+  try {
+    const cached = await cache.get<boolean>(cacheKey);
+    if (!isNil(cached)) {
+      return cached ? session : notFound();
+    }
+  } catch (e) {
+    console.error("Error getting entry from cache", e);
+  }
+
+  const results = await db
+    .select({ userId: membersOfWorkspaces.userId })
+    .from(membersOfWorkspaces)
+    .where(and(eq(membersOfWorkspaces.userId, session.user.id), eq(membersOfWorkspaces.workspaceId, workspaceId)))
+    .limit(1);
+
+  const isMember = results?.length > 0;
+
+  try {
+    // 30 days
+    await cache.set(cacheKey, isMember, { expireAfterSeconds: 30 * 24 * 60 * 60 });
+  } catch (e) {
+    console.error("Error setting entry in cache", e);
+  }
+
+  if (!isMember) {
+    return notFound();
+  }
+
+  return session;
+}
+
+export async function requireProjectAccess(projectId: string) {
+  const session = await getServerSession();
+  if (!session) {
+    return redirect("/sign-in");
+  }
+
+  const cacheKey = PROJECT_MEMBER_CACHE_KEY(projectId, session?.user?.id);
+
+  try {
+    const cached = await cache.get<boolean>(cacheKey);
+    if (!isNil(cached)) {
+      return cached ? session : notFound();
+    }
+  } catch (e) {
+    console.error("Error getting entry from cache", e);
+  }
+
+  const results = await db
+    .select({ userId: membersOfWorkspaces.userId })
+    .from(membersOfWorkspaces)
+    .innerJoin(projects, eq(membersOfWorkspaces.workspaceId, projects.workspaceId))
+    .where(and(eq(projects.id, projectId), eq(membersOfWorkspaces.userId, session.user.id)))
+    .limit(1);
+
+  const isMember = results?.length > 0;
+
+  try {
+    // 30 days
+    await cache.set(cacheKey, isMember, { expireAfterSeconds: 30 * 24 * 60 * 60 });
+  } catch (e) {
+    console.error("Error setting entry in cache", e);
+  }
+
+  if (!isMember) {
+    return notFound();
+  }
+
+  return session;
+}
+export const isUserMemberOfProject = async (projectId: string, userId: string, opts?: { skipCache?: boolean }) => {
+  const cacheKey = PROJECT_MEMBER_CACHE_KEY(projectId, userId);
+
+  // Security-sensitive callers (key mint, device-scope write) pass skipCache so a
+  // membership cached up to 30 days ago can't authorize a since-removed user.
+  if (!opts?.skipCache) {
+    try {
+      const cached = await cache.get<boolean>(cacheKey);
+      if (!isNil(cached)) return cached;
+    } catch (e) {
+      console.error("Error getting entry from cache", e);
+    }
+  }
+
+  const result = await db
+    .select({ userId: membersOfWorkspaces.userId })
+    .from(membersOfWorkspaces)
+    .innerJoin(projects, eq(membersOfWorkspaces.workspaceId, projects.workspaceId))
+    .where(and(eq(projects.id, projectId), eq(membersOfWorkspaces.userId, userId)))
+    .limit(1);
+
+  const isMember = result.length > 0;
+
+  try {
+    // 30 days. Refresh the cache from the fresh read even on skipCache.
+    await cache.set(cacheKey, isMember, { expireAfterSeconds: 30 * 24 * 60 * 60 });
+  } catch (e) {
+    console.error("Error setting entry in cache", e);
+  }
+
+  return isMember;
+};
+
+export const isUserMemberOfWorkspace = async (workspaceId: string, userId: string) => {
+  const cacheKey = WORKSPACE_MEMBER_CACHE_KEY(workspaceId, userId);
+
+  try {
+    const cached = await cache.get<boolean>(cacheKey);
+    if (!isNil(cached)) return cached;
+  } catch (e) {
+    console.error("Error getting entry from cache", e);
+  }
+
+  const result = await db
+    .select({ userId: membersOfWorkspaces.userId })
+    .from(membersOfWorkspaces)
+    .where(and(eq(membersOfWorkspaces.workspaceId, workspaceId), eq(membersOfWorkspaces.userId, userId)))
+    .limit(1);
+
+  const isMember = result.length > 0;
+
+  try {
+    // 30 days
+    await cache.set(cacheKey, isMember, { expireAfterSeconds: 30 * 24 * 60 * 60 });
+  } catch (e) {
+    console.error("Error setting entry in cache", e);
+  }
+
+  return isMember;
+};
+
+export const isProjectInWorkspace = async (projectId: string, workspaceId: string): Promise<boolean> => {
+  const result = await db
+    .select({ id: projects.id })
+    .from(projects)
+    .where(and(eq(projects.id, projectId), eq(projects.workspaceId, workspaceId)))
+    .limit(1);
+
+  return result.length > 0;
+};
+
+/**
+ * Returns the user's role in the workspace, or null if they are not a member.
+ * Not cached — intended for middleware role checks on sensitive routes.
+ */
+export const getWorkspaceRole = async (workspaceId: string, userId: string): Promise<string | null> => {
+  const result = await db
+    .select({ memberRole: membersOfWorkspaces.memberRole })
+    .from(membersOfWorkspaces)
+    .where(and(eq(membersOfWorkspaces.workspaceId, workspaceId), eq(membersOfWorkspaces.userId, userId)))
+    .limit(1);
+
+  return result[0]?.memberRole ?? null;
+};

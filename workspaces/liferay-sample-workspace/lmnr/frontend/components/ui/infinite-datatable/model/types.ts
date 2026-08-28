@@ -1,0 +1,112 @@
+import { type Row, type RowData, type Table, type TableOptions } from "@tanstack/react-table";
+import { type VirtualItem, type Virtualizer } from "@tanstack/react-virtual";
+import { type ReactNode, type RefObject } from "react";
+
+export interface LoadMoreButtonProps {
+  onClick: () => void;
+  isFetching: boolean;
+  hasMore: boolean;
+}
+
+export interface InfiniteDataTableProps<TData extends RowData> extends Omit<
+  Partial<TableOptions<TData>>,
+  "data" | "columns"
+> {
+  data: TData[];
+  columns: TableOptions<TData>["columns"];
+
+  hasMore: boolean;
+  isFetching: boolean;
+  isLoading: boolean;
+  fetchNextPage: () => void;
+  totalItemsCount?: number;
+
+  sortBy?: string;
+  sortDirection?: "asc" | "desc";
+  onSort?: (columnId: string, direction: "asc" | "desc") => void;
+
+  estimatedRowHeight?: number;
+  overscan?: number;
+
+  /** Optional ids forced to the front of the column order at render time. */
+  pinnedColumns?: string[];
+
+  /**
+   * Opt-in sticky-left columns: visually anchored during horizontal scroll
+   * (position: sticky, opaque bg, border-r + shadow). Implies `pinnedColumns`
+   * ordering for these ids too — a sticky column only computes a correct
+   * `getStart('left')` offset if it also renders first.
+   */
+  pinnedLeftColumnIds?: string[];
+
+  onRowClick?: (row: Row<TData>) => void;
+  onHoveredRowChange?: (row: Row<TData> | null) => void;
+  focusedRowId?: string | null;
+
+  selectionPanel?: (selectedRowIds: string[]) => ReactNode;
+
+  className?: string;
+  childrenClassName?: string;
+  scrollContentClassName?: string;
+
+  emptyRow?: ReactNode;
+  loadingRow?: ReactNode;
+  error?: Error | null;
+  getRowHref?: (row: Row<TData>) => string;
+  loadMoreButton?: boolean | ((props: LoadMoreButtonProps) => ReactNode);
+  hideSelectionPanel?: boolean;
+  /** Optional per-row className (e.g. dim a row). Merged onto the row's own classes. */
+  getRowClassName?: (row: Row<TData>) => string;
+}
+
+export interface InfiniteDataTableHeaderProps<TData extends RowData> {
+  table: Table<TData>;
+}
+
+export interface InfiniteDataTableBodyProps<TData extends RowData> {
+  table: Table<TData>;
+  rowVirtualizer: Virtualizer<HTMLDivElement, Element>;
+  virtualItems: VirtualItem[];
+  isLoading: boolean;
+  isFetching: boolean;
+  hasMore: boolean;
+  onRowClick?: (row: Row<TData>) => void;
+  onHoveredRowChange?: (row: Row<TData> | null) => void;
+  focusedRowId?: string | null;
+  loadMoreRef: RefObject<HTMLTableRowElement | null>;
+  emptyRow?: ReactNode;
+  loadingRow?: ReactNode;
+  getRowHref?: (row: Row<TData>) => string;
+  getRowClassName?: (row: Row<TData>) => string;
+  loadMoreButton?: boolean | ((props: LoadMoreButtonProps) => ReactNode);
+  fetchNextPage: () => void;
+}
+
+export interface InfiniteDataTableRowProps<TData extends RowData> {
+  virtualRow: VirtualItem;
+  row: Row<TData>;
+  onRowClick?: (row: Row<TData>) => void;
+  onHoveredRowChange?: (row: Row<TData> | null) => void;
+  href?: string;
+  focusedRowId?: string | null;
+  /** Extra className merged onto the row's own classes. */
+  className?: string;
+  /** Virtualizer ref callback for dynamic row-height measurement. */
+  measureElement: (node: Element | null) => void;
+  // Primitive so the memo comparator sees selection changes; TanStack reuses the same Row across renders.
+  isSelected: boolean;
+  // Visible-column layout fingerprint; changes on visibility/order/sizing so the memoized row re-renders.
+  columnSignature: string;
+  // Changes when columns or table `meta` change, forcing memoized cells with out-of-row content to re-render.
+  cellRenderToken: object;
+}
+
+export interface SelectionPanelProps {
+  selectedRowIds: string[];
+  onClearSelection: () => void;
+  selectionPanel?: (selectedRowIds: string[]) => ReactNode;
+}
+
+export interface CheckboxColumnOptions {
+  onDeselectAll?: () => void;
+}

@@ -1,0 +1,53 @@
+import { useMemo } from "react";
+
+import AdvancedSearch from "@/components/common/advanced-search";
+import { extractSpanSuggestions, STATIC_SPAN_SUGGESTIONS } from "@/components/traces/trace-view/search/utils";
+import { type TraceViewSpan } from "@/components/traces/trace-view/store";
+import { filterColumns } from "@/components/traces/trace-view/utils";
+import { type Filter } from "@/lib/actions/common/filters";
+import { cn } from "@/lib/utils";
+
+interface TraceViewSearchProps {
+  spans: TraceViewSpan[];
+  onSubmit: (filters: Filter[], search: string) => void;
+  className?: string;
+  disabled?: boolean;
+  initialSearch?: string;
+}
+
+const TraceViewSearch = ({ spans, onSubmit, className, disabled, initialSearch }: TraceViewSearchProps) => {
+  const suggestions = useMemo(() => {
+    const dynamicSuggestions = extractSpanSuggestions(spans);
+    const allSuggestions = [...dynamicSuggestions, ...STATIC_SPAN_SUGGESTIONS];
+
+    const map = new Map<string, string[]>();
+    for (const suggestion of allSuggestions) {
+      const existing = map.get(suggestion.field) || [];
+      if (!existing.includes(suggestion.value)) {
+        existing.push(suggestion.value);
+      }
+      map.set(suggestion.field, existing);
+    }
+    return map;
+  }, [spans]);
+
+  const value = useMemo(() => ({ filters: [] as Filter[], search: initialSearch ?? "" }), [initialSearch]);
+
+  return (
+    <AdvancedSearch
+      filters={filterColumns}
+      resource="spans"
+      value={value}
+      onChange={({ filters, search }) => onSubmit(filters, search)}
+      placeholder="Search text, name, id, tags..."
+      className={cn("w-full", className)}
+      disabled={disabled}
+      options={{
+        suggestions,
+        disableHotKey: true,
+      }}
+    />
+  );
+};
+
+export default TraceViewSearch;

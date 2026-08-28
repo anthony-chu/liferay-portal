@@ -1,0 +1,62 @@
+import { and, asc, type Column, getTableColumns, type SQL, sql } from "drizzle-orm";
+import { type PgTable, type SelectedFields, type TableConfig } from "drizzle-orm/pg-core";
+
+import { type PaginatedResponse } from "../types";
+import { db } from "./drizzle";
+
+/**
+ * Ascending order for user-facing names. `ORDER BY <col>` follows the database's
+ * collation, and a C-collation instance sorts every capital ahead of every
+ * lowercase letter ("Zebra" before "apple"), so fold case first. The raw column
+ * is the tiebreak, keeping the order deterministic for names differing only in case.
+ */
+export const ascNameFold = (column: Column): SQL[] => [asc(sql`lower(${column})`), asc(column)];
+
+interface PaginatedGetParams<T extends TableConfig, R> {
+  table: PgTable<T>;
+  pageNumber?: number;
+  pageSize?: number;
+  filters: SQL[];
+  orderBy: SQL[];
+  /**
+   * If provided, only these columns will be selected.
+   * Useful to remove columns that are too heavy to query, or
+   * to add columns to compute query time, e.g. latency.
+   */
+  columns?: SelectedFields;
+}
+
+export const paginatedGet = async <T extends TableConfig, R>({
+  table,
+  pageNumber,
+  pageSize,
+  filters,
+  orderBy,
+  columns,
+}: PaginatedGetParams<T, R>): Promise<PaginatedResponse<R>> => {
+  const itemsQuery =
+    pageNumber !== undefined && pageSize !== undefined
+      ? db
+          .select(columns ?? getTableColumns(table))
+          .from(table)
+          .where(and(...filters))
+          .orderBy(...orderBy)
+          .limit(pageSize)
+          .offset(pageNumber * pageSize)
+      : db
+          .select(columns ?? getTableColumns(table))
+          .from(table)
+          .where(and(...filters))
+          .orderBy(...orderBy);
+
+  const countQuery = async () =>
+    db
+      .select({ count: sql<string>`COUNT(*)` })
+      .from(table)
+      .where(and(...filters))
+      .then(([{ count }]) => parseInt(count, 10));
+
+  const [items, totalCount] = await Promise.all([itemsQuery, countQuery()]);
+
+  return { items: items as R[], totalCount };
+};

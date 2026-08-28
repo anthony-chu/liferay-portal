@@ -1,0 +1,197 @@
+import { z } from "zod/v4";
+
+import { tryParseJson } from "@/lib/actions/common/utils";
+import { createDatapoints } from "@/lib/actions/datapoints";
+import { pushQueueItems } from "@/lib/actions/queue";
+import { executeQuery } from "@/lib/actions/sql";
+import { downloadSpanImages } from "@/lib/spans/utils";
+import { type Span, type SpanType } from "@/lib/traces/types.ts";
+
+export const GetSpanSchema = z.object({
+  spanId: z.guid(),
+  projectId: z.guid(),
+  traceId: z.guid().optional(),
+});
+
+export const ExportSpanSchema = z.object({
+  spanId: z.guid(),
+  datasetId: z.guid(),
+  projectId: z.guid(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+});
+
+export const PushSpanSchema = z.object({
+  metadata: z.object({
+    source: z.enum(["span", "datapoint"]),
+    datasetId: z.guid().optional(),
+    traceId: z.guid().optional(),
+    id: z.guid(),
+  }),
+  spanId: z.guid(),
+  projectId: z.guid(),
+  queueId: z.guid(),
+});
+
+export async function getSpan(input: z.infer<typeof GetSpanSchema>) {
+  const { spanId, traceId, projectId } = GetSpanSchema.parse(input);
+
+  const whereConditions = [`span_id = {spanId: UUID}`];
+  const parameters: Record<string, any> = { spanId };
+
+  if (traceId) {
+    whereConditions.push(`trace_id = {traceId: UUID}`);
+    parameters.traceId = traceId;
+  }
+
+  const mainQuery = `
+    SELECT
+      span_id as spanId,
+      parent_span_id as parentSpanId,
+      name,
+      span_type as spanType,
+      input_tokens as inputTokens,
+      output_tokens as outputTokens,
+      total_tokens as totalTokens,
+      input_cost as inputCost,
+      output_cost as outputCost,
+      total_cost as totalCost,
+      formatDateTime(start_time, '%Y-%m-%dT%H:%i:%S.%fZ') as startTime,
+      formatDateTime(end_time, '%Y-%m-%dT%H:%i:%S.%fZ') as endTime,
+      trace_id as traceId,
+      status,
+      input,
+      output,
+      path,
+      attributes,
+      tool_definitions as toolDefinitions,
+      events
+    FROM spans
+    WHERE ${whereConditions.join(" AND ")}
+    LIMIT 1
+  `;
+
+  // Events are stored as Array(Tuple(timestamp Int64, name String, attributes String)) on the
+  // spans table. ClickHouse JSON format serializes named tuples as objects and Int64 as unquoted
+  // numbers (output_format_json_quote_64bit_integers = 0), so each event arrives as
+  // { timestamp: number, name: string, attributes: string }.
+  const [span] = await executeQuery<
+    Omit<Span, "attributes" | "events"> & {
+      attributes: string;
+      events: { timestamp: number; name: string; attributes: string }[];
+    }
+  >({
+    query: mainQuery,
+    parameters,
+    projectId,
+  });
+
+  if (!span) {
+    throw new Error("Span not found");
+  }
+
+  const parsedAttributes = tryParseJson(span.attributes) || {};
+
+  return {
+    ...span,
+    input: tryParseJson(span.input),
+    output: tryParseJson(span.output),
+    attributes: parsedAttributes,
+    cacheReadInputTokens: parsedAttributes["gen_ai.usage.cache_read_input_tokens"] || 0,
+    reasoningTokens: parsedAttributes["gen_ai.usage.reasoning_tokens"] || 0,
+    events: (span.events || []).map((event) => ({
+      timestamp: event.timestamp,
+      name: event.name,
+      attributes: tryParseJson(event.attributes) || {},
+    })),
+  };
+}
+
+export async function exportSpanToDataset(input: z.infer<typeof ExportSpanSchema>) {
+  const { spanId, projectId, datasetId, metadata = {} } = ExportSpanSchema.parse(input);
+
+  const span = await getSpan({ spanId, projectId });
+  const processedInput = await downloadSpanImages(span.input);
+
+  await createDatapoints({
+    projectId,
+    datasetId,
+    datapoints: [
+      {
+        data: processedInput || {},
+        target: span.output || {},
+        metadata: metadata,
+      },
+    ],
+    sourceSpanId: spanId,
+  });
+}
+
+export async function pushSpanToLabelingQueue(input: z.infer<typeof PushSpanSchema>) {
+  const { queueId, spanId, metadata, projectId } = PushSpanSchema.parse(input);
+
+  const span = await getSpan({ spanId, projectId });
+  const processedInput = await downloadSpanImages(span.input);
+
+  await pushQueueItems({
+    projectId,
+    queueId,
+    items: [
+      {
+        metadata,
+        payload: {
+          data: processedInput,
+          target: span.output,
+          metadata: {},
+        },
+      },
+    ],
+  });
+}
+
+export const GetSpanTypeSchema = z.object({
+  projectId: z.guid(),
+  traceId: z.guid(),
+  spanId: z.guid(),
+});
+
+export async function getSpanType(input: z.infer<typeof GetSpanTypeSchema>): Promise<SpanType | null> {
+  const { projectId, traceId, spanId } = GetSpanTypeSchema.parse(input);
+
+  const rows = await executeQuery<{ spanType: SpanType }>({
+    projectId,
+    query: `
+      SELECT span_type as spanType
+      FROM spans
+      WHERE trace_id = {traceId: UUID} AND span_id = {spanId: UUID}
+      LIMIT 1
+    `,
+    parameters: { traceId, spanId },
+  });
+
+  return rows[0]?.spanType ?? null;
+}
+
+export const GetSpanTypesSchema = z.object({
+  projectId: z.guid(),
+  spanIds: z.array(z.string()),
+});
+
+export async function getSpanTypes(input: z.infer<typeof GetSpanTypesSchema>): Promise<Record<string, SpanType>> {
+  const { projectId, spanIds } = GetSpanTypesSchema.parse(input);
+
+  if (spanIds.length === 0) {
+    return {};
+  }
+
+  const rows = await executeQuery<{ spanId: string; spanType: SpanType }>({
+    projectId,
+    query: `
+      SELECT span_id as spanId, span_type as spanType
+      FROM spans
+      WHERE span_id IN ({spanIds: Array(UUID)})
+    `,
+    parameters: { spanIds },
+  });
+
+  return Object.fromEntries(rows.map((r) => [r.spanId, r.spanType]));
+}
