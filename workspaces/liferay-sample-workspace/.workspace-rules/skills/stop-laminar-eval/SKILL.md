@@ -1,13 +1,13 @@
 ---
 
 description: Shut down the local eval stack — stop the Liferay server with Blade, then tear down the Laminar Docker Compose stack and its volumes. Use when the user asks to stop the eval environment, shut down Liferay and Laminar, or clean up after a run.
-name: stop-eval
+name: stop-laminar-eval
 
 ---
 
-# Stop Eval
+# Stop Laminar Eval
 
-Take down what `run-eval` brought up, in reverse: the Liferay server first, then Laminar.
+Take down what `run-laminar-eval` brought up, in reverse: the Liferay server first, then Laminar.
 
 ## When to Invoke
 
@@ -32,7 +32,7 @@ When no Tomcat JVM process is running, there is nothing to do — skip to Lamina
 curl --output /dev/null --silent --write-out '%{http_code}' http://localhost:8080
 ```
 
-`bundles/` itself is left in place. `run-eval` clears `bundles/data` and `bundles/logs` on the next start.
+`bundles/` itself is left in place. `run-laminar-eval` clears `bundles/data` and `bundles/logs` on the next start.
 
 ### Tear Down Laminar
 
@@ -52,4 +52,4 @@ docker compose ps
 
 ## Related Skills
 
-- `run-eval` — bring the same stack back up and run an eval against it.
+- `run-laminar-eval` — bring the same stack back up and run an eval against it.
