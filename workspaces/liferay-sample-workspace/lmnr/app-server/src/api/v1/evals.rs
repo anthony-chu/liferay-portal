@@ -1,0 +1,220 @@
+use std::{collections::HashMap, sync::Arc};
+
+use super::debugger;
+use crate::{
+    cache::Cache,
+    db::{self, DB, project_api_keys::ProjectApiKey},
+    evaluations::{
+        EvaluationDatapointResult, UpdatedDatapointStrings, insert_evaluation_datapoints,
+        realtime::{RealtimeDatapoint, cache_inserted_datapoint_trace_ids, send_datapoint_updates},
+        update_evaluation_datapoint,
+    },
+    names::NameGenerator,
+    pubsub::PubSub,
+    routes::types::ResponseResult,
+};
+use actix_web::{
+    HttpResponse, post,
+    web::{self, Json},
+};
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
+use uuid::Uuid;
+
+#[derive(Debug, Serialize, Deserialize, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct InitEvalRequest {
+    pub name: Option<String>,
+    pub group_name: Option<String>,
+    #[serde(default)]
+    pub metadata: Option<Value>,
+}
+
+#[post("/evals")]
+pub async fn init_eval(
+    req: Json<InitEvalRequest>,
+    db: web::Data<DB>,
+    name_generator: web::Data<Arc<NameGenerator>>,
+    pubsub: web::Data<Arc<PubSub>>,
+    project_api_key: ProjectApiKey,
+) -> ResponseResult {
+    let req = req.into_inner();
+    let group_name = req.group_name.unwrap_or("default".to_string());
+    let project_id = project_api_key.project_id;
+    let metadata = req.metadata;
+    let name = if let Some(name) = req.name {
+        name
+    } else {
+        name_generator.next().await
+    };
+
+    let evaluation =
+        db::evaluations::create_evaluation(&db.pool, &name, project_id, &group_name, &metadata)
+            .await?;
+
+    db::debugger_session_blocks::upsert_block_for_evaluation(
+        &db.pool,
+        &project_id,
+        &evaluation.id,
+        metadata.as_ref(),
+        &evaluation.created_at,
+    )
+    .await;
+
+    // Push the eval block to the session live (scores fill in on next load).
+    if let Some(session_id) = debugger::session_id_from_metadata(metadata.as_ref()) {
+        debugger::push_evaluation_block(
+            pubsub.get_ref().as_ref(),
+            &project_id,
+            &session_id,
+            &evaluation,
+        )
+        .await;
+    }
+
+    Ok(HttpResponse::Ok().json(evaluation))
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateEvalRequest {
+    #[serde(default)]
+    pub name: Option<String>,
+    #[serde(default)]
+    pub metadata: Option<Value>,
+}
+
+/// Update an evaluation's name and/or metadata. `group_id` is immutable.
+/// Fields omitted from the request are left unchanged. Postgres-only:
+/// evaluation-level name/metadata are not duplicated into ClickHouse
+/// (`evaluation_datapoints.metadata` is per-datapoint).
+#[post("/evals/{eval_id}")]
+pub async fn update_eval(
+    eval_id: web::Path<Uuid>,
+    req: Json<UpdateEvalRequest>,
+    db: web::Data<DB>,
+    project_api_key: ProjectApiKey,
+) -> ResponseResult {
+    let eval_id = eval_id.into_inner();
+    let req = req.into_inner();
+    let project_id = project_api_key.project_id;
+
+    let evaluation =
+        db::evaluations::update_evaluation(&db.pool, eval_id, project_id, &req.name, &req.metadata)
+            .await?;
+
+    match evaluation {
+        Some(evaluation) => Ok(HttpResponse::Ok().json(evaluation)),
+        None => Ok(HttpResponse::NotFound().json("Evaluation not found")),
+    }
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SaveEvalDatapointsRequest {
+    pub group_name: Option<String>,
+    pub points: Vec<EvaluationDatapointResult>,
+}
+
+#[post("/evals/{eval_id}/datapoints")]
+pub async fn save_eval_datapoints(
+    eval_id: web::Path<Uuid>,
+    req: Json<SaveEvalDatapointsRequest>,
+    db: web::Data<DB>,
+    clickhouse: web::Data<clickhouse::Client>,
+    cache: web::Data<Cache>,
+    pubsub: web::Data<Arc<PubSub>>,
+    project_api_key: ProjectApiKey,
+) -> ResponseResult {
+    let eval_id = eval_id.into_inner();
+    let req = req.into_inner();
+    let project_id = project_api_key.project_id;
+    let points = req.points;
+    let group_name = req.group_name.unwrap_or("default".to_string());
+    let clickhouse = clickhouse.into_inner().as_ref().clone();
+
+    let ch_rows = insert_evaluation_datapoints(
+        &db.pool,
+        clickhouse,
+        points,
+        eval_id,
+        project_id,
+        &group_name,
+    )
+    .await?;
+
+    cache_inserted_datapoint_trace_ids(cache.into_inner(), &project_id, &eval_id, &ch_rows).await;
+
+    let realtime_points: Vec<RealtimeDatapoint<'_>> = ch_rows
+        .iter()
+        .map(RealtimeDatapoint::from_ch_insert)
+        .collect();
+
+    send_datapoint_updates(
+        pubsub.get_ref().as_ref(),
+        &project_id,
+        &eval_id,
+        &realtime_points,
+    )
+    .await;
+
+    Ok(HttpResponse::Ok().json(eval_id))
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateEvalDatapointRequest {
+    pub executor_output: Option<Value>,
+    pub scores: HashMap<String, Option<f64>>,
+    #[serde(default)]
+    pub trace_id: Option<Uuid>,
+}
+
+#[post("/evals/{eval_id}/datapoints/{datapoint_id}")]
+pub async fn update_eval_datapoint(
+    path: web::Path<(Uuid, Uuid)>,
+    req: Json<UpdateEvalDatapointRequest>,
+    db: web::Data<DB>,
+    clickhouse: web::Data<clickhouse::Client>,
+    pubsub: web::Data<Arc<PubSub>>,
+    project_api_key: ProjectApiKey,
+) -> ResponseResult {
+    let (eval_id, datapoint_id) = path.into_inner();
+    let req = req.into_inner();
+    let clickhouse = clickhouse.into_inner().as_ref().clone();
+    let project_id = project_api_key.project_id;
+
+    let group_id = db::evaluations::get_evaluation_group_id(&db.pool, eval_id, project_id).await?;
+
+    let UpdatedDatapointStrings {
+        executor_output: ch_executor_output,
+        scores: ch_scores,
+    } = update_evaluation_datapoint(
+        &db.pool,
+        clickhouse,
+        eval_id,
+        project_id,
+        datapoint_id,
+        &group_id,
+        req.executor_output,
+        req.scores,
+        req.trace_id,
+    )
+    .await?;
+
+    let realtime_point = RealtimeDatapoint::from_update_strings(
+        datapoint_id,
+        req.trace_id,
+        &ch_executor_output,
+        &ch_scores,
+    );
+    send_datapoint_updates(
+        pubsub.get_ref().as_ref(),
+        &project_id,
+        &eval_id,
+        std::slice::from_ref(&realtime_point),
+    )
+    .await;
+
+    Ok(HttpResponse::Ok().json(datapoint_id))
+}

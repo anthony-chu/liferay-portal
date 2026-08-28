@@ -1,0 +1,88 @@
+"use client";
+
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import { type ComponentProps, useCallback, useEffect, useMemo, useRef } from "react";
+
+import { defaultSpansColumnOrder } from "@/components/traces/spans-table/columns";
+import { RESOURCE } from "@/components/traces/spans-table/constants";
+import { SpansTableContents } from "@/components/traces/spans-table/table-contents";
+import { SpansTableControls } from "@/components/traces/spans-table/table-controls";
+import { useTracesStoreContext } from "@/components/traces/traces-store";
+import { useTableView } from "@/components/ui/infinite-datatable/model/table-config-store";
+import { InfiniteDataTableProvider } from "@/components/ui/infinite-datatable/model/table-store";
+import { cn } from "@/lib/utils";
+
+export default function SpansTable({ className, ...props }: ComponentProps<"div">) {
+  const { projectId } = useParams();
+  return (
+    <div className={cn("flex flex-1 min-h-0 overflow-hidden", className)} {...props}>
+      <InfiniteDataTableProvider
+        uniqueKey="spanId"
+        defaults={{ columnOrder: defaultSpansColumnOrder }}
+        lockedColumns={["status"]}
+        views={{ projectId: String(projectId), resource: RESOURCE }}
+      >
+        <SpansTableContent />
+      </InfiniteDataTableProvider>
+    </div>
+  );
+}
+
+function SpansTableContent() {
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
+  const router = useRouter();
+  const { projectId } = useParams();
+  const refetchRef = useRef<() => void>(() => {});
+  const setSpanId = useTracesStoreContext((s) => s.setSpanId);
+
+  const { effective, isLoading: isViewLoading, setSearchAndFilters, setFilters } = useTableView();
+  const searchValue = useMemo(
+    () => ({ filters: effective.filters, search: effective.search }),
+    [effective.filters, effective.search]
+  );
+  const filter = useMemo(() => effective.filters.map((f) => JSON.stringify(f)), [effective.filters]);
+  const textSearchFilter = effective.search.length > 0 ? effective.search : null;
+  const startDate = searchParams.get("startDate");
+  const endDate = searchParams.get("endDate");
+  const pastHours = searchParams.get("pastHours");
+
+  useEffect(() => {
+    setSpanId(searchParams.get("spanId") ?? null);
+  }, [searchParams, setSpanId]);
+
+  useEffect(() => {
+    if (!pastHours && !startDate && !endDate) {
+      const sp = new URLSearchParams(searchParams.toString());
+      sp.set("pastHours", "24");
+      router.replace(`${pathName}?${sp.toString()}`);
+    }
+  }, [pastHours, startDate, endDate, searchParams, pathName, router]);
+
+  const handleRefresh = useCallback(() => {
+    refetchRef.current();
+  }, []);
+
+  return (
+    <div className="flex flex-1 overflow-hidden px-4 pb-6">
+      <SpansTableContents
+        refetchRef={refetchRef}
+        filter={filter}
+        textSearchFilter={textSearchFilter}
+        pastHours={pastHours}
+        startDate={startDate}
+        endDate={endDate}
+        isViewLoading={isViewLoading}
+      >
+        <SpansTableControls
+          projectId={String(projectId)}
+          filters={effective.filters}
+          onFiltersChange={setFilters}
+          onRefresh={handleRefresh}
+          searchValue={searchValue}
+          onSearchChange={setSearchAndFilters}
+        />
+      </SpansTableContents>
+    </div>
+  );
+}

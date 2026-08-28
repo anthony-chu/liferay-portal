@@ -1,0 +1,284 @@
+"use client";
+
+import { X } from "lucide-react";
+import {
+  type FocusEvent,
+  type KeyboardEvent,
+  memo,
+  type MouseEvent,
+  type Ref,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+} from "react";
+
+import { Button } from "@/components/ui/button";
+import { OperatorLabelMap } from "@/components/ui/infinite-datatable/ui/datatable-filter/utils";
+import { AUTOCOMPLETE_FIELDS } from "@/lib/actions/autocomplete/fields";
+import { cn } from "@/lib/utils";
+
+import ValueInput from "../inputs";
+import { useAdvancedSearchContext, useAdvancedSearchNavigation, useAdvancedSearchRefsContext } from "../store";
+import {
+  type AdvancedSearchResource,
+  type ColumnFilter,
+  type FilterTag as FilterTagType,
+  type FilterTagRef,
+  type FocusableRef,
+  getColumnFilter,
+  type TagFocusPosition,
+} from "../types";
+import FilterSelect from "./select";
+
+interface FilterTagProps {
+  tag: FilterTagType;
+  resource?: AdvancedSearchResource;
+  isSelected?: boolean;
+  ref?: Ref<FilterTagRef>;
+}
+
+const FilterTag = ({ tag, resource = "traces", isSelected = false, ref }: FilterTagProps) => {
+  const filters = useAdvancedSearchContext((state) => state.filters);
+  const autocompleteData = useAdvancedSearchContext((state) => state.autocompleteData);
+
+  const { removeTag, setTagFocusState, getTagFocusState, selectAllTags } = useAdvancedSearchContext((state) => ({
+    removeTag: state.removeTag,
+    setTagFocusState: state.setTagFocusState,
+    getTagFocusState: state.getTagFocusState,
+    selectAllTags: state.selectAllTags,
+  }));
+
+  const { mainInputRef } = useAdvancedSearchRefsContext();
+
+  const { navigateWithinTag } = useAdvancedSearchNavigation();
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const fieldSelectRef = useRef<FocusableRef>(null);
+  const operatorSelectRef = useRef<FocusableRef>(null);
+  const valueInputRef = useRef<FocusableRef>(null);
+  const removeRef = useRef<HTMLButtonElement>(null);
+
+  const focusState = getTagFocusState(tag.id);
+
+  // A filter coming from a shared URL may reference a column the current user
+  // hasn't configured (e.g. someone else's `custom:*` column). Synthesize a
+  // fallback so the tag stays visible and removable instead of silently vanishing.
+  const columnFilter: ColumnFilter = getColumnFilter(filters, tag.field) ?? {
+    name: tag.field,
+    key: tag.field,
+    dataType: tag.dataType ?? "string",
+  };
+  const dataType = columnFilter.dataType;
+
+  // Include operator + value so several filters on the SAME column get distinct
+  // remove-button names (e.g. "Remove metadata = foo filter"); fall back to the
+  // bare name while the tag is still being built and has no value yet.
+  const valueText = Array.isArray(tag.value) ? tag.value.join(", ") : tag.value;
+  const removeLabel = valueText
+    ? `Remove ${columnFilter.name} ${OperatorLabelMap[tag.operator]} ${valueText} filter`
+    : `Remove ${columnFilter.name} filter`;
+
+  const focusMainInput = useCallback(() => {
+    mainInputRef.current?.focus();
+    setTagFocusState(tag.id, { type: "idle" });
+  }, [mainInputRef, tag.id, setTagFocusState]);
+
+  useImperativeHandle(ref, () => ({
+    focusPosition: (position: TagFocusPosition) => {
+      containerRef.current?.focus();
+      setTagFocusState(tag.id, {
+        type: position,
+        mode: "nav",
+      });
+    },
+  }));
+
+  const filteredValueSuggestions = useMemo(() => {
+    if ((dataType !== "string" && dataType !== "array") || !AUTOCOMPLETE_FIELDS[resource]?.includes(tag.field))
+      return [];
+
+    const preloadedValues = autocompleteData.get(tag.field) || [];
+
+    // For array type, don't filter here - TagInput handles filtering internally
+    if (dataType === "array") {
+      return preloadedValues;
+    }
+
+    if (!tag.value || Array.isArray(tag.value)) {
+      return preloadedValues;
+    }
+
+    const lowerQuery = tag.value.toLowerCase();
+    return preloadedValues.filter((value) => value.toLowerCase().includes(lowerQuery));
+  }, [dataType, resource, tag.field, tag.value, autocompleteData]);
+
+  useEffect(() => {
+    if (focusState.type !== "idle" && "mode" in focusState && focusState.mode === "edit") {
+      const refMap = {
+        field: fieldSelectRef,
+        operator: operatorSelectRef,
+        value: valueInputRef,
+        remove: removeRef,
+      };
+      refMap[focusState.type]?.current?.focus();
+    }
+  }, [focusState]);
+
+  const handleBlur = useCallback(
+    (e: FocusEvent) => {
+      if (!containerRef.current?.contains(e.relatedTarget as Node)) {
+        setTagFocusState(tag.id, { type: "idle" });
+      }
+    },
+    [tag.id, setTagFocusState]
+  );
+
+  const handleRemove = useCallback(
+    (e: MouseEvent | KeyboardEvent) => {
+      e.stopPropagation();
+      if ("key" in e && e.key !== "Enter" && e.key !== " ") return;
+      removeTag(tag.id);
+      focusMainInput();
+    },
+    [removeTag, tag.id, focusMainInput]
+  );
+
+  const handleEnterKey = useCallback(
+    (e: KeyboardEvent) => {
+      if (focusState.type === "idle") return;
+
+      setTagFocusState(tag.id, { type: focusState.type, mode: "edit" });
+
+      // Focus the appropriate ref
+      const refMap = {
+        field: fieldSelectRef,
+        operator: operatorSelectRef,
+        value: valueInputRef,
+        remove: removeRef,
+      };
+
+      if (focusState.type === "remove") {
+        handleRemove(e);
+      } else {
+        refMap[focusState.type]?.current?.focus();
+      }
+    },
+    [focusState.type, tag.id, setTagFocusState, handleRemove]
+  );
+
+  const handleEscapeKey = useCallback(() => {
+    if ("mode" in focusState && focusState.mode === "edit") {
+      setTagFocusState(tag.id, { ...focusState, mode: "nav", isOpen: false } as any);
+      containerRef.current?.focus();
+    } else {
+      setTagFocusState(tag.id, { type: "idle" });
+      focusMainInput();
+    }
+  }, [focusState, tag.id, setTagFocusState, focusMainInput]);
+
+  const handleContainerKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      if (focusState.type === "idle") return;
+
+      if ((e.metaKey || e.ctrlKey) && e.key === "a") {
+        e.preventDefault();
+        selectAllTags();
+        focusMainInput();
+        return;
+      }
+
+      if (e.key === "Enter") {
+        if (focusState.type === "remove") {
+          e.preventDefault();
+          handleRemove(e);
+          return;
+        }
+        if ("mode" in focusState && focusState.mode === "nav") {
+          e.preventDefault();
+          handleEnterKey(e);
+          return;
+        }
+      }
+
+      if (e.key === "Escape") {
+        e.preventDefault();
+        handleEscapeKey();
+        return;
+      }
+
+      if ("mode" in focusState && focusState.mode === "nav") {
+        if (e.key === "ArrowRight") {
+          e.preventDefault();
+          navigateWithinTag(tag.id, "right");
+          return;
+        }
+
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          navigateWithinTag(tag.id, "left");
+          return;
+        }
+      }
+    },
+    [
+      focusMainInput,
+      focusState,
+      handleEnterKey,
+      handleEscapeKey,
+      handleRemove,
+      navigateWithinTag,
+      selectAllTags,
+      tag.id,
+    ]
+  );
+
+  const removeButtonClassName = cn(
+    "h-5.5 w-6 p-0 rounded-l-none rounded-r-[0.29rem] transition-colors outline-none border-0",
+    focusState.type === "remove" && "bg-primary/35"
+  );
+
+  return (
+    <div
+      ref={containerRef}
+      tabIndex={focusState.type !== "idle" && focusState.mode === "nav" ? 0 : -1}
+      className={cn(
+        "inline-flex items-center rounded-md border bg-background h-6",
+        "divide-x divide-input transition-all outline-none",
+        "data-[selected=true]:border-primary data-[selected=true]:ring-1 data-[selected=true]:ring-primary/60"
+      )}
+      data-selected={isSelected}
+      onKeyDown={handleContainerKeyDown}
+      onBlur={handleBlur}
+    >
+      <FilterSelect ref={fieldSelectRef} tagId={tag.id} selectType="field" />
+
+      <FilterSelect ref={operatorSelectRef} tagId={tag.id} selectType="operator" />
+
+      <ValueInput
+        tagId={tag.id}
+        columnFilter={columnFilter}
+        suggestions={filteredValueSuggestions}
+        focused={focusState.type === "value" && "mode" in focusState && focusState.mode === "edit"}
+        ref={valueInputRef}
+        mode={focusState.type === "idle" ? "nav" : focusState.mode}
+      />
+
+      <Button
+        variant="ghost"
+        ref={removeRef}
+        onClick={handleRemove}
+        className={removeButtonClassName}
+        type="button"
+        aria-label={removeLabel}
+      >
+        <X className="w-3 h-3 text-secondary-foreground" />
+      </Button>
+    </div>
+  );
+};
+
+FilterTag.displayName = "FilterTag";
+
+export default memo(FilterTag);

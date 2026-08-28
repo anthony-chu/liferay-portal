@@ -1,0 +1,161 @@
+# This compose definition pulls the latest images from the GitHub Container Registry.
+# This is the best and fastest for self-hosting, as the images are already built and ready to go.
+# If you want to build images locally, you can use the docker-compose-local-build.yml file instead.
+
+name: lmnr
+
+services:
+  rabbitmq:
+    image: rabbitmq
+    pull_policy: always
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    healthcheck:
+      test: rabbitmq-diagnostics -q check_running && rabbitmq-diagnostics -q check_local_alarms
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:26.5
+    pull_policy: always
+    container_name: clickhouse
+    volumes:
+      - type: volume
+        source: clickhouse-data
+        target: /var/lib/clickhouse/
+      - type: volume
+        source: clickhouse-logs
+        target: /var/log/clickhouse-server/
+      - type: bind
+        source: ./clickhouse-profiles-config.xml
+        target: /etc/clickhouse-server/users.d/lmnr.xml
+      - type: bind
+        source: ./clickhouse-server-config.xml
+        target: /etc/clickhouse-server/config.d/lmnr.xml
+    environment:
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+    cap_add:
+      - SYS_NICE
+      - NET_ADMIN
+      - IPC_LOCK
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
+  postgres:
+    image: postgres:16
+    pull_policy: always
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      test:
+        ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+
+  quickwit:
+    image: quickwit/quickwit:v0.8.2
+    pull_policy: always
+    ports:
+      - "7280:7280" # REST API and UI
+      - "7281:7281" # OTLP / gRPC
+    environment:
+      QW_DATA_DIR: /quickwit/qwdata
+    command: ["run"]
+    volumes:
+      - quickwit-data:/quickwit/qwdata
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7280/health/livez"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  app-server:
+    image: ghcr.io/lmnr-ai/app-server
+    pull_policy: always
+    ports:
+      - "${APP_SERVER_HOST_PORT:-8000}:8000"
+      - "${APP_SERVER_GRPC_HOST_PORT:-8001}:8001"
+      - "${APP_SERVER_RT_HOST_PORT:-8002}:8002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      clickhouse:
+        condition: service_started
+      quickwit:
+        condition: service_healthy
+    environment:
+      PORT: 8000
+      GRPC_PORT: 8001
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      RABBITMQ_URL: amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbitmq:5672/%2f
+      CLICKHOUSE_URL: http://clickhouse:8123
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+      CLICKHOUSE_RO_USER: ${CLICKHOUSE_RO_USER}
+      CLICKHOUSE_RO_PASSWORD: ${CLICKHOUSE_RO_PASSWORD}
+      SHARED_SECRET_TOKEN: ${SHARED_SECRET_TOKEN}
+      ENVIRONMENT: FULL
+      AEAD_SECRET_KEY: ${AEAD_SECRET_KEY}
+      QUICKWIT_SEARCH_URL: http://quickwit:7280
+      QUICKWIT_INGEST_URL: http://quickwit:7281
+      QUICKWIT_SPANS_INDEX_ID: spans_v2
+
+  frontend:
+    image: ghcr.io/lmnr-ai/frontend
+    ports:
+      - "${FRONTEND_HOST_PORT:-5667}:5667"
+    pull_policy: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      clickhouse:
+        condition: service_started
+      quickwit:
+        condition: service_healthy
+    environment:
+      PORT: 5667
+      BACKEND_URL: http://app-server:8000
+      BACKEND_RT_URL: http://app-server:8002
+      SHARED_SECRET_TOKEN: ${SHARED_SECRET_TOKEN}
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      NEXTAUTH_URL: http://localhost:5667
+      NEXTAUTH_SECRET: some_secret
+      NEXT_PUBLIC_URL: http://localhost:5667
+      ENVIRONMENT: FULL
+      CLICKHOUSE_URL: http://clickhouse:8123
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      AEAD_SECRET_KEY: ${AEAD_SECRET_KEY}
+      QUICKWIT_SEARCH_URL: http://quickwit:7280
+      # LLM provider for frontend AI features (chat-with-trace, SQL-with-AI).
+      # openai | gemini | bedrock. openai/gemini use LLM_API_KEY (+ optional LLM_BASE_URL);
+      # bedrock uses AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY / AWS_REGION.
+      LLM_PROVIDER: ${LLM_PROVIDER}
+      LLM_BASE_URL: ${LLM_BASE_URL}
+      LLM_API_KEY: ${LLM_API_KEY}
+      # LLM_MODEL_* overrides (optional — per-provider defaults apply when unset).
+      LLM_MODEL_SMALL: ${LLM_MODEL_SMALL}
+      LLM_MODEL_MEDIUM: ${LLM_MODEL_MEDIUM}
+      LLM_MODEL_LARGE: ${LLM_MODEL_LARGE}
+      AWS_REGION: ${AWS_REGION}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+
+volumes:
+  clickhouse-data:
+  clickhouse-logs:
+  postgres-data:
+  quickwit-data:

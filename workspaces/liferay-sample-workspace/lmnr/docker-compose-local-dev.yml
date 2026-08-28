@@ -1,0 +1,110 @@
+# This compose file is a lightweight version of docker-compose-local-dev-full.yml.
+# It is intended to be used for local development on frontend only.
+# It does not include RabbitMQ.
+# Run frontend manually with `ENVIRONMENT=LITE pnpm run dev`.
+
+name: lmnr
+
+services:
+  postgres:
+    image: postgres:16
+    pull_policy: always
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      test:
+        ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:26.5
+    pull_policy: always
+    container_name: clickhouse
+    ports:
+      - "8123:8123"
+    volumes:
+      - type: volume
+        source: clickhouse-data
+        target: /var/lib/clickhouse/
+      - type: volume
+        source: clickhouse-logs
+        target: /var/log/clickhouse-server/
+      - type: bind
+        source: ./clickhouse-profiles-config.xml
+        target: /etc/clickhouse-server/users.d/lmnr.xml
+      - type: bind
+        source: ./clickhouse-server-config.xml
+        target: /etc/clickhouse-server/config.d/lmnr.xml
+    environment:
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+    cap_add:
+      - SYS_NICE
+      - NET_ADMIN
+      - IPC_LOCK
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
+  quickwit:
+    image: quickwit/quickwit:v0.8.2
+    pull_policy: always
+    ports:
+      - "7280:7280" # REST API and UI
+      - "7281:7281" # OTLP / gRPC
+    environment:
+      QW_DATA_DIR: /quickwit/qwdata
+    command: ["run"]
+    volumes:
+      - quickwit-data:/quickwit/qwdata
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7280/health/livez"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  app-server:
+    image: ghcr.io/lmnr-ai/app-server
+    pull_policy: always
+    ports:
+      - "${APP_SERVER_HOST_PORT:-8000}:8000"
+      - "${APP_SERVER_GRPC_HOST_PORT:-8001}:8001"
+      - "${APP_SERVER_RT_HOST_PORT:-8002}:8002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      clickhouse:
+        condition: service_started
+      quickwit:
+        condition: service_healthy
+
+    environment:
+      PORT: 8000
+      GRPC_PORT: 8001
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      SHARED_SECRET_TOKEN: ${SHARED_SECRET_TOKEN}
+      CLICKHOUSE_URL: http://clickhouse:8123
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+      CLICKHOUSE_RO_USER: ${CLICKHOUSE_RO_USER}
+      CLICKHOUSE_RO_PASSWORD: ${CLICKHOUSE_RO_PASSWORD}
+      ENVIRONMENT: LITE # this disables runtime dependency on rabbitmq
+      AEAD_SECRET_KEY: ${AEAD_SECRET_KEY}
+      QUICKWIT_SEARCH_URL: http://quickwit:7280
+      QUICKWIT_INGEST_URL: http://quickwit:7281
+      QUICKWIT_SPANS_INDEX_ID: spans_v2
+
+volumes:
+  postgres-data:
+  clickhouse-data:
+  clickhouse-logs:
+  quickwit-data:

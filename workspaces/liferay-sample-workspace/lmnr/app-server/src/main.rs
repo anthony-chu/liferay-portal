@@ -1,0 +1,2690 @@
+#![recursion_limit = "256"]
+
+#[cfg(not(target_env = "msvc"))]
+use tikv_jemallocator::Jemalloc;
+
+#[cfg(not(target_env = "msvc"))]
+#[global_allocator]
+static GLOBAL: Jemalloc = Jemalloc;
+
+use actix_limitation::Limiter;
+use actix_web::{
+    App, HttpServer,
+    body::{BoxBody, EitherBody},
+    dev,
+    http::StatusCode,
+    middleware::{ErrorHandlerResponse, ErrorHandlers, Logger, NormalizePath},
+    web::{self, JsonConfig, PayloadConfig},
+};
+use actix_web_httpauth::middleware::HttpAuthentication;
+use api::v1::browser_sessions::{
+    BROWSER_SESSIONS_EXCHANGE, BROWSER_SESSIONS_QUEUE, BROWSER_SESSIONS_ROUTING_KEY,
+};
+use aws_config::BehaviorVersion;
+use browser_events::BrowserEventHandler;
+#[cfg(feature = "signals")]
+use clustering::private::{
+    EVENT_CLUSTERING_BATCH_EXCHANGE, EVENT_CLUSTERING_BATCH_QUEUE,
+    EVENT_CLUSTERING_BATCH_ROUTING_KEY, EVENT_CLUSTERING_EXCHANGE, EVENT_CLUSTERING_QUEUE,
+    EVENT_CLUSTERING_ROUTING_KEY, batching::ClusteringEventBatchingHandler, build_runner_from_env,
+    handler::ClusteringHandler,
+};
+use features::{Feature, is_feature_enabled};
+use lapin::{
+    Connection, ConnectionProperties, ExchangeKind,
+    options::{ExchangeDeclareOptions, QueueDeclareOptions},
+    types::FieldTable,
+};
+use logs::{
+    LOGS_EXCHANGE, LOGS_QUEUE, LOGS_ROUTING_KEY, consumer::LogsHandler,
+    grpc_service::ProcessLogsService,
+};
+use mq::MessageQueue;
+use names::NameGenerator;
+use notifications::{
+    NOTIFICATIONS_EXCHANGE, NOTIFICATIONS_QUEUE, NOTIFICATIONS_ROUTING_KEY, NotificationHandler,
+    delivery::{
+        NOTIFICATION_DELIVERIES_EXCHANGE, NOTIFICATION_DELIVERIES_QUEUE,
+        NOTIFICATION_DELIVERIES_ROUTING_KEY, NotificationDeliveryHandler,
+    },
+};
+use opentelemetry_proto::opentelemetry::proto::collector::logs::v1::logs_service_server::LogsServiceServer;
+use opentelemetry_proto::opentelemetry::proto::collector::trace::v1::trace_service_server::TraceServiceServer;
+use query_engine::QueryEngine;
+use reports::{REPORT_TRIGGERS_EXCHANGE, REPORT_TRIGGERS_QUEUE, REPORT_TRIGGERS_ROUTING_KEY};
+use runtime::{create_general_purpose_runtime, wait_stop_signal};
+#[cfg(feature = "signals")]
+use signals::private::{
+    SIGNAL_JOB_PENDING_BATCH_EXCHANGE, SIGNAL_JOB_PENDING_BATCH_QUEUE,
+    SIGNAL_JOB_PENDING_BATCH_ROUTING_KEY, SIGNAL_JOB_SUBMISSION_BATCH_EXCHANGE,
+    SIGNAL_JOB_SUBMISSION_BATCH_QUEUE, SIGNAL_JOB_SUBMISSION_BATCH_ROUTING_KEY,
+    SIGNAL_JOB_WAITING_BATCH_EXCHANGE, SIGNAL_JOB_WAITING_BATCH_QUEUE,
+    SIGNAL_JOB_WAITING_BATCH_ROUTING_KEY, SIGNALS_EXCHANGE, SIGNALS_QUEUE, SIGNALS_ROUTING_KEY,
+    SignalWorkerConfig,
+    batching::SignalBatchingHandler,
+    pendings_consumer::SignalJobPendingBatchHandler,
+    queue::{
+        SIGNALS_REALTIME_EXCHANGE, SIGNALS_REALTIME_QUEUE, SIGNALS_REALTIME_ROUTING_KEY,
+        SIGNALS_REALTIME_WAITING_EXCHANGE, SIGNALS_REALTIME_WAITING_QUEUE,
+        SIGNALS_REALTIME_WAITING_ROUTING_KEY,
+    },
+    realtime::SignalJobRealtimeHandler,
+    submissions_consumer::SignalJobSubmissionBatchHandler,
+};
+use tonic::transport::Server;
+use traces::{
+    OBSERVATIONS_EXCHANGE, OBSERVATIONS_QUEUE, OBSERVATIONS_ROUTING_KEY, SPANS_DATA_PLANE_EXCHANGE,
+    SPANS_DATA_PLANE_QUEUE, SPANS_DATA_PLANE_ROUTING_KEY,
+    consumer::SpanHandler,
+    data_plane_consumer::DataPlaneSpanHandler,
+    grpc_service::ProcessTracesService,
+    input_extraction::{
+        consumer::InputExtractionHandler,
+        queue::{INPUT_EXTRACTION_EXCHANGE, INPUT_EXTRACTION_QUEUE, INPUT_EXTRACTION_ROUTING_KEY},
+        regex_agent::{
+            USER_TASK_REGEX_EXCHANGE, USER_TASK_REGEX_QUEUE, USER_TASK_REGEX_ROUTING_KEY,
+            UserTaskRegexHandler,
+        },
+    },
+    sp_versioning::{
+        SP_VERSIONING_DELAY_EXCHANGE, SP_VERSIONING_DELAY_QUEUE, SP_VERSIONING_DELAY_ROUTING_KEY,
+        SP_VERSIONING_EXCHANGE, SP_VERSIONING_QUEUE, SP_VERSIONING_ROUTING_KEY,
+        consumer::SpVersioningHandler,
+    },
+    static_sp_extraction::{
+        STATIC_PROMPT_EXCHANGE, STATIC_PROMPT_QUEUE, STATIC_PROMPT_ROUTING_KEY,
+        consumer::StaticPromptHandler,
+        worker::{
+            SP_REGEX_EXTRACTION_EXCHANGE, SP_REGEX_EXTRACTION_QUEUE,
+            SP_REGEX_EXTRACTION_ROUTING_KEY, SpRegexExtractionHandler,
+        },
+    },
+    stream_consumer::StreamSpanHandler,
+};
+
+use cache::{
+    Cache, connection::ResilientRedisConnection, in_memory::InMemoryCache, redis::RedisCache,
+};
+use checkpoints::{
+    CHECKPOINTS_EXCHANGE, CHECKPOINTS_QUEUE, CHECKPOINTS_ROUTING_KEY, consumer::CheckpointsHandler,
+};
+use pubsub::{PubSub, in_memory::InMemoryPubSub, redis::RedisPubSub};
+use quickwit::{
+    SPANS_INDEXER_EXCHANGE, SPANS_INDEXER_QUEUE, SPANS_INDEXER_ROUTING_KEY,
+    client::{QuickwitClient, QuickwitConfig},
+    consumer::QuickwitIndexerHandler,
+    stream_consumer::StreamQuickwitIndexerHandler,
+};
+use realtime::SseConnectionMap;
+use sodiumoxide;
+use std::{
+    borrow::Cow,
+    io::{self, Error},
+    sync::Arc,
+    thread::{self, JoinHandle},
+    time::Duration,
+};
+use storage::{Storage, mock::MockStorage};
+
+use crate::batch_worker::{BatchWorkerType, config::BatchingConfig, worker_pool::BatchWorkerPool};
+use crate::features::{enable_consumer, enable_producer};
+use crate::worker::{QueueConfig, WorkerPool, WorkerType};
+use crate::{
+    ch::{cloud::CloudClickhouse, data_plane::DataPlaneClickhouse, service::ClickhouseService},
+    reports::generator::ReportsGenerator,
+};
+
+#[cfg(feature = "signals")]
+mod agent;
+mod api;
+mod auth;
+mod batch_worker;
+mod browser_events;
+mod cache;
+mod ch;
+mod checkpoints;
+mod clustering;
+mod data_plane;
+mod datasets;
+mod db;
+mod debugger;
+mod env;
+mod evaluations;
+mod features;
+mod instrumentation;
+mod language_model;
+mod llm;
+mod logs;
+mod mq;
+mod names;
+mod notifications;
+mod opentelemetry_proto;
+mod pii_redactor;
+mod project_api_keys;
+mod pubsub;
+mod query_engine;
+mod quickwit;
+mod realtime;
+mod reports;
+mod routes;
+mod runtime;
+mod search;
+mod signals;
+mod sql;
+mod storage;
+mod traces;
+mod utils;
+mod worker;
+
+const PAYLOAD_TOO_LARGE_MESSAGE: &str = "Payload too large: the request body exceeds the server's HTTP payload limit. Send smaller \
+     batches, or raise HTTP_PAYLOAD_LIMIT if you are self-hosting.";
+
+fn tonic_error_to_io_error(err: tonic::transport::Error) -> io::Error {
+    io::Error::new(io::ErrorKind::Other, err)
+}
+
+fn main() -> anyhow::Result<()> {
+    // == Crypto utils ==
+    sodiumoxide::init().expect("failed to initialize sodiumoxide");
+
+    rustls::crypto::ring::default_provider()
+        .install_default()
+        .expect("Failed to install rustls crypto provider");
+
+    // == General configuration ==
+    dotenv::dotenv().ok();
+
+    let general_runtime =
+        create_general_purpose_runtime().expect("Can't initialize general purpose runtime.");
+    let runtime_handle = general_runtime.handle().clone();
+
+    let mut handles: Vec<JoinHandle<Result<(), Error>>> = vec![];
+
+    // == Sentry ==
+    let sentry_dsn = std::env::var(env::observability::SENTRY_DSN)
+        .unwrap_or("https://1234567890@sentry.io/1234567890".to_string());
+    // Sentry bills by span volume, so only a fraction of transactions is sent.
+    // Sampling is per-transaction (the SDK's own knob), which keeps every sampled
+    // trace internally complete.
+    let _sentry_guard = sentry::init((
+        sentry_dsn,
+        sentry::ClientOptions {
+            release: sentry::release_name!(),
+            traces_sample_rate: env::sentry_sampling::sample_rate(),
+            environment: Some(Cow::Owned(
+                std::env::var(env::connections::ENVIRONMENT).unwrap_or("development".to_string()),
+            )),
+            before_send: Some(std::sync::Arc::new(instrumentation::sentry_before_send)),
+            ..Default::default()
+        },
+    ));
+
+    if !is_feature_enabled(Feature::Tracing)
+        || std::env::var(env::observability::SENTRY_DSN).is_err()
+    {
+        // If tracing is not enabled, drop the sentry guard, thus disabling sentry
+        drop(_sentry_guard);
+    }
+
+    let internal_tracing_enabled = is_feature_enabled(Feature::InternalTracing);
+    let (internal_tracer_provider, internal_ingest_deps) =
+        instrumentation::setup_tracing_and_logging(
+            is_feature_enabled(Feature::Tracing),
+            internal_tracing_enabled,
+            &runtime_handle,
+        );
+
+    let http_payload_limit: usize = env::server::HTTP_PAYLOAD_LIMIT.get();
+
+    log::info!("HTTP payload limit: {}", http_payload_limit);
+
+    let grpc_payload_limit: usize = env::server::GRPC_PAYLOAD_LIMIT.get();
+
+    log::info!("GRPC payload limit: {}", grpc_payload_limit);
+
+    let port = env::server::PORT.get();
+
+    let grpc_port: u16 = env::server::GRPC_PORT.get();
+
+    // Default to the port 8002. Usually is different from the HTTP and gRPC ports,
+    // to avoid conflicts, when producer and consumer are run on the same machine
+    // in the dual mode.
+    let consumer_port: u16 = env::server::CONSUMER_PORT.get();
+
+    let grpc_address = format!("0.0.0.0:{}", grpc_port).parse().unwrap();
+
+    // == Stuff that is needed both for HTTP and gRPC servers ==
+    // === 1. Redis client + resilient connection (shared by cache and pub/sub) ===
+    // The redis crate's MultiplexedConnection has no auto-reconnect, so we wrap
+    // it in ResilientRedisConnection which PINGs periodically, listens for
+    // op-level error notifications from callers, and atomically swaps in a
+    // fresh connection on failure with uncapped exponential backoff.
+    let redis_client = if let Ok(redis_url) = std::env::var(env::connections::REDIS_URL) {
+        log::info!("Initializing Redis client");
+        match redis::Client::open(redis_url.as_str()) {
+            Ok(client) => Some(client),
+            Err(e) => {
+                log::warn!("Failed to create Redis client: {:?}", e);
+                None
+            }
+        }
+    } else {
+        log::info!("REDIS_URL not set");
+        None
+    };
+
+    let redis_connection = redis_client.as_ref().and_then(|client| {
+        runtime_handle.block_on(async {
+            match ResilientRedisConnection::connect(client.clone(), "shared").await {
+                Ok(conn) => Some(conn),
+                Err(e) => {
+                    log::warn!(
+                        "Failed initial Redis connection, falling back to in-memory: {:?}",
+                        e
+                    );
+                    None
+                }
+            }
+        })
+    });
+
+    // === 2. Cache ===
+    let cache = if let Some(ref conn) = redis_connection {
+        log::info!("Using Redis cache");
+        Cache::Redis(RedisCache::new(Arc::clone(conn)))
+    } else {
+        log::info!("Using in-memory cache");
+        Cache::InMemory(InMemoryCache::new(None))
+    };
+    let cache = Arc::new(cache);
+
+    // === 3. Pub/Sub ===
+    let pubsub = match (redis_client, redis_connection) {
+        (Some(client), Some(conn)) => {
+            log::info!("Using Redis pub/sub");
+            PubSub::Redis(RedisPubSub::new(client, conn))
+        }
+        _ => {
+            log::info!("Using in-memory pub/sub");
+            PubSub::InMemory(InMemoryPubSub::new())
+        }
+    };
+    let pubsub = Arc::new(pubsub);
+
+    // === 4. Database ===
+    let inner_db = runtime_handle.block_on(db::DB::connect_from_env())?;
+    let db = Arc::new(inner_db);
+
+    // === 3. Message queues ===
+    let (publisher_connection, consumer_connection) =
+        if is_feature_enabled(Feature::RabbitMQ) && is_feature_enabled(Feature::FullBuild) {
+            let rabbitmq_url = std::env::var(env::mq::URL).expect("RABBITMQ_URL must be set");
+            let auto_reconnect = env::mq::AUTO_RECONNECT.get();
+            let mut props = ConnectionProperties::default();
+            if auto_reconnect {
+                props = props.enable_auto_recover();
+            }
+            runtime_handle.block_on(async {
+                let publisher_conn = Arc::new(
+                    Connection::connect(&rabbitmq_url, props.clone())
+                        .await
+                        .unwrap(),
+                );
+
+                // Only create consumer connection if consumer mode is enabled
+                let consumer_conn = if enable_consumer() {
+                    log::info!("Consumer mode enabled - creating consumer connection");
+                    Some(Arc::new(
+                        Connection::connect(&rabbitmq_url, props).await.unwrap(),
+                    ))
+                } else {
+                    log::info!("Producer-only mode - skipping consumer connection");
+                    None
+                };
+
+                (Some(publisher_conn), consumer_conn)
+            })
+        } else {
+            (None, None)
+        };
+
+    let queue: Arc<MessageQueue> = if let Some(publisher_conn) = publisher_connection.as_ref() {
+        runtime_handle.block_on(async {
+            let channel = publisher_conn.create_channel().await.unwrap();
+
+            // Create quorum queue arguments (reused for all queues)
+            let mut quorum_queue_args = FieldTable::default();
+            quorum_queue_args.insert(
+                "x-queue-type".into(),
+                lapin::types::AMQPValue::LongString("quorum".into()),
+            );
+
+            // Register queues
+            // ==== 3.1 Spans message queue ====
+            channel
+                .exchange_declare(
+                    OBSERVATIONS_EXCHANGE.into(),
+                    ExchangeKind::Fanout,
+                    ExchangeDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            channel
+                .queue_declare(
+                    OBSERVATIONS_QUEUE.into(),
+                    QueueDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    quorum_queue_args.clone(),
+                )
+                .await
+                .unwrap();
+
+            // ==== 3.1a Spans data plane message queue ====
+            channel
+                .exchange_declare(
+                    SPANS_DATA_PLANE_EXCHANGE.into(),
+                    ExchangeKind::Fanout,
+                    ExchangeDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            channel
+                .queue_declare(
+                    SPANS_DATA_PLANE_QUEUE.into(),
+                    QueueDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    quorum_queue_args.clone(),
+                )
+                .await
+                .unwrap();
+
+            // ==== 3.1b Spans indexer message queue ====
+            channel
+                .exchange_declare(
+                    SPANS_INDEXER_EXCHANGE.into(),
+                    ExchangeKind::Fanout,
+                    ExchangeDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            channel
+                .queue_declare(
+                    SPANS_INDEXER_QUEUE.into(),
+                    QueueDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    quorum_queue_args.clone(),
+                )
+                .await
+                .unwrap();
+
+            // ==== 3.2 Browser events message queue ====
+            channel
+                .exchange_declare(
+                    BROWSER_SESSIONS_EXCHANGE.into(),
+                    ExchangeKind::Fanout,
+                    ExchangeDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            channel
+                .queue_declare(
+                    BROWSER_SESSIONS_QUEUE.into(),
+                    QueueDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    quorum_queue_args.clone(),
+                )
+                .await
+                .unwrap();
+
+            // ==== 3.5 Signals message queue ====
+            #[cfg(feature = "signals")]
+            {
+                channel
+                    .exchange_declare(
+                        SIGNALS_EXCHANGE.into(),
+                        ExchangeKind::Fanout,
+                        ExchangeDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        FieldTable::default(),
+                    )
+                    .await
+                    .unwrap();
+
+                channel
+                    .queue_declare(
+                        SIGNALS_QUEUE.into(),
+                        QueueDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        quorum_queue_args.clone(),
+                    )
+                    .await
+                    .unwrap();
+            }
+
+            // ==== 3.5b Input extraction message queue ====
+            channel
+                .exchange_declare(
+                    INPUT_EXTRACTION_EXCHANGE.into(),
+                    ExchangeKind::Fanout,
+                    ExchangeDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            channel
+                .queue_declare(
+                    INPUT_EXTRACTION_QUEUE.into(),
+                    QueueDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    quorum_queue_args.clone(),
+                )
+                .await
+                .unwrap();
+
+            // ==== 3.5c User-task regex agent queue ====
+            // Separate from the extraction queue: an agent run takes minutes
+            // while a per-trace extraction takes seconds. Failures drop and the
+            // cohort accumulator's retry interval spaces the next attempt, so
+            // there is no delay/retry topology.
+            channel
+                .exchange_declare(
+                    USER_TASK_REGEX_EXCHANGE.into(),
+                    ExchangeKind::Fanout,
+                    ExchangeDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            channel
+                .queue_declare(
+                    USER_TASK_REGEX_QUEUE.into(),
+                    QueueDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    quorum_queue_args.clone(),
+                )
+                .await
+                .unwrap();
+
+            // ==== 3.6 Notifications message queue ====
+            channel
+                .exchange_declare(
+                    NOTIFICATIONS_EXCHANGE.into(),
+                    ExchangeKind::Fanout,
+                    ExchangeDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            channel
+                .queue_declare(
+                    NOTIFICATIONS_QUEUE.into(),
+                    QueueDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    quorum_queue_args.clone(),
+                )
+                .await
+                .unwrap();
+
+            // ==== 3.6b Notification Deliveries message queue ====
+            channel
+                .exchange_declare(
+                    NOTIFICATION_DELIVERIES_EXCHANGE.into(),
+                    ExchangeKind::Fanout,
+                    ExchangeDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            channel
+                .queue_declare(
+                    NOTIFICATION_DELIVERIES_QUEUE.into(),
+                    QueueDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    quorum_queue_args.clone(),
+                )
+                .await
+                .unwrap();
+
+            // ==== 3.7 Event Clustering message queue ====
+            #[cfg(feature = "signals")]
+            {
+                channel
+                    .exchange_declare(
+                        EVENT_CLUSTERING_EXCHANGE.into(),
+                        ExchangeKind::Fanout,
+                        ExchangeDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        FieldTable::default(),
+                    )
+                    .await
+                    .unwrap();
+
+                channel
+                    .queue_declare(
+                        EVENT_CLUSTERING_QUEUE.into(),
+                        QueueDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        quorum_queue_args.clone(),
+                    )
+                    .await
+                    .unwrap();
+
+                // ==== 3.7b Event Clustering Batch message queue ====
+                channel
+                    .exchange_declare(
+                        EVENT_CLUSTERING_BATCH_EXCHANGE.into(),
+                        ExchangeKind::Fanout,
+                        ExchangeDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        FieldTable::default(),
+                    )
+                    .await
+                    .unwrap();
+
+                channel
+                    .queue_declare(
+                        EVENT_CLUSTERING_BATCH_QUEUE.into(),
+                        QueueDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        quorum_queue_args.clone(),
+                    )
+                    .await
+                    .unwrap();
+            }
+
+            // ==== 3.8 Trace Analysis LLM Batch Submissions message queue ====
+            #[cfg(feature = "signals")]
+            {
+                channel
+                    .exchange_declare(
+                        SIGNAL_JOB_SUBMISSION_BATCH_EXCHANGE.into(),
+                        ExchangeKind::Fanout,
+                        ExchangeDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        FieldTable::default(),
+                    )
+                    .await
+                    .unwrap();
+
+                channel
+                    .queue_declare(
+                        SIGNAL_JOB_SUBMISSION_BATCH_QUEUE.into(),
+                        QueueDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        quorum_queue_args.clone(),
+                    )
+                    .await
+                    .unwrap();
+
+                // ==== 3.9 Trace Analysis LLM Batch Pending message queue ====
+                channel
+                    .exchange_declare(
+                        SIGNAL_JOB_PENDING_BATCH_EXCHANGE.into(),
+                        ExchangeKind::Fanout,
+                        ExchangeDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        FieldTable::default(),
+                    )
+                    .await
+                    .unwrap();
+
+                channel
+                    .queue_declare(
+                        SIGNAL_JOB_PENDING_BATCH_QUEUE.into(),
+                        QueueDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        quorum_queue_args.clone(),
+                    )
+                    .await
+                    .unwrap();
+
+                // ==== 3.10 Trace Analysis LLM Batch Waiting message queue ====
+                channel
+                    .exchange_declare(
+                        SIGNAL_JOB_WAITING_BATCH_EXCHANGE.into(),
+                        ExchangeKind::Fanout,
+                        ExchangeDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        FieldTable::default(),
+                    )
+                    .await
+                    .unwrap();
+
+                let mut waiting_queue_args = quorum_queue_args.clone();
+                waiting_queue_args.insert(
+                    "x-dead-letter-exchange".into(),
+                    lapin::types::AMQPValue::LongString(SIGNAL_JOB_PENDING_BATCH_EXCHANGE.into()),
+                );
+
+                channel
+                    .queue_declare(
+                        SIGNAL_JOB_WAITING_BATCH_QUEUE.into(),
+                        QueueDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        waiting_queue_args,
+                    )
+                    .await
+                    .unwrap();
+
+                // Bind waiting queue to its exchange (no consumer, messages expire via TTL to DLX)
+                channel
+                    .queue_bind(
+                        SIGNAL_JOB_WAITING_BATCH_QUEUE.into(),
+                        SIGNAL_JOB_WAITING_BATCH_EXCHANGE.into(),
+                        SIGNAL_JOB_WAITING_BATCH_ROUTING_KEY.into(),
+                        lapin::options::QueueBindOptions::default(),
+                        FieldTable::default(),
+                    )
+                    .await
+                    .unwrap();
+
+                channel
+                    .exchange_declare(
+                        SIGNALS_REALTIME_EXCHANGE.into(),
+                        ExchangeKind::Fanout,
+                        ExchangeDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        FieldTable::default(),
+                    )
+                    .await
+                    .unwrap();
+
+                channel
+                    .queue_declare(
+                        SIGNALS_REALTIME_QUEUE.into(),
+                        QueueDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        quorum_queue_args.clone(),
+                    )
+                    .await
+                    .unwrap();
+
+                // Parking lot for runs waiting on a sibling to warm the trace's
+                // prefix cache. No consumer — messages expire via their
+                // per-message TTL and dead-letter back into the realtime
+                // exchange. (The realtime queue itself is bound to that exchange
+                // by `get_receiver` when a consumer subscribes.)
+                channel
+                    .exchange_declare(
+                        SIGNALS_REALTIME_WAITING_EXCHANGE.into(),
+                        ExchangeKind::Fanout,
+                        ExchangeDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        FieldTable::default(),
+                    )
+                    .await
+                    .unwrap();
+
+                let mut realtime_waiting_args = quorum_queue_args.clone();
+                realtime_waiting_args.insert(
+                    "x-dead-letter-exchange".into(),
+                    lapin::types::AMQPValue::LongString(SIGNALS_REALTIME_EXCHANGE.into()),
+                );
+
+                channel
+                    .queue_declare(
+                        SIGNALS_REALTIME_WAITING_QUEUE.into(),
+                        QueueDeclareOptions {
+                            durable: true,
+                            ..Default::default()
+                        },
+                        realtime_waiting_args,
+                    )
+                    .await
+                    .unwrap();
+
+                channel
+                    .queue_bind(
+                        SIGNALS_REALTIME_WAITING_QUEUE.into(),
+                        SIGNALS_REALTIME_WAITING_EXCHANGE.into(),
+                        SIGNALS_REALTIME_WAITING_ROUTING_KEY.into(),
+                        lapin::options::QueueBindOptions::default(),
+                        FieldTable::default(),
+                    )
+                    .await
+                    .unwrap();
+            }
+
+            // ==== 3.11 Logs message queue ====
+            channel
+                .exchange_declare(
+                    LOGS_EXCHANGE.into(),
+                    ExchangeKind::Fanout,
+                    ExchangeDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            channel
+                .queue_declare(
+                    LOGS_QUEUE.into(),
+                    QueueDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    quorum_queue_args.clone(),
+                )
+                .await
+                .unwrap();
+
+            // ==== 3.12 Reports message queue ====
+            channel
+                .exchange_declare(
+                    REPORT_TRIGGERS_EXCHANGE.into(),
+                    ExchangeKind::Fanout,
+                    ExchangeDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            channel
+                .queue_declare(
+                    REPORT_TRIGGERS_QUEUE.into(),
+                    QueueDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    quorum_queue_args.clone(),
+                )
+                .await
+                .unwrap();
+
+            // ==== 3.13 Checkpoints message queue ====
+            channel
+                .exchange_declare(
+                    CHECKPOINTS_EXCHANGE.into(),
+                    ExchangeKind::Fanout,
+                    ExchangeDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            channel
+                .queue_declare(
+                    CHECKPOINTS_QUEUE.into(),
+                    QueueDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    quorum_queue_args.clone(),
+                )
+                .await
+                .unwrap();
+
+            // ==== 3.14 Static prompt message queue ====
+            channel
+                .exchange_declare(
+                    STATIC_PROMPT_EXCHANGE.into(),
+                    ExchangeKind::Fanout,
+                    ExchangeDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            channel
+                .queue_declare(
+                    STATIC_PROMPT_QUEUE.into(),
+                    QueueDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    quorum_queue_args.clone(),
+                )
+                .await
+                .unwrap();
+
+            // ==== 3.15 SP versioning queues ====
+            channel
+                .exchange_declare(
+                    SP_VERSIONING_EXCHANGE.into(),
+                    ExchangeKind::Fanout,
+                    ExchangeDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            channel
+                .queue_declare(
+                    SP_VERSIONING_QUEUE.into(),
+                    QueueDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    quorum_queue_args.clone(),
+                )
+                .await
+                .unwrap();
+
+            // Delay queue for messages that can't resolve yet. No consumer
+            // — messages expire via their per-message TTL and dead-letter
+            // back into the sp-versioning exchange for a re-check.
+            channel
+                .exchange_declare(
+                    SP_VERSIONING_DELAY_EXCHANGE.into(),
+                    ExchangeKind::Fanout,
+                    ExchangeDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            let mut sp_versioning_delay_args = quorum_queue_args.clone();
+            sp_versioning_delay_args.insert(
+                "x-dead-letter-exchange".into(),
+                lapin::types::AMQPValue::LongString(SP_VERSIONING_EXCHANGE.into()),
+            );
+
+            channel
+                .queue_declare(
+                    SP_VERSIONING_DELAY_QUEUE.into(),
+                    QueueDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    sp_versioning_delay_args,
+                )
+                .await
+                .unwrap();
+
+            channel
+                .queue_bind(
+                    SP_VERSIONING_DELAY_QUEUE.into(),
+                    SP_VERSIONING_DELAY_EXCHANGE.into(),
+                    SP_VERSIONING_DELAY_ROUTING_KEY.into(),
+                    lapin::options::QueueBindOptions::default(),
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            // ==== 3.16 SP regex extraction (demand-driven) queue ====
+            // Fed by consumers that hit a version regex-miss (the signals
+            // summarizer); failures drop and the next demand retries, so no
+            // delay/retry topology.
+            channel
+                .exchange_declare(
+                    SP_REGEX_EXTRACTION_EXCHANGE.into(),
+                    ExchangeKind::Fanout,
+                    ExchangeDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    FieldTable::default(),
+                )
+                .await
+                .unwrap();
+
+            channel
+                .queue_declare(
+                    SP_REGEX_EXTRACTION_QUEUE.into(),
+                    QueueDeclareOptions {
+                        durable: true,
+                        ..Default::default()
+                    },
+                    quorum_queue_args.clone(),
+                )
+                .await
+                .unwrap();
+
+            let max_channel_pool_size = env::mq::MAX_CHANNEL_POOL_SIZE.get();
+
+            log::info!("RabbitMQ channels: {}", max_channel_pool_size);
+
+            let rabbit_mq = mq::rabbit::RabbitMQ::new(
+                publisher_conn.clone(),
+                consumer_connection.clone(),
+                max_channel_pool_size,
+            );
+            Arc::new(rabbit_mq.into())
+        })
+    } else {
+        let queue = mq::tokio_mpsc::TokioMpscQueue::new();
+        // register queues
+        // ==== 3.1 Spans message queue ====
+        queue.register_queue(OBSERVATIONS_EXCHANGE, OBSERVATIONS_QUEUE);
+        // ==== 3.1a Spans data plane message queue ====
+        queue.register_queue(SPANS_DATA_PLANE_EXCHANGE, SPANS_DATA_PLANE_QUEUE);
+        // ==== 3.1b Spans indexer message queue ====
+        queue.register_queue(SPANS_INDEXER_EXCHANGE, SPANS_INDEXER_QUEUE);
+        // ==== 3.2 Browser events message queue ====
+        queue.register_queue(BROWSER_SESSIONS_EXCHANGE, BROWSER_SESSIONS_QUEUE);
+        // ==== 3.5 Signals event message queue ====
+        #[cfg(feature = "signals")]
+        queue.register_queue(SIGNALS_EXCHANGE, SIGNALS_QUEUE);
+        // ==== 3.5b Input extraction message queue ====
+        queue.register_queue(INPUT_EXTRACTION_EXCHANGE, INPUT_EXTRACTION_QUEUE);
+        // ==== 3.5c User-task regex agent queue ====
+        queue.register_queue(USER_TASK_REGEX_EXCHANGE, USER_TASK_REGEX_QUEUE);
+        // ==== 3.6 Notifications message queue ====
+        queue.register_queue(NOTIFICATIONS_EXCHANGE, NOTIFICATIONS_QUEUE);
+        // ==== 3.6b Notification Deliveries message queue ====
+        queue.register_queue(
+            NOTIFICATION_DELIVERIES_EXCHANGE,
+            NOTIFICATION_DELIVERIES_QUEUE,
+        );
+        // ==== 3.7 Event Clustering message queue ====
+        #[cfg(feature = "signals")]
+        {
+            queue.register_queue(EVENT_CLUSTERING_EXCHANGE, EVENT_CLUSTERING_QUEUE);
+            // ==== 3.7b Event Clustering Batch message queue ====
+            queue.register_queue(
+                EVENT_CLUSTERING_BATCH_EXCHANGE,
+                EVENT_CLUSTERING_BATCH_QUEUE,
+            );
+        }
+        // ==== 3.8 Signal Job Submission Batch message queue ====
+        #[cfg(feature = "signals")]
+        {
+            queue.register_queue(
+                SIGNAL_JOB_SUBMISSION_BATCH_EXCHANGE,
+                SIGNAL_JOB_SUBMISSION_BATCH_QUEUE,
+            );
+            // ==== 3.9 Signal Job Pending Batch message queue ====
+            queue.register_queue(
+                SIGNAL_JOB_PENDING_BATCH_EXCHANGE,
+                SIGNAL_JOB_PENDING_BATCH_QUEUE,
+            );
+            // ==== 3.10 Signal Job Waiting Batch message queue ====
+            queue.register_queue(
+                SIGNAL_JOB_WAITING_BATCH_EXCHANGE,
+                SIGNAL_JOB_WAITING_BATCH_QUEUE,
+            );
+            // ==== 3.10b Signals Realtime message queue ====
+            queue.register_queue(SIGNALS_REALTIME_EXCHANGE, SIGNALS_REALTIME_QUEUE);
+        }
+        // ==== 3.11 Logs message queue ====
+        queue.register_queue(LOGS_EXCHANGE, LOGS_QUEUE);
+        // ==== 3.12 Reports message queue ====
+        queue.register_queue(REPORT_TRIGGERS_EXCHANGE, REPORT_TRIGGERS_QUEUE);
+        // ==== 3.13 Checkpoints message queue ====
+        queue.register_queue(CHECKPOINTS_EXCHANGE, CHECKPOINTS_QUEUE);
+        // ==== 3.14 Static prompt message queue ====
+        queue.register_queue(STATIC_PROMPT_EXCHANGE, STATIC_PROMPT_QUEUE);
+        // ==== 3.15 SP versioning message queue ====
+        queue.register_queue(SP_VERSIONING_EXCHANGE, SP_VERSIONING_QUEUE);
+        // ==== 3.16 SP regex extraction (demand-driven) queue ====
+        queue.register_queue(SP_REGEX_EXTRACTION_EXCHANGE, SP_REGEX_EXTRACTION_QUEUE);
+        log::info!("Using tokio mpsc queue");
+        Arc::new(queue.into())
+    };
+
+    // ==== 3.5 SSE connections map ====
+    let sse_connections: SseConnectionMap = Arc::new(dashmap::DashMap::new());
+
+    let sse_connections_clone = sse_connections.clone();
+    let pubsub_clone = pubsub.clone();
+    runtime_handle.spawn(async move {
+        if let Err(e) = realtime::start_redis_subscriber(pubsub_clone, sse_connections_clone).await
+        {
+            log::error!("Redis SSE subscriber failed: {:?}", e);
+        }
+    });
+
+    let runtime_handle_for_http = runtime_handle.clone();
+    let db_for_http = db.clone();
+    let cache_for_http = cache.clone();
+    let mq_for_http = queue.clone();
+
+    // == AWS config for S3 ==
+    let aws_sdk_config = runtime_handle.block_on(async {
+        aws_config::defaults(BehaviorVersion::latest())
+            .region(aws_config::Region::new(
+                std::env::var(env::secrets::AWS_REGION).unwrap_or("us-east-1".to_string()),
+            ))
+            .load()
+            .await
+    });
+
+    // == Storage ==
+    let storage: Arc<Storage> = if is_feature_enabled(Feature::Storage) {
+        log::info!("using S3 storage");
+        let s3_client = aws_sdk_s3::Client::new(&aws_sdk_config);
+        let s3_storage = storage::s3::S3Storage::new(s3_client);
+        Arc::new(s3_storage.into())
+    } else {
+        log::info!("using mock storage");
+        Arc::new(MockStorage {}.into())
+    };
+
+    // == Query engine ==
+    let query_engine: Arc<QueryEngine> = Arc::new(QueryEngine::new());
+
+    // == Clickhouse ==
+    let clickhouse_url = std::env::var(env::clickhouse::URL).expect("CLICKHOUSE_URL must be set");
+    let clickhouse_user =
+        std::env::var(env::clickhouse::USER).expect("CLICKHOUSE_USER must be set");
+    let clickhouse_password = std::env::var(env::clickhouse::PASSWORD);
+    let clickhouse_client = clickhouse::Client::default()
+        .with_url(clickhouse_url.clone())
+        .with_user(clickhouse_user)
+        .with_database("default")
+        // Validation switches the write format from RowBinary to RowBinaryWithNamesAndTypes.
+        // https://clickhouse.com/docs/interfaces/formats/RowBinaryWithNamesAndTypes
+        //
+        // Disable validation globally, because:
+        // 1. Type safety in clickhouse is a little more relaxed than in other databases.
+        //    For example, columns don't have to have explicit default values, while validation
+        //    requires unused columns to be present in each write.
+        // 2. For the examples like above, validation makes schema updates harder,
+        //    because we need to update all writes to the table, for the cases where
+        //    validation in code breaks, while clickhouse permits the writes.
+        //    Moreover, code updates need to be done at the same time as the schema update.
+        // 3. Validation is costly. It can slow down writes by 1.1-3x according to the
+        //    crate doc comments.
+        // 4. Rust types themselves are a bit more strict. For example, `data` in `BrowserEventCHRow`
+        //    is `&'a [u8]`, but the column is `String`. The underlying data is not a valid UTF-8 string,
+        //    but it's still a valid binary data. Rust will refuse to create a String from it, while
+        //    the validation in the SDK would require us to make it a String
+        .with_validation(false)
+        .with_setting("async_insert", "1")
+        .with_setting("wait_for_async_insert", "1");
+
+    let clickhouse = match clickhouse_password {
+        Ok(password) => clickhouse_client.with_password(password),
+        _ => {
+            log::warn!("CLICKHOUSE_PASSWORD not set, using without password");
+            clickhouse_client
+        }
+    };
+
+    // == Clickhouse Read-Only Client ==
+    let clickhouse_readonly_client = if is_feature_enabled(Feature::ClickhouseReadOnly) {
+        let clickhouse_ro_user =
+            std::env::var(env::clickhouse::RO_USER).expect("CLICKHOUSE_RO_USER must be set");
+        let clickhouse_ro_password = std::env::var(env::clickhouse::RO_PASSWORD)
+            .expect("CLICKHOUSE_RO_PASSWORD must be set");
+
+        Some(Arc::new(crate::sql::ClickhouseReadonlyClient::new(
+            clickhouse_url,
+            clickhouse_ro_user,
+            clickhouse_ro_password,
+        )))
+    } else {
+        log::info!("ClickHouse read-only client disabled");
+        None
+    };
+
+    // == Quickwit ==
+    // Quickwit is optional - if unavailable, the server will start but search/indexing will be disabled
+    let quickwit_client =
+        match runtime_handle.block_on(QuickwitClient::connect(QuickwitConfig::from_env())) {
+            Ok(client) => {
+                log::info!("Quickwit client connected successfully");
+                Some(client)
+            }
+            Err(e) => {
+                log::warn!(
+                    "Failed to connect to Quickwit (search/indexing will be disabled): {:?}",
+                    e
+                );
+                None
+            }
+        };
+
+    // ==== 3.15 RabbitMQ Streams transport (LAM-2024) ====
+    // Additive to the queues above: producers prefer a stream when its publisher
+    // was built, and fall back to the quorum queue otherwise. A failure here is
+    // logged and leaves every publisher `None`, so ingest degrades to the queue
+    // path rather than failing the boot.
+    //
+    // Publishers are built in BOTH pod roles, NOT just under
+    // `enable_producer()`. Ingest (`api/v1/spans.rs`) is producer-side, but the
+    // CONSUMER also publishes spans: `publish_for_indexing` runs inside
+    // `process_span_messages`, and the metadata façades
+    // (`publish_trace_{input,output}_update` / `publish_trace_metadata_patch`) are
+    // called from the input-extraction and checkpoints consumers. Gating on
+    // `enable_producer()` left both publishers `None` on `OPERATION_MODE=consumer`,
+    // so every one of those paths silently stayed on the quorum queue — the exact
+    // path this transport exists to unload.
+    // Publishers are built only after every super stream declared successfully,
+    // so a topology failure can't leave producers writing to unread streams. The
+    // two publishers are threaded to their publish sites as explicit
+    // `Option<Arc<StreamPublisher>>` parameters (no global registry).
+    let (stream_runtime, spans_stream_publisher, indexer_stream_publisher): (
+        Option<mq::stream::StreamEnvironment>,
+        Option<Arc<mq::stream::StreamPublisher>>,
+        Option<Arc<mq::stream::StreamPublisher>>,
+    ) = if mq::stream::enabled() && is_feature_enabled(Feature::FullBuild) {
+        runtime_handle.block_on(async {
+                match mq::stream::StreamEnvironment::connect().await {
+                    Ok(environment) => {
+                        let topology = mq::stream::StreamTopology::from_env();
+                        // Declare the indexer stream only when its flag is on:
+                        // its publisher AND its reader are both gated on that same
+                        // flag, so otherwise we'd create a 32-partition super stream
+                        // nobody touches and let a failure on it abort the
+                        // observations transport too.
+                        let mut streams = vec![mq::stream::OBSERVATIONS_STREAM];
+                        if env::streams::SPANS_INDEXER_ENABLED.get() {
+                            streams.push(mq::stream::SPANS_INDEXER_STREAM);
+                        }
+                        for name in streams {
+                            if let Err(e) = topology.declare(&environment, name).await {
+                                log::error!("Failed to declare super stream '{}': {:?}", name, e);
+                                return (None, None, None);
+                            }
+                        }
+
+                        let mut spans_publisher = None;
+                        let mut indexer_publisher = None;
+                        match mq::stream::StreamPublisher::new(
+                            &environment,
+                            mq::stream::OBSERVATIONS_STREAM,
+                        )
+                        .await
+                        {
+                            Ok(publisher) => spans_publisher = Some(Arc::new(publisher)),
+                            Err(e) => {
+                                log::error!("Failed to build observations publisher: {:?}", e)
+                            }
+                        }
+                        // Gated on the SHARED config flag, not on this pod's own
+                        // `quickwit_client`. The indexer reader lives in the
+                        // consumer pod and `QuickwitClient::connect` is a
+                        // per-pod TCP dial, so "Quickwit is live here" says
+                        // nothing about whether the consumer pod started a
+                        // reader — a producer that connects while the consumer
+                        // doesn't would publish indexing jobs to a stream
+                        // nothing reads, and an unread stream is deleted by
+                        // retention (the quorum queue would have retained them).
+                        // Both roles read this same env var, so the gate is
+                        // symmetric; unset keeps `publish_for_indexing` on the
+                        // queue fallback.
+                        if env::streams::SPANS_INDEXER_ENABLED.get() {
+                            match mq::stream::StreamPublisher::new(
+                                &environment,
+                                mq::stream::SPANS_INDEXER_STREAM,
+                            )
+                            .await
+                            {
+                                Ok(publisher) => {
+                                    indexer_publisher = Some(Arc::new(publisher))
+                                }
+                                Err(e) => log::error!(
+                                    "Failed to build spans indexer publisher: {:?}",
+                                    e
+                                ),
+                            }
+                        } else {
+                            log::warn!(
+                                "RABBITMQ_STREAM_SPANS_INDEXER_ENABLED is off - not building the spans indexer stream publisher; indexing stays on the quorum queue"
+                            );
+                        }
+                        log::info!("RabbitMQ Streams transport enabled");
+                        (Some(environment), spans_publisher, indexer_publisher)
+                    }
+                    Err(e) => {
+                        log::error!(
+                            "Failed to connect to RabbitMQ Streams, falling back to queues: {:?}",
+                            e
+                        );
+                        (None, None, None)
+                    }
+                }
+            })
+    } else {
+        (None, None, None)
+    };
+
+    // Now that the queue/DB/cache (and the optional spans stream publisher)
+    // exist, hand them to the internal self-tracing exporter. Until this runs
+    // the exporter drops spans; nothing emits internal spans this early on a
+    // normal boot (the agent only runs once serving starts).
+    if internal_tracing_enabled {
+        let _ = internal_ingest_deps.set(instrumentation::internal_exporter::IngestDeps {
+            queue: queue.clone(),
+            db: db.clone(),
+            cache: cache.clone(),
+            spans_stream_publisher: spans_stream_publisher.clone(),
+        });
+    }
+
+    // == PII redactor ==
+    // Optional: when `PII_REDACTOR_URL` is set, span input/output fields are
+    // redacted via the pii-redactor gRPC service for projects whose
+    // `projects.remove_pii` toggle is on. Failure to connect at startup
+    // disables the feature without blocking app-server boot.
+    let pii_redactor: Option<pii_redactor::PiiRedactorClient> = if is_feature_enabled(
+        Feature::PiiRedaction,
+    ) {
+        let url = std::env::var(env::connections::PII_REDACTOR_URL)
+            .expect("PII_REDACTOR_URL must be set");
+        match runtime_handle.block_on(
+                pii_redactor::pii_redactor::pii_redactor_service_client::PiiRedactorServiceClient::connect(url.clone()),
+            ) {
+                Ok(client) => {
+                    log::info!("pii-redactor client connected to {url}");
+                    Some(pii_redactor::PiiRedactorClient::new(client))
+                }
+                Err(e) => {
+                    log::warn!(
+                        "Failed to connect to pii-redactor at {url} (PII redaction disabled): {e:?}"
+                    );
+                    None
+                }
+            }
+    } else {
+        None
+    };
+
+    // == HTTP client ==
+    let http_client = reqwest::Client::new();
+
+    let clickhouse_for_http = clickhouse.clone();
+    let spans_stream_publisher_for_http = spans_stream_publisher.clone();
+
+    let storage_for_http = storage.clone();
+    let sse_connections_for_http = sse_connections.clone();
+    let http_client_for_http = http_client.clone();
+    let http_client_for_consumer = http_client.clone();
+
+    // == Resend client for email notifications ==
+    let resend_client = std::env::var(env::secrets::RESEND_API_KEY)
+        .ok()
+        .map(|key| Arc::new(resend_rs::Resend::new(key.as_str())));
+
+    if !enable_producer() && !enable_consumer() {
+        log::error!(
+            "Neither producer nor consumer mode is enabled. Set OPERATION_MODE to 'producer' or 'consumer', or unset to run both"
+        );
+        return Err(anyhow::anyhow!(
+            "Neither producer nor consumer mode is enabled"
+        ));
+    }
+
+    // == LLM Client ==
+    // Shared by every LLM-backed feature — gate on the union of their flags,
+    // not on any single feature, so the flags' conditions can diverge later
+    // without silently killing the others' client.
+    let llm_client_needed =
+        is_feature_enabled(Feature::Signals) || is_feature_enabled(Feature::InputExtraction);
+    let llm_provider_client: Option<Arc<llm::LlmClient>> = if llm_client_needed {
+        log::info!("Initializing LLM client");
+        match runtime_handle.block_on(llm::LlmClient::new()) {
+            Ok(client) => Some(Arc::new(client)),
+            Err(e) => {
+                log::warn!(
+                    "Failed to create LLM client (LLM-backed features will be disabled): {:?}",
+                    e
+                );
+                None
+            }
+        }
+    } else {
+        log::info!("No LLM-backed feature enabled - skipping LLM client initialization");
+        None
+    };
+    // Record whether the LLM client actually constructed (OnceLock, first
+    // call wins) — the user-task producer hook must not enqueue extraction
+    // work when the client failed to construct, since the extraction workers
+    // would never spawn and the messages would sit on the queue unconsumed.
+    llm::set_llm_client_available(llm_provider_client.is_some());
+    let llm_provider_client_for_http = llm_provider_client.clone();
+
+    if enable_consumer() {
+        log::info!("Enabling consumer mode, spinning up queue workers");
+
+        if is_feature_enabled(Feature::Reports) {
+            log::info!("Reports feature enabled - starting reports scheduler");
+            let db_for_scheduler = db.clone();
+            let queue_for_scheduler = queue.clone();
+            let cache_for_scheduler = cache.clone();
+            runtime_handle.spawn(async move {
+                reports::scheduler::run_reports_scheduler(
+                    db_for_scheduler.pool.clone(),
+                    queue_for_scheduler,
+                    cache_for_scheduler,
+                )
+                .await;
+            });
+        } else {
+            log::info!("Reports feature disabled - skipping reports scheduler");
+        }
+
+        let worker_pool = Arc::new(WorkerPool::new(queue.clone()));
+        let batch_worker_pool = Arc::new(BatchWorkerPool::new(queue.clone()));
+
+        let num_spans_workers = env::workers::NUM_SPANS.get();
+
+        let num_data_plane_spans_workers = env::workers::NUM_DATA_PLANE_SPANS.get();
+
+        let num_spans_indexer_workers = env::workers::NUM_SPANS_INDEXER.get();
+
+        let num_browser_events_workers = env::workers::NUM_BROWSER_EVENTS.get();
+
+        let num_signals_workers = env::workers::NUM_SEMANTIC_EVENT.get();
+
+        let num_notification_workers = env::workers::NUM_NOTIFICATION.get();
+
+        let num_notification_delivery_workers = env::workers::NUM_NOTIFICATION_DELIVERY.get();
+
+        let num_clustering_batching_workers = env::workers::NUM_CLUSTERING_BATCHING.get();
+
+        let num_clustering_workers = env::workers::NUM_CLUSTERING.get();
+
+        let num_signal_job_submission_batch_workers =
+            env::workers::NUM_SIGNAL_JOB_SUBMISSION_BATCH.get();
+
+        let num_signal_job_pending_batch_workers = env::workers::NUM_SIGNAL_JOB_PENDING_BATCH.get();
+
+        let num_logs_workers = env::workers::NUM_LOGS.get();
+
+        let num_reports_workers = env::workers::NUM_REPORTS.get();
+
+        let num_checkpoints_workers = env::workers::NUM_CHECKPOINTS.get();
+
+        let num_static_prompt_workers = env::workers::NUM_STATIC_SP.get();
+
+        let num_sp_versioning_workers = env::workers::NUM_SP_VERSIONING.get();
+
+        let num_sp_regex_extraction_workers = env::workers::NUM_SP_REGEX_EXTRACTION.get();
+        let num_user_task_regex_workers = env::workers::NUM_USER_TASK_REGEX.get();
+
+        let num_input_extraction_workers = env::workers::NUM_INPUT_EXTRACTION.get();
+
+        log::info!(
+            "Spans workers: {}, Data plane spans workers: {}, Spans indexer workers: {}, Browser events workers: {}, Signals workers: {}, Notification workers: {}, Notification delivery workers: {}, Clustering batching workers: {}, Clustering workers: {}, Trace Analysis LLM Batch Submissions workers: {}, Trace Analysis LLM Batch Pending workers: {}, Logs workers: {}, Reports workers: {}, Input extraction workers: {}",
+            num_spans_workers,
+            num_data_plane_spans_workers,
+            num_spans_indexer_workers,
+            num_browser_events_workers,
+            num_signals_workers,
+            num_notification_workers,
+            num_notification_delivery_workers,
+            num_clustering_batching_workers,
+            num_clustering_workers,
+            num_signal_job_submission_batch_workers,
+            num_signal_job_pending_batch_workers,
+            num_logs_workers,
+            num_reports_workers,
+            num_input_extraction_workers,
+        );
+
+        let queue_for_health = mq_for_http.clone();
+        let cache_for_health = cache_for_http.clone();
+        let runtime_handle_for_consumer = runtime_handle_for_http.clone();
+        let db_for_consumer = db_for_http.clone();
+        let cache_for_consumer = cache_for_http.clone();
+        let mq_for_consumer = mq_for_http.clone();
+        let clickhouse_for_consumer = clickhouse.clone();
+        let quickwit_client_for_consumer = quickwit_client.clone();
+        let pubsub_for_consumer = pubsub.clone();
+        let pii_redactor_for_consumer = pii_redactor.clone();
+        let worker_pool_clone = worker_pool.clone();
+        let batch_worker_pool_clone = batch_worker_pool.clone();
+        let stream_runtime_for_consumer = stream_runtime.clone();
+        let spans_stream_publisher_for_consumer = spans_stream_publisher.clone();
+        let indexer_stream_publisher_for_consumer = indexer_stream_publisher.clone();
+
+        let consumer_handle = thread::Builder::new()
+            .name("consumer".to_string())
+            .spawn(move || {
+                runtime_handle_for_consumer.block_on(async {
+                    // Spawn spans workers using batch worker pool
+                    {
+                        let size = env::batching::SPANS_SIZE.get();
+                        let flush_interval_ms = env::batching::SPANS_FLUSH_INTERVAL_MS.get();
+                        let flush_interval = Duration::from_millis(flush_interval_ms);
+
+                        let db = db_for_consumer.clone();
+                        let cache = cache_for_consumer.clone();
+                        let queue: Arc<MessageQueue> = mq_for_consumer.clone();
+                        let clickhouse = clickhouse_for_consumer.clone();
+                        let pubsub = pubsub_for_consumer.clone();
+                        let pii_redactor = pii_redactor_for_consumer.clone();
+                        let indexer_stream_publisher =
+                            indexer_stream_publisher_for_consumer.clone();
+
+                        let ch_cloud = CloudClickhouse::new(clickhouse.clone());
+
+                        batch_worker_pool_clone.spawn(
+                            BatchWorkerType::Spans,
+                            num_spans_workers,
+                            move || SpanHandler {
+                                db: db.clone(),
+                                cache: cache.clone(),
+                                queue: queue.clone(),
+                                clickhouse: clickhouse.clone(),
+                                ch: ch_cloud.clone(),
+                                pubsub: pubsub.clone(),
+                                pii_redactor: pii_redactor.clone(),
+                                indexer_stream_publisher: indexer_stream_publisher.clone(),
+                                config: BatchingConfig {
+                                    size,
+                                    flush_interval,
+                                },
+                            },
+                            QueueConfig::new(
+                                OBSERVATIONS_QUEUE,
+                                OBSERVATIONS_EXCHANGE,
+                                OBSERVATIONS_ROUTING_KEY,
+                            ),
+                        );
+                    }
+
+                    // Spawn data plane span workers using batch worker pool
+                    {
+                        let size = env::batching::DATA_PLANE_SPANS_SIZE.get();
+                        let flush_interval_ms =
+                            env::batching::DATA_PLANE_SPANS_FLUSH_INTERVAL_MS.get();
+                        let flush_interval = Duration::from_millis(flush_interval_ms);
+
+                        let db = db_for_consumer.clone();
+                        let cache = cache_for_consumer.clone();
+                        let queue: Arc<MessageQueue> = mq_for_consumer.clone();
+                        let clickhouse = clickhouse_for_consumer.clone();
+                        let pubsub = pubsub_for_consumer.clone();
+                        let pii_redactor = pii_redactor_for_consumer.clone();
+                        let indexer_stream_publisher =
+                            indexer_stream_publisher_for_consumer.clone();
+
+                        let ch_data_plane = DataPlaneClickhouse::new(
+                            http_client_for_consumer.clone(),
+                            cache_for_consumer.clone(),
+                        );
+
+                        batch_worker_pool_clone.spawn(
+                            BatchWorkerType::DataPlaneSpans,
+                            num_data_plane_spans_workers,
+                            move || DataPlaneSpanHandler {
+                                db: db.clone(),
+                                cache: cache.clone(),
+                                queue: queue.clone(),
+                                clickhouse: clickhouse.clone(),
+                                ch: ch_data_plane.clone(),
+                                pubsub: pubsub.clone(),
+                                pii_redactor: pii_redactor.clone(),
+                                indexer_stream_publisher: indexer_stream_publisher.clone(),
+                                config: BatchingConfig {
+                                    size,
+                                    flush_interval,
+                                },
+                            },
+                            QueueConfig::new(
+                                SPANS_DATA_PLANE_QUEUE,
+                                SPANS_DATA_PLANE_EXCHANGE,
+                                SPANS_DATA_PLANE_ROUTING_KEY,
+                            ),
+                        );
+                    }
+
+                    // Spawn spans indexer workers if Quickwit is available
+                    if let Some(quickwit_client_for_indexer) = quickwit_client_for_consumer.as_ref()
+                    {
+                        let quickwit = quickwit_client_for_indexer.clone();
+                        worker_pool_clone.spawn(
+                            WorkerType::SpansIndexer,
+                            num_spans_indexer_workers,
+                            move || QuickwitIndexerHandler {
+                                quickwit_client: quickwit.clone(),
+                            },
+                            QueueConfig::new(
+                                SPANS_INDEXER_QUEUE,
+                                SPANS_INDEXER_EXCHANGE,
+                                SPANS_INDEXER_ROUTING_KEY,
+                            ),
+                        );
+                    } else {
+                        log::warn!("Quickwit not available - skipping spans indexer workers");
+                    }
+
+                    // ==== Stream readers (LAM-2024) ====
+                    // Run ALONGSIDE the queue workers above during the
+                    // transition: the quorum queues drain their backlog while
+                    // streams carry new traffic. Removing the queue workers is a
+                    // later release.
+                    if let Some(stream_environment) = stream_runtime_for_consumer.as_ref() {
+                        {
+                            let db = db_for_consumer.clone();
+                            let cache = cache_for_consumer.clone();
+                            let queue = mq_for_consumer.clone();
+                            let clickhouse = clickhouse_for_consumer.clone();
+                            let pubsub = pubsub_for_consumer.clone();
+                            let pii_redactor = pii_redactor_for_consumer.clone();
+                            let ch_cloud = CloudClickhouse::new(clickhouse.clone());
+
+                            let reader = mq::stream::StreamReader::new(
+                                mq::stream::OBSERVATIONS_STREAM,
+                                mq::stream::OBSERVATIONS_CONSUMER_NAME,
+                                stream_environment.clone(),
+                                StreamSpanHandler {
+                                    db,
+                                    cache,
+                                    queue,
+                                    clickhouse,
+                                    ch: ch_cloud,
+                                    pubsub,
+                                    pii_redactor,
+                                    indexer_stream_publisher:
+                                        indexer_stream_publisher_for_consumer.clone(),
+                                    config: BatchingConfig {
+                                        size: env::batching::SPANS_SIZE.get(),
+                                        flush_interval: Duration::from_millis(
+                                            env::batching::STREAM_SPANS_FLUSH_INTERVAL_MS.get(),
+                                        ),
+                                    },
+                                },
+                                env::streams::SPANS_BATCHERS.get(),
+                            );
+                            tokio::spawn(reader.run());
+
+                            // Same shared flag the producer gates its publisher on,
+                            // so the two pod roles can't disagree about whether this
+                            // stream has a reader. The reader must NOT be gated on
+                            // this pod's own `quickwit_client`: that handle is a
+                            // boot-time TCP dial, so a Quickwit blip during THIS
+                            // pod's startup would leave the stream with no reader
+                            // while producer pods (gated only on the flag) keep
+                            // publishing — and an unread stream is deleted by
+                            // retention, unlike an undrained quorum queue. So build
+                            // a LAZY client when the boot dial failed: the handler
+                            // classifies `Unavailable` as transient, which retries
+                            // the batch in place without advancing the offset and
+                            // calls `reconnect()`, so the backlog waits on broker
+                            // disk and drains once Quickwit returns.
+                            if env::streams::SPANS_INDEXER_ENABLED.get() {
+                                let indexer_quickwit_client = match quickwit_client_for_consumer
+                                    .as_ref()
+                                {
+                                    Some(client) => Some(client.clone()),
+                                    None => {
+                                        match QuickwitClient::connect_lazy(QuickwitConfig::from_env())
+                                        {
+                                            Ok(client) => {
+                                                log::warn!(
+                                                    "RABBITMQ_STREAM_SPANS_INDEXER_ENABLED is on but Quickwit was unreachable at boot - starting the spans indexer reader with a lazy client so published indexing jobs aren't lost to retention"
+                                                );
+                                                Some(client)
+                                            }
+                                            Err(e) => {
+                                                log::error!(
+                                                    "RABBITMQ_STREAM_SPANS_INDEXER_ENABLED is on but the Quickwit endpoint is unusable ({:?}) - the spans indexer stream has NO reader here; producer pods may be publishing indexing jobs that retention will delete unread",
+                                                    e
+                                                );
+                                                None
+                                            }
+                                        }
+                                    }
+                                };
+
+                                if let Some(quickwit_client_for_indexer) = indexer_quickwit_client {
+                                    let reader = mq::stream::StreamReader::new(
+                                        mq::stream::SPANS_INDEXER_STREAM,
+                                        mq::stream::SPANS_INDEXER_CONSUMER_NAME,
+                                        stream_environment.clone(),
+                                        StreamQuickwitIndexerHandler {
+                                            quickwit_client: quickwit_client_for_indexer,
+                                            batch_size: env::batching::STREAM_SPANS_INDEXER_SIZE
+                                                .get(),
+                                            flush_interval: Duration::from_millis(
+                                                env::batching::STREAM_SPANS_INDEXER_FLUSH_INTERVAL_MS
+                                                    .get(),
+                                            ),
+                                        },
+                                        env::streams::SPANS_INDEXER_BATCHERS.get(),
+                                    );
+                                    tokio::spawn(reader.run());
+                                }
+                            }
+
+                            log::info!("Stream readers started");
+                        }
+                    }
+
+                    // Spawn browser events workers
+                    {
+                        let size = env::batching::BROWSER_EVENTS_SIZE.get();
+                        let flush_interval_sec =
+                            env::batching::BROWSER_EVENTS_FLUSH_INTERVAL_SEC.get();
+                        let flush_interval = Duration::from_secs(flush_interval_sec);
+
+                        let db = db_for_consumer.clone();
+                        let clickhouse = clickhouse_for_consumer.clone();
+                        let cache = cache_for_consumer.clone();
+                        let queue = mq_for_consumer.clone();
+                        batch_worker_pool_clone.spawn(
+                            BatchWorkerType::BrowserEvents,
+                            num_browser_events_workers,
+                            move || BrowserEventHandler {
+                                db: db.clone(),
+                                clickhouse: clickhouse.clone(),
+                                cache: cache.clone(),
+                                queue: queue.clone(),
+                                config: BatchingConfig {
+                                    size,
+                                    flush_interval,
+                                },
+                            },
+                            QueueConfig::new(
+                                BROWSER_SESSIONS_QUEUE,
+                                BROWSER_SESSIONS_EXCHANGE,
+                                BROWSER_SESSIONS_ROUTING_KEY,
+                            ),
+                        );
+                    }
+
+                    // Spawn signals workers using new worker pool
+                    #[cfg(feature = "signals")]
+                    if llm_provider_client.is_some() {
+                        let batch_size: usize = env::num_with_default(
+                            env::batching::SIGNALS_SIZE,
+                            crate::signals::private::queue::DEFAULT_BATCH_SIZE,
+                        );
+                        let batch_flush_interval_sec =
+                            env::batching::SIGNALS_FLUSH_INTERVAL_SEC.get();
+                        let queue = mq_for_consumer.clone();
+                        batch_worker_pool_clone.spawn(
+                            BatchWorkerType::SignalsBatching,
+                            num_signals_workers,
+                            move || {
+                                SignalBatchingHandler::new(
+                                    queue.clone(),
+                                    BatchingConfig {
+                                        size: batch_size,
+                                        flush_interval: Duration::from_secs(
+                                            batch_flush_interval_sec,
+                                        ),
+                                    },
+                                )
+                            },
+                            QueueConfig::new(SIGNALS_QUEUE, SIGNALS_EXCHANGE, SIGNALS_ROUTING_KEY),
+                        );
+                    } else {
+                        log::warn!("LLM client not available - skipping signals workers");
+                    }
+
+                    // Spawn notification workers (stage 1: persist + fan-out to targets)
+                    {
+                        let db = db_for_consumer.clone();
+                        let cache = cache_for_consumer.clone();
+                        let queue = mq_for_consumer.clone();
+                        let ch_service = Arc::new(ClickhouseService::new(
+                            clickhouse_for_consumer.clone(),
+                            db_for_consumer.pool.clone(),
+                            cache_for_consumer.clone(),
+                            reqwest::Client::new(),
+                        ));
+
+                        worker_pool_clone.spawn(
+                            WorkerType::Notifications,
+                            num_notification_workers,
+                            move || {
+                                NotificationHandler::new(
+                                    db.clone(),
+                                    cache.clone(),
+                                    queue.clone(),
+                                    ch_service.clone(),
+                                )
+                            },
+                            QueueConfig::new(
+                                NOTIFICATIONS_QUEUE,
+                                NOTIFICATIONS_EXCHANGE,
+                                NOTIFICATIONS_ROUTING_KEY,
+                            ),
+                        );
+                    }
+
+                    // Spawn notification delivery workers (stage 2: format + send + log)
+                    {
+                        let db = db_for_consumer.clone();
+                        let client = reqwest::Client::new();
+                        let resend = resend_client.clone();
+                        let ch_service = Arc::new(ClickhouseService::new(
+                            clickhouse_for_consumer.clone(),
+                            db_for_consumer.pool.clone(),
+                            cache_for_consumer.clone(),
+                            reqwest::Client::new(),
+                        ));
+
+                        worker_pool_clone.spawn(
+                            WorkerType::NotificationDeliveries,
+                            num_notification_delivery_workers,
+                            move || {
+                                NotificationDeliveryHandler::new(
+                                    db.clone(),
+                                    client.clone(),
+                                    resend.clone(),
+                                    ch_service.clone(),
+                                )
+                            },
+                            QueueConfig::new(
+                                NOTIFICATION_DELIVERIES_QUEUE,
+                                NOTIFICATION_DELIVERIES_EXCHANGE,
+                                NOTIFICATION_DELIVERIES_ROUTING_KEY,
+                            ),
+                        );
+                    }
+
+                    // Spawn clustering batching + clustering workers.
+                    // Clustering is Signals-only; OSS builds skip the
+                    // consumer entirely. The clusterer runs in-process
+                    // — embeddings (local ONNX or OpenAI-compatible)
+                    // and naming (shared `LlmClient`) are built once
+                    // per app-server boot and shared across worker
+                    // instances via `Arc`. Build failure (e.g. an
+                    // embedding-dim warmup mismatch) skips the workers
+                    // entirely so raw events stay queued for a future
+                    // restart with a fixed config.
+                    #[cfg(feature = "signals")]
+                    if is_feature_enabled(Feature::Clustering) {
+                        let llm_for_clustering = llm_provider_client.clone();
+                        let runner_build = match llm_for_clustering {
+                            Some(llm) => {
+                                build_runner_from_env(clickhouse_for_consumer.clone(), llm).await
+                            }
+                            None => Err(anyhow::anyhow!(
+                                "LlmClient unavailable; clustering naming requires it",
+                            )),
+                        };
+                        match runner_build {
+                            Ok(runner) => {
+                                let batch_size = env::batching::CLUSTERING_EVENTS_SIZE.get();
+                                let batch_flush_interval_sec =
+                                    env::batching::CLUSTERING_EVENTS_FLUSH_INTERVAL_SEC.get();
+                                let batch_flush_interval =
+                                    Duration::from_secs(batch_flush_interval_sec);
+                                {
+                                    let queue: Arc<MessageQueue> = mq_for_consumer.clone();
+                                    batch_worker_pool_clone.spawn(
+                                        BatchWorkerType::ClusteringBatching,
+                                        num_clustering_batching_workers,
+                                        move || {
+                                            ClusteringEventBatchingHandler::new(
+                                                queue.clone(),
+                                                BatchingConfig {
+                                                    size: batch_size,
+                                                    flush_interval: batch_flush_interval,
+                                                },
+                                            )
+                                        },
+                                        QueueConfig::new(
+                                            EVENT_CLUSTERING_QUEUE,
+                                            EVENT_CLUSTERING_EXCHANGE,
+                                            EVENT_CLUSTERING_ROUTING_KEY,
+                                        ),
+                                    );
+                                }
+
+                                let cache = cache_for_consumer.clone();
+                                let db = db_for_consumer.clone();
+                                let clickhouse = clickhouse_for_consumer.clone();
+                                let queue = mq_for_consumer.clone();
+                                worker_pool_clone.spawn(
+                                    WorkerType::Clustering,
+                                    num_clustering_workers,
+                                    move || {
+                                        ClusteringHandler::new(
+                                            cache.clone(),
+                                            db.clone(),
+                                            clickhouse.clone(),
+                                            runner.clone(),
+                                            queue.clone(),
+                                        )
+                                    },
+                                    QueueConfig::new(
+                                        EVENT_CLUSTERING_BATCH_QUEUE,
+                                        EVENT_CLUSTERING_BATCH_EXCHANGE,
+                                        EVENT_CLUSTERING_BATCH_ROUTING_KEY,
+                                    ),
+                                );
+                            }
+                            Err(e) => {
+                                log::warn!(
+                                    "Failed to build clustering runner: {e:?}. \
+                                     Clustering batching and consumer workers will not start; \
+                                     raw events stay queued for a future restart.",
+                                );
+                            }
+                        }
+                    }
+
+                    // Spawn LLM batch submissions workers
+                    #[cfg(feature = "signals")]
+                    if let Some(llm_client) = llm_provider_client.as_ref() {
+                        let db = db_for_consumer.clone();
+                        let cache = cache_for_consumer.clone();
+                        let queue = mq_for_consumer.clone();
+                        let clickhouse = clickhouse_for_consumer.clone();
+                        let llm_client_clone = llm_client.clone();
+                        let config = Arc::new(SignalWorkerConfig::from_env());
+                        worker_pool_clone.spawn(
+                            WorkerType::SignalJobSubmissionBatch,
+                            num_signal_job_submission_batch_workers,
+                            move || {
+                                SignalJobSubmissionBatchHandler::new(
+                                    db.clone(),
+                                    cache.clone(),
+                                    queue.clone(),
+                                    clickhouse.clone(),
+                                    llm_client_clone.clone(),
+                                    config.clone(),
+                                )
+                            },
+                            QueueConfig::new(
+                                SIGNAL_JOB_SUBMISSION_BATCH_QUEUE,
+                                SIGNAL_JOB_SUBMISSION_BATCH_EXCHANGE,
+                                SIGNAL_JOB_SUBMISSION_BATCH_ROUTING_KEY,
+                            ),
+                        );
+                    } else {
+                        log::warn!(
+                            "LLM provider not available - skipping batch submissions workers"
+                        );
+                    }
+
+                    // Spawn LLM batch pending workers
+                    #[cfg(feature = "signals")]
+                    if let Some(llm_client) = llm_provider_client.as_ref() {
+                        let db = db_for_consumer.clone();
+                        let queue = mq_for_consumer.clone();
+                        let clickhouse = clickhouse_for_consumer.clone();
+                        let llm_client_clone = llm_client.clone();
+                        let cache = cache_for_consumer.clone();
+                        let config = Arc::new(SignalWorkerConfig::from_env());
+                        worker_pool_clone.spawn(
+                            WorkerType::SignalJobPendingBatch,
+                            num_signal_job_pending_batch_workers,
+                            move || {
+                                SignalJobPendingBatchHandler::new(
+                                    db.clone(),
+                                    cache.clone(),
+                                    queue.clone(),
+                                    clickhouse.clone(),
+                                    llm_client_clone.clone(),
+                                    config.clone(),
+                                )
+                            },
+                            QueueConfig::new(
+                                SIGNAL_JOB_PENDING_BATCH_QUEUE,
+                                SIGNAL_JOB_PENDING_BATCH_EXCHANGE,
+                                SIGNAL_JOB_PENDING_BATCH_ROUTING_KEY,
+                            ),
+                        );
+                    } else {
+                        log::warn!("LLM provider not available - skipping batch pending workers");
+                    }
+
+                    // Spawn LLM realtime workers
+                    #[cfg(feature = "signals")]
+                    if let Some(llm_client) = llm_provider_client.as_ref() {
+                        let db = db_for_consumer.clone();
+                        let queue = mq_for_consumer.clone();
+                        let clickhouse = clickhouse_for_consumer.clone();
+                        let llm_client_clone = llm_client.clone();
+                        let cache = cache_for_consumer.clone();
+                        let config = Arc::new(SignalWorkerConfig::from_env());
+                        worker_pool_clone.spawn(
+                            WorkerType::SignalJobRealtime,
+                            env::workers::NUM_SIGNAL_JOB_REALTIME.get(),
+                            move || {
+                                SignalJobRealtimeHandler::new(
+                                    db.clone(),
+                                    cache.clone(),
+                                    queue.clone(),
+                                    clickhouse.clone(),
+                                    llm_client_clone.clone(),
+                                    config.clone(),
+                                )
+                            },
+                            QueueConfig::new(
+                                SIGNALS_REALTIME_QUEUE,
+                                SIGNALS_REALTIME_EXCHANGE,
+                                SIGNALS_REALTIME_ROUTING_KEY,
+                            ),
+                        );
+                    } else {
+                        log::warn!("LLM provider not available - skipping realtime workers");
+                    }
+
+                    // Spawn input extraction workers (ingestion-time user-task regex)
+                    if let Some(llm_client) = llm_provider_client.as_ref() {
+                        let db = db_for_consumer.clone();
+                        let cache = cache_for_consumer.clone();
+                        let queue = mq_for_consumer.clone();
+                        let clickhouse = clickhouse_for_consumer.clone();
+                        let llm_client_clone = llm_client.clone();
+                        let spans_stream_publisher =
+                            spans_stream_publisher_for_consumer.clone();
+                        worker_pool_clone.spawn(
+                            WorkerType::InputExtraction,
+                            num_input_extraction_workers,
+                            move || InputExtractionHandler {
+                                db: db.clone(),
+                                cache: cache.clone(),
+                                queue: queue.clone(),
+                                clickhouse: clickhouse.clone(),
+                                llm_client: llm_client_clone.clone(),
+                                spans_stream_publisher: spans_stream_publisher.clone(),
+                            },
+                            QueueConfig::new(
+                                INPUT_EXTRACTION_QUEUE,
+                                INPUT_EXTRACTION_EXCHANGE,
+                                INPUT_EXTRACTION_ROUTING_KEY,
+                            ),
+                        );
+                    } else {
+                        log::warn!(
+                            "LLM provider not available - skipping input extraction workers"
+                        );
+                    }
+
+                    // Spawn user-task regex agent workers. Separate queue from
+                    // the extraction workers above: an agent run takes minutes
+                    // while an extraction takes seconds.
+                    if let Some(llm_client) = llm_provider_client.as_ref() {
+                        let cache = cache_for_consumer.clone();
+                        let llm_client = llm_client.clone();
+                        worker_pool_clone.spawn(
+                            WorkerType::UserTaskRegex,
+                            num_user_task_regex_workers,
+                            move || UserTaskRegexHandler {
+                                cache: cache.clone(),
+                                llm_client: llm_client.clone(),
+                            },
+                            QueueConfig::new(
+                                USER_TASK_REGEX_QUEUE,
+                                USER_TASK_REGEX_EXCHANGE,
+                                USER_TASK_REGEX_ROUTING_KEY,
+                            ),
+                        );
+                    } else {
+                        log::warn!(
+                            "LLM provider not available - skipping user-task regex agent workers"
+                        );
+                    }
+
+                    // Spawn logs workers
+                    {
+                        let db = db_for_consumer.clone();
+                        let cache = cache_for_consumer.clone();
+                        let clickhouse = clickhouse_for_consumer.clone();
+                        let queue = mq_for_consumer.clone();
+                        worker_pool_clone.spawn(
+                            WorkerType::Logs,
+                            num_logs_workers,
+                            move || LogsHandler {
+                                db: db.clone(),
+                                cache: cache.clone(),
+                                clickhouse: clickhouse.clone(),
+                                queue: queue.clone(),
+                            },
+                            QueueConfig::new(LOGS_QUEUE, LOGS_EXCHANGE, LOGS_ROUTING_KEY),
+                        );
+                    }
+
+                    // Spawn reports workers
+                    if is_feature_enabled(Feature::Reports) {
+                        let db = db_for_consumer.clone();
+                        let clickhouse = clickhouse_for_consumer.clone();
+                        let queue = mq_for_consumer.clone();
+                        let llm_client = llm_provider_client.clone();
+                        worker_pool_clone.spawn(
+                            WorkerType::Reports,
+                            num_reports_workers,
+                            move || ReportsGenerator {
+                                db: db.clone(),
+                                clickhouse: clickhouse.clone(),
+                                queue: queue.clone(),
+                                llm_client: llm_client.clone(),
+                            },
+                            QueueConfig::new(
+                                REPORT_TRIGGERS_QUEUE,
+                                REPORT_TRIGGERS_EXCHANGE,
+                                REPORT_TRIGGERS_ROUTING_KEY,
+                            ),
+                        );
+                    }
+
+                    // Spawn checkpoints workers. Gated behind
+                    // CHECKPOINTS_ENABLED (LAM-1987, default off).
+                    if is_feature_enabled(Feature::Checkpoints) {
+                        let db = db_for_consumer.clone();
+                        let cache = cache_for_consumer.clone();
+                        let clickhouse = clickhouse_for_consumer.clone();
+                        let llm_client = llm_provider_client.clone();
+                        let queue = mq_for_consumer.clone();
+                        let spans_stream_publisher =
+                            spans_stream_publisher_for_consumer.clone();
+                        worker_pool_clone.spawn(
+                            WorkerType::Checkpoints,
+                            num_checkpoints_workers,
+                            move || CheckpointsHandler {
+                                db: db.clone(),
+                                cache: cache.clone(),
+                                clickhouse: clickhouse.clone(),
+                                llm_client: llm_client.clone(),
+                                queue: queue.clone(),
+                                spans_stream_publisher: spans_stream_publisher.clone(),
+                            },
+                            QueueConfig::new(
+                                CHECKPOINTS_QUEUE,
+                                CHECKPOINTS_EXCHANGE,
+                                CHECKPOINTS_ROUTING_KEY,
+                            ),
+                        );
+                    }
+
+                    // Spawn static prompt workers (legacy pipeline). Gate on
+                    // the shared LLM client exactly like input-extraction: a
+                    // handler without a client can only ack-and-drop messages,
+                    // so a node that failed to build the client must NOT
+                    // consume this queue — otherwise it silently discards work
+                    // another node enqueued instead of leaving it for a
+                    // consumer that can extract.
+                    if let Some(llm_client) = llm_provider_client.as_ref() {
+                        let cache = cache_for_consumer.clone();
+                        let llm_client = llm_client.clone();
+                        worker_pool_clone.spawn(
+                            WorkerType::StaticPrompt,
+                            num_static_prompt_workers,
+                            move || {
+                                StaticPromptHandler::new(cache.clone(), Some(llm_client.clone()))
+                            },
+                            QueueConfig::new(
+                                STATIC_PROMPT_QUEUE,
+                                STATIC_PROMPT_EXCHANGE,
+                                STATIC_PROMPT_ROUTING_KEY,
+                            ),
+                        );
+                    } else {
+                        log::warn!("LLM provider not available - skipping static prompt workers");
+                    }
+
+                    // Spawn sp-versioning classifier workers. LLM-free (the
+                    // ingest producer gates publishing on client availability;
+                    // the extraction workers consume their own queue), so they
+                    // run unconditionally.
+                    {
+                        let cache = cache_for_consumer.clone();
+                        let clickhouse = clickhouse_for_consumer.clone();
+                        let queue = mq_for_consumer.clone();
+                        worker_pool_clone.spawn(
+                            WorkerType::SpVersioning,
+                            num_sp_versioning_workers,
+                            move || {
+                                SpVersioningHandler::new(
+                                    cache.clone(),
+                                    clickhouse.clone(),
+                                    queue.clone(),
+                                )
+                            },
+                            QueueConfig::new(
+                                SP_VERSIONING_QUEUE,
+                                SP_VERSIONING_EXCHANGE,
+                                SP_VERSIONING_ROUTING_KEY,
+                            ),
+                        );
+                    }
+
+                    // Spawn SP-regex extraction workers (demand-driven).
+                    // Same LLM-client gate as above.
+                    if let Some(llm_client) = llm_provider_client.as_ref() {
+                        let cache = cache_for_consumer.clone();
+                        let clickhouse = clickhouse_for_consumer.clone();
+                        let llm_client = llm_client.clone();
+                        worker_pool_clone.spawn(
+                            WorkerType::SpRegexExtraction,
+                            num_sp_regex_extraction_workers,
+                            move || {
+                                SpRegexExtractionHandler::new(
+                                    cache.clone(),
+                                    clickhouse.clone(),
+                                    Some(llm_client.clone()),
+                                )
+                            },
+                            QueueConfig::new(
+                                SP_REGEX_EXTRACTION_QUEUE,
+                                SP_REGEX_EXTRACTION_EXCHANGE,
+                                SP_REGEX_EXTRACTION_ROUTING_KEY,
+                            ),
+                        );
+                    } else {
+                        log::warn!(
+                            "LLM provider not available - skipping SP-regex extraction workers"
+                        );
+                    }
+
+                    HttpServer::new(move || {
+                        App::new()
+                            .wrap(NormalizePath::trim())
+                            .app_data(web::Data::new(queue_for_health.clone()))
+                            .app_data(web::Data::from(cache_for_health.clone()))
+                            .app_data(web::Data::new(worker_pool_clone.clone()))
+                            .app_data(web::Data::new(sse_connections.clone()))
+                            .service(routes::probes::check_ready)
+                            .service(routes::probes::check_health)
+                            .service(
+                                // auth on path projects/{project_id} is handled by middleware on Next.js
+                                web::scope("/api/v1/projects/{project_id}")
+                                    .service(routes::realtime::sse_endpoint),
+                            )
+                    })
+                    .bind(("0.0.0.0", consumer_port))?
+                    .run()
+                    .await
+                })
+            })
+            .unwrap();
+        handles.push(consumer_handle);
+    }
+
+    if enable_producer() {
+        log::info!("Enabling producer mode, spinning up full HTTP and gRPC servers");
+
+        // === Rate limiter ===
+        let rate_limiter = if is_feature_enabled(Feature::RateLimiter) {
+            let redis_url = std::env::var(env::connections::REDIS_URL).unwrap();
+
+            let http_limit: usize = std::env::var(env::rate_limit::HTTP_LIMIT)
+                .unwrap()
+                .parse()
+                .unwrap();
+            let http_period_secs: u64 = std::env::var(env::rate_limit::HTTP_PERIOD_SECS)
+                .unwrap()
+                .parse()
+                .unwrap();
+            // Per-project SQL rate limiter, counted inline in `handle_sql_query`
+            // (shared by both /v1/sql and /v1/cli/sql) with an explicit
+            // `ratelimit:<project_id>` key — no middleware key extractor needed
+            // since project_id is only known after the auth extractor runs.
+            // The env limit is the global default; a per-project N override in
+            // cache (`sql_rate_limit:{id}`) swaps in an ad-hoc limiter.
+            match Limiter::builder(&redis_url)
+                .limit(http_limit)
+                .period(Duration::from_secs(http_period_secs))
+                .build()
+            {
+                Ok(limiter) => {
+                    log::info!(
+                        "Rate limiter initialized ({} req/{} s per project)",
+                        http_limit,
+                        http_period_secs
+                    );
+                    Some(web::Data::new(api::v1::sql::SqlRateLimiter::new(
+                        limiter,
+                        redis_url,
+                        http_period_secs,
+                    )))
+                }
+                Err(e) => {
+                    log::warn!("Failed to initialize rate limiter: {:?}", e);
+                    None
+                }
+            }
+        } else {
+            log::info!("Rate limiter is disabled");
+            None
+        };
+
+        // Per-project data-ingestion rate limiter, shared by the gRPC and
+        // HTTP OTLP trace endpoints. The env limit/period are the global
+        // defaults; per-project overrides in cache
+        // (`ingestion_project_rate_limit:{id}` for N,
+        // `ingestion_project_rate_limit_period:{id}` for the window) swap in
+        // an ad-hoc limiter.
+        let ingestion_rate_limiter = if is_feature_enabled(Feature::IngestionRateLimiter) {
+            let redis_url = std::env::var(env::connections::REDIS_URL).unwrap();
+
+            let ingestion_limit: usize = std::env::var(env::rate_limit::INGESTION_LIMIT)
+                .unwrap()
+                .parse()
+                .unwrap();
+            let ingestion_period_secs: u64 = std::env::var(env::rate_limit::INGESTION_PERIOD_SECS)
+                .unwrap()
+                .parse()
+                .unwrap();
+            // no key_by. .count() is called explicitly with a key manually
+            match Limiter::builder(&redis_url)
+                .limit(ingestion_limit)
+                .period(Duration::from_secs(ingestion_period_secs))
+                .build()
+            {
+                Ok(limiter) => {
+                    log::info!(
+                        "Ingestion rate limiter initialized ({} req/{} s per project)",
+                        ingestion_limit,
+                        ingestion_period_secs
+                    );
+                    Some(Arc::new(traces::rate_limit::IngestionRateLimiter::new(
+                        limiter,
+                        redis_url,
+                        ingestion_limit,
+                        ingestion_period_secs,
+                    )))
+                }
+                Err(e) => {
+                    log::warn!("Failed to initialize ingestion rate limiter: {:?}", e);
+                    None
+                }
+            }
+        } else {
+            log::info!("Ingestion rate limiter is disabled");
+            None
+        };
+        let ingestion_rate_limiter_for_http = ingestion_rate_limiter.clone();
+
+        // == HTTP server and listener workers ==
+        let http_server_handle = thread::Builder::new()
+            .name("http".to_string())
+            .spawn(move || {
+                runtime_handle_for_http.block_on(async {
+                    // == Name generator ==
+                    let name_generator = Arc::new(NameGenerator::new());
+
+                    let mcp_state = web::Data::new(api::v1::mcp::McpState::new(
+                        clickhouse_for_http.clone(),
+                        clickhouse_readonly_client.clone(),
+                        query_engine.clone(),
+                        Arc::new(http_client_for_http.clone()),
+                        db_for_http.clone(),
+                        cache_for_http.clone(),
+                        llm_provider_client_for_http.clone(),
+                    ));
+
+                    // Shared in-process JWKS cache for the CLI user-token surface.
+                    // Built once outside the HttpServer closure so all workers share it.
+                    let jwks_cache = web::Data::new(Arc::new(auth::cli_user::JwksCache::from_env(
+                        http_client_for_http.clone(),
+                    )));
+
+                    log::info!("Spinning up full HTTP server");
+                    HttpServer::new(move || {
+                        let project_auth = HttpAuthentication::bearer(auth::project_validator);
+                        let project_ingestion_auth =
+                            HttpAuthentication::bearer(auth::project_ingestion_validator);
+                        // AuthN-only middleware for the /v1/cli scope; project
+                        // authz is the CliProjectAuth extractor's job per-handler.
+                        let cli_auth =
+                            HttpAuthentication::bearer(auth::cli_user::cli_auth_validator);
+
+                        let mut app = App::new()
+                            .wrap(
+                                ErrorHandlers::new()
+                                    .handler(
+                                        StatusCode::BAD_REQUEST,
+                                        |res: dev::ServiceResponse| {
+                                            let path = res.request().path();
+                                            if path.ends_with("/sql/query") {
+                                                log::warn!(
+                                                    "Bad request: {:?}",
+                                                    res.response().body()
+                                                );
+                                            } else {
+                                                log::error!(
+                                                    "Bad request: {:?}",
+                                                    res.response().body()
+                                                );
+                                            }
+                                            Ok(ErrorHandlerResponse::Response(
+                                                res.map_into_left_body(),
+                                            ))
+                                        },
+                                    )
+                                    // Actix's default 413 body depends on the extractor and the
+                                    // `Bytes` one ("payload reached size limit") is opaque, so
+                                    // SDKs log it verbatim. Normalize it for every route.
+                                    .handler(
+                                        StatusCode::PAYLOAD_TOO_LARGE,
+                                        |res: dev::ServiceResponse| {
+                                            log::warn!(
+                                                "Payload too large: {}",
+                                                res.request().path()
+                                            );
+                                            Ok(ErrorHandlerResponse::Response(res.map_body(
+                                                |_, _| {
+                                                    EitherBody::right(BoxBody::new(
+                                                        PAYLOAD_TOO_LARGE_MESSAGE,
+                                                    ))
+                                                },
+                                            )))
+                                        },
+                                    ),
+                            )
+                            .wrap(Logger::default().exclude("/health").exclude("/ready"))
+                            .wrap(NormalizePath::trim())
+                            .app_data(JsonConfig::default().limit(http_payload_limit))
+                            .app_data(PayloadConfig::new(http_payload_limit))
+                            .app_data(web::Data::from(cache_for_http.clone()))
+                            .app_data(web::Data::from(db_for_http.clone()))
+                            .app_data(web::Data::new(mq_for_http.clone()))
+                            .app_data(web::Data::new(spans_stream_publisher_for_http.clone()))
+                            .app_data(web::Data::new(ingestion_rate_limiter_for_http.clone()))
+                            .app_data(web::Data::new(clickhouse_for_http.clone()))
+                            .app_data(web::Data::new(clickhouse_readonly_client.clone()))
+                            .app_data(web::Data::new(name_generator.clone()))
+                            .app_data(web::Data::new(storage_for_http.clone()))
+                            .app_data(web::Data::new(query_engine.clone()))
+                            .app_data(web::Data::new(sse_connections_for_http.clone()))
+                            .app_data(web::Data::new(quickwit_client.clone()))
+                            .app_data(web::Data::new(pubsub.clone()))
+                            .app_data(web::Data::new(http_client_for_http.clone()))
+                            .app_data(web::Data::new(llm_provider_client_for_http.clone()))
+                            .app_data(jwks_cache.clone());
+
+                        if let Some(ref limiter) = rate_limiter {
+                            app = app.app_data(limiter.clone());
+                        }
+
+                        // Built as a binding so the signals-gated agent twin can be conditionally
+                        // attached (the rest of the chain stays inline).
+                        let cli_scope = web::scope("/v1/cli")
+                            .wrap(cli_auth.clone())
+                            .service(api::v1::cli::list_projects)
+                            .service(api::v1::cli::resolve_project)
+                            .service(
+                                web::scope("/sql")
+                                    .service(api::v1::cli::sql::execute_sql_query)
+                                    .service(api::v1::cli::sql::get_sql_schema),
+                            )
+                            .service(api::v1::cli::datasets::get_datasets)
+                            .service(api::v1::cli::datasets::get_datapoints)
+                            .service(api::v1::cli::datasets::create_datapoints)
+                            .service(api::v1::cli::rollouts::update_name)
+                            .service(api::v1::cli::rollouts::register_session)
+                            .service(api::v1::cli::rollouts::list_blocks)
+                            .service(api::v1::cli::rollouts::add_block)
+                            // `signals/{id}` is registered AFTER the bare
+                            // `signals` routes so the literal path isn't
+                            // shadowed by the dynamic segment.
+                            .service(api::v1::cli::signals::create_signal)
+                            .service(api::v1::cli::signals::list_signals)
+                            .service(api::v1::cli::signals::get_signal)
+                            .service(api::v1::cli::signals::update_signal)
+                            .service(api::v1::cli::signals::delete_signal);
+                        #[cfg(feature = "signals")]
+                        let cli_scope = cli_scope
+                            .service(web::scope("/agent").service(api::v1::cli::agent::agent_chat));
+
+                        // Bound (not returned) so the signals-gated Slack scope can be appended before
+                        // the probes below.
+                        let app = app
+                            // Ingestion endpoints allow both default and ingest-only keys
+                            .service(
+                                web::scope("/v1/browser-sessions").service(
+                                    web::scope("")
+                                        .wrap(project_ingestion_auth.clone())
+                                        .service(api::v1::browser_sessions::create_session_event),
+                                ),
+                            )
+                            .service(
+                                web::scope("/v1/traces")
+                                    .wrap(project_ingestion_auth.clone())
+                                    .service(api::v1::traces::process_traces)
+                                    .service(api::v1::traces_metadata::update_trace_metadata),
+                            )
+                            .service(
+                                web::scope("/v1/spans")
+                                    .wrap(project_ingestion_auth.clone())
+                                    .service(api::v1::spans::create_spans),
+                            )
+                            .service(
+                                web::scope("/v1/logs")
+                                    .wrap(project_ingestion_auth.clone())
+                                    .service(api::v1::logs::process_logs),
+                            )
+                            .service(
+                                web::scope("/v1/metrics")
+                                    .wrap(project_ingestion_auth.clone())
+                                    .service(api::v1::metrics::process_metrics),
+                            )
+                            .service(
+                                web::scope("/v1/labeling_queues")
+                                    .wrap(project_ingestion_auth.clone())
+                                    .service(
+                                        api::v1::labeling_queues::create_labeling_queues_items,
+                                    ),
+                            )
+                            // Default endpoints block ingest-only keys
+                            .service(
+                                web::scope("/v1/tag")
+                                    .wrap(project_auth.clone())
+                                    .service(api::v1::tag::tag_trace),
+                            )
+                            .service(
+                                web::scope("/v1/mcp")
+                                    .wrap(project_auth.clone())
+                                    .app_data(mcp_state.clone())
+                                    .service(api::v1::mcp::mcp_handler)
+                                    .default_service(
+                                        web::route().to(api::v1::mcp::method_not_allowed),
+                                    ),
+                            )
+                            .service(
+                                web::scope("/v1/sql")
+                                    .wrap(project_auth.clone())
+                                    .service(api::v1::sql::execute_sql_query),
+                            )
+                            // CLI user-token surface: list_projects takes
+                            // CliUserAuth, the rest take CliProjectAuth.
+                            .service(cli_scope)
+                            .service(
+                                web::scope("/v1")
+                                    .wrap(project_auth.clone())
+                                    .service(api::v1::projects::get_current_project)
+                                    .service(api::v1::datasets::get_datasets)
+                                    .service(api::v1::datasets::get_datapoints)
+                                    .service(api::v1::datasets::create_datapoints)
+                                    .service(api::v1::datasets::get_parquet)
+                                    .service(api::v1::evals::init_eval)
+                                    .service(api::v1::evals::update_eval)
+                                    .service(api::v1::evals::save_eval_datapoints)
+                                    .service(api::v1::evals::update_eval_datapoint)
+                                    // Debugger session lifecycle — SDK-driven
+                                    // (project API key). update_name is CLI-only,
+                                    // so it lives under /v1/cli, not here.
+                                    .service(api::v1::rollouts::register_session)
+                                    .service(api::v1::rollouts::lookup_cache)
+                                    .service(api::v1::rollouts::list_blocks)
+                                    .service(api::v1::rollouts::add_block)
+                                    .service(api::v1::rollouts::delete),
+                            )
+                            .service({
+                                // auth on path projects/{project_id} is handled by middleware on Next.js
+                                let scope = web::scope("/api/v1/projects/{project_id}")
+                                    .service(routes::spans::create_span)
+                                    .service(routes::sql::execute_sql_query)
+                                    .service(routes::sql::validate_sql_query)
+                                    .service(routes::sql::sql_to_json)
+                                    .service(routes::sql::json_to_sql)
+                                    .service(routes::spans::search_spans)
+                                    .service(routes::signal_events::search_signal_events)
+                                    .service(routes::rollouts::update_session_name)
+                                    .service(routes::static_sp::extract_system_prompt);
+                                #[cfg(feature = "signals")]
+                                let scope = scope
+                                    .service(crate::signals::private::routes::submit_signal_job)
+                                    .service(crate::signals::private::routes::test_signal)
+                                    .service(crate::signals::private::routes::eval_signal)
+                                    .service(crate::signals::private::routes::eval_signal_prewarm)
+                                    .service(crate::agent::routes::post_agent_chat);
+                                scope
+                            });
+                        // Internal Slack-event receiver — the frontend verifies the Slack signature
+                        // and forwards verified events here. No HTTP auth (cluster-internal), same as
+                        // agent/chat. Signals-gated: it drives the agent.
+                        #[cfg(feature = "signals")]
+                        let app = app.service(
+                            web::scope("/api/v1/slack")
+                                .service(crate::agent::slack_events::slack_process),
+                        );
+                        app.service(routes::probes::check_health)
+                            .service(routes::probes::check_ready)
+                    })
+                    .bind(("0.0.0.0", port))?
+                    .run()
+                    .await
+                })
+            })
+            .unwrap();
+        handles.push(http_server_handle);
+
+        let grpc_server_handle = thread::Builder::new()
+            .name("grpc".to_string())
+            .spawn(move || {
+                runtime_handle.block_on(async {
+                    log::info!("Spinning up gRPC server");
+
+                    let process_traces_service = ProcessTracesService::new(
+                        db.clone(),
+                        cache.clone(),
+                        clickhouse.clone(),
+                        queue.clone(),
+                        spans_stream_publisher.clone(),
+                        ingestion_rate_limiter,
+                    );
+
+                    let process_logs_service = ProcessLogsService::new(
+                        db.clone(),
+                        cache.clone(),
+                        clickhouse.clone(),
+                        queue.clone(),
+                    );
+
+                    Server::builder()
+                        .add_service(
+                            TraceServiceServer::new(process_traces_service)
+                                .accept_compressed(tonic::codec::CompressionEncoding::Gzip)
+                                .send_compressed(tonic::codec::CompressionEncoding::Gzip)
+                                .max_decoding_message_size(grpc_payload_limit),
+                        )
+                        .add_service(
+                            LogsServiceServer::new(process_logs_service)
+                                .accept_compressed(tonic::codec::CompressionEncoding::Gzip)
+                                .send_compressed(tonic::codec::CompressionEncoding::Gzip)
+                                .max_decoding_message_size(grpc_payload_limit),
+                        )
+                        .serve_with_shutdown(grpc_address, async {
+                            wait_stop_signal("gRPC service").await;
+                        })
+                        .await
+                        .map_err(tonic_error_to_io_error)
+                })
+            })
+            .unwrap();
+        handles.push(grpc_server_handle);
+    }
+
+    for handle in handles {
+        log::debug!(
+            "Waiting for thread {} to finish",
+            handle.thread().name().unwrap()
+        );
+        handle.join().expect("thread is not panicking")?;
+    }
+
+    // Servers have stopped (SIGTERM); the runtime + ingest deps are still alive here.
+    // Flush buffered internal spans so freshly-minted signal.run roots aren't lost on a
+    // rolling deploy, which would orphan their child spans ingested by surviving pods.
+    if let Some(provider) = internal_tracer_provider {
+        if let Err(e) = provider.force_flush() {
+            log::warn!("Failed to flush internal tracer provider on shutdown: {e:?}");
+        }
+    }
+
+    Ok(())
+}
