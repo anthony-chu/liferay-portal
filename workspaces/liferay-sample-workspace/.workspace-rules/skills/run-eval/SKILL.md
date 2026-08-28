@@ -133,5 +133,6 @@ Give the user the per-evaluator scores from the run output and the dashboard lin
 
 ## Related Skills
 
+- `stop-eval` — take the same stack back down when the run is finished.
 - `workspace-init` — full workspace bootstrap, BasicAuth verifier, and first login setup.
 - `deploy-and-verify` — deploying client extensions to the bundle this skill starts.
