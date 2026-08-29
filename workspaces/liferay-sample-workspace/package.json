@@ -6,6 +6,7 @@
 		"@langfuse/otel": "^5.10.0",
 		"@lmnr-ai/lmnr": "^0.8.41",
 		"@opentelemetry/sdk-node": "^0.221.0",
+		"@types/node": "^26.4.0",
 		"axios": "^1.19.0",
 		"dotenv": "^17.4.2"
 	},
