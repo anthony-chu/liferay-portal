@@ -1,16 +1,15 @@
-import 'dotenv/config';
-
 import type { Evaluator, ExperimentItem } from "@langfuse/client"
 import { LangfuseClient } from "@langfuse/client";
 
 import { createAgentTask } from "./lib/agent-task.ts";
 import { skillsInvokedEvaluator } from "./lib/evaluators.ts";
+import { LANGFUSE_CONFIG } from "./lib/langfuse.ts";
 import { liferay } from "./lib/liferay.ts";
 import { otelSdk } from "./lib/otel.ts";
 
 otelSdk.start();
 
-const langfuse = new LangfuseClient();
+const langfuse = new LangfuseClient(LANGFUSE_CONFIG);
 
 const data: ExperimentItem[] = [
     {
