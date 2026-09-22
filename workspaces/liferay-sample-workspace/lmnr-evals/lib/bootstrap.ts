@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'http://localhost:5667';
+const baseURL = 'http://localhost:9667';
 
 const { data: { token } } = await axios.post(`${baseURL}/api/auth/sign-in/local-email`, {
     email: 'test@liferay.com',
