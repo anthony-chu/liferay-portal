@@ -1,0 +1,19 @@
+assemble:
+    - from: batch
+      into: batch
+
+lpd-12345-event-registration-batch:
+    name: LPD-12345 Event Registration Batch
+    oAuthApplicationHeadlessServer: lpd-12345-event-registration-batch-oauth
+    type: batch
+
+lpd-12345-event-registration-batch-oauth:
+    .serviceAddress: localhost:8080
+    .serviceScheme: http
+    name: LPD-12345 Event Registration Batch OAuth
+    scopes:
+        - Liferay.Headless.Batch.Engine.everything
+        - Liferay.Headless.Admin.List.Type.everything
+        - Liferay.Object.Admin.REST.everything
+        - Liferay.Headless.Object.everything
+    type: oAuthApplicationHeadlessServer
