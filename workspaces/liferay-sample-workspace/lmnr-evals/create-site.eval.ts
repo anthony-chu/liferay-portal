@@ -9,8 +9,8 @@ import { liferay } from './lib/liferay';
 
 const config = {
     baseUrl: 'http://localhost',
-    grpcPort: 8001,
-    httpPort: 8000,
+    grpcPort: 9001,
+    httpPort: 9000,
     projectApiKey: projectApiKey.value,
 };
 
