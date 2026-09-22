@@ -1,0 +1,89 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition",
+		"multiCompany": true,
+		"parameters": {
+			"createStrategy": "UPSERT",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		}
+	},
+	"items": [
+		{
+			"active": true,
+			"externalReferenceCode": "REGISTRATION",
+			"label": {
+				"en_US": "Registration"
+			},
+			"name": "Registration",
+			"objectFields": [
+				{
+					"businessType": "Text",
+					"externalReferenceCode": "REGISTRATION_NAME",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Name"
+					},
+					"name": "name",
+					"required": true
+				},
+				{
+					"businessType": "Text",
+					"externalReferenceCode": "REGISTRATION_EMAIL_ADDRESS",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Email Address"
+					},
+					"name": "emailAddress",
+					"required": true
+				},
+				{
+					"businessType": "Text",
+					"externalReferenceCode": "REGISTRATION_COMPANY",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Company"
+					},
+					"name": "company",
+					"required": false
+				},
+				{
+					"businessType": "MultiselectPicklist",
+					"externalReferenceCode": "REGISTRATION_DIETARY_RESTRICTIONS",
+					"indexed": true,
+					"label": {
+						"en_US": "Dietary Restrictions"
+					},
+					"listTypeDefinitionExternalReferenceCode": "DIETARY_RESTRICTION",
+					"name": "dietaryRestrictions",
+					"required": false
+				},
+				{
+					"businessType": "Picklist",
+					"defaultValue": "pending",
+					"externalReferenceCode": "REGISTRATION_REGISTRATION_STATUS",
+					"indexed": true,
+					"label": {
+						"en_US": "Registration Status"
+					},
+					"listTypeDefinitionExternalReferenceCode": "REGISTRATION_STATUS",
+					"name": "registrationStatus",
+					"required": true
+				}
+			],
+			"panelCategoryKey": "control_panel.applications",
+			"pluralLabel": {
+				"en_US": "Registrations"
+			},
+			"scope": "company",
+			"status": {
+				"code": 0,
+				"label": "approved"
+			},
+			"titleObjectFieldName": "name"
+		}
+	]
+}

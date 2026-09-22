@@ -1,0 +1,51 @@
+#wrapper .devcon-event-card {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	border: 1px solid var(--gray-300);
+	border-radius: 0.5rem;
+	background-color: var(--white);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+	transition: box-shadow 0.15s ease-in-out;
+}
+
+#wrapper .devcon-event-card:hover {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+#wrapper .devcon-event-card__body {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	padding: var(--spacer-5);
+}
+
+#wrapper .devcon-event-card__name {
+	font-size: 1.25rem;
+	font-weight: 700;
+	margin-bottom: var(--spacer-2);
+	color: var(--gray-900);
+}
+
+#wrapper .devcon-event-card__date,
+#wrapper .devcon-event-card__location {
+	font-size: 0.9375rem;
+	color: var(--gray-700);
+	margin-bottom: var(--spacer-1);
+}
+
+#wrapper .devcon-event-card__spots {
+	font-size: 0.9375rem;
+	font-weight: 600;
+	color: var(--primary);
+	margin-bottom: var(--spacer-4);
+}
+
+#wrapper .devcon-event-card__cta {
+	margin-top: auto;
+	align-self: flex-start;
+	padding: var(--spacer-2) var(--spacer-4);
+	font-weight: 600;
+	text-decoration: none;
+	border-radius: 0.25rem;
+}
