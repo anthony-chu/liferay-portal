@@ -40,29 +40,29 @@ Laminar is self-hosted here, not `laminar.sh`. The stack publishes:
 
 | Service | Host port |
 | --- | --- |
-| Frontend / dashboard | 5667 |
-| App server HTTP API | 8000 |
-| App server gRPC | 8001 |
-| ClickHouse | 7280 |
-| Postgres | 5433 |
+| Frontend / dashboard | 9667 |
+| App server HTTP API | 9000 |
+| App server gRPC | 9001 |
+| Quickwit REST | 9280 |
+| Postgres | 9433 |
 
 Poll the dashboard until it answers:
 
 ```bash
-curl --fail --output /dev/null --silent http://localhost:5667
+curl --fail --output /dev/null --silent http://localhost:9667
 ```
 
 Do not wait for a literal `200` — the dashboard answers `307`, redirecting to sign-in. `curl --fail` treats that as success, which is why the check is written this way. On a wiped Postgres volume the frontend also runs its migrations on first boot (`Applying ClickHouse schema. This may take a while...`), so several minutes of refused connections here is normal. The endpoint that actually has to work is the one `lib/bootstrap.ts` calls:
 
 ```bash
-curl --silent --request POST http://localhost:5667/api/auth/sign-in/local-email \
+curl --silent --request POST http://localhost:9667/api/auth/sign-in/local-email \
     --header 'Content-Type: application/json' \
     --data '{"email":"test@liferay.com","name":"Test"}'
 ```
 
 A `200` with a `token` in the body means Laminar is genuinely ready.
 
-**Port conflict**: the workspace's own `docker-compose.yaml` (the `liferay-stack` Postgres + Liferay containers) also binds host port 8000, for JPDA. Do not run that stack and Laminar at the same time — this skill starts Liferay through Blade, not through that compose file.
+**Ports**: every Laminar host port starts with `9`, chosen so the stack never collides with Liferay. In particular `catalina.sh jpda start` takes host port 8000 for the debugger, which the app server used to claim.
 
 ### Ensure a Liferay Bundle Exists
 
@@ -141,14 +141,14 @@ Use `yarn tsx` rather than `yarn lmnr eval`. The CLI bundles the eval with esbui
 
 ### Report the Result
 
-Give the user the per-evaluator scores from the run output and the dashboard link at `http://localhost:5667`, where the executor and evaluator span tree for the run is recorded.
+Give the user the per-evaluator scores from the run output and the dashboard link at `http://localhost:9667`, where the executor and evaluator span tree for the run is recorded.
 
 ## Troubleshooting
 
 | Symptom | Cause |
 | --- | --- |
-| `401` from Laminar during the eval | The SDK defaulted to `api.lmnr.ai` instead of the local instance. Check the `config` block in the eval file: `baseUrl: 'http://localhost'`, `httpPort: 8000`, `grpcPort: 8001`. The local project API key always fails against the cloud. |
-| `401` with the config correct | Every eval takes `projectApiKey` from `lib/bootstrap.ts`, which signs in against `localhost:5667` and mints a fresh key at import time. A `401` here means that sign-in failed, so check that the Laminar frontend is up before looking at the key. A new eval file must import `projectApiKey` too — never hardcode a key, since it goes stale whenever the Laminar Postgres volume is recreated. |
+| `401` from Laminar during the eval | The SDK defaulted to `api.lmnr.ai` instead of the local instance. Check the `config` block in the eval file: `baseUrl: 'http://localhost'`, `httpPort: 9000`, `grpcPort: 9001`. The local project API key always fails against the cloud. |
+| `401` with the config correct | Every eval takes `projectApiKey` from `lib/bootstrap.ts`, which signs in against `localhost:9667` and mints a fresh key at import time. A `401` here means that sign-in failed, so check that the Laminar frontend is up before looking at the key. A new eval file must import `projectApiKey` too — never hardcode a key, since it goes stale whenever the Laminar Postgres volume is recreated. |
 | `No skills found in .claude/skills` | The eval was run from the wrong working directory. Run it from the workspace root. |
 | `403` on `/o/*` calls from the evaluators | The BasicAuth verifier is missing from the bundle. `configs/local/portal-ext.properties` carries `auth.verifier.BasicAuthHeaderAuthVerifier.urls.includes=/api/*,/xmlrpc/*,/o/*`; confirm it reached `bundles/portal-ext.properties`. |
 | No LLM token or cost data on the spans | The agent SDK runs the `claude` CLI as a separate process, so auto-instrumentation sees nothing. `lib/agent-task.ts` handles this by wrapping `query` with `Laminar.wrapClaudeAgentQuery`. |
