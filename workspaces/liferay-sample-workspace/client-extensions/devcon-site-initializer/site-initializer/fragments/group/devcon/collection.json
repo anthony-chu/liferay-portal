@@ -1,0 +1,4 @@
+{
+	"name": "DEVCON Site Fragments",
+	"description": "Reusable, composable sections for the DEVCON site: hero banner, section heading, event card, and registration form. Each fragment is self-contained so it can be rearranged across pages or reused on new ones."
+}

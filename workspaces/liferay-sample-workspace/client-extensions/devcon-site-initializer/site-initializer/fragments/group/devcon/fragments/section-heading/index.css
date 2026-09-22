@@ -1,0 +1,18 @@
+#wrapper .devcon-section-heading {
+	padding: var(--spacer-6) var(--spacer-6) var(--spacer-2);
+	text-align: center;
+}
+
+#wrapper .devcon-section-heading h2 {
+	font-size: 2rem;
+	font-weight: 700;
+	margin-bottom: var(--spacer-2);
+	color: var(--gray-900);
+}
+
+#wrapper .devcon-section-heading p {
+	font-size: 1rem;
+	color: var(--gray-700);
+	max-width: 640px;
+	margin: 0 auto;
+}
