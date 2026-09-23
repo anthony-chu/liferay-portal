@@ -11,7 +11,7 @@ Stand up everything an eval needs, in order, then run it: Laminar for observabil
 
 ## When to Invoke
 
-- The user asks to "run the eval", "run the manage-objects eval", or names any file under `lmnr-evals/`.
+- The user asks to "run the eval", "run the manage-objects eval", or names any file under `lmnr/evals/`.
 - The user asks to start or reset the eval environment.
 
 Every step is idempotent, so the skill is safe to rerun against a stack that is already partly up.
@@ -52,7 +52,7 @@ Poll the dashboard until it answers:
 curl --fail --output /dev/null --silent http://localhost:9667
 ```
 
-Do not wait for a literal `200` — the dashboard answers `307`, redirecting to sign-in. `curl --fail` treats that as success, which is why the check is written this way. On a wiped Postgres volume the frontend also runs its migrations on first boot (`Applying ClickHouse schema. This may take a while...`), so several minutes of refused connections here is normal. The endpoint that actually has to work is the one `lib/bootstrap.ts` calls:
+Do not wait for a literal `200` — the dashboard answers `307`, redirecting to sign-in. `curl --fail` treats that as success, which is why the check is written this way. On a wiped Postgres volume the frontend also runs its migrations on first boot (`Applying ClickHouse schema. This may take a while...`), so several minutes of refused connections here is normal. The endpoint that actually has to work is the one `lmnr/evals/lib/bootstrap.ts` calls:
 
 ```bash
 curl --silent --request POST http://localhost:9667/api/auth/sign-in/local-email \
@@ -63,6 +63,26 @@ curl --silent --request POST http://localhost:9667/api/auth/sign-in/local-email 
 A `200` with a `token` in the body means Laminar is genuinely ready.
 
 **Ports**: every Laminar host port starts with `9`, chosen so the stack never collides with Liferay. In particular `catalina.sh jpda start` takes host port 8000 for the debugger, which the app server used to claim.
+
+### Point the Workspace at the Eval Client Extensions
+
+The evals run against the client extensions in `lmnr/client-extensions`, not the workspace's default `client-extensions`. Set `liferay.workspace.client-extension.dir` in `gradle.properties` so the workspace discovers, builds, and deploys client extension projects from there. From the workspace root:
+
+```bash
+if grep --quiet '^liferay.workspace.client-extension.dir=' gradle.properties; then
+    sed --in-place 's|^liferay.workspace.client-extension.dir=.*|liferay.workspace.client-extension.dir=lmnr/client-extensions|' gradle.properties
+else
+    printf '\nliferay.workspace.client-extension.dir=lmnr/client-extensions' >> gradle.properties
+fi
+```
+
+The branch keeps the step idempotent: rerunning it rewrites an existing entry instead of appending a duplicate. Confirm the result:
+
+```bash
+grep '^liferay.workspace.client-extension.dir=' gradle.properties
+```
+
+Exactly one line, reading `liferay.workspace.client-extension.dir=lmnr/client-extensions`, means the step took.
 
 ### Ensure a Liferay Bundle Exists
 
@@ -129,13 +149,13 @@ Skip only when `node_modules/` is already present and current.
 
 ### Run the Eval
 
-From the workspace root — not from `lmnr-evals/`:
+From the workspace root — not from `lmnr/evals/`:
 
 ```bash
-yarn tsx lmnr-evals/manage-objects.eval.ts
+yarn tsx lmnr/evals/manage-objects.eval.ts
 ```
 
-`lib/agent-task.ts` reads `.claude/skills` relative to the working directory and throws when it finds nothing, so the working directory has to be the workspace root.
+`lmnr/evals/lib/agent-task.ts` reads `.claude/skills` relative to the working directory and throws when it finds nothing, so the working directory has to be the workspace root.
 
 Use `yarn tsx` rather than `yarn lmnr eval`. The CLI bundles the eval with esbuild and runs it in a sandbox, which breaks the Claude Agent SDK's `createRequire(import.meta.url)` unless `--external-packages @anthropic-ai/claude-agent-sdk` is passed.
 
@@ -148,10 +168,10 @@ Give the user the per-evaluator scores from the run output and the dashboard lin
 | Symptom | Cause |
 | --- | --- |
 | `401` from Laminar during the eval | The SDK defaulted to `api.lmnr.ai` instead of the local instance. Check the `config` block in the eval file: `baseUrl: 'http://localhost'`, `httpPort: 9000`, `grpcPort: 9001`. The local project API key always fails against the cloud. |
-| `401` with the config correct | Every eval takes `projectApiKey` from `lib/bootstrap.ts`, which signs in against `localhost:9667` and mints a fresh key at import time. A `401` here means that sign-in failed, so check that the Laminar frontend is up before looking at the key. A new eval file must import `projectApiKey` too — never hardcode a key, since it goes stale whenever the Laminar Postgres volume is recreated. |
+| `401` with the config correct | Every eval takes `projectApiKey` from `lmnr/evals/lib/bootstrap.ts`, which signs in against `localhost:9667` and mints a fresh key at import time. A `401` here means that sign-in failed, so check that the Laminar frontend is up before looking at the key. A new eval file must import `projectApiKey` too — never hardcode a key, since it goes stale whenever the Laminar Postgres volume is recreated. |
 | `No skills found in .claude/skills` | The eval was run from the wrong working directory. Run it from the workspace root. |
 | `403` on `/o/*` calls from the evaluators | The BasicAuth verifier is missing from the bundle. `configs/local/portal-ext.properties` carries `auth.verifier.BasicAuthHeaderAuthVerifier.urls.includes=/api/*,/xmlrpc/*,/o/*`; confirm it reached `bundles/portal-ext.properties`. |
-| No LLM token or cost data on the spans | The agent SDK runs the `claude` CLI as a separate process, so auto-instrumentation sees nothing. `lib/agent-task.ts` handles this by wrapping `query` with `Laminar.wrapClaudeAgentQuery`. |
+| No LLM token or cost data on the spans | The agent SDK runs the `claude` CLI as a separate process, so auto-instrumentation sees nothing. `lmnr/evals/lib/agent-task.ts` handles this by wrapping `query` with `Laminar.wrapClaudeAgentQuery`. |
 
 ## Related Skills
 
