@@ -42,7 +42,7 @@ curl --output /dev/null --silent --write-out '%{http_code}' http://localhost:808
 cd lmnr && docker compose down --volumes
 ```
 
-Losing the volumes costs history only, not the ability to run again: the Laminar workspace, project, and API key are recreated on the next run, because `lmnr-evals/lib/bootstrap.ts` mints them at import time.
+Losing the volumes costs history only, not the ability to run again: the Laminar workspace, project, and API key are recreated on the next run, because `lmnr/evals/lib/bootstrap.ts` mints them at import time.
 
 Verify nothing is left running:
 
