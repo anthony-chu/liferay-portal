@@ -1,0 +1,65 @@
+{
+	"pageElement": {
+		"pageElements": [
+			{
+				"definition": {
+					"fragment": {
+						"key": "site-header",
+						"siteKey": "[$GROUP_KEY$]"
+					}
+				},
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"fragment": {
+						"key": "section-heading",
+						"siteKey": "[$GROUP_KEY$]"
+					},
+					"fragmentFields": [
+						{
+							"id": "title",
+							"value": {
+								"fragmentLink": {},
+								"text": {
+									"value_i18n": {
+										"en_US": "Upcoming Events"
+									}
+								}
+							}
+						},
+						{
+							"id": "subtitle",
+							"value": {
+								"fragmentLink": {},
+								"text": {
+									"value_i18n": {
+										"en_US": "Every upcoming event, with its dates, location, and remaining capacity."
+									}
+								}
+							}
+						}
+					]
+				},
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"fragment": {
+						"key": "event-list",
+						"siteKey": "[$GROUP_KEY$]"
+					},
+					"fragmentConfig": {
+						"layout": "rows",
+						"maxItems": "20",
+						"showCapacity": true,
+						"upcomingOnly": true
+					}
+				},
+				"type": "Fragment"
+			}
+		],
+		"type": "Root"
+	},
+	"version": "1.0"
+}

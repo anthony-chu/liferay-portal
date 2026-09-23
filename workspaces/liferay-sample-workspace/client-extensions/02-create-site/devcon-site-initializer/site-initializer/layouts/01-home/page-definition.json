@@ -1,0 +1,75 @@
+{
+	"pageElement": {
+		"pageElements": [
+			{
+				"definition": {
+					"fragment": {
+						"key": "site-header",
+						"siteKey": "[$GROUP_KEY$]"
+					}
+				},
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"fragment": {
+						"key": "hero-banner",
+						"siteKey": "[$GROUP_KEY$]"
+					}
+				},
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"fragment": {
+						"key": "section-heading",
+						"siteKey": "[$GROUP_KEY$]"
+					},
+					"fragmentFields": [
+						{
+							"id": "title",
+							"value": {
+								"fragmentLink": {},
+								"text": {
+									"value_i18n": {
+										"en_US": "Other Upcoming Events"
+									}
+								}
+							}
+						},
+						{
+							"id": "subtitle",
+							"value": {
+								"fragmentLink": {},
+								"text": {
+									"value_i18n": {
+										"en_US": "Can't make it to DEVCON? Check out what else is coming up."
+									}
+								}
+							}
+						}
+					]
+				},
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"fragment": {
+						"key": "event-list",
+						"siteKey": "[$GROUP_KEY$]"
+					},
+					"fragmentConfig": {
+						"excludeExternalReferenceCode": "EVENT_LIFERAY_DEVCON_2026",
+						"layout": "grid",
+						"maxItems": "3",
+						"showCapacity": false,
+						"upcomingOnly": true
+					}
+				},
+				"type": "Fragment"
+			}
+		],
+		"type": "Root"
+	},
+	"version": "1.0"
+}
