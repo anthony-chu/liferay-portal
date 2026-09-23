@@ -11,7 +11,7 @@ Stand up everything an eval needs, in order, then run it: Laminar for observabil
 
 ## When to Invoke
 
-- The user asks to "run the eval", "run the manage-objects eval", or names any file under `lmnr/evals/`.
+- The user asks to "run the eval", "run the create-site eval", or names any file under `lmnr/evals/`.
 - The user asks to start or reset the eval environment.
 
 Every step is idempotent, so the skill is safe to rerun against a stack that is already partly up.
@@ -152,7 +152,7 @@ Skip only when `node_modules/` is already present and current.
 From the workspace root — not from `lmnr/evals/`:
 
 ```bash
-yarn tsx lmnr/evals/manage-objects.eval.ts
+yarn tsx lmnr/evals/create-site.eval.ts
 ```
 
 `lmnr/evals/lib/agent-task.ts` reads `.claude/skills` relative to the working directory and throws when it finds nothing, so the working directory has to be the workspace root.
