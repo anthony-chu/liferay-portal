@@ -1,0 +1,99 @@
+#wrapper .devcon-site-header {
+	background: #0A1F44;
+	border-bottom: 3px solid #F5A623;
+}
+
+#wrapper .devcon-site-header__skip-link {
+	background: #F5A623;
+	color: #0A1F44;
+	font-weight: 700;
+	left: 0;
+	padding: var(--spacer-2) var(--spacer-4);
+	position: absolute;
+	text-decoration: none;
+	transform: translateY(-100%);
+	z-index: 1050;
+}
+
+#wrapper .devcon-site-header__skip-link:focus {
+	transform: translateY(0%);
+}
+
+#wrapper .devcon-site-header__inner {
+	align-items: center;
+	display: flex;
+	gap: var(--spacer-5);
+	justify-content: space-between;
+	margin: 0 auto;
+	max-width: 72rem;
+	padding: var(--spacer-3) var(--spacer-4);
+}
+
+#wrapper .devcon-site-header__brand {
+	text-decoration: none;
+}
+
+#wrapper .devcon-site-header__name {
+	color: #FFFFFF;
+	font-family: "Arial Black", "Segoe UI Black", "Helvetica Neue", Arial, sans-serif;
+	font-size: 1.375rem;
+	font-weight: 800;
+	letter-spacing: 0.04em;
+}
+
+#wrapper .devcon-site-header__nav {
+	display: flex;
+	gap: var(--spacer-4);
+}
+
+#wrapper .devcon-site-header__link {
+	color: #F5E6C8;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+#wrapper .devcon-site-header__link:hover {
+	color: #F5A623;
+	text-decoration: underline;
+}
+
+/*
+ * Site wide heading typeface — deliberately NOT scoped to this fragment's
+ * own wrapper. This fragment lives in the master page, so it loads on every
+ * page using that master, making it the one place a site wide rule can live
+ * and still survive a delete + redeploy reprovision (a themeCSS client
+ * extension CET has to be reattached by hand after every reprovision; this
+ * does not). Classic's frontend-token-definition.json — verified against
+ * the theme actually deployed in this bundle
+ * (bundles/osgi/portal-war/classic-theme.war) — has no headings* token at
+ * all (family/weight are not tokenized here, only h1FontSize..h6FontSize
+ * sizes are), so a style book cannot carry this value. This fragment CSS is
+ * the only reproducible place for it. See theme-and-design skill, "Site
+ * Wide CSS With No Token".
+ *
+ * Family, weight, and tracking only — never color here. Headings must
+ * inherit color from their section (dark text on the light content areas,
+ * white on the navy hero/footer); a color set here would paint every
+ * heading with one value regardless of what it sits on.
+ *
+ * Tag selectors alone would miss a heading whose fragment overrides it at
+ * higher specificity (id + class beats id + type), so the title wrapper
+ * classes are named explicitly alongside the tags. The competing
+ * font-weight declarations on those same wrapper classes have been removed
+ * from their own fragments' CSS (hero-banner, section-heading, event-list)
+ * so this rule is the single source of truth for weight.
+ */
+
+#wrapper h1,
+#wrapper h2,
+#wrapper h3,
+#wrapper h4,
+#wrapper h5,
+#wrapper h6,
+#wrapper .devcon-hero-banner__title,
+#wrapper .devcon-section-heading h2,
+#wrapper .devcon-event-list__card-name {
+	font-family: "Arial Black", "Segoe UI Black", "Helvetica Neue", Arial, sans-serif;
+	font-weight: 800;
+	letter-spacing: -0.01em;
+}

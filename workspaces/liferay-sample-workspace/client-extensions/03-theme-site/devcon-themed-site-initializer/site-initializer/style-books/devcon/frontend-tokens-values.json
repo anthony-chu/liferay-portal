@@ -1,0 +1,78 @@
+{
+	"primaryColor": {
+		"cssVariableMapping": "primary",
+		"value": "#0A1F44"
+	},
+	"secondaryColor": {
+		"cssVariableMapping": "secondary",
+		"value": "#F5A623"
+	},
+	"bodyBgColor": {
+		"cssVariableMapping": "body-bg",
+		"value": "#F5F6F8"
+	},
+	"bodyColor": {
+		"cssVariableMapping": "body-color",
+		"value": "#1A2233"
+	},
+	"fontFamilyBase": {
+		"cssVariableMapping": "font-family-base",
+		"value": "\"Helvetica Neue\", Arial, sans-serif"
+	},
+	"fontWeightBold": {
+		"cssVariableMapping": "font-weight-bold",
+		"value": "700"
+	},
+	"fontWeightBolder": {
+		"cssVariableMapping": "font-weight-bolder",
+		"value": "800"
+	},
+	"btnPrimaryBackgroundColor": {
+		"cssVariableMapping": "btn-primary-background-color",
+		"value": "#0A1F44"
+	},
+	"btnPrimaryBorderColor": {
+		"cssVariableMapping": "btn-primary-border-color",
+		"value": "#0A1F44"
+	},
+	"btnPrimaryColor": {
+		"cssVariableMapping": "btn-primary-color",
+		"value": "#FFFFFF"
+	},
+	"btnPrimaryHoverBackgroundColor": {
+		"cssVariableMapping": "btn-primary-hover-background-color",
+		"value": "#071630"
+	},
+	"btnPrimaryHoverBorderColor": {
+		"cssVariableMapping": "btn-primary-hover-border-color",
+		"value": "#071630"
+	},
+	"btnPrimaryHoverColor": {
+		"cssVariableMapping": "btn-primary-hover-color",
+		"value": "#FFFFFF"
+	},
+	"btnSecondaryBackgroundColor": {
+		"cssVariableMapping": "btn-secondary-background-color",
+		"value": "#F5A623"
+	},
+	"btnSecondaryBorderColor": {
+		"cssVariableMapping": "btn-secondary-border-color",
+		"value": "#F5A623"
+	},
+	"btnSecondaryColor": {
+		"cssVariableMapping": "btn-secondary-color",
+		"value": "#1A2233"
+	},
+	"btnSecondaryHoverBackgroundColor": {
+		"cssVariableMapping": "btn-secondary-hover-background-color",
+		"value": "#C98615"
+	},
+	"btnSecondaryHoverBorderColor": {
+		"cssVariableMapping": "btn-secondary-hover-border-color",
+		"value": "#C98615"
+	},
+	"btnSecondaryHoverColor": {
+		"cssVariableMapping": "btn-secondary-hover-color",
+		"value": "#1A2233"
+	}
+}

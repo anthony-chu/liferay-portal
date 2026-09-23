@@ -1,0 +1,28 @@
+[
+	{
+		"auto": false,
+		"externalReferenceCode": "DEVCON_MAIN_MENU",
+		"menuItems": [
+			{
+				"externalReferenceCode": "DEVCON_NAV_HOME",
+				"friendlyURL": "/home",
+				"privateLayout": false,
+				"type": "layout"
+			},
+			{
+				"externalReferenceCode": "DEVCON_NAV_UPCOMING_EVENTS",
+				"friendlyURL": "/upcoming-events",
+				"privateLayout": false,
+				"type": "layout"
+			},
+			{
+				"externalReferenceCode": "DEVCON_NAV_REGISTER",
+				"friendlyURL": "/register",
+				"privateLayout": false,
+				"type": "layout"
+			}
+		],
+		"name": "Main Menu",
+		"typeSite": 1
+	}
+]

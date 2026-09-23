@@ -1,0 +1,11 @@
+<div
+	class="devcon-event-list-wrapper"
+	data-layout="${configuration.layout!'grid'}"
+	data-max-items="${configuration.maxItems!'5'}"
+	data-show-capacity="${(configuration.showCapacity!false)?c}"
+	data-upcoming-only="${(configuration.upcomingOnly!true)?c}"
+	data-exclude-erc="${configuration.excludeExternalReferenceCode!''}"
+>
+	<p class="devcon-event-list__status" data-devcon-event-list-status>Loading events&hellip;</p>
+	<div class="devcon-event-list__items" data-devcon-event-list-items></div>
+</div>
