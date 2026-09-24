@@ -21,31 +21,31 @@
 		<div class="devcon-registration-form__field">
 			<label for="devconRegEvent">Event *</label>
 
-			<select id="devconRegEvent" name="eventExternalReferenceCode" required>
-				<option value="" disabled selected>Select an event&hellip;</option>
-				<option value="EVENT_LIFERAY_DEVCON_2026">Liferay DEVCON &mdash; Nov 2-5, 2026 &middot; London, UK</option>
-				<option value="EVENT_LIFERAY_SYMPOSIUM_NA_2026">Liferay Symposium North America &mdash; Sep 15-17, 2026 &middot; Chicago, IL, USA</option>
-				<option value="EVENT_LIFERAY_APAC_SUMMIT_2026">Liferay APAC Summit &mdash; Oct 5-6, 2026 &middot; Singapore</option>
-				<option value="EVENT_LIFERAY_COMMUNITY_DAY_2026">Liferay Community Day &mdash; Dec 3, 2026 &middot; Austin, TX, USA</option>
+			<select data-devcon-registration-event id="devconRegEvent" name="eventExternalReferenceCode" required>
+				<option value="" disabled selected>Loading events&hellip;</option>
 			</select>
 
-			<p class="devcon-registration-form__hint">Adding a new event here requires updating this fragment's options and reprovisioning the site.</p>
+			<p class="devcon-registration-form__hint" data-devcon-registration-event-hint></p>
 		</div>
 
-		<fieldset class="devcon-registration-form__field">
-			<legend>Dietary Restrictions</legend>
+		<div class="devcon-registration-form__field">
+			<label for="devconRegDietary">Dietary Restrictions</label>
 
-			<div class="devcon-registration-form__checkboxes">
-				<label><input type="checkbox" name="dietaryRestrictions" value="none" /> None</label>
-				<label><input type="checkbox" name="dietaryRestrictions" value="vegetarian" /> Vegetarian</label>
-				<label><input type="checkbox" name="dietaryRestrictions" value="vegan" /> Vegan</label>
-				<label><input type="checkbox" name="dietaryRestrictions" value="glutenFree" /> Gluten Free</label>
-				<label><input type="checkbox" name="dietaryRestrictions" value="dairyFree" /> Dairy Free</label>
-				<label><input type="checkbox" name="dietaryRestrictions" value="nutAllergy" /> Nut Allergy</label>
-				<label><input type="checkbox" name="dietaryRestrictions" value="halal" /> Halal</label>
-				<label><input type="checkbox" name="dietaryRestrictions" value="kosher" /> Kosher</label>
-			</div>
-		</fieldset>
+			<!-- Hardcoded to match the DIETARY_RESTRICTION list type: Guest cannot read a
+			     picklist over REST. See rules/guest-access.md. -->
+
+			<select id="devconRegDietary" name="dietaryRestrictions">
+				<option value="" selected>None specified</option>
+				<option value="vegetarian">Vegetarian</option>
+				<option value="vegan">Vegan</option>
+				<option value="glutenFree">Gluten Free</option>
+				<option value="dairyFree">Dairy Free</option>
+				<option value="nutAllergy">Nut Allergy</option>
+				<option value="shellfishAllergy">Shellfish Allergy</option>
+				<option value="halal">Halal</option>
+				<option value="kosher">Kosher</option>
+			</select>
+		</div>
 
 		<button class="devcon-registration-form__submit btn btn-primary" type="submit">Register</button>
 
