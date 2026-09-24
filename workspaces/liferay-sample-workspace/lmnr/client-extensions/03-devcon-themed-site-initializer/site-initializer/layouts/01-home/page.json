@@ -1,0 +1,20 @@
+{
+	"friendlyURL": "/home",
+	"hidden": false,
+	"name": "Home",
+	"name_i18n": {
+		"en_US": "Home"
+	},
+	"permissions": [
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "Guest",
+			"scope": 4
+		}
+	],
+	"private": false,
+	"system": false,
+	"type": "Content"
+}
