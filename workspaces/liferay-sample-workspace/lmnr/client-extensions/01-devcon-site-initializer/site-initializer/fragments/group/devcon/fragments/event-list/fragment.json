@@ -1,7 +1,8 @@
 {
+	"configurationPath": "configuration.json",
 	"cssPath": "index.css",
 	"htmlPath": "index.html",
 	"jsPath": "index.js",
-	"name": "Event Card",
+	"name": "Event List",
 	"type": "component"
 }
