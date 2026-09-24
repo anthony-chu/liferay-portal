@@ -1,0 +1,8 @@
+// This file allows you to override default styles in one central location
+// for easier upgrade and maintenance.
+//
+// DEVCON's palette/typography overrides live in `_clay_variables.scss`
+// instead — that file is imported before Clay's Bootstrap variables are
+// consumed, which this file (imported only via `main.scss`, after every
+// portal/taglib/application/layout/navigation/portlet partial has already
+// compiled) cannot influence. See `_clay_variables.scss` for why.
