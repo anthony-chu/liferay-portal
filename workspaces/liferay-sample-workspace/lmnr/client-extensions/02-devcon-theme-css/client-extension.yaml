@@ -1,0 +1,16 @@
+assemble:
+    -   from: src/images
+        into: static/images
+
+lpd-12345-devcon-theme-css:
+    clayRTLURL: css/clay_rtl.css
+    clayURL: css/clay.css
+    mainRTLURL: css/main_rtl.css
+    mainURL: css/main.css
+    name: DEVCON Theme CSS
+    type: themeCSS
+
+lpd-12345-devcon-theme-favicon:
+    name: DEVCON Favicon
+    type: themeFavicon
+    url: images/favicon.ico
