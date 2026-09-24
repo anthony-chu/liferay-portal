@@ -4,7 +4,7 @@
 			{
 				"definition": {
 					"fragment": {
-						"key": "section-heading",
+						"key": "site-header",
 						"siteKey": "[$GROUP_KEY$]"
 					}
 				},
@@ -12,87 +12,51 @@
 			},
 			{
 				"definition": {
-					"collectionConfig": {
-						"collectionReference": {
-							"className": "[$OBJECT_DEFINITION_CLASS_NAME:Event$]"
-						},
-						"collectionType": "CollectionProvider"
+					"fragment": {
+						"key": "section-heading",
+						"siteKey": "[$GROUP_KEY$]"
 					},
-					"numberOfColumns": 1,
-					"numberOfItems": 20,
-					"paginationType": "Numeric"
-				},
-				"pageElements": [
-					{
-						"pageElements": [
-							{
-								"definition": {
-									"fragment": {
-										"key": "event-card",
-										"siteKey": "[$GROUP_KEY$]"
-									},
-									"fragmentFields": [
-										{
-											"id": "eventName",
-											"value": {
-												"text": {
-													"mapping": {
-														"fieldKey": "ObjectField_name",
-														"itemReference": {
-															"contextSource": "CollectionItem"
-														}
-													}
-												}
-											}
-										},
-										{
-											"id": "eventDate",
-											"value": {
-												"text": {
-													"mapping": {
-														"fieldKey": "ObjectField_dateRangeLabel",
-														"itemReference": {
-															"contextSource": "CollectionItem"
-														}
-													}
-												}
-											}
-										},
-										{
-											"id": "eventLocation",
-											"value": {
-												"text": {
-													"mapping": {
-														"fieldKey": "ObjectField_location",
-														"itemReference": {
-															"contextSource": "CollectionItem"
-														}
-													}
-												}
-											}
-										},
-										{
-											"id": "eventSpots",
-											"value": {
-												"text": {
-													"mapping": {
-														"fieldKey": "ObjectField_spotsRemaining",
-														"itemReference": {
-															"contextSource": "CollectionItem"
-														}
-													}
-												}
-											}
-										}
-									]
-								},
-								"type": "Fragment"
+					"fragmentFields": [
+						{
+							"id": "title",
+							"value": {
+								"fragmentLink": {},
+								"text": {
+									"value_i18n": {
+										"en_US": "Upcoming Events"
+									}
+								}
 							}
-						],
-						"type": "CollectionItem"
+						},
+						{
+							"id": "subtitle",
+							"value": {
+								"fragmentLink": {},
+								"text": {
+									"value_i18n": {
+										"en_US": "Every upcoming event, with its dates, location, and remaining capacity."
+									}
+								}
+							}
+						}
+					]
+				},
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"fragment": {
+						"key": "event-list",
+						"siteKey": "[$GROUP_KEY$]"
+					},
+					"fragmentConfig": {
+						"layout": "rows",
+						"maxItems": "20",
+						"showCapacity": true,
+						"upcomingOnly": true
 					}
-				],
-				"type": "Collection"
+				},
+				"type": "Fragment"
 			}
 		],
 		"type": "Root"
