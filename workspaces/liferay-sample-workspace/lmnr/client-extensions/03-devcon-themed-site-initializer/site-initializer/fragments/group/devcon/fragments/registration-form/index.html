@@ -1,0 +1,48 @@
+<div class="devcon-registration-form">
+	<form class="devcon-registration-form__form" data-devcon-registration-form>
+		<div class="devcon-registration-form__field">
+			<label for="devconRegName">Full Name *</label>
+			<input id="devconRegName" name="name" type="text" required />
+		</div>
+		<div class="devcon-registration-form__field">
+			<label for="devconRegEmail">Email Address *</label>
+			<input id="devconRegEmail" name="emailAddress" type="email" required />
+		</div>
+		<div class="devcon-registration-form__field">
+			<label for="devconRegCompany">Company</label>
+			<input id="devconRegCompany" name="company" type="text" />
+		</div>
+		<div class="devcon-registration-form__field">
+			<label for="devconRegEvent">Event *</label>
+			<select id="devconRegEvent" name="eventExternalReferenceCode" data-devcon-registration-event required>
+				<option value="" disabled selected>Loading events&hellip;</option>
+			</select>
+			<p class="devcon-registration-form__hint" data-devcon-registration-event-hint></p>
+		</div>
+		<div class="devcon-registration-form__field">
+			<label for="devconRegDietary">Dietary Restrictions</label>
+			<select id="devconRegDietary" name="dietaryRestrictions">
+				<option value="" selected>None specified</option>
+				<option value="vegetarian">Vegetarian</option>
+				<option value="vegan">Vegan</option>
+				<option value="glutenFree">Gluten Free</option>
+				<option value="dairyFree">Dairy Free</option>
+				<option value="nutAllergy">Nut Allergy</option>
+				<option value="shellfishAllergy">Shellfish Allergy</option>
+				<option value="halal">Halal</option>
+				<option value="kosher">Kosher</option>
+			</select>
+			<!--
+				Guest cannot fetch a picklist definition over headless-admin-list-type (403), so these
+				options are hardcoded here to match the live DIETARY_RESTRICTION list type entries
+				(verified via GET /o/headless-admin-list-type/v1.0/list-type-definitions/by-external-
+				reference-code/DIETARY_RESTRICTION/list-type-entries with admin auth) rather than being
+				fetched at runtime. Keep this list in sync if that picklist changes. There is no "none"
+				entry in the real list — the blank placeholder option above covers that case by simply
+				omitting dietaryRestrictions from the payload.
+			-->
+		</div>
+		<button class="devcon-registration-form__submit btn btn-primary" type="submit">Register</button>
+		<div class="devcon-registration-form__message" data-devcon-registration-message role="status" aria-live="polite"></div>
+	</form>
+</div>

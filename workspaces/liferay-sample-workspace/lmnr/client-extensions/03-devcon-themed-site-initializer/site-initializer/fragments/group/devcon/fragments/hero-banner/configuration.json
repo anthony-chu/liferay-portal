@@ -1,0 +1,26 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "left",
+					"label": "Content Alignment",
+					"name": "contentAlignment",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"value": "left"
+							},
+							{
+								"value": "center"
+							}
+						]
+					}
+				}
+			],
+			"label": "Layout"
+		}
+	]
+}

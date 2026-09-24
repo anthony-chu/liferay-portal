@@ -1,0 +1,20 @@
+{
+	"friendlyURL": "/register",
+	"hidden": false,
+	"name": "Register",
+	"name_i18n": {
+		"en_US": "Register"
+	},
+	"permissions": [
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "Guest",
+			"scope": 4
+		}
+	],
+	"private": false,
+	"system": false,
+	"type": "Content"
+}
