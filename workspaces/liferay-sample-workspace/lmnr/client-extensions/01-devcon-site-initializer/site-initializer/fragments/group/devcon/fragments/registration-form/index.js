@@ -4,7 +4,159 @@
  */
 
 (function () {
-	const rootElement = fragmentNamespace.element;
+	const MONTH_NAMES = [
+		'Jan',
+		'Feb',
+		'Mar',
+		'Apr',
+		'May',
+		'Jun',
+		'Jul',
+		'Aug',
+		'Sep',
+		'Oct',
+		'Nov',
+		'Dec',
+	];
+
+	function formatMonthDay(date) {
+		return MONTH_NAMES[date.getUTCMonth()] + ' ' + date.getUTCDate();
+	}
+
+	function isSameUTCDay(dateA, dateB) {
+		return (
+			dateA.toUTCString().slice(0, 16) ===
+			dateB.toUTCString().slice(0, 16)
+		);
+	}
+
+	// DateTime fields are UTC ISO strings representing the venue's own wall clock time — use the
+	// UTC getters, not the local ones (see skills/manage-pages/SKILL.md -> "Read DateTime With
+	// the UTC Getters").
+
+	function formatDateRange(startDate, endDate) {
+		const startYear = startDate.getUTCFullYear();
+		const endYear = endDate.getUTCFullYear();
+
+		if (isSameUTCDay(startDate, endDate)) {
+			return formatMonthDay(startDate) + ', ' + startYear;
+		}
+
+		if (startYear === endYear) {
+			return (
+				formatMonthDay(startDate) +
+				'–' +
+				formatMonthDay(endDate) +
+				', ' +
+				startYear
+			);
+		}
+
+		return (
+			formatMonthDay(startDate) +
+			', ' +
+			startYear +
+			' – ' +
+			formatMonthDay(endDate) +
+			', ' +
+			endYear
+		);
+	}
+
+	function fetchFn() {
+		return window.Liferay && Liferay.Util && Liferay.Util.fetch
+			? Liferay.Util.fetch
+			: window.fetch;
+	}
+
+	function loadEvents(selectElement, hintElement) {
+		const preselectERC = new URLSearchParams(window.location.search).get(
+			'event'
+		);
+
+		return fetchFn()('/o/c/events?pageSize=100&sort=startDate:asc')
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(
+						'Request failed with status ' + response.status
+					);
+				}
+
+				return response.json();
+			})
+			.then((data) => {
+				const now = new Date();
+
+				const events = (data.items || []).filter((event) => {
+					return new Date(event.endDate) >= now;
+				});
+
+				events.sort((eventA, eventB) => {
+					return (
+						new Date(eventA.startDate) - new Date(eventB.startDate)
+					);
+				});
+
+				selectElement.innerHTML = '';
+
+				if (!events.length) {
+					const emptyOption = document.createElement('option');
+
+					emptyOption.value = '';
+					emptyOption.textContent =
+						'No upcoming events are open for registration';
+					emptyOption.disabled = true;
+					emptyOption.selected = true;
+					selectElement.appendChild(emptyOption);
+
+					return;
+				}
+
+				const placeholderOption = document.createElement('option');
+
+				placeholderOption.value = '';
+				placeholderOption.textContent = 'Select an event…';
+				placeholderOption.disabled = true;
+				placeholderOption.selected = true;
+				selectElement.appendChild(placeholderOption);
+
+				events.forEach((event) => {
+					const option = document.createElement('option');
+					const startDate = new Date(event.startDate);
+					const endDate = new Date(event.endDate);
+
+					option.value = event.externalReferenceCode;
+					option.textContent =
+						event.name +
+						' — ' +
+						formatDateRange(startDate, endDate) +
+						(event.location ? ' · ' + event.location : '');
+
+					if (event.externalReferenceCode === preselectERC) {
+						option.selected = true;
+						placeholderOption.selected = false;
+					}
+
+					selectElement.appendChild(option);
+				});
+			})
+			.catch(() => {
+				selectElement.innerHTML = '';
+
+				const errorOption = document.createElement('option');
+
+				errorOption.value = '';
+				errorOption.textContent =
+					'Events could not be loaded — please refresh and try again';
+				errorOption.disabled = true;
+				errorOption.selected = true;
+				selectElement.appendChild(errorOption);
+
+				if (hintElement) {
+					hintElement.textContent = '';
+				}
+			});
+	}
 
 	function init(rootElement) {
 		const form = rootElement.querySelector(
@@ -13,10 +165,18 @@
 		const messageElement = rootElement.querySelector(
 			'[data-devcon-registration-message]'
 		);
+		const eventSelect = rootElement.querySelector(
+			'[data-devcon-registration-event]'
+		);
+		const eventHint = rootElement.querySelector(
+			'[data-devcon-registration-event-hint]'
+		);
 
-		if (!form) {
+		if (!form || !eventSelect) {
 			return;
 		}
+
+		loadEvents(eventSelect, eventHint);
 
 		form.addEventListener('submit', (event) => {
 			event.preventDefault();
@@ -30,19 +190,10 @@
 				.querySelector('[name="emailAddress"]')
 				.value.trim();
 			const company = form.querySelector('[name="company"]').value.trim();
-			const eventERC = form.querySelector(
-				'[name="eventExternalReferenceCode"]'
+			const eventERC = eventSelect.value;
+			const dietaryRestrictions = form.querySelector(
+				'[name="dietaryRestrictions"]'
 			).value;
-
-			const dietaryRestrictions = Array.prototype.slice
-				.call(
-					form.querySelectorAll(
-						'[name="dietaryRestrictions"]:checked'
-					)
-				)
-				.map((checkbox) => {
-					return {key: checkbox.value};
-				});
 
 			messageElement.textContent = '';
 			messageElement.className = 'devcon-registration-form__message';
@@ -59,21 +210,25 @@
 
 			const payload = {
 				company,
-				dietaryRestrictions,
 				emailAddress,
 				name,
 				r_eventRegistrations_c_eventERC: eventERC,
-				registrationStatus: {key: 'pending'},
+				registrationStatus: {
+					key: 'pending',
+				},
 			};
+
+			if (dietaryRestrictions) {
+				payload.dietaryRestrictions = [
+					{
+						key: dietaryRestrictions,
+					},
+				];
+			}
 
 			submitButton.disabled = true;
 
-			const fetchFn =
-				window.Liferay && Liferay.Util && Liferay.Util.fetch
-					? Liferay.Util.fetch
-					: window.fetch;
-
-			fetchFn('/o/c/registrations', {
+			fetchFn()('/o/c/registrations', {
 				body: JSON.stringify(payload),
 				headers: {
 					'Content-Type': 'application/json',
@@ -96,6 +251,7 @@
 						'devcon-registration-form__message--success'
 					);
 					form.reset();
+					loadEvents(eventSelect, eventHint);
 				})
 				.catch(() => {
 					messageElement.textContent =
@@ -109,6 +265,8 @@
 				});
 		});
 	}
+
+	const rootElement = fragmentNamespace.element;
 
 	if (rootElement) {
 		init(rootElement);
