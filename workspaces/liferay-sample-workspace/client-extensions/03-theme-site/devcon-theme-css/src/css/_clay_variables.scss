@@ -1,0 +1,53 @@
+// DEVCON brand — deep navy with amber accents.
+//
+// This file is imported by `clay/base.scss` (as `../clay_variables`) BEFORE
+// Clay's own `_variables.scss` (which sets `$primary` etc. with `!default`)
+// and before `_components.scss` (which generates the actual compiled CSS
+// rules from those variables). Setting the palette here is what actually
+// reaches the compiled `clay.css` — `_custom.scss` does not: it is only
+// imported by `main.scss`'s separate compilation unit, which `clay.scss`
+// never pulls in.
+
+$primary: #0A1F44;
+$secondary: #F5A623;
+$success: #287D3C;
+$danger: #DA1414;
+
+$body-bg: #F5F6F8;
+$body-color: #1A2233;
+
+$link-color: #0A1F44;
+$link-hover-color: #F5A623;
+
+// Bold, heavy heading typeface
+
+$font-family-base: "Helvetica Neue", Arial, sans-serif;
+$headings-font-family: "Arial Black", "Segoe UI Black", "Helvetica Neue", Arial, sans-serif;
+$headings-font-weight: 800;
+
+$border-radius: 0.375rem;
+$border-radius-lg: 0.5rem;
+
+// `clay/components/_root.scss` only emits CSS custom properties into `:root`
+// via its `@else` branch (`--#{$color}: #{$value};`, i.e. only when the map
+// does NOT "exist"). Clay's own `clay/variables/_c-root.scss` sets
+// `$c-root: () !default;`, so the map always "exists" (just empty) and the
+// `@else` branch never runs — the `@if` branch fires instead and calls
+// `@include clay-css($c-root)`.
+//
+// `clay-css()` (clay/mixins/_globals.scss) does NOT add a `--` prefix itself
+// — it emits each map entry verbatim as `#{$key}: #{$value};`. A map keyed
+// `primary: $primary` therefore compiles to a literal (invalid) `primary:
+// #0A1F44;` declaration, not the custom property `--primary`. Verified by
+// inspecting the compiled `clay.css` — confirmed empirically, not assumed.
+// The map keys must carry the `--` themselves.
+
+$c-root: (
+	"--primary": $primary,
+	"--secondary": $secondary,
+	"--success": $success,
+	"--danger": $danger,
+	"--body-bg": $body-bg,
+	"--body-color": $body-color,
+	"--font-family-headings": $headings-font-family,
+);

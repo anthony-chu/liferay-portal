@@ -1,0 +1,68 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "grid",
+					"label": "Layout",
+					"name": "layout",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"value": "grid"
+							},
+							{
+								"value": "rows"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "5",
+					"label": "Maximum events to show",
+					"name": "maxItems",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"value": "3"
+							},
+							{
+								"value": "5"
+							},
+							{
+								"value": "10"
+							},
+							{
+								"value": "20"
+							}
+						]
+					}
+				},
+				{
+					"defaultValue": false,
+					"label": "Show remaining capacity",
+					"name": "showCapacity",
+					"type": "checkbox"
+				},
+				{
+					"defaultValue": true,
+					"label": "Only show upcoming events",
+					"name": "upcomingOnly",
+					"type": "checkbox"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "",
+					"label": "Exclude event (external reference code)",
+					"name": "excludeExternalReferenceCode",
+					"type": "text"
+				}
+			],
+			"label": "Event List Settings"
+		}
+	]
+}

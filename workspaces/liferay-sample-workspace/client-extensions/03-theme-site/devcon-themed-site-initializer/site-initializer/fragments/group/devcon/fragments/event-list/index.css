@@ -1,0 +1,81 @@
+#wrapper .devcon-event-list-wrapper {
+	padding: var(--spacer-6);
+}
+
+#wrapper .devcon-event-list-wrapper .devcon-event-list__status {
+	text-align: center;
+	color: var(--gray-700);
+}
+
+#wrapper .devcon-event-list-wrapper .devcon-event-list__status[hidden] {
+	display: none;
+}
+
+#wrapper .devcon-event-list__items {
+	display: grid;
+	gap: var(--spacer-4);
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#wrapper .devcon-event-list-wrapper[data-layout='rows'] .devcon-event-list__items {
+	grid-template-columns: 1fr;
+}
+
+#wrapper .devcon-event-list__card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacer-2);
+	background: var(--white);
+	border: 1px solid var(--gray-300);
+	border-radius: 0.5rem;
+	padding: var(--spacer-4);
+}
+
+#wrapper .devcon-event-list-wrapper[data-layout='rows'] .devcon-event-list__card {
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+}
+
+#wrapper .devcon-event-list__card-name {
+	margin: 0;
+	font-size: 1.25rem;
+	/* font-weight intentionally omitted — see the master page's site-header
+	 * fragment index.css, which sets it site wide for every heading
+	 * (this card name renders as an <h3>). */
+	color: var(--gray-900);
+}
+
+#wrapper .devcon-event-list__card-date,
+#wrapper .devcon-event-list__card-location {
+	margin: 0;
+	font-size: 0.9375rem;
+	color: var(--gray-700);
+}
+
+#wrapper .devcon-event-list__card-capacity {
+	width: fit-content;
+	padding: var(--spacer-1) var(--spacer-2);
+	border-radius: 0.25rem;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	color: var(--success);
+	background: rgba(0, 128, 0, 0.12);
+}
+
+#wrapper .devcon-event-list__card-capacity--full {
+	color: var(--danger);
+	background: rgba(220, 53, 69, 0.12);
+}
+
+#wrapper .devcon-event-list__card-cta {
+	margin-top: auto;
+	font-weight: 600;
+	color: var(--primary);
+	text-decoration: none;
+}
+
+#wrapper .devcon-event-list__card-cta:hover {
+	text-decoration: underline;
+}

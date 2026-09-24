@@ -1,0 +1,108 @@
+{
+	"configuration": {
+		"className": "com.liferay.headless.admin.list.type.dto.v1_0.ListTypeDefinition",
+		"multiCompany": true,
+		"parameters": {
+			"createStrategy": "UPSERT",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		}
+	},
+	"items": [
+		{
+			"externalReferenceCode": "DIETARY_RESTRICTION",
+			"listTypeEntries": [
+				{
+					"key": "none",
+					"name": "None",
+					"name_i18n": {
+						"en_US": "None"
+					}
+				},
+				{
+					"key": "vegetarian",
+					"name": "Vegetarian",
+					"name_i18n": {
+						"en_US": "Vegetarian"
+					}
+				},
+				{
+					"key": "vegan",
+					"name": "Vegan",
+					"name_i18n": {
+						"en_US": "Vegan"
+					}
+				},
+				{
+					"key": "glutenFree",
+					"name": "Gluten Free",
+					"name_i18n": {
+						"en_US": "Gluten Free"
+					}
+				},
+				{
+					"key": "dairyFree",
+					"name": "Dairy Free",
+					"name_i18n": {
+						"en_US": "Dairy Free"
+					}
+				},
+				{
+					"key": "nutAllergy",
+					"name": "Nut Allergy",
+					"name_i18n": {
+						"en_US": "Nut Allergy"
+					}
+				},
+				{
+					"key": "halal",
+					"name": "Halal",
+					"name_i18n": {
+						"en_US": "Halal"
+					}
+				},
+				{
+					"key": "kosher",
+					"name": "Kosher",
+					"name_i18n": {
+						"en_US": "Kosher"
+					}
+				}
+			],
+			"name": "Dietary Restriction",
+			"name_i18n": {
+				"en_US": "Dietary Restriction"
+			}
+		},
+		{
+			"externalReferenceCode": "REGISTRATION_STATUS",
+			"listTypeEntries": [
+				{
+					"key": "pending",
+					"name": "Pending",
+					"name_i18n": {
+						"en_US": "Pending"
+					}
+				},
+				{
+					"key": "confirmed",
+					"name": "Confirmed",
+					"name_i18n": {
+						"en_US": "Confirmed"
+					}
+				},
+				{
+					"key": "cancelled",
+					"name": "Cancelled",
+					"name_i18n": {
+						"en_US": "Cancelled"
+					}
+				}
+			],
+			"name": "Registration Status",
+			"name_i18n": {
+				"en_US": "Registration Status"
+			}
+		}
+	]
+}
