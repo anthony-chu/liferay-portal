@@ -34,19 +34,6 @@
 	margin-top: var(--spacer-1);
 }
 
-#wrapper .devcon-registration-form__checkboxes {
-	display: grid;
-	gap: var(--spacer-2);
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-#wrapper .devcon-registration-form__checkboxes label {
-	align-items: center;
-	display: flex;
-	font-weight: 400;
-	gap: var(--spacer-1);
-}
-
 #wrapper .devcon-registration-form__submit {
 	border-radius: 0.25rem;
 	font-weight: 600;
