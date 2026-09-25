@@ -7,7 +7,7 @@ name: run-laminar-eval
 
 # Run Laminar Eval
 
-Stand up everything an eval needs, in order, then run it: Laminar for observability, a Liferay bundle with cleared runtime state, and the workspace's Node dependencies.
+Stand up everything an eval needs, in order, then run it: Laminar for observability, a Liferay bundle set up through `workspace-init`, and the workspace's Node dependencies.
 
 ## When to Invoke
 
@@ -78,39 +78,59 @@ grep '^liferay.workspace.client-extension.dir=' gradle.properties
 
 Exactly one line, reading `liferay.workspace.client-extension.dir=lmnr/client-extensions`, means the step took.
 
-### Ensure a Liferay Bundle Exists
+### Set Up Liferay With `workspace-init`
 
-From the workspace root:
+Load `workspace-init` with the Skill tool and follow its **Tomcat** path — do not reimplement it here. The eval needs a portal that has never booted, so start from no bundle, and apply the adjustments below where `workspace-init` says otherwise.
 
-```bash
-ls -d bundles
-```
+#### Start From No Bundle
 
-- **Present** — the server already exists. Remember this; the license checkpoint below is skipped.
-- **Absent** — run `blade server init` and remember that the bundle is newly initialized.
-
-### Clear Runtime State
+`workspace-init` clears the seeded database only on a bundle that has never started. A bundle left by an earlier run falls through to its manual first login, which an unattended eval cannot do, so remove the bundle before following it. If a Tomcat JVM is running, stop it first as `stop-laminar-eval` describes. Then, from the workspace root:
 
 ```bash
-rm -rf bundles/logs bundles/portal-env.properties
-find bundles/data -mindepth 1 -maxdepth 1 ! -name license -exec rm -rf {} +
+rm -rf bundles
 ```
 
-`data` and `logs` hold the database, the search indexes, and the log files, so removing them is what makes the run start from an empty portal.
+This deletes the registered license too, so every run needs the key again — `workspace-init`'s DXP License check covers asking the user for it. Run that check after `blade server init`, since `bundles/deploy/` does not exist before then. Do not keep the key in `configs/local/deploy/`: that directory is not gitignored.
 
-**Spare `bundles/data/license`.** A registered license lives there as a `.li` file, and the portal reads it back on the next boot — verified: with `bundles/deploy/` empty, a boot off a preserved `bundles/data/license` logs `DXP Development license validation passed` from `[main]` at startup. A plain `rm -rf bundles/data` destroys that registration, and the portal then boots unlicensed.
+#### Adjustments to `workspace-init`
 
-`portal-env.properties` has to go too. `blade server init` copies it out of `configs/local`, where it points `jdbc.default.url` at `jdbc:postgresql://database/lportal` — `database` is a Docker Compose service name from the workspace's `docker-compose.yaml` and does not resolve from a Tomcat that Blade started on the host. `portal-ext.properties` pulls it in through `include-and-override`, which tolerates the file being absent, so removing it drops the bundle back to the embedded Hypersonic database and the boot needs no external database at all.
+| `workspace-init` step | For the eval |
+| --- | --- |
+| Configure MCP Before Starting the Server | Enable only the flag, through Configure the Bundle below. Skip the client configuration and the CLI restart — the eval's agent is its own MCP client, configured in `lmnr/evals/lib/agent-task.ts`, and connects to `/o/mcp` when it starts. |
+| Clear the seeded database | Follow it, and also remove `portal-env.properties` as described below. |
+| BasicAuth verifier, Instance and admin properties | Write them to `bundles/portal-ext.properties` through Configure the Bundle, not to `configs/local`. `configs/local/portal-ext.properties` must stay identical to upstream. |
+| Configuration sync | Follow it, then run Configure the Bundle — the copy overwrites anything written to the bundle before it. |
+| Start server | Use `blade server start`, so the portal runs in the background. |
+| First Login Bootstrap | Nothing to do: the bundle was cleared and configured before its first start. |
+| MCP Connection Check | Skip it; the eval's agent connects on its own. |
 
-### Configure the Bundle
+#### Remove `portal-env.properties`
 
-The eval needs properties that the workspace's `configs/local/portal-ext.properties` does not carry, so write them straight into the bundle before it boots. From the workspace root:
+```bash
+rm -f bundles/portal-env.properties
+```
+
+`blade server init` copies it out of `configs/local`, where it points `jdbc.default.url` at `jdbc:postgresql://database/lportal` — `database` is a Docker Compose service name from the workspace's `docker-compose.yaml` and does not resolve from a Tomcat that Blade started on the host. `portal-ext.properties` pulls it in through `include-and-override`, which tolerates the file being absent, so removing it drops the bundle back to the embedded Hypersonic database and the boot needs no external database at all.
+
+#### Configure the Bundle
+
+Run this after `workspace-init`'s configuration sync and before the server starts. From the workspace root:
 
 ```bash
 for property in \
+    'admin.email.from.address=test@liferay.com' \
+    'admin.email.from.name=Test Test' \
     'auth.verifier.BasicAuthHeaderAuthVerifier.urls.includes=/api/*,/xmlrpc/*,/o/*' \
+    'company.default.time.zone=UTC' \
+    'company.default.web.id=liferay.com' \
+    'default.admin.email.address.prefix=test' \
     'feature.flag.LPD-35443=true' \
-    'feature.flag.LPD-39244=true'; do
+    'feature.flag.LPD-39244=true' \
+    'feature.flag.LPD-63311=true' \
+    'passwords.default.policy.change.required=false' \
+    'setup.wizard.enabled=false' \
+    'terms.of.use.required=false' \
+    'users.reminder.queries.enabled=false'; do
     key="${property%%=*}"
 
     if grep --quiet "^${key}=" bundles/portal-ext.properties; then
@@ -123,40 +143,10 @@ done
 
 The branch keeps the step idempotent: rerunning it rewrites an existing entry instead of appending a duplicate.
 
-- **BasicAuth verifier** — the evaluators and the agent's MCP calls authenticate to `/o/*` with Basic auth, and every one of them returns `403` without it. Local development only; see `skills/workspace-init/SKILL.md`.
+- **BasicAuth verifier and the instance and admin properties** — exactly the lines `workspace-init` prescribes; it explains each one.
 - **`LPD-35443`** — the Headless Admin Site page API that `build-site` and `manage-pages` drive.
 - **`LPD-39244`** — the Headless Admin Fragment API that `build-site` and `scaffold-fragment` drive.
-
-Run this on every run. `blade server init` rewrites `bundles/portal-ext.properties` from `configs/local`, so a newly initialized bundle starts without these lines.
-
-### License Checkpoint
-
-Run this on **every** run, not only after a fresh `blade server init`. Do not infer that an existing bundle is licensed — a previous run's clear step may have destroyed the registration, and the boot that follows fails quietly rather than loudly.
-
-The product is DXP (`liferay.workspace.product` in `gradle.properties`), so a license is required. It counts as present when either of these holds:
-
-- a `.li` file under `bundles/data/license/` — a registration the portal reads at startup, and what the clear step above preserves.
-- an `.xml` file in `bundles/deploy/` whose root element is `<license>` or `<licenses>` — an activation key that auto-deploy processes during boot. Liferay identifies these by content, not by filename. Note that auto-deploy consumes the file, so `bundles/deploy/` is empty again afterwards.
-
-When neither is there, **stop and ask the user for a license**, and wait for them to confirm before starting the server. The durable place to keep one is `configs/local/deploy/`: `blade server init` copies `configs/<environment>/` into the bundle root with its subdirectories intact, so a key there lands in `bundles/deploy/` on the next init. That copy runs only at init time, so on an already-initialized bundle put the key straight into `bundles/deploy/`.
-
-### Start the Bundle
-
-```bash
-blade server start
-```
-
-This runs in the background. Follow progress in `bundles/tomcat*/logs/catalina.out` and watch for `Server startup in`. A first boot against an empty database takes several minutes.
-
-### Verify Port 8080
-
-Poll until the portal answers with `200`:
-
-```bash
-curl --output /dev/null --silent --write-out '%{http_code}' http://localhost:8080
-```
-
-A failing request does not mean the server died — it may still be booting. Distinguish the two by checking for the Tomcat JVM process: process present and HTTP failing means starting; process absent means it stopped, so read `catalina.out` and the daily log under `bundles/logs/` for the cause.
+- **`LPD-63311`** — the MCP server at `/o/mcp` that the eval's agent connects to. Without it the endpoint answers `404`.
 
 ### Install Workspace Dependencies
 
@@ -197,5 +187,5 @@ Give the user the per-evaluator scores from the run output and the dashboard lin
 ## Related Skills
 
 - `stop-laminar-eval` — take the same stack back down when the run is finished.
-- `workspace-init` — full workspace bootstrap, BasicAuth verifier, and first login setup.
+- `workspace-init` — the Liferay setup this skill follows, with the adjustments above.
 - `deploy-and-verify` — deploying client extensions to the bundle this skill starts.
