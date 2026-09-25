@@ -24,13 +24,7 @@ Every step is idempotent, so the skill is safe to rerun against a stack that is 
 
 ### Start Laminar
 
-The stack reads its credentials from `lmnr/.env`, and `lmnr/docker-compose.yml` writes every one of them as a bare `${VAR}` with no fallback. That file is gitignored, so a fresh checkout will not have it. Recreate it from the committed template before starting anything:
-
-```bash
-[ -f lmnr/.env ] || cp lmnr/.env.example lmnr/.env
-```
-
-`.env.example` ships working local-dev values, so the copy needs no editing. Skipping this step does not fail loudly — postgres exits with `Database is uninitialized and superuser password is not specified`, and app-server and quickwit then report a dependency failure rather than the real cause.
+Everything the stack needs is in `lmnr/docker-compose.yml` — there is no `.env` file to create. The one-shot `init` service generates the app secrets and database passwords into the `init-secrets` volume on first start and reuses them afterwards.
 
 ```bash
 cd lmnr && docker compose up --detach
