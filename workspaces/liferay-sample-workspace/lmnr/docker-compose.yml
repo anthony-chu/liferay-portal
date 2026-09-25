@@ -10,7 +10,7 @@ services:
     image: postgres:16
     pull_policy: always
     ports:
-      - "9433:5432"
+      - "127.0.0.1:9433:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     environment:
@@ -49,8 +49,8 @@ services:
     image: quickwit/quickwit:v0.8.2
     pull_policy: always
     ports:
-      - "9280:7280" # REST API and UI
-      - "9281:7281" # OTLP / gRPC
+      - "127.0.0.1:9280:7280" # REST API and UI
+      - "127.0.0.1:9281:7281" # OTLP / gRPC
     environment:
       QW_DATA_DIR: /quickwit/qwdata
     command: ["run"]
@@ -66,7 +66,7 @@ services:
     image: ghcr.io/lmnr-ai/frontend:0.2.5
     pull_policy: always
     ports:
-      - "${FRONTEND_HOST_PORT:-9667}:5667"
+      - "127.0.0.1:${FRONTEND_HOST_PORT:-9667}:5667"
     depends_on:
       postgres:
         condition: service_healthy
@@ -109,9 +109,9 @@ services:
     image: ghcr.io/lmnr-ai/app-server:0.2.5
     pull_policy: always
     ports:
-      - "${APP_SERVER_HOST_PORT:-9000}:8000"
-      - "${APP_SERVER_GRPC_HOST_PORT:-9001}:8001"
-      - "${APP_SERVER_RT_HOST_PORT:-9002}:8002"
+      - "127.0.0.1:${APP_SERVER_HOST_PORT:-9000}:8000"
+      - "127.0.0.1:${APP_SERVER_GRPC_HOST_PORT:-9001}:8001"
+      - "127.0.0.1:${APP_SERVER_RT_HOST_PORT:-9002}:8002"
     depends_on:
       postgres:
         condition: service_healthy
