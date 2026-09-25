@@ -27,14 +27,12 @@
 						},
 						"collectionType": "CollectionProvider"
 					},
-					"numberOfItems": 3,
 					"numberOfColumns": 3,
+					"numberOfItems": 3,
 					"paginationType": "Numeric"
 				},
-				"type": "Collection",
 				"pageElements": [
 					{
-						"type": "CollectionItem",
 						"pageElements": [
 							{
 								"definition": {
@@ -99,9 +97,11 @@
 								},
 								"type": "Fragment"
 							}
-						]
+						],
+						"type": "CollectionItem"
 					}
-				]
+				],
+				"type": "Collection"
 			}
 		],
 		"type": "Root"
