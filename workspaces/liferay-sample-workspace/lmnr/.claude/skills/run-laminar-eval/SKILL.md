@@ -102,6 +102,33 @@ find bundles/data -mindepth 1 -maxdepth 1 ! -name license -exec rm -rf {} +
 
 `portal-env.properties` has to go too. `blade server init` copies it out of `configs/local`, where it points `jdbc.default.url` at `jdbc:postgresql://database/lportal` — `database` is a Docker Compose service name from the workspace's `docker-compose.yaml` and does not resolve from a Tomcat that Blade started on the host. `portal-ext.properties` pulls it in through `include-and-override`, which tolerates the file being absent, so removing it drops the bundle back to the embedded Hypersonic database and the boot needs no external database at all.
 
+### Configure the Bundle
+
+The eval needs properties that the workspace's `configs/local/portal-ext.properties` does not carry, so write them straight into the bundle before it boots. From the workspace root:
+
+```bash
+for property in \
+    'auth.verifier.BasicAuthHeaderAuthVerifier.urls.includes=/api/*,/xmlrpc/*,/o/*' \
+    'feature.flag.LPD-35443=true' \
+    'feature.flag.LPD-39244=true'; do
+    key="${property%%=*}"
+
+    if grep --quiet "^${key}=" bundles/portal-ext.properties; then
+        sed --in-place "s|^${key}=.*|${property}|" bundles/portal-ext.properties
+    else
+        printf '\n%s' "${property}" >> bundles/portal-ext.properties
+    fi
+done
+```
+
+The branch keeps the step idempotent: rerunning it rewrites an existing entry instead of appending a duplicate.
+
+- **BasicAuth verifier** — the evaluators and the agent's MCP calls authenticate to `/o/*` with Basic auth, and every one of them returns `403` without it. Local development only; see `skills/workspace-init/SKILL.md`.
+- **`LPD-35443`** — the Headless Admin Site page API that `build-site` and `manage-pages` drive.
+- **`LPD-39244`** — the Headless Admin Fragment API that `build-site` and `scaffold-fragment` drive.
+
+Run this on every run. `blade server init` rewrites `bundles/portal-ext.properties` from `configs/local`, so a newly initialized bundle starts without these lines.
+
 ### License Checkpoint
 
 Run this on **every** run, not only after a fresh `blade server init`. Do not infer that an existing bundle is licensed — a previous run's clear step may have destroyed the registration, and the boot that follows fails quietly rather than loudly.
@@ -164,7 +191,7 @@ Give the user the per-evaluator scores from the run output and the dashboard lin
 | `401` from Laminar during the eval | The SDK defaulted to `api.lmnr.ai` instead of the local instance. Check the `config` block in the eval file: `baseUrl: 'http://localhost'`, `httpPort: 9000`, `grpcPort: 9001`. The local project API key always fails against the cloud. |
 | `401` with the config correct | Every eval takes `projectApiKey` from `lmnr/evals/lib/bootstrap.ts`, which signs in against `localhost:9667` and mints a fresh key at import time. A `401` here means that sign-in failed, so check that the Laminar frontend is up before looking at the key. A new eval file must import `projectApiKey` too — never hardcode a key, since it goes stale whenever the Laminar Postgres volume is recreated. |
 | `No skills found in .claude/skills` | The eval was run from the wrong working directory. Run it from the workspace root. |
-| `403` on `/o/*` calls from the evaluators | The BasicAuth verifier is missing from the bundle. `configs/local/portal-ext.properties` carries `auth.verifier.BasicAuthHeaderAuthVerifier.urls.includes=/api/*,/xmlrpc/*,/o/*`; confirm it reached `bundles/portal-ext.properties`. |
+| `403` on `/o/*` calls from the evaluators | The BasicAuth verifier is missing from the bundle. Confirm `bundles/portal-ext.properties` carries `auth.verifier.BasicAuthHeaderAuthVerifier.urls.includes=/api/*,/xmlrpc/*,/o/*`, and rerun Configure the Bundle if it does not. |
 | No LLM token or cost data on the spans | The agent SDK runs the `claude` CLI as a separate process, so auto-instrumentation sees nothing. `lmnr/evals/lib/agent-task.ts` handles this by wrapping `query` with `Laminar.wrapClaudeAgentQuery`. |
 
 ## Related Skills
