@@ -6,16 +6,47 @@
 name: lmnr
 
 services:
+  # Generates the app secrets and database passwords once into the init-secrets volume;
+  # later starts reuse them, since rotating any of them breaks stored keys, sessions or DB logins.
+  init:
+    image: alpine:3
+    volumes:
+      - init-secrets:/secrets
+    command:
+      - sh
+      - -euc
+      - |
+        umask 077
+        for name in aead_secret_key nextauth_secret postgres_password clickhouse_password clickhouse_ro_password; do
+          if [ ! -s "/secrets/$$name" ]; then
+            od -An -tx1 -N32 /dev/urandom | tr -d ' \n' > "/secrets/$$name.tmp"
+            mv "/secrets/$$name.tmp" "/secrets/$$name"
+          fi
+        done
+
+        aead="$$(cat /secrets/aead_secret_key)"
+        case "$$aead" in *[!0-9a-fA-F]*) aead= ;; esac
+        if [ "$${#aead}" -ne 64 ]; then
+          echo "init: /secrets/aead_secret_key must be exactly 64 hex characters (32 bytes)" >&2
+          exit 1
+        fi
+
+        chown 1001:1001 /secrets/*
+
   postgres:
     image: postgres:16
     pull_policy: always
     ports:
       - "127.0.0.1:9433:5432"
+    depends_on:
+      init:
+        condition: service_completed_successfully
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - init-secrets:/run/lmnr-secrets:ro
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD_FILE: /run/lmnr-secrets/postgres_password
       POSTGRES_DB: ${POSTGRES_DB}
     healthcheck:
       test:
@@ -41,9 +72,22 @@ services:
       - type: bind
         source: ./clickhouse-server-config.xml
         target: /etc/clickhouse-server/config.d/lmnr.xml
+      - type: volume
+        source: init-secrets
+        target: /run/lmnr-secrets
+        read_only: true
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    entrypoint:
+      - sh
+      - -euc
+      - |
+        export CLICKHOUSE_PASSWORD="$$(cat /run/lmnr-secrets/clickhouse_password)"
+        export CLICKHOUSE_RO_PASSWORD="$$(cat /run/lmnr-secrets/clickhouse_ro_password)"
+        exec /entrypoint.sh
     environment:
       CLICKHOUSE_USER: ${CLICKHOUSE_USER}
-      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
 
   quickwit:
     image: quickwit/quickwit:v0.8.2
@@ -63,32 +107,39 @@ services:
       retries: 3
 
   frontend:
-    image: ghcr.io/lmnr-ai/frontend:0.2.5
+    image: ghcr.io/lmnr-ai/frontend:v0.2.5
     pull_policy: always
     ports:
       - "127.0.0.1:${FRONTEND_HOST_PORT:-9667}:5667"
     depends_on:
+      init:
+        condition: service_completed_successfully
       postgres:
         condition: service_healthy
       quickwit:
         condition: service_healthy
+    volumes:
+      - init-secrets:/run/lmnr-secrets:ro
+    command:
+      - sh
+      - -euc
+      - |
+        export NEXTAUTH_SECRET="$$(cat /run/lmnr-secrets/nextauth_secret)"
+        export AEAD_SECRET_KEY="$$(cat /run/lmnr-secrets/aead_secret_key)"
+        export CLICKHOUSE_PASSWORD="$$(cat /run/lmnr-secrets/clickhouse_password)"
+        export DATABASE_URL="postgres://${POSTGRES_USER}:$$(cat /run/lmnr-secrets/postgres_password)@postgres:5432/${POSTGRES_DB}"
+        exec node server.js
     environment:
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       PORT: 5667
       BACKEND_URL: http://app-server:8000
       BACKEND_RT_URL: http://app-server:8002
       SHARED_SECRET_TOKEN: ${SHARED_SECRET_TOKEN}
       NEXTAUTH_URL: http://localhost:9667
-      NEXTAUTH_SECRET: some_secret
       NEXT_PUBLIC_URL: http://localhost:9667
       ENVIRONMENT: LITE # this disables some runtime dependencies
       CLICKHOUSE_URL: http://clickhouse:8123
       CLICKHOUSE_USER: ${CLICKHOUSE_USER}
-      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
-      CLICKHOUSE_RO_USER: ${CLICKHOUSE_RO_USER}
-      CLICKHOUSE_RO_PASSWORD: ${CLICKHOUSE_RO_PASSWORD}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
-      AEAD_SECRET_KEY: ${AEAD_SECRET_KEY}
       QUICKWIT_SEARCH_URL: http://quickwit:7280
       # LLM provider for frontend AI features (chat-with-trace, SQL-with-AI).
       # openai | gemini | bedrock. openai/gemini use LLM_API_KEY (+ optional LLM_BASE_URL);
@@ -106,13 +157,15 @@ services:
       LAMINAR_TELEMETRY_DISABLED: "true"
 
   app-server:
-    image: ghcr.io/lmnr-ai/app-server:0.2.5
+    image: ghcr.io/lmnr-ai/app-server:v0.2.5
     pull_policy: always
     ports:
       - "127.0.0.1:${APP_SERVER_HOST_PORT:-9000}:8000"
       - "127.0.0.1:${APP_SERVER_GRPC_HOST_PORT:-9001}:8001"
       - "127.0.0.1:${APP_SERVER_RT_HOST_PORT:-9002}:8002"
     depends_on:
+      init:
+        condition: service_completed_successfully
       postgres:
         condition: service_healthy
       clickhouse:
@@ -122,21 +175,30 @@ services:
     environment:
       PORT: 8000
       GRPC_PORT: 8001
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       SHARED_SECRET_TOKEN: ${SHARED_SECRET_TOKEN}
       CLICKHOUSE_URL: http://clickhouse:8123
       CLICKHOUSE_USER: ${CLICKHOUSE_USER}
-      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
-      CLICKHOUSE_RO_USER: ${CLICKHOUSE_RO_USER}
-      CLICKHOUSE_RO_PASSWORD: ${CLICKHOUSE_RO_PASSWORD}
+      # must match the user defined in clickhouse-profiles-config.xml
+      CLICKHOUSE_RO_USER: ch_ro_user
       ENVIRONMENT: LITE # this disables runtime dependency on rabbitmq
-      AEAD_SECRET_KEY: ${AEAD_SECRET_KEY}
       QUICKWIT_SEARCH_URL: http://quickwit:7280
       QUICKWIT_INGEST_URL: http://quickwit:7281
       QUICKWIT_SPANS_INDEX_ID: spans_v2
+    volumes:
+      - init-secrets:/run/lmnr-secrets:ro
+    command:
+      - sh
+      - -euc
+      - |
+        export AEAD_SECRET_KEY="$$(cat /run/lmnr-secrets/aead_secret_key)"
+        export CLICKHOUSE_PASSWORD="$$(cat /run/lmnr-secrets/clickhouse_password)"
+        export CLICKHOUSE_RO_PASSWORD="$$(cat /run/lmnr-secrets/clickhouse_ro_password)"
+        export DATABASE_URL="postgres://${POSTGRES_USER}:$$(cat /run/lmnr-secrets/postgres_password)@postgres:5432/${POSTGRES_DB}"
+        exec ./app-server
 
 volumes:
   postgres-data:
   clickhouse-data:
   clickhouse-logs:
   quickwit-data:
+  init-secrets:
