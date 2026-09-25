@@ -18,15 +18,24 @@
 			"name": "Event",
 			"objectFields": [
 				{
-					"businessType": "Text",
-					"externalReferenceCode": "EVENT_NAME",
+					"businessType": "Integer",
+					"externalReferenceCode": "EVENT_CAPACITY",
 					"indexed": true,
-					"indexedAsKeyword": true,
 					"label": {
-						"en_US": "Name"
+						"en_US": "Capacity"
 					},
-					"name": "name",
-					"required": true
+					"name": "capacity",
+					"required": false
+				},
+				{
+					"businessType": "Text",
+					"externalReferenceCode": "EVENT_DATE_RANGE_LABEL",
+					"indexed": true,
+					"label": {
+						"en_US": "Date Range Label"
+					},
+					"name": "dateRangeLabel",
+					"required": false
 				},
 				{
 					"businessType": "LongText",
@@ -37,16 +46,6 @@
 					},
 					"name": "description",
 					"required": false
-				},
-				{
-					"businessType": "Date",
-					"externalReferenceCode": "EVENT_START_DATE",
-					"indexed": true,
-					"label": {
-						"en_US": "Start Date"
-					},
-					"name": "startDate",
-					"required": true
 				},
 				{
 					"businessType": "Date",
@@ -70,14 +69,15 @@
 					"required": false
 				},
 				{
-					"businessType": "Integer",
-					"externalReferenceCode": "EVENT_CAPACITY",
+					"businessType": "Text",
+					"externalReferenceCode": "EVENT_NAME",
 					"indexed": true,
+					"indexedAsKeyword": true,
 					"label": {
-						"en_US": "Capacity"
+						"en_US": "Name"
 					},
-					"name": "capacity",
-					"required": false
+					"name": "name",
+					"required": true
 				},
 				{
 					"businessType": "Integer",
@@ -90,14 +90,14 @@
 					"required": false
 				},
 				{
-					"businessType": "Text",
-					"externalReferenceCode": "EVENT_DATE_RANGE_LABEL",
+					"businessType": "Date",
+					"externalReferenceCode": "EVENT_START_DATE",
 					"indexed": true,
 					"label": {
-						"en_US": "Date Range Label"
+						"en_US": "Start Date"
 					},
-					"name": "dateRangeLabel",
-					"required": false
+					"name": "startDate",
+					"required": true
 				}
 			],
 			"panelCategoryKey": "control_panel.applications",

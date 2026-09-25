@@ -19,28 +19,6 @@
 			"objectFields": [
 				{
 					"businessType": "Text",
-					"externalReferenceCode": "REGISTRATION_NAME",
-					"indexed": true,
-					"indexedAsKeyword": true,
-					"label": {
-						"en_US": "Name"
-					},
-					"name": "name",
-					"required": true
-				},
-				{
-					"businessType": "Text",
-					"externalReferenceCode": "REGISTRATION_EMAIL_ADDRESS",
-					"indexed": true,
-					"indexedAsKeyword": true,
-					"label": {
-						"en_US": "Email Address"
-					},
-					"name": "emailAddress",
-					"required": true
-				},
-				{
-					"businessType": "Text",
 					"externalReferenceCode": "REGISTRATION_COMPANY",
 					"indexed": true,
 					"indexedAsKeyword": true,
@@ -60,6 +38,28 @@
 					"listTypeDefinitionExternalReferenceCode": "DIETARY_RESTRICTION",
 					"name": "dietaryRestrictions",
 					"required": false
+				},
+				{
+					"businessType": "Text",
+					"externalReferenceCode": "REGISTRATION_EMAIL_ADDRESS",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Email Address"
+					},
+					"name": "emailAddress",
+					"required": true
+				},
+				{
+					"businessType": "Text",
+					"externalReferenceCode": "REGISTRATION_NAME",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Name"
+					},
+					"name": "name",
+					"required": true
 				},
 				{
 					"businessType": "Picklist",
