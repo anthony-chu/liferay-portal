@@ -63,7 +63,7 @@ services:
       retries: 3
 
   frontend:
-    image: ghcr.io/lmnr-ai/frontend
+    image: ghcr.io/lmnr-ai/frontend:0.2.5
     pull_policy: always
     ports:
       - "${FRONTEND_HOST_PORT:-9667}:5667"
@@ -105,7 +105,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
 
   app-server:
-    image: ghcr.io/lmnr-ai/app-server
+    image: ghcr.io/lmnr-ai/app-server:0.2.5
     pull_policy: always
     ports:
       - "${APP_SERVER_HOST_PORT:-9000}:8000"
