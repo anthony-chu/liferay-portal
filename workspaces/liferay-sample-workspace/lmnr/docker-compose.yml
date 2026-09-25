@@ -45,12 +45,10 @@ services:
       - postgres-data:/var/lib/postgresql/data
       - init-secrets:/run/lmnr-secrets:ro
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD_FILE: /run/lmnr-secrets/postgres_password
-      POSTGRES_DB: ${POSTGRES_DB}
     healthcheck:
       test:
-        ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+        ["CMD", "pg_isready", "-U", "postgres", "-d", "postgres"]
       interval: 2s
       timeout: 5s
       retries: 5
@@ -87,7 +85,7 @@ services:
         export CLICKHOUSE_RO_PASSWORD="$$(cat /run/lmnr-secrets/clickhouse_ro_password)"
         exec /entrypoint.sh
     environment:
-      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_USER: ch_user
 
   quickwit:
     image: quickwit/quickwit:v0.8.2
@@ -95,8 +93,6 @@ services:
     ports:
       - "127.0.0.1:9280:7280" # REST API and UI
       - "127.0.0.1:9281:7281" # OTLP / gRPC
-    environment:
-      QW_DATA_DIR: /quickwit/qwdata
     command: ["run"]
     volumes:
       - quickwit-data:/quickwit/qwdata
@@ -110,7 +106,7 @@ services:
     image: ghcr.io/lmnr-ai/frontend:v0.2.5
     pull_policy: always
     ports:
-      - "127.0.0.1:${FRONTEND_HOST_PORT:-9667}:5667"
+      - "127.0.0.1:9667:5667"
     depends_on:
       init:
         condition: service_completed_successfully
@@ -127,42 +123,27 @@ services:
         export NEXTAUTH_SECRET="$$(cat /run/lmnr-secrets/nextauth_secret)"
         export AEAD_SECRET_KEY="$$(cat /run/lmnr-secrets/aead_secret_key)"
         export CLICKHOUSE_PASSWORD="$$(cat /run/lmnr-secrets/clickhouse_password)"
-        export DATABASE_URL="postgres://${POSTGRES_USER}:$$(cat /run/lmnr-secrets/postgres_password)@postgres:5432/${POSTGRES_DB}"
+        export DATABASE_URL="postgres://postgres:$$(cat /run/lmnr-secrets/postgres_password)@postgres:5432/postgres"
         exec node server.js
     environment:
       PORT: 5667
       BACKEND_URL: http://app-server:8000
       BACKEND_RT_URL: http://app-server:8002
-      SHARED_SECRET_TOKEN: ${SHARED_SECRET_TOKEN}
       NEXTAUTH_URL: http://localhost:9667
       NEXT_PUBLIC_URL: http://localhost:9667
       ENVIRONMENT: LITE # this disables some runtime dependencies
       CLICKHOUSE_URL: http://clickhouse:8123
-      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      CLICKHOUSE_USER: ch_user
       QUICKWIT_SEARCH_URL: http://quickwit:7280
-      # LLM provider for frontend AI features (chat-with-trace, SQL-with-AI).
-      # openai | gemini | bedrock. openai/gemini use LLM_API_KEY (+ optional LLM_BASE_URL);
-      # bedrock uses AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY / AWS_REGION.
-      LLM_PROVIDER: ${LLM_PROVIDER}
-      LLM_BASE_URL: ${LLM_BASE_URL}
-      LLM_API_KEY: ${LLM_API_KEY}
-      # LLM_MODEL_* overrides (optional — per-provider defaults apply when unset).
-      LLM_MODEL_SMALL: ${LLM_MODEL_SMALL}
-      LLM_MODEL_MEDIUM: ${LLM_MODEL_MEDIUM}
-      LLM_MODEL_LARGE: ${LLM_MODEL_LARGE}
-      AWS_REGION: ${AWS_REGION}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       LAMINAR_TELEMETRY_DISABLED: "true"
 
   app-server:
     image: ghcr.io/lmnr-ai/app-server:v0.2.5
     pull_policy: always
     ports:
-      - "127.0.0.1:${APP_SERVER_HOST_PORT:-9000}:8000"
-      - "127.0.0.1:${APP_SERVER_GRPC_HOST_PORT:-9001}:8001"
-      - "127.0.0.1:${APP_SERVER_RT_HOST_PORT:-9002}:8002"
+      - "127.0.0.1:9000:8000"
+      - "127.0.0.1:9001:8001"
+      - "127.0.0.1:9002:8002"
     depends_on:
       init:
         condition: service_completed_successfully
@@ -173,17 +154,13 @@ services:
       quickwit:
         condition: service_healthy
     environment:
-      PORT: 8000
-      GRPC_PORT: 8001
-      SHARED_SECRET_TOKEN: ${SHARED_SECRET_TOKEN}
       CLICKHOUSE_URL: http://clickhouse:8123
-      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_USER: ch_user
       # must match the user defined in clickhouse-profiles-config.xml
       CLICKHOUSE_RO_USER: ch_ro_user
       ENVIRONMENT: LITE # this disables runtime dependency on rabbitmq
       QUICKWIT_SEARCH_URL: http://quickwit:7280
       QUICKWIT_INGEST_URL: http://quickwit:7281
-      QUICKWIT_SPANS_INDEX_ID: spans_v2
     volumes:
       - init-secrets:/run/lmnr-secrets:ro
     command:
@@ -193,7 +170,7 @@ services:
         export AEAD_SECRET_KEY="$$(cat /run/lmnr-secrets/aead_secret_key)"
         export CLICKHOUSE_PASSWORD="$$(cat /run/lmnr-secrets/clickhouse_password)"
         export CLICKHOUSE_RO_PASSWORD="$$(cat /run/lmnr-secrets/clickhouse_ro_password)"
-        export DATABASE_URL="postgres://${POSTGRES_USER}:$$(cat /run/lmnr-secrets/postgres_password)@postgres:5432/${POSTGRES_DB}"
+        export DATABASE_URL="postgres://postgres:$$(cat /run/lmnr-secrets/postgres_password)@postgres:5432/postgres"
         exec ./app-server
 
 volumes:
