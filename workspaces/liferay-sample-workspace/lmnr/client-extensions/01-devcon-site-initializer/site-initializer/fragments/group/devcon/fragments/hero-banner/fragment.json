@@ -1,8 +1,8 @@
 {
+	"configurationPath": "configuration.json",
 	"cssPath": "index.css",
 	"htmlPath": "index.html",
 	"jsPath": "index.js",
-	"configurationPath": "configuration.json",
 	"name": "Hero Banner",
 	"type": "component"
 }

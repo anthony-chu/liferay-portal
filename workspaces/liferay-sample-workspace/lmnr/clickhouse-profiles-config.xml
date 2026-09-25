@@ -1,24 +1,25 @@
 <?xml version="1.0"?>
+
 <clickhouse>
-    <profiles>
-        <default>
-            <date_time_input_format replace="replace">best_effort</date_time_input_format>
-        </default>
-        <ro_profile>
-            <profile>default</profile>
-            <readonly>2</readonly>
-        </ro_profile>
-    </profiles>
-    <users>
-        <ch_ro_user>
-            <grants>
-                <query>GRANT SELECT, dictGet ON default.*</query>
-            </grants>
-            <networks>
-                <host>app-server</host>
-            </networks>
-            <password from_env="CLICKHOUSE_RO_PASSWORD" />
-            <profile>ro_profile</profile>
-        </ch_ro_user>
-    </users>
+	<profiles>
+		<default>
+			<date_time_input_format replace="replace">best_effort</date_time_input_format>
+		</default>
+		<ro_profile>
+			<profile>default</profile>
+			<readonly>2</readonly>
+		</ro_profile>
+	</profiles>
+	<users>
+		<ch_ro_user>
+			<grants>
+				<query>GRANT SELECT, dictGet ON default.*</query>
+			</grants>
+			<networks>
+				<host>app-server</host>
+			</networks>
+			<password from_env="CLICKHOUSE_RO_PASSWORD" />
+			<profile>ro_profile</profile>
+		</ch_ro_user>
+	</users>
 </clickhouse>
