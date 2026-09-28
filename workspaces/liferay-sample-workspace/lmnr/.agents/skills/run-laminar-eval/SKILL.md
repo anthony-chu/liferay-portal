@@ -148,27 +148,27 @@ The branch keeps the step idempotent: rerunning it rewrites an existing entry in
 - **`LPD-39244`** — the Headless Admin Fragment API that `build-site` and `scaffold-fragment` drive.
 - **`LPD-63311`** — the MCP server at `/o/mcp` that the eval's agent connects to. Without it the endpoint answers `404`.
 
-### Install Workspace Dependencies
+### Install Eval Dependencies
 
-The workspace declares Yarn (`liferay.workspace.node.package.manager=yarn`) and carries a `yarn.lock` plus a `workspaces` block in `package.json`. From the workspace root:
+`lmnr/evals` is its own Yarn project with its own `package.json` and `yarn.lock`, separate from the sample client extensions, so the workspace root install does not cover it. From the workspace root:
 
 ```bash
-yarn install
+yarn --cwd lmnr/evals install
 ```
 
-Skip only when `node_modules/` is already present and current.
+Skip only when `lmnr/evals/node_modules/` is already present and current.
 
 ### Run the Eval
 
 From the workspace root — not from `lmnr/evals/`:
 
 ```bash
-yarn tsx lmnr/evals/create-site.eval.ts
+lmnr/evals/node_modules/.bin/tsx lmnr/evals/create-site.eval.ts
 ```
 
-`lmnr/evals/lib/agent-task.ts` reads `.claude/skills` relative to the working directory and throws when it finds nothing, so the working directory has to be the workspace root.
+`lmnr/evals/lib/agent-task.ts` reads `.claude/skills` relative to the working directory and throws when it finds nothing, so the working directory has to be the workspace root. That is also why the command calls the `tsx` binary directly: `yarn --cwd lmnr/evals tsx` would move the working directory to `lmnr/evals`.
 
-Use `yarn tsx` rather than `yarn lmnr eval`. The CLI bundles the eval with esbuild and runs it in a sandbox, which breaks the Claude Agent SDK's `createRequire(import.meta.url)` unless `--external-packages @anthropic-ai/claude-agent-sdk` is passed.
+Use `tsx` rather than `yarn lmnr eval`. The CLI bundles the eval with esbuild and runs it in a sandbox, which breaks the Claude Agent SDK's `createRequire(import.meta.url)` unless `--external-packages @anthropic-ai/claude-agent-sdk` is passed.
 
 ### Report the Result
 
