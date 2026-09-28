@@ -13,7 +13,6 @@
 		]
 	},
 	"include": [
-		"langfuse-evals/**/*.ts",
-		"lmnr-evals/**/*.ts"
+		"**/*.ts"
 	]
 }
