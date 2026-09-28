@@ -139,8 +139,8 @@ evaluate({
 	config,
 	data,
 	evaluators: {
-		'Skills invoked': skillsInvokedEvaluator,
 		'Objects created': objectsCreatedEvaluator,
+		'Skills invoked': skillsInvokedEvaluator,
 	},
 	executor: createAgentTask(STRUCTURED_OUTPUT_SCHEMA),
 	groupName: 'Create event registration',
