@@ -4,29 +4,43 @@
  */
 
 (function () {
-	var rootElement = fragmentNamespace.element;
+	const rootElement = fragmentNamespace.element;
 
 	function init(rootElement) {
-		var form = rootElement.querySelector('[data-devcon-registration-form]');
-		var messageElement = rootElement.querySelector('[data-devcon-registration-message]');
+		const form = rootElement.querySelector(
+			'[data-devcon-registration-form]'
+		);
+		const messageElement = rootElement.querySelector(
+			'[data-devcon-registration-message]'
+		);
 
 		if (!form) {
 			return;
 		}
 
-		form.addEventListener('submit', function (event) {
+		form.addEventListener('submit', (event) => {
 			event.preventDefault();
 
-			var submitButton = form.querySelector('.devcon-registration-form__submit');
+			const submitButton = form.querySelector(
+				'.devcon-registration-form__submit'
+			);
 
-			var name = form.querySelector('[name="name"]').value.trim();
-			var emailAddress = form.querySelector('[name="emailAddress"]').value.trim();
-			var company = form.querySelector('[name="company"]').value.trim();
-			var eventERC = form.querySelector('[name="eventExternalReferenceCode"]').value;
+			const name = form.querySelector('[name="name"]').value.trim();
+			const emailAddress = form
+				.querySelector('[name="emailAddress"]')
+				.value.trim();
+			const company = form.querySelector('[name="company"]').value.trim();
+			const eventERC = form.querySelector(
+				'[name="eventExternalReferenceCode"]'
+			).value;
 
-			var dietaryRestrictions = Array.prototype.slice
-				.call(form.querySelectorAll('[name="dietaryRestrictions"]:checked'))
-				.map(function (checkbox) {
+			const dietaryRestrictions = Array.prototype.slice
+				.call(
+					form.querySelectorAll(
+						'[name="dietaryRestrictions"]:checked'
+					)
+				)
+				.map((checkbox) => {
 					return {key: checkbox.value};
 				});
 
@@ -34,24 +48,27 @@
 			messageElement.className = 'devcon-registration-form__message';
 
 			if (!name || !emailAddress || !eventERC) {
-				messageElement.textContent = 'Please fill in your name, email, and choose an event.';
-				messageElement.classList.add('devcon-registration-form__message--error');
+				messageElement.textContent =
+					'Please fill in your name, email, and choose an event.';
+				messageElement.classList.add(
+					'devcon-registration-form__message--error'
+				);
 
 				return;
 			}
 
-			var payload = {
-				name: name,
-				emailAddress: emailAddress,
-				company: company,
-				dietaryRestrictions: dietaryRestrictions,
+			const payload = {
+				name,
+				emailAddress,
+				company,
+				dietaryRestrictions,
 				registrationStatus: {key: 'pending'},
 				r_eventRegistrations_c_eventERC: eventERC,
 			};
 
 			submitButton.disabled = true;
 
-			var fetchFn =
+			const fetchFn =
 				window.Liferay && Liferay.Util && Liferay.Util.fetch
 					? Liferay.Util.fetch
 					: window.fetch;
@@ -63,24 +80,31 @@
 				},
 				method: 'POST',
 			})
-				.then(function (response) {
+				.then((response) => {
 					if (!response.ok) {
-						throw new Error('Request failed with status ' + response.status);
+						throw new Error(
+							'Request failed with status ' + response.status
+						);
 					}
 
 					return response.json();
 				})
-				.then(function () {
-					messageElement.textContent = "You're registered! We'll be in touch with confirmation details.";
-					messageElement.classList.add('devcon-registration-form__message--success');
+				.then(() => {
+					messageElement.textContent =
+						"You're registered! We'll be in touch with confirmation details.";
+					messageElement.classList.add(
+						'devcon-registration-form__message--success'
+					);
 					form.reset();
 				})
-				.catch(function () {
+				.catch(() => {
 					messageElement.textContent =
 						'Something went wrong submitting your registration. Please try again, or contact us directly.';
-					messageElement.classList.add('devcon-registration-form__message--error');
+					messageElement.classList.add(
+						'devcon-registration-form__message--error'
+					);
 				})
-				.finally(function () {
+				.finally(() => {
 					submitButton.disabled = false;
 				});
 		});
