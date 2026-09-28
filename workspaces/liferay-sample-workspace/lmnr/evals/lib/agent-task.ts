@@ -21,8 +21,8 @@ if (!PROJECT_SKILLS.length) {
 
 const wrappedQuery = Laminar.wrapClaudeAgentQuery(query);
 
-export const createAgentTask =
-	(schema: Record<string, unknown>) => async (prompt: string) => {
+export function createAgentTask(schema: Record<string, unknown>) {
+	return async (prompt: string) => {
 		const skillsInvoked: string[] = [];
 
 		let failure;
@@ -110,3 +110,4 @@ export const createAgentTask =
 			skillsInvoked,
 		};
 	};
+}
