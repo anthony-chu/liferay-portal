@@ -1,15 +1,8 @@
-/*
- * Registration Form — submits a new Registration object entry referencing the chosen Event by its
- * external reference code (r_eventRegistrations_c_eventERC), matching the relationship field name
- * used by the Event <-> Registration object relationship (see rules/site-initializer-format.md).
- *
- * Uses Liferay.Util.fetch (not native fetch) so the CSRF token and session context are attached
- * automatically for this write call, per the workspace's documented client runtime pattern.
- *
- * Note: anonymous (Guest) submissions require the Guest role to have "Add Entry" permission on the
- * Registration object; grant this via the manage-roles-permissions skill if public registration
- * (without login) is required.
+/**
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
+
 (function () {
 	var rootElement = fragmentNamespace.element;
 
