@@ -1,3 +1,16 @@
+# SPDX-FileCopyrightText: 2024 LMNR AI, Inc.
+# SPDX-License-Identifier: Apache-2.0
+#
+# Source: https://github.com/lmnr-ai/lmnr/blob/615dc130da78cdbe8507dc8a91a7ef34ba0c0978/docker-compose.yml
+# Modifications by Liferay, Inc.:
+# 2026-09-22 - 2026-09-25: generate secrets and DB passwords in a new init
+# service instead of reading them from the environment; set fixed ClickHouse and
+# Postgres user names; bind ports to 127.0.0.1 and remap them to 9xxx; pin the
+# lmnr images to v0.2.5; disable Laminar telemetry; remove the LLM/cloud provider
+# settings, SHARED_SECRET_TOKEN, default-valued settings and the ClickHouse
+# ulimits (not permitted under rootless Docker); reorder keys.
+# 2026-09-28: update Quickwit to v0.9.1.
+
 # This compose file is a lightweight version of docker-compose-full.yml.
 # It is intended to be used for local quickstarts.
 # It does not include RabbitMQ.

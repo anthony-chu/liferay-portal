@@ -1,5 +1,14 @@
 <?xml version="1.0"?>
 
+<!--
+SPDX-FileCopyrightText: 2024 LMNR AI, Inc.
+SPDX-License-Identifier: Apache-2.0
+
+Source: https://github.com/lmnr-ai/lmnr/blob/615dc130da78cdbe8507dc8a91a7ef34ba0c0978/clickhouse-profiles-config.xml
+Modifications: 2026-09-25 by Liferay, Inc.: added a read-only profile and a
+read-only ClickHouse user (ch_ro_user), and reformatted.
+-->
+
 <clickhouse>
 	<profiles>
 		<default>
