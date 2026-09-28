@@ -58,12 +58,12 @@
 			}
 
 			const payload = {
-				name,
-				emailAddress,
 				company,
 				dietaryRestrictions,
-				registrationStatus: {key: 'pending'},
+				emailAddress,
+				name,
 				r_eventRegistrations_c_eventERC: eventERC,
+				registrationStatus: {key: 'pending'},
 			};
 
 			submitButton.disabled = true;
