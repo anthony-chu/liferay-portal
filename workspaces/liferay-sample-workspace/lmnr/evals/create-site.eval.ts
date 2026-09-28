@@ -116,10 +116,10 @@ evaluate({
 	config,
 	data,
 	evaluators: {
-		'Skills invoked': skillsInvokedEvaluator,
-		'Site initializer created': siteInitializerCreatedEvaluator,
-		'Site created': siteCreatedEvaluator,
 		'Pages created': pagesCreatedEvaluator,
+		'Site created': siteCreatedEvaluator,
+		'Site initializer created': siteInitializerCreatedEvaluator,
+		'Skills invoked': skillsInvokedEvaluator,
 	},
 	executor: createAgentTask(STRUCTURED_OUTPUT_SCHEMA),
 	groupName: 'Create registration site',
