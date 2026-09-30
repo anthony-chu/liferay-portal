@@ -20,6 +20,19 @@ Every step is idempotent, so the skill is safe to rerun against a stack that is 
 
 `docker`, `blade`, `node`, and `yarn` on the path. The workspace product is DXP (`liferay.workspace.product` in `gradle.properties`), so a license file is required on a freshly initialized bundle.
 
+`CLAUDE_CODE_OAUTH_TOKEN` must be set, since the eval's agent authenticates with it. Generate one with `claude setup-token`, then provide it either way:
+
+- **`.env` in the workspace root** — `CLAUDE_CODE_OAUTH_TOKEN=<token>`. The Laminar SDK loads `.env` from the working directory when the eval imports it, and the workspace `.gitignore` already excludes the file.
+- **The shell environment** — export it from `~/.bashrc`, `~/.bash_profile`, or similar. A value already in the environment takes precedence over `.env`.
+
+Check before running the eval:
+
+```bash
+[[ -n "${CLAUDE_CODE_OAUTH_TOKEN:-}" ]] || grep --quiet '^CLAUDE_CODE_OAUTH_TOKEN=.' .env
+```
+
+When neither is set, stop and ask the user for the token rather than starting the stack.
+
 ## Workflow
 
 ### Start Laminar
@@ -180,6 +193,7 @@ Give the user the per-evaluator scores from the run output and the dashboard lin
 | --- | --- |
 | `401` from Laminar during the eval | The SDK defaulted to `api.lmnr.ai` instead of the local instance. Check the `config` block in the eval file: `baseUrl: 'http://localhost'`, `httpPort: 9000`, `grpcPort: 9001`. The local project API key always fails against the cloud. |
 | `401` with the config correct | Every eval takes `projectApiKey` from `lmnr/evals/lib/bootstrap.ts`, which signs in against `localhost:9667` and mints a fresh key at import time. A `401` here means that sign-in failed, so check that the Laminar frontend is up before looking at the key. A new eval file must import `projectApiKey` too — never hardcode a key, since it goes stale whenever the Laminar Postgres volume is recreated. |
+| The agent fails to authenticate with Anthropic | `CLAUDE_CODE_OAUTH_TOKEN` is not set. Export it in the shell or add it to `.env` in the workspace root, as Prerequisites describes. A `.env` anywhere else is not read. |
 | `No skills found in .claude/skills` | The eval was run from the wrong working directory. Run it from the workspace root. |
 | `403` on `/o/*` calls from the evaluators | The BasicAuth verifier is missing from the bundle. Confirm `bundles/portal-ext.properties` carries `auth.verifier.BasicAuthHeaderAuthVerifier.urls.includes=/api/*,/xmlrpc/*,/o/*`, and rerun Configure the Bundle if it does not. |
 | No LLM token or cost data on the spans | The agent SDK runs the `claude` CLI as a separate process, so auto-instrumentation sees nothing. `lmnr/evals/lib/agent-task.ts` handles this by wrapping `query` with `Laminar.wrapClaudeAgentQuery`. |
