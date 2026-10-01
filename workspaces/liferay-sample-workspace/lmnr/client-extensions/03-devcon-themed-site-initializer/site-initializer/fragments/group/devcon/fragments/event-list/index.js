@@ -246,7 +246,7 @@
 			});
 	}
 
-	const rootElement = fragmentNamespace.element.querySelector(
+	const rootElement = fragmentElement.querySelector(
 		'.devcon-event-list-wrapper'
 	);
 
