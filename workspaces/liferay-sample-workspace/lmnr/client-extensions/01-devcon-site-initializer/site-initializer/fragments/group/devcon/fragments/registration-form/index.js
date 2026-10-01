@@ -266,7 +266,7 @@
 		});
 	}
 
-	const rootElement = fragmentNamespace.element;
+	const rootElement = fragmentElement;
 
 	if (rootElement) {
 		init(rootElement);
