@@ -39,7 +39,7 @@ curl --output /dev/null --silent --write-out '%{http_code}' http://localhost:808
 **Confirm with the user before running this — it destroys data.** `--volumes` deletes the stack's Postgres and ClickHouse volumes, so every recorded trace and eval run is gone for good. Offer plain `docker compose down` as the alternative when they want the history kept; it stops the containers and leaves the volumes.
 
 ```bash
-cd lmnr && docker compose down --volumes
+cd lmnr/compose && docker compose down --volumes
 ```
 
 Losing the volumes costs history only, not the ability to run again: the Laminar workspace, project, and API key are recreated on the next run, because `lmnr/evals/lib/bootstrap.ts` mints them at import time.

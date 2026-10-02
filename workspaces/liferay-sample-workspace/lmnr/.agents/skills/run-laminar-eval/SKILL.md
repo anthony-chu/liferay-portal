@@ -37,10 +37,10 @@ When neither is set, stop and ask the user for the token rather than starting th
 
 ### Start Laminar
 
-Everything the stack needs is in `lmnr/docker-compose.yml` — there is no `.env` file to create. The one-shot `init` service generates the app secrets and database passwords into the `init-secrets` volume on first start and reuses them afterwards.
+Everything the stack needs is in `lmnr/compose/docker-compose.yml` — there is no `.env` file to create. The one-shot `init` service generates the app secrets and database passwords into the `init-secrets` volume on first start and reuses them afterwards.
 
 ```bash
-cd lmnr && docker compose up --detach
+cd lmnr/compose && docker compose up --detach
 ```
 
 Laminar is self-hosted here, not `laminar.sh`. The stack publishes:
