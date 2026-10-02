@@ -31,8 +31,10 @@ builds and deploys it, and waits for the portal to catch up:
 ./deploy-evals.sh --through 03      # the state after theme-check
 ```
 
-It targets `${EVAL_WORKSPACE}`, which has to be the workspace whose bundle is running — a
-deploy lands in its own workspace's bundle, not in whichever portal answers on the port.
+It targets `${EVAL_WORKSPACE}`, which defaults to the workspace these directories sit in and
+has to be the workspace whose bundle is running — a deploy lands in its own workspace's
+bundle, not in whichever portal answers on the port. Pointed elsewhere, it copies each
+directory across first; pointed here, it builds them in place.
 
 Deploying further than an eval needs does no harm. `01` and `03` build separate sites under
 different external reference codes, so both can be present at once.
