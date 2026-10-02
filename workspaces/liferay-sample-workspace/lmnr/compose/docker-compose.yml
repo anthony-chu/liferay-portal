@@ -10,6 +10,8 @@
 # settings, SHARED_SECRET_TOKEN, default-valued settings and the ClickHouse
 # ulimits (not permitted under rootless Docker); reorder keys.
 # 2026-09-28: update Quickwit to v0.9.1.
+# 2026-10-02: build Quickwit from quickwit/Dockerfile, which adds curl for the
+# health check.
 
 # This compose file is a lightweight version of docker-compose-full.yml.
 # It is intended to be used for local quickstarts.
@@ -164,17 +166,17 @@ services:
             -   postgres-data:/var/lib/postgresql/data
             -   init-secrets:/run/lmnr-secrets:ro
     quickwit:
+        build: ./quickwit
         command: ["run"]
         healthcheck:
             interval: 10s
             retries: 3
             test: ["CMD", "curl", "-f", "http://localhost:7280/health/livez"]
             timeout: 5s
-        image: quickwit/quickwit:v0.9.1
         ports:
             -   "127.0.0.1:9280:7280" # REST API and UI
             -   "127.0.0.1:9281:7281" # OTLP / gRPC
-        pull_policy: always
+        pull_policy: build
         volumes:
             -   quickwit-data:/quickwit/qwdata
 volumes:
