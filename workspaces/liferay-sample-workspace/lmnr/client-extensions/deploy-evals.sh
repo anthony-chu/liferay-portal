@@ -21,7 +21,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-EVAL_WORKSPACE="${EVAL_WORKSPACE:-/home/me/dev/projects/workspaces/liferay-q3-workspace}"
+EVAL_WORKSPACE="${EVAL_WORKSPACE:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 PORT="${PORT:-8080}"
 USER_CREDENTIALS="${USER_CREDENTIALS:-test@liferay.com:test}"
 
@@ -147,11 +147,18 @@ for number in "${numbers[@]}"; do
 
 	echo "==> ${project}"
 
-	rm -rf "${TARGET_DIR:?}/${project}"
+	#
+	# When the deployables already live in the target workspace, build them where they are.
+	# Copying would mean deleting the source directory and then copying it onto itself.
+	#
 
-	mkdir -p "${TARGET_DIR}"
+	if [ "${SOURCE_DIR}" != "${TARGET_DIR}" ]; then
+		rm -rf "${TARGET_DIR:?}/${project}"
 
-	cp -rp "${project_dir}" "${TARGET_DIR}/${project}"
+		mkdir -p "${TARGET_DIR}"
+
+		cp -rp "${project_dir}" "${TARGET_DIR}/${project}"
+	fi
 
 	rm -rf "${TARGET_DIR}/${project}/build" "${TARGET_DIR}/${project}/dist"
 
