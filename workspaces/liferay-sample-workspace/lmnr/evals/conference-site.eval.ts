@@ -226,26 +226,21 @@ const fillForm = async (page) => {
 	return selectedEvent;
 };
 
+/** Workflow instances started by Guest are missing from `/workflow-instances`. */
 const approve = async (entry) => {
-	const instances = await get(
-		'/o/headless-admin-workflow/v1.0/workflow-instances',
-		{completed: false}
+	const tasks = await get(
+		'/o/headless-admin-workflow/v1.0/workflow-tasks/assigned-to-my-roles'
 	);
 
-	const instance = instances.items.find(
+	const task = tasks.items.find(
 		(item) => item.objectReviewed?.id === entry.id
 	);
 
-	if (!instance) {
+	if (!task) {
 		return 'The new signup did not enter a workflow.';
 	}
 
-	const tasks = await get(
-		`/o/headless-admin-workflow/v1.0/workflow-instances/${instance.id}/workflow-tasks`,
-		{completed: false}
-	);
-
-	const taskURL = `/o/headless-admin-workflow/v1.0/workflow-tasks/${tasks.items[0].id}`;
+	const taskURL = `/o/headless-admin-workflow/v1.0/workflow-tasks/${task.id}`;
 
 	await liferay.post(`${taskURL}/assign-to-me`, {});
 
