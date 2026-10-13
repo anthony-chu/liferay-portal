@@ -34,6 +34,7 @@ export function createAgentTask(schema: Record<string, unknown>) {
 			for await (const message of wrappedQuery({
 				options: {
 					allowDangerouslySkipPermissions: true,
+					disallowedTools: ['Monitor', 'ScheduleWakeup'],
 					maxTurns: 500,
 					mcpServers: {
 						liferay: {
