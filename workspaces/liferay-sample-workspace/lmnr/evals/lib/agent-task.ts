@@ -25,6 +25,8 @@ export function createAgentTask(schema: Record<string, unknown>) {
 	return async (prompt: string) => {
 		const skillsInvoked: string[] = [];
 
+		let costUsd = 0;
+		let durationMs = 0;
 		let failure;
 		let modelUsage;
 		let numTurns = 0;
@@ -84,6 +86,8 @@ export function createAgentTask(schema: Record<string, unknown>) {
 					continue;
 				}
 
+				costUsd = message.total_cost_usd;
+				durationMs = message.duration_ms;
 				modelUsage = message.modelUsage;
 				numTurns = message.num_turns;
 
@@ -103,6 +107,8 @@ export function createAgentTask(schema: Record<string, unknown>) {
 		}
 
 		return {
+			costUsd,
+			durationMs,
 			failure: failure ?? null,
 			modelUsage,
 			numTurns,

@@ -4,6 +4,7 @@
  */
 
 import {evaluate} from '@lmnr-ai/lmnr';
+import {execFileSync} from 'node:child_process';
 import {copyFileSync, readFileSync, renameSync, rmSync} from 'node:fs';
 import {homedir} from 'node:os';
 import {join} from 'node:path';
@@ -608,9 +609,11 @@ const sumUsage = (modelUsage, key: string) =>
 		0
 	);
 
-const runMetrics = ({modelUsage, numTurns}) => ({
+const runMetrics = ({costUsd, durationMs, modelUsage, numTurns}) => ({
 	'Cache creation tokens': sumUsage(modelUsage, 'cacheCreationInputTokens'),
 	'Cache read tokens': sumUsage(modelUsage, 'cacheReadInputTokens'),
+	'Cost USD': costUsd,
+	'Duration seconds': durationMs / 1000,
 	'Input tokens': sumUsage(modelUsage, 'inputTokens'),
 	'Output tokens': sumUsage(modelUsage, 'outputTokens'),
 	'Steps taken': numTurns,
@@ -618,27 +621,50 @@ const runMetrics = ({modelUsage, numTurns}) => ({
 
 const agentTask = createAgentTask(STRUCTURED_OUTPUT_SCHEMA);
 
-/** The finished deployables of the step by step evals would hand the agent the answer. */
-const ANSWER_KEY = 'lmnr/client-extensions';
+/**
+ * The finished deployables of the step by step evals would hand the agent the answer, and the
+ * evals would hand it the checks.
+ */
+const HARNESS = 'lmnr';
 
-const HIDDEN_ANSWER_KEY = join(homedir(), '.conference-eval-answer-key');
+const HIDDEN_HARNESS = join(homedir(), '.conference-eval-harness');
+
+/** The workspace rules tell the agent to fix skills it finds wrong. */
+const AGENT_CONFIG = ['.agents', '.claude'];
+
+const git = (...args: string[]) =>
+	execFileSync('git', args, {encoding: 'utf8'});
 
 /** The prompt mentions the spec at the workspace root, where the agent runs. */
 const executor = async (prompt: string) => {
+	if (git('status', '--porcelain', '--', ...AGENT_CONFIG)) {
+		throw new Error(
+			`Commit or stash the changes under ${AGENT_CONFIG.join(' and ')}, which the run resets.`
+		);
+	}
+
 	copyFileSync(
 		new URL('./specs/conference-site.md', import.meta.url),
 		'conference-site.md'
 	);
 
-	renameSync(ANSWER_KEY, HIDDEN_ANSWER_KEY);
+	renameSync(HARNESS, HIDDEN_HARNESS);
 
 	try {
-		return await agentTask(prompt);
+		const output = await agentTask(prompt);
+
+		git('add', '--intent-to-add', '--', ...AGENT_CONFIG);
+
+		return {...output, configEdits: git('diff', '--', ...AGENT_CONFIG)};
 	}
 	finally {
-		renameSync(HIDDEN_ANSWER_KEY, ANSWER_KEY);
+		renameSync(HIDDEN_HARNESS, HARNESS);
 
 		rmSync('conference-site.md', {force: true});
+
+		git('reset', '--quiet', '--', ...AGENT_CONFIG);
+		git('checkout', '--', ...AGENT_CONFIG);
+		git('clean', '--force', '-d', '--quiet', '--', ...AGENT_CONFIG);
 	}
 };
 
