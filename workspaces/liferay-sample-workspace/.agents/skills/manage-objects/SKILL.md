@@ -47,6 +47,7 @@ curl \
 	--data '{
 		"label": {"en_US": "<Label>"},
 		"name": "<Name>",
+		"panelCategoryKey": "control_panel.object",
 		"pluralLabel": {"en_US": "<PluralLabel>"},
 		"scope": "company"
 	}' \
@@ -60,6 +61,8 @@ curl \
 **Do not send `"storageType": "default"` on create** — it returns `400 ObjectDefinitionStorageTypeException`. Omit `storageType` and Liferay assigns default DB storage (for external storage, see `integrate-external-data`).
 
 Save the returned `id` as `<definition-id>`.
+
+**Set `panelCategoryKey`, or administrators cannot find the object.** Without it the object is published and its REST endpoint works, but it has no entry in the admin menus, so nobody can browse its entries in the UI. `control_panel.object` lists it under Control Panel → Object. For an object that already exists, `PATCH /o/object-admin/v1.0/object-definitions/<definition-id>` with `{"panelCategoryKey": "control_panel.object"}` adds it without republishing.
 
 #### Prefer Creating Fields Inline
 
@@ -80,6 +83,7 @@ curl \
 				"required": true
 			}
 		],
+		"panelCategoryKey": "control_panel.object",
 		"pluralLabel": {"en_US": "<PluralLabel>"},
 		"scope": "company",
 		"titleObjectFieldName": "<fieldName>"
@@ -255,7 +259,7 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-`function` accepts `COUNT`, `SUM`, `AVERAGE`, `MIN`, `MAX` (`ObjectFieldSettingConstants`); anything but `COUNT` also needs the child field to aggregate. Liferay adds a third `filters` setting itself.
+`function` accepts `COUNT`, `SUM`, `AVERAGE`, `MIN`, `MAX` (`ObjectFieldSettingConstants`); anything but `COUNT` also needs the child field to aggregate. Omitting `"required"` returns a bare `500` (a `NullPointerException` in `ObjectFieldResourceImpl`), not a validation message, so always send it.
 
 Three behaviors that decide whether you can use it:
 
@@ -264,6 +268,63 @@ Three behaviors that decide whether you can use it:
 - **It is computed, so it is read only.** Do not send it on a POST or PATCH.
 
 Whether an Aggregation field can be *mapped* into a Collection fragment is a separate question — `manage-pages` → "Mapping Limits" says aggregates cannot be mapped, and that was not retested here. Reading it over REST from fragment JavaScript is verified.
+
+#### Count Only Some Children
+
+Add a `filters` setting. Each filter carries `filterBy`, `filterType`, and a `json` value. `filterBy` and `filterType` sent as top level settings are rejected. To leave rejected entries out of a count (workflow status `4`, denied):
+
+```json
+{
+	"name": "filters",
+	"value": [
+		{
+			"filterBy": "status",
+			"filterType": "excludes",
+			"json": {
+				"not": {
+					"in": [
+						4
+					]
+				}
+			}
+		}
+	]
+}
+```
+
+Verified on 2026.Q2: two pending children counted `2`, and rejecting one through the workflow dropped it to `1`. `includes` takes `{"in": [...]}` instead. For a custom field, `filterBy` is the field name and the values are its stored values, such as picklist keys. `eq` and `ne` take `{"eq": <value>}` and `{"ne": <value>}`. Source: `InclusionOperatorsObjectFilterParser` and `EqualityOperatorsObjectFilterParser`.
+
+#### In a Site Initializer
+
+An Aggregation field names a relationship, so it cannot go in `object-definitions/`, which runs before `object-relationships/`. Put it in `object-fields/<name>.json`, which runs after them. The file wraps the fields:
+
+```json
+{
+	"object-fields": [
+		{
+			"businessType": "Aggregation",
+			"label": {
+				"en_US": "Registrations"
+			},
+			"name": "registrationCount",
+			"objectFieldSettings": [
+				{
+					"name": "function",
+					"value": "COUNT"
+				},
+				{
+					"name": "objectRelationshipName",
+					"value": "eventRegistrations"
+				}
+			],
+			"required": false
+		}
+	],
+	"objectDefinitionId": "[$OBJECT_DEFINITION_ID:Event$]"
+}
+```
+
+A bare field DTO at the top level is skipped without a log line, because the handler reads only the `object-fields` array. Source: `_addOrUpdateObjectFields` in `BundleSiteInitializer`.
 
 ### Add Validations
 
