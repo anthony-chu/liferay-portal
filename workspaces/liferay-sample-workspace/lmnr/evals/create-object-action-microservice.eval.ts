@@ -5,7 +5,8 @@
 
 import {evaluate} from '@lmnr-ai/lmnr';
 import {randomUUID} from 'node:crypto';
-import {existsSync, readFileSync, readdirSync} from 'node:fs';
+import {existsSync, readFileSync, readdirSync, statSync} from 'node:fs';
+import {basename} from 'node:path';
 
 import {createAgentTask} from './lib/agent-task';
 import {projectApiKey} from './lib/bootstrap';
@@ -150,6 +151,37 @@ const clientExtensionsCreatedEvaluator = (output, _) => {
 	}
 };
 
+const oAuthApplicationRegisteredEvaluator = (output, _) => {
+	try {
+		const {microserviceClientExtension} = output.result;
+
+		const microserviceClientExtensionTypes = readClientExtensionTypes(
+			microserviceClientExtension
+		);
+
+		const oAuthApplicationKeys = [...microserviceClientExtensionTypes]
+			.filter(([, type]) => type === 'oAuthApplicationUserAgent')
+			.map(([key]) => key);
+
+		if (!oAuthApplicationKeys.length) {
+			return 0.0;
+		}
+
+		const routesDirectory = `bundles/routes/default/${basename(microserviceClientExtension)}`;
+
+		return oAuthApplicationKeys.every((key) => {
+			const clientIdFile = `${routesDirectory}/${key}.oauth2.user.agent.client.id`;
+
+			return existsSync(clientIdFile) && statSync(clientIdFile).size > 0;
+		})
+			? 1.0
+			: 0.0;
+	}
+	catch (error) {
+		return 0.0;
+	}
+};
+
 const findObjectDefinition = async (name: string) => {
 	const {data: objectDefinitionsResponse} = await liferay.get(
 		'/o/object-admin/v1.0/object-definitions',
@@ -245,7 +277,7 @@ const leadWrittenEvaluator = async (output, _) => {
 			}
 		);
 
-		const registrationDate = registration.dateCreated.slice(0, 10);
+		const registrationDateString = registration.dateCreated.slice(0, 10);
 
 		for (let attempt = 0; attempt < 30; attempt++) {
 			const lead = readLeads(outputFile).find(
@@ -258,7 +290,7 @@ const leadWrittenEvaluator = async (output, _) => {
 				return lead.interestedTopic === event.name &&
 					lead.leadSource === 'Tech Conference 2026' &&
 					new Date(lead.createdAt).toISOString().slice(0, 10) ===
-						registrationDate
+						registrationDateString
 					? 1.0
 					: 0.0;
 			}
@@ -279,8 +311,9 @@ evaluate({
 	evaluators: {
 		'Client extensions created': clientExtensionsCreatedEvaluator,
 		'Lead written': leadWrittenEvaluator,
+		'OAuth application registered': oAuthApplicationRegisteredEvaluator,
 		'Skills invoked': skillsInvokedEvaluator,
 	},
 	executor: createAgentTask(STRUCTURED_OUTPUT_SCHEMA),
-	groupName: 'Wire object action to microservice',
+	groupName: 'Create object action microservice',
 });
