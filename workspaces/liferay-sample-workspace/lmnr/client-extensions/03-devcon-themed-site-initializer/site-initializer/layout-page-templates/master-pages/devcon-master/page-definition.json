@@ -13,7 +13,8 @@
 			{
 				"definition": {
 					"fragmentSettings": {
-						"unallowedFragments": []
+						"unallowedFragments": [
+						]
 					}
 				},
 				"type": "DropZone"
