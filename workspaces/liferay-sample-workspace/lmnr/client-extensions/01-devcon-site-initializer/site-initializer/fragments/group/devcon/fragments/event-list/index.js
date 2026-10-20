@@ -149,7 +149,9 @@
 				: '') +
 			capacityMarkup +
 			'<a class="devcon-event-list__card-cta" href="/register?event=' +
-			encodeURIComponent(event.externalReferenceCode || '') +
+			Liferay.Util.escapeHTML(
+				encodeURIComponent(event.externalReferenceCode || '')
+			) +
 			'">Register &rarr;</a>' +
 			'</div>'
 		);
