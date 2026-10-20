@@ -4,9 +4,11 @@
 		"@lmnr-ai/lmnr": "^0.8.41",
 		"@types/node": "^26.4.0",
 		"axios": "^1.19.0",
-		"dotenv": "^17.4.2"
+		"dotenv": "^17.4.2",
+		"tinycolor2": "1.4.2"
 	},
 	"devDependencies": {
+		"@types/tinycolor2": "1.4.3",
 		"playwright": "^1.63.0",
 		"tsx": "^4.23.12",
 		"typescript": "^5.9.0"
