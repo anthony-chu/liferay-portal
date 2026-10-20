@@ -13,3 +13,25 @@ export const liferay = axios.create({
 	baseURL: LIFERAY_URL,
 	headers: {Authorization: LIFERAY_AUTH},
 });
+
+export const fetchObjectDefinition = async (name: string) => {
+	const {data: definitionsResponse} = await liferay.get(
+		'/o/object-admin/v1.0/object-definitions',
+		{
+			params: {filter: `name eq '${name}'`},
+		}
+	);
+
+	return definitionsResponse.items[0];
+};
+
+export const fetchObjectEntries = async (definition) => {
+	const {data: entriesResponse} = await liferay.get(
+		definition.restContextPath,
+		{
+			params: {pageSize: 200},
+		}
+	);
+
+	return entriesResponse.items ?? [];
+};
