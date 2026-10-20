@@ -5,8 +5,8 @@
 # them in dependency order.
 #
 # Usage:
-#     ./deploy-evals.sh --through 01      # everything up to and including 01
-#     ./deploy-evals.sh 00 01             # the same, listed explicitly
+# ./deploy-evals.sh --through 01 # everything up to and including 01
+# ./deploy-evals.sh 00 01 # the same, listed explicitly
 #
 # The numbering is the dependency order, so "everything through N" is the usual way to ask
 # for a state. Deploying more than a given eval needs is harmless — the plain and themed

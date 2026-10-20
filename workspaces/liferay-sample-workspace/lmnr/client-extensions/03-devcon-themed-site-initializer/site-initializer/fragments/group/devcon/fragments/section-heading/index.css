@@ -7,13 +7,13 @@
 	font-size: 2rem;
 	/* font-weight intentionally omitted — see the master page's site-header
 	 * fragment index.css, which sets it site wide for every heading. */
-	margin-bottom: var(--spacer-2);
 	color: var(--gray-900);
+	margin-bottom: var(--spacer-2);
 }
 
 #wrapper .devcon-section-heading p {
-	font-size: 1rem;
 	color: var(--gray-700);
-	max-width: 640px;
+	font-size: 1rem;
 	margin: 0 auto;
+	max-width: 640px;
 }
