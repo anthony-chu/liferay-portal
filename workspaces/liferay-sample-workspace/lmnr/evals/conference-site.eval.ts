@@ -9,6 +9,7 @@ import {copyFileSync, readFileSync, renameSync, rmSync} from 'node:fs';
 import {homedir} from 'node:os';
 import {join} from 'node:path';
 import {chromium} from 'playwright';
+import tinycolor from 'tinycolor2';
 
 import {createAgentTask} from './lib/agent-task.ts';
 import {projectApiKey} from './lib/bootstrap.ts';
@@ -138,12 +139,6 @@ const eventIdOf = (entry) => {
 	);
 
 	return key ? entry[key] : null;
-};
-
-const toHex = (rgb: string) => {
-	const [r, g, b] = rgb.match(/\d+/g).map(Number);
-
-	return `#${[r, g, b].map((channel) => channel.toString(16).padStart(2, '0')).join('')}`;
 };
 
 /** Text, links, colors and heading weight of a page, as a guest sees it. */
@@ -373,7 +368,10 @@ const checkPages = async (
 
 const checkBrand = async (result, site, pages) => {
 	for (const [key, page] of Object.entries<any>(pages)) {
-		const colors = page.colors.map(toHex);
+		const colors = page.colors
+			.map((color) => tinycolor(color))
+			.filter((color) => color.isValid())
+			.map((color) => color.toHexString());
 
 		if (!colors.some(isDeepNavy) || !colors.some(isAmber)) {
 			return `The ${key} page is not deep navy and amber.`;
