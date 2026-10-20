@@ -17,7 +17,12 @@ import {
 	runMetricsEvaluator,
 	skillsInvokedEvaluator,
 } from './lib/evaluators.ts';
-import {liferay, LIFERAY_URL} from './lib/liferay.ts';
+import {
+	fetchObjectDefinition,
+	fetchObjectEntries,
+	liferay,
+	LIFERAY_URL,
+} from './lib/liferay.ts';
 
 /**
  * The whole conference site from `specs/conference-site.md` and a single prompt. One check
@@ -126,17 +131,6 @@ const get = async (url: string, params = {}) => {
 
 	return response;
 };
-
-const getObjectDefinition = async (name: string) => {
-	const {items} = await get('/o/object-admin/v1.0/object-definitions', {
-		filter: `name eq '${name}'`,
-	});
-
-	return items[0];
-};
-
-const getEntries = async (definition) =>
-	(await get(definition.restContextPath)).items;
 
 const eventIdOf = (entry) => {
 	const key = Object.keys(entry).find(
@@ -255,8 +249,8 @@ const approve = async (entry) => {
 };
 
 const checkInformation = async (result) => {
-	const eventDefinition = await getObjectDefinition(result.eventObject);
-	const signupDefinition = await getObjectDefinition(result.signupObject);
+	const eventDefinition = await fetchObjectDefinition(result.eventObject);
+	const signupDefinition = await fetchObjectDefinition(result.signupObject);
 
 	for (const definition of [eventDefinition, signupDefinition]) {
 		if (!definition?.active || !definition.panelCategoryKey) {
@@ -294,13 +288,13 @@ const checkInformation = async (result) => {
 		return 'Events and signups are not related one to many.';
 	}
 
-	const events = JSON.stringify(await getEntries(eventDefinition));
+	const events = JSON.stringify(await fetchObjectEntries(eventDefinition));
 
 	if (!EVENTS.every((event) => events.includes(event.name))) {
 		return 'The events from the spec are not all seeded.';
 	}
 
-	if (!(await getEntries(signupDefinition)).length) {
+	if (!(await fetchObjectEntries(signupDefinition)).length) {
 		return 'No signups are saved.';
 	}
 
@@ -328,11 +322,11 @@ const checkPages = async (result, site, pages) => {
 		}
 	}
 
-	const eventDefinition = await getObjectDefinition(result.eventObject);
-	const signupDefinition = await getObjectDefinition(result.signupObject);
+	const eventDefinition = await fetchObjectDefinition(result.eventObject);
+	const signupDefinition = await fetchObjectDefinition(result.signupObject);
 
-	const events = await getEntries(eventDefinition);
-	const signups = await getEntries(signupDefinition);
+	const events = await fetchObjectEntries(eventDefinition);
+	const signups = await fetchObjectEntries(signupDefinition);
 
 	for (const event of EVENTS) {
 		const entry = events.find((item) =>
@@ -410,10 +404,10 @@ const checkBrand = async (result, site, pages) => {
 };
 
 const checkSignupFlow = async (result, site, page) => {
-	const signupDefinition = await getObjectDefinition(result.signupObject);
+	const signupDefinition = await fetchObjectDefinition(result.signupObject);
 
 	const before = new Set(
-		(await getEntries(signupDefinition)).map((entry) => entry.id)
+		(await fetchObjectEntries(signupDefinition)).map((entry) => entry.id)
 	);
 
 	await page.goto(
@@ -435,7 +429,7 @@ const checkSignupFlow = async (result, site, page) => {
 		return `A guest submission landed on ${page.url()}.`;
 	}
 
-	const created = (await getEntries(signupDefinition)).filter(
+	const created = (await fetchObjectEntries(signupDefinition)).filter(
 		(entry) => !before.has(entry.id)
 	);
 
