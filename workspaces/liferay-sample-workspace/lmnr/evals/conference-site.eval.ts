@@ -13,7 +13,10 @@ import {chromium} from 'playwright';
 import {createAgentTask} from './lib/agent-task.ts';
 import {projectApiKey} from './lib/bootstrap.ts';
 import {isAmber, isDeepNavy} from './lib/color.ts';
-import {skillsInvokedEvaluator} from './lib/evaluators.ts';
+import {
+	runMetricsEvaluator,
+	skillsInvokedEvaluator,
+} from './lib/evaluators.ts';
 import {liferay, LIFERAY_URL} from './lib/liferay.ts';
 
 /**
@@ -598,22 +601,6 @@ const allRequirements = async (output) => {
 	return reasons.every((reason) => reason === null) ? 1.0 : 0.0;
 };
 
-const sumUsage = (modelUsage, key: string) =>
-	Object.values<any>(modelUsage ?? {}).reduce(
-		(total, usage) => total + usage[key],
-		0
-	);
-
-const runMetrics = ({costUsd, durationMs, modelUsage, numTurns}) => ({
-	'Cache creation tokens': sumUsage(modelUsage, 'cacheCreationInputTokens'),
-	'Cache read tokens': sumUsage(modelUsage, 'cacheReadInputTokens'),
-	'Cost USD': costUsd,
-	'Duration seconds': durationMs / 1000,
-	'Input tokens': sumUsage(modelUsage, 'inputTokens'),
-	'Output tokens': sumUsage(modelUsage, 'outputTokens'),
-	'Steps taken': numTurns,
-});
-
 const agentTask = createAgentTask(STRUCTURED_OUTPUT_SCHEMA);
 
 /**
@@ -670,7 +657,7 @@ evaluate({
 		'Skills invoked': skillsInvokedEvaluator,
 		...requirementEvaluators,
 		'All requirements': allRequirements,
-		'Run metrics': runMetrics,
+		'Run metrics': runMetricsEvaluator,
 	},
 	executor,
 	groupName: 'Conference site',
