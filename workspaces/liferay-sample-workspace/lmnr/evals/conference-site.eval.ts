@@ -248,10 +248,7 @@ const approve = async (entry) => {
 	return null;
 };
 
-const checkInformation = async (result) => {
-	const eventDefinition = await fetchObjectDefinition(result.eventObject);
-	const signupDefinition = await fetchObjectDefinition(result.signupObject);
-
+const checkInformation = async ({eventDefinition, signupDefinition}) => {
 	for (const definition of [eventDefinition, signupDefinition]) {
 		if (!definition?.active || !definition.panelCategoryKey) {
 			return `${definition?.name ?? 'An object'} is not in the admin area.`;
@@ -301,7 +298,12 @@ const checkInformation = async (result) => {
 	return null;
 };
 
-const checkPages = async (result, site, pages) => {
+const checkPages = async (
+	result,
+	site,
+	pages,
+	{eventDefinition, signupDefinition}
+) => {
 	for (const [key, page] of Object.entries<any>(pages)) {
 		if (page.status !== 200) {
 			return `The ${key} page returned ${page.status} to a guest.`;
@@ -321,9 +323,6 @@ const checkPages = async (result, site, pages) => {
 			return `The Home page does not link to ${path}.`;
 		}
 	}
-
-	const eventDefinition = await fetchObjectDefinition(result.eventObject);
-	const signupDefinition = await fetchObjectDefinition(result.signupObject);
 
 	const events = await fetchObjectEntries(eventDefinition);
 	const signups = await fetchObjectEntries(signupDefinition);
@@ -403,9 +402,7 @@ const checkBrand = async (result, site, pages) => {
 	return null;
 };
 
-const checkSignupFlow = async (result, site, page) => {
-	const signupDefinition = await fetchObjectDefinition(result.signupObject);
-
+const checkSignupFlow = async (result, site, page, {signupDefinition}) => {
 	const before = new Set(
 		(await fetchObjectEntries(signupDefinition)).map((entry) => entry.id)
 	);
@@ -546,6 +543,11 @@ const runChecks = async ({failure, result: reported}) => {
 		),
 	};
 
+	const definitions = {
+		eventDefinition: await fetchObjectDefinition(result.eventObject),
+		signupDefinition: await fetchObjectDefinition(result.signupObject),
+	};
+
 	const browser = await chromium.launch({channel: 'chrome'});
 
 	try {
@@ -561,12 +563,14 @@ const runChecks = async ({failure, result: reported}) => {
 
 		const reasons = {
 			'Event and signup information': await attempt(() =>
-				checkInformation(result)
+				checkInformation(definitions)
 			),
-			Pages: await attempt(() => checkPages(result, site, pages)),
+			Pages: await attempt(() =>
+				checkPages(result, site, pages, definitions)
+			),
 			Brand: await attempt(() => checkBrand(result, site, pages)),
 			'Signup flow': await attempt(() =>
-				checkSignupFlow(result, site, page)
+				checkSignupFlow(result, site, page, definitions)
 			),
 			Portable: await attempt(() => checkPortable(result)),
 		};
