@@ -107,15 +107,6 @@
 		return isNaN(parsed) ? 0 : parsed;
 	}
 
-	function escapeHtml(value) {
-		const div = document.createElement('div');
-
-		div.textContent =
-			value === null || value === undefined ? '' : String(value);
-
-		return div.innerHTML;
-	}
-
 	function renderCard(event, showCapacity) {
 		const startDate = new Date(event.startDate);
 		const endDate = new Date(event.endDate);
@@ -136,9 +127,9 @@
 				'">' +
 				(isFull
 					? 'Fully booked'
-					: escapeHtml(remaining) +
+					: Liferay.Util.escapeHTML(String(remaining)) +
 						' of ' +
-						escapeHtml(event.capacity) +
+						Liferay.Util.escapeHTML(String(event.capacity)) +
 						' spots remaining') +
 				'</span>';
 		}
@@ -146,14 +137,14 @@
 		return (
 			'<div class="devcon-event-list__card">' +
 			'<h3 class="devcon-event-list__card-name">' +
-			escapeHtml(event.name) +
+			Liferay.Util.escapeHTML(String(event.name ?? '')) +
 			'</h3>' +
 			'<p class="devcon-event-list__card-date">' +
-			escapeHtml(formatDateRange(startDate, endDate)) +
+			Liferay.Util.escapeHTML(formatDateRange(startDate, endDate)) +
 			'</p>' +
 			(event.location
 				? '<p class="devcon-event-list__card-location">' +
-					escapeHtml(event.location) +
+					Liferay.Util.escapeHTML(String(event.location)) +
 					'</p>'
 				: '') +
 			capacityMarkup +
