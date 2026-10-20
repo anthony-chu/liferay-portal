@@ -4,15 +4,14 @@ lpd-12345-devcon-themed-site-init:
     siteExternalReferenceCode: lpd-12345-devcon-themed
     siteName: DEVCON Themed
     type: siteInitializer
-
 lpd-12345-devcon-themed-site-oauth:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     name: DEVCON Themed Site OAuth
     scopes:
-        - Liferay.Headless.Admin.Site.everything
-        - Liferay.Headless.Admin.Content.everything
-        - Liferay.Object.Admin.REST.everything
-        - Liferay.Headless.Object.everything
-        - Liferay.Headless.Admin.User.everything
+        -   Liferay.Headless.Admin.Site.everything
+        -   Liferay.Headless.Admin.Content.everything
+        -   Liferay.Object.Admin.REST.everything
+        -   Liferay.Headless.Object.everything
+        -   Liferay.Headless.Admin.User.everything
     type: oAuthApplicationHeadlessServer
