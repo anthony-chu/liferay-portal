@@ -5,11 +5,12 @@
 
 import {evaluate} from '@lmnr-ai/lmnr';
 import {existsSync} from 'node:fs';
+import {chromium} from 'playwright';
 
 import {createAgentTask} from './lib/agent-task';
 import {projectApiKey} from './lib/bootstrap';
 import {skillsInvokedEvaluator} from './lib/evaluators';
-import {liferay} from './lib/liferay';
+import {liferay, LIFERAY_URL} from './lib/liferay';
 import {fetchRenderedPage} from './lib/rendered-page';
 
 const config = {
@@ -250,35 +251,151 @@ const visitorFields = (definition) =>
 		(field) => !field.state && !hasDefaultValue(field)
 	);
 
-/**
- * The three details the prompt asks an event to carry — when it is, where it is, and how
- * many places are left — resolved to whatever the Event object happens to call them, so
- * the check still means something against an object the agent named differently.
- */
-const EVENT_DETAIL_PATTERNS = [
-	/date|start|when/,
-	/location|venue|place|where/,
-	/spots|remaining|available|capacity|seats/,
+const MONTH_NAMES = [
+	'january',
+	'february',
+	'march',
+	'april',
+	'may',
+	'june',
+	'july',
+	'august',
+	'september',
+	'october',
+	'november',
+	'december',
 ];
 
-const eventDetailFields = (definition) => {
-	const fields = editableFields(definition);
+const isoDate = (value) => String(value ?? '').slice(0, 10);
 
-	const matched = EVENT_DETAIL_PATTERNS.map((pattern) =>
-		fields.find((field) => pattern.test(normalize(field.name)))
+const upcomingEntries = (entries) => {
+	const today = new Date().toISOString().slice(0, 10);
+
+	const upcoming = entries.filter(
+		(entry) => isoDate(entry.endDate ?? entry.startDate) >= today
 	);
 
-	const names = new Set();
+	return upcoming.length ? upcoming : entries;
+};
 
-	return matched.filter((field) => {
-		if (!field || names.has(field.name)) {
-			return false;
+const showsNumber = (text: string, value) =>
+	Number.isFinite(value) && new RegExp(`(^|\\D)${value}(\\D|$)`).test(text);
+
+const dateShown = (text: string, entry) => {
+	if (entry.dateRangeLabel && text.includes(entry.dateRangeLabel)) {
+		return true;
+	}
+
+	const date = isoDate(entry.startDate);
+
+	if (!date) {
+		return false;
+	}
+
+	if (text.includes(date)) {
+		return true;
+	}
+
+	const [year, month, day] = date.split('-').map(Number);
+
+	const monthName = MONTH_NAMES[month - 1];
+
+	const monthNames = [monthName, monthName.slice(0, 4), monthName.slice(0, 3)];
+
+	const named = new RegExp(`\\b(${monthNames.join('|')})\\.?\\b`, 'i').test(
+		text
+	);
+
+	const numeric = new RegExp(
+		`(^|\\D)0?(${month}\\D0?${day}|${day}\\D0?${month})\\D(${year}|${year % 100})(\\D|$)`
+	).test(text);
+
+	return (
+		(named && new RegExp(`(^|\\D)0?${day}(\\D|$)`).test(text)) || numeric
+	);
+};
+
+const locationShown = (text: string, entry) => {
+	const location = String(entry.location ?? '');
+
+	return (
+		!location ||
+		text.includes(location) ||
+		text.includes(location.split(',')[0].trim())
+	);
+};
+
+const spotsShown = (text: string, entry, registrationEntries) => {
+	const registrations = registrationEntries.filter((registration) =>
+		Object.entries(registration).some(
+			([key, value]) =>
+				key.startsWith('r_') && key.endsWith('Id') && value === entry.id
+		)
+	);
+
+	return (
+		showsNumber(text, entry.spotsRemaining) ||
+		showsNumber(text, entry.capacity - registrations.length)
+	);
+};
+
+const eventPassages = (text: string, entry, eventEntries) => {
+	const otherNames = eventEntries
+		.filter((other) => other.id !== entry.id)
+		.map((other) => String(other.name));
+
+	const passages = [];
+
+	let index = text.indexOf(entry.name);
+
+	while (index !== -1) {
+		const rest = text.slice(index + String(entry.name).length);
+
+		const ends = otherNames
+			.map((name) => rest.indexOf(name))
+			.filter((position) => position !== -1);
+
+		passages.push(
+			text.slice(index, index + String(entry.name).length) +
+				rest.slice(0, ends.length ? Math.min(...ends) : 600)
+		);
+
+		index = text.indexOf(entry.name, index + 1);
+	}
+
+	return passages;
+};
+
+const visibleTexts = new Map();
+
+const renderVisibleTexts = async (pages) => {
+	const browser = await chromium.launch({channel: 'chrome'});
+
+	try {
+		const browserPage = await browser.newPage();
+
+		const texts = [];
+
+		for (const page of pages) {
+			if (!visibleTexts.has(page.url)) {
+				await browserPage.goto(`${LIFERAY_URL}${page.url}`, {
+					waitUntil: 'networkidle',
+				});
+
+				visibleTexts.set(
+					page.url,
+					await browserPage.locator('body').innerText()
+				);
+			}
+
+			texts.push(visibleTexts.get(page.url));
 		}
 
-		names.add(field.name);
-
-		return true;
-	});
+		return texts;
+	}
+	finally {
+		await browser.close();
+	}
 };
 
 const fetchSiteFragments = async (siteExternalReferenceCode: string) => {
@@ -409,6 +526,9 @@ const readSite = async (siteName: string) => {
 		fragments,
 		pages,
 		registrationDefinition,
+		registrationEntries: registrationDefinition
+			? await fetchObjectEntries(registrationDefinition)
+			: [],
 		siteFound: true,
 	};
 };
@@ -546,50 +666,33 @@ const eventsRenderedEvaluator = scored(async ({result}) => {
 });
 
 /**
- * Not just that the events are listed, but that each one carries the three details the
- * prompt asks for — when it is, where it is, and how many places are left.
+ * Not just that the events are listed, but that each upcoming one carries the three details
+ * the prompt asks for — when it is, where it is, and how many places are left — as a
+ * visitor sees them once the page has run in a browser. Read from the rendered text rather
+ * than the fragment sources, so a page passes on what it shows, whatever fields it reads.
  */
 const eventDetailsRenderedEvaluator = scored(async ({result}) => {
-	const {eventDefinition, eventEntries, pages} = await inspectSite(
-		result.site
-	);
+	const {eventDefinition, eventEntries, pages, registrationEntries} =
+		await inspectSite(result.site);
 
 	if (!eventDefinition || !eventEntries.length) {
 		return false;
 	}
 
-	const detailFields = eventDetailFields(eventDefinition);
+	const expected = upcomingEntries(eventEntries);
 
-	if (detailFields.length < EVENT_DETAIL_PATTERNS.length) {
-		return false;
-	}
+	const texts = await renderVisibleTexts(reportedPages(pages, result.pages));
 
-	const candidates = reportedPages(pages, result.pages);
-
-	const shown = (page, field) =>
-		eventEntries.every((entry) => {
-			const value = entry[field.name];
-
-			return (
-				value === null ||
-				value === undefined ||
-				page.text.includes(String(value))
-			);
-		});
-
-	const serverRendered = candidates.some((page) =>
-		detailFields.every((field) => shown(page, field))
-	);
-
-	const clientWired = candidates.some((page) =>
-		page.sources.some((source) =>
-			detailFields.every((field) =>
-				new RegExp(`\\b${field.name}\\b`).test(source)
+	return texts.some((text) =>
+		expected.every((entry) =>
+			eventPassages(text, entry, eventEntries).some(
+				(passage) =>
+					dateShown(passage, entry) &&
+					locationShown(passage, entry) &&
+					spotsShown(passage, entry, registrationEntries)
 			)
 		)
 	);
-
-	return serverRendered || clientWired;
 });
 
 /**
