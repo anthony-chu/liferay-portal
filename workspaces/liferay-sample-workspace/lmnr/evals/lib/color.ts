@@ -88,8 +88,11 @@ const within = (
 };
 
 /** Blue through indigo, dark, and saturated enough not to read as slate grey. */
-export const isDeepNavy = (hex: string) =>
-	within(hex, [205, 250], [0.06, 0.36], 0.2);
+export function isDeepNavy(hex: string) {
+	return within(hex, [205, 250], [0.06, 0.36], 0.2);
+}
 
 /** Orange-gold, mid-light, saturated — excludes terracotta below, yellow above. */
-export const isAmber = (hex: string) => within(hex, [30, 52], [0.35, 0.7], 0.5);
+export function isAmber(hex: string) {
+	return within(hex, [30, 52], [0.35, 0.7], 0.5);
+}
