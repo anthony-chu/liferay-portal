@@ -8,21 +8,22 @@
 // imported by `main.scss`'s separate compilation unit, which `clay.scss`
 // never pulls in.
 
-$primary: #0A1F44;
-$secondary: #F5A623;
-$success: #287D3C;
-$danger: #DA1414;
+$primary: #0a1f44;
+$secondary: #f5a623;
+$success: #287d3c;
+$danger: #da1414;
 
-$body-bg: #F5F6F8;
-$body-color: #1A2233;
+$body-bg: #f5f6f8;
+$body-color: #1a2233;
 
-$link-color: #0A1F44;
-$link-hover-color: #F5A623;
+$link-color: #0a1f44;
+$link-hover-color: #f5a623;
 
 // Bold, heavy heading typeface
 
-$font-family-base: "Helvetica Neue", Arial, sans-serif;
-$headings-font-family: "Arial Black", "Segoe UI Black", "Helvetica Neue", Arial, sans-serif;
+$font-family-base: 'Helvetica Neue', arial, sans-serif;
+$headings-font-family: 'Arial Black', 'Segoe UI Black', 'Helvetica Neue', arial,
+	sans-serif;
 $headings-font-weight: 800;
 
 $border-radius: 0.375rem;
@@ -43,11 +44,11 @@ $border-radius-lg: 0.5rem;
 // The map keys must carry the `--` themselves.
 
 $c-root: (
-	"--primary": $primary,
-	"--secondary": $secondary,
-	"--success": $success,
-	"--danger": $danger,
-	"--body-bg": $body-bg,
-	"--body-color": $body-color,
-	"--font-family-headings": $headings-font-family,
+	'--primary': $primary,
+	'--secondary': $secondary,
+	'--success': $success,
+	'--danger': $danger,
+	'--body-bg': $body-bg,
+	'--body-color': $body-color,
+	'--font-family-headings': $headings-font-family,
 );
