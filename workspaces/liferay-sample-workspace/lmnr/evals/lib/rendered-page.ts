@@ -20,7 +20,7 @@ const HREF_PATTERN = /\bhref=["'](\/[^"']+)["']/i;
  * has to search `styled`. Anything about what the page *says* searches `html`, so a
  * stray match inside 800KB of CSS cannot score a point.
  */
-export const fetchRenderedPage = async (path: string) => {
+export async function fetchRenderedPage(path: string) {
 	const {data: html} = await liferay.get(path, {responseType: 'text'});
 
 	const links = html.match(STYLESHEET_LINK_PATTERN) ?? [];
@@ -48,4 +48,4 @@ export const fetchRenderedPage = async (path: string) => {
 	const css = stylesheets.map((stylesheet) => stylesheet.css);
 
 	return {html, styled: `${html}\n${css.join('\n')}`, stylesheets};
-};
+}

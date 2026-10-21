@@ -14,7 +14,7 @@ export const liferay = axios.create({
 	headers: {Authorization: LIFERAY_AUTH},
 });
 
-export const fetchObjectDefinition = async (name: string) => {
+export async function fetchObjectDefinition(name: string) {
 	const {data: definitionsResponse} = await liferay.get(
 		'/o/object-admin/v1.0/object-definitions',
 		{
@@ -23,9 +23,9 @@ export const fetchObjectDefinition = async (name: string) => {
 	);
 
 	return definitionsResponse.items[0];
-};
+}
 
-export const fetchObjectEntries = async (definition) => {
+export async function fetchObjectEntries(definition) {
 	const {data: entriesResponse} = await liferay.get(
 		definition.restContextPath,
 		{
@@ -34,4 +34,4 @@ export const fetchObjectEntries = async (definition) => {
 	);
 
 	return entriesResponse.items ?? [];
-};
+}
