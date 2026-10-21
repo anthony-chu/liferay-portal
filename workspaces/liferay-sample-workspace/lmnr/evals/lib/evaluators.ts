@@ -9,7 +9,12 @@ const sumUsage = (modelUsage, key: string) =>
 		0
 	);
 
-export function runMetricsEvaluator({costUsd, durationMs, modelUsage, numTurns}) {
+export function runMetricsEvaluator({
+	costUsd,
+	durationMs,
+	modelUsage,
+	numTurns,
+}) {
 	return {
 		'Cache creation tokens': sumUsage(
 			modelUsage,
