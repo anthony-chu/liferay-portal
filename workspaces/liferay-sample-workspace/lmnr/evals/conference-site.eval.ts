@@ -499,17 +499,6 @@ const LABELS = [
 	'Portable',
 ];
 
-/** Runs every check once per output and maps each label to its failure, or `null`. */
-const inspections = new WeakMap();
-
-const inspect = (output) => {
-	if (!inspections.has(output)) {
-		inspections.set(output, runChecks(output));
-	}
-
-	return inspections.get(output);
-};
-
 const attempt = async (check) => {
 	try {
 		return await check();
@@ -569,17 +558,17 @@ const runChecks = async ({failure, result: reported}) => {
 		}
 
 		const reasons = {
+			'Brand': await attempt(() => checkBrand(result, site, pages)),
 			'Event and signup information': await attempt(() =>
 				checkInformation(definitions)
 			),
 			'Pages': await attempt(() =>
 				checkPages(result, site, pages, definitions)
 			),
-			'Brand': await attempt(() => checkBrand(result, site, pages)),
+			'Portable': await attempt(() => checkPortable(result)),
 			'Signup flow': await attempt(() =>
 				checkSignupFlow(result, site, page, definitions)
 			),
-			'Portable': await attempt(() => checkPortable(result)),
 		};
 
 		for (const [label, reason] of Object.entries(reasons)) {
@@ -591,6 +580,17 @@ const runChecks = async ({failure, result: reported}) => {
 	finally {
 		await browser.close();
 	}
+};
+
+/** Runs every check once per output and maps each label to its failure, or `null`. */
+const inspections = new WeakMap();
+
+const inspect = (output) => {
+	if (!inspections.has(output)) {
+		inspections.set(output, runChecks(output));
+	}
+
+	return inspections.get(output);
 };
 
 const requirementEvaluators = Object.fromEntries(

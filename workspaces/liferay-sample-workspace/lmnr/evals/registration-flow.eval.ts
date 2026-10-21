@@ -178,24 +178,6 @@ const fillForm = async (page) => {
 };
 
 /**
- * Runs the flow once and reports what happened. Memoized on what identifies the run, so a
- * second datapoint gets its own submission rather than inheriting the first one's — driving
- * the browser twice for the same datapoint would create two registrations and leave the
- * second check judging a different row than the first.
- */
-const submissions = new Map();
-
-const submitRegistration = (result) => {
-	const key = `${result.site}|${result.registrationPage}`;
-
-	if (!submissions.has(key)) {
-		submissions.set(key, runSubmission(result));
-	}
-
-	return submissions.get(key);
-};
-
-/**
  * Every exit carries a `failure` naming what stopped it.
  *
  * Without one a broken precondition, a timed out selector and a form that genuinely does not
@@ -283,6 +265,24 @@ const runSubmission = async (result) => {
 	finally {
 		await browser.close();
 	}
+};
+
+/**
+ * Runs the flow once and reports what happened. Memoized on what identifies the run, so a
+ * second datapoint gets its own submission rather than inheriting the first one's — driving
+ * the browser twice for the same datapoint would create two registrations and leave the
+ * second check judging a different row than the first.
+ */
+const submissions = new Map();
+
+const submitRegistration = (result) => {
+	const key = `${result.site}|${result.registrationPage}`;
+
+	if (!submissions.has(key)) {
+		submissions.set(key, runSubmission(result));
+	}
+
+	return submissions.get(key);
 };
 
 /**
@@ -391,8 +391,8 @@ evaluate({
 	config,
 	data,
 	evaluators: {
-		'Skills invoked': skillsInvokedEvaluator,
 		'Registration saved': registrationSaved,
+		'Skills invoked': skillsInvokedEvaluator,
 		'Thank you page shown': thankYouPageShown,
 	},
 	executor: createAgentTask(STRUCTURED_OUTPUT_SCHEMA),
