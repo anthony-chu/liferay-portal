@@ -14,15 +14,12 @@ import tinycolor from 'tinycolor2';
 import {createAgentTask} from './lib/agent-task.ts';
 import {projectApiKey} from './lib/bootstrap.ts';
 import {isAmber, isDeepNavy} from './lib/color.ts';
+import {runMetricsEvaluator, skillsInvokedEvaluator} from './lib/evaluators.ts';
 import {
-	runMetricsEvaluator,
-	skillsInvokedEvaluator,
-} from './lib/evaluators.ts';
-import {
+	LIFERAY_URL,
 	fetchObjectDefinition,
 	fetchObjectEntries,
 	liferay,
-	LIFERAY_URL,
 } from './lib/liferay.ts';
 
 /**
@@ -81,7 +78,13 @@ const STRUCTURED_OUTPUT_SCHEMA = {
 			type: 'string',
 		},
 	},
-	required: ['site', 'pages', 'eventObject', 'signupObject', 'clientExtensions'],
+	required: [
+		'site',
+		'pages',
+		'eventObject',
+		'signupObject',
+		'clientExtensions',
+	],
 	type: 'object',
 };
 
@@ -169,11 +172,10 @@ const readPage = async (page, url: string) => {
 						Number(getComputedStyle(heading).fontWeight)
 					)
 				),
-				links: [...document.querySelectorAll('a[href]')].map(
-					(anchor) =>
-						new URL(
-							(anchor as HTMLAnchorElement).href
-						).pathname.replace(/\/$/, '')
+				links: [...document.querySelectorAll('a[href]')].map((anchor) =>
+					new URL(
+						(anchor as HTMLAnchorElement).href
+					).pathname.replace(/\/$/, '')
 				),
 				text: document.body.innerText,
 			};
@@ -341,7 +343,11 @@ const checkPages = async (
 
 		const placesLeft = event.capacity - taken.length;
 
-		if (!new RegExp(`(?<![\\d:])${placesLeft}(?![\\d:])`).test(pages.events.text)) {
+		if (
+			!new RegExp(`(?<![\\d:])${placesLeft}(?![\\d:])`).test(
+				pages.events.text
+			)
+		) {
 			return `The Events page does not show ${placesLeft} places left for "${event.name}".`;
 		}
 	}
@@ -555,7 +561,10 @@ const runChecks = async ({failure, result: reported}) => {
 
 		for (const [key, path] of Object.entries(result.pages)) {
 			pages[key] = await attempt(() =>
-				readPage(page, `${LIFERAY_URL}/web${site.friendlyUrlPath}${path}`)
+				readPage(
+					page,
+					`${LIFERAY_URL}/web${site.friendlyUrlPath}${path}`
+				)
 			);
 		}
 
@@ -563,14 +572,14 @@ const runChecks = async ({failure, result: reported}) => {
 			'Event and signup information': await attempt(() =>
 				checkInformation(definitions)
 			),
-			Pages: await attempt(() =>
+			'Pages': await attempt(() =>
 				checkPages(result, site, pages, definitions)
 			),
-			Brand: await attempt(() => checkBrand(result, site, pages)),
+			'Brand': await attempt(() => checkBrand(result, site, pages)),
 			'Signup flow': await attempt(() =>
 				checkSignupFlow(result, site, page, definitions)
 			),
-			Portable: await attempt(() => checkPortable(result)),
+			'Portable': await attempt(() => checkPortable(result)),
 		};
 
 		for (const [label, reason] of Object.entries(reasons)) {
