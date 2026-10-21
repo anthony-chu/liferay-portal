@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {existsSync} from 'node:fs';
-
 import {evaluate} from '@lmnr-ai/lmnr';
+import {existsSync} from 'node:fs';
 
 import {createAgentTask} from './lib/agent-task';
 import {projectApiKey} from './lib/bootstrap';
@@ -469,7 +468,7 @@ const pagesCreatedEvaluator = scored(async ({result}) => {
 	const {pages} = await inspectSite(result.site);
 
 	return (
-		result.pages.length > 0 &&
+		!!result.pages.length &&
 		reportedPages(pages, result.pages).length === result.pages.length
 	);
 });
@@ -486,8 +485,8 @@ const fragmentsCreatedEvaluator = scored(async ({result}) => {
 	);
 
 	return (
-		result.fragments.length > 0 &&
-		fragments.length > 0 &&
+		!!result.fragments.length &&
+		!!fragments.length &&
 		result.fragments.every((fragment) => names.has(normalize(fragment)))
 	);
 });
@@ -506,8 +505,8 @@ const fragmentsOnPagesEvaluator = scored(async ({result}) => {
 	const candidates = reportedPages(pages, result.pages);
 
 	return (
-		candidates.length > 0 &&
-		candidates.every((page) => page.renderedFragments.length > 0)
+		!!candidates.length &&
+		candidates.every((page) => !!page.renderedFragments.length)
 	);
 });
 
@@ -523,7 +522,7 @@ const eventsRenderedEvaluator = scored(async ({result}) => {
 		result.site
 	);
 
-	if (!eventDefinition || eventEntries.length === 0) {
+	if (!eventDefinition || !eventEntries.length) {
 		return false;
 	}
 
@@ -555,7 +554,7 @@ const eventDetailsRenderedEvaluator = scored(async ({result}) => {
 		result.site
 	);
 
-	if (!eventDefinition || eventEntries.length === 0) {
+	if (!eventDefinition || !eventEntries.length) {
 		return false;
 	}
 
@@ -658,7 +657,7 @@ const registrationFormRenderedEvaluator = scored(async ({result}) => {
 	};
 
 	return (
-		fields.length > 0 &&
+		!!fields.length &&
 		candidates.some((page) => allFieldsRendered(page) && picksAnEvent(page))
 	);
 });
@@ -674,7 +673,7 @@ const menuLinksEvaluator = scored(async ({result}) => {
 
 	const candidates = reportedPages(pages, result.pages);
 
-	if (candidates.length !== result.pages.length || candidates.length === 0) {
+	if (candidates.length !== result.pages.length || !candidates.length) {
 		return false;
 	}
 
