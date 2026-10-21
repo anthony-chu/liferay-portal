@@ -9,7 +9,7 @@ import {chromium} from 'playwright';
 import {createAgentTask} from './lib/agent-task.ts';
 import {projectApiKey} from './lib/bootstrap.ts';
 import {skillsInvokedEvaluator} from './lib/evaluators.ts';
-import {liferay, LIFERAY_URL} from './lib/liferay.ts';
+import {LIFERAY_URL, liferay} from './lib/liferay.ts';
 
 /**
  * Prompt 4 — making the signup form actually submit.
@@ -146,7 +146,7 @@ const fillForm = async (page) => {
 						.map((option) => option.value)
 				);
 
-			if (values.length === 0) {
+			if (!values.length) {
 				continue;
 			}
 

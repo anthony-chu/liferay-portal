@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {evaluate} from '@lmnr-ai/lmnr';
 import {execSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
-
-import {evaluate} from '@lmnr-ai/lmnr';
 
 import {createAgentTask} from './lib/agent-task.ts';
 import {projectApiKey} from './lib/bootstrap.ts';
@@ -382,11 +381,11 @@ const brandColors = scored(async ({result}) => {
 	const [first] = pages;
 
 	return (
-		pages.length > 0 &&
+		!!pages.length &&
 		first.primary !== null &&
 		!first.primary.includes(DEFAULT_PRIMARY) &&
 		isDeepNavy(first.primary) &&
-		first.amberTokens.length > 0
+		!!first.amberTokens.length
 	);
 });
 
@@ -398,7 +397,7 @@ const consistentThroughout = scored(async ({result}) => {
 
 	const weights = new Set(pages.map((page) => page.headingWeight));
 
-	return pages.length > 0 && primaries.size === 1 && weights.size === 1;
+	return !!pages.length && primaries.size === 1 && weights.size === 1;
 });
 
 /** Headings ask for a heavy weight and a family of their own. */
@@ -406,10 +405,10 @@ const headingTypeface = scored(async ({result}) => {
 	const {pages} = await inspectSite(result.site, result.clientExtensions);
 
 	return (
-		pages.length > 0 &&
+		!!pages.length &&
 		pages.every(
 			(page) =>
-				page.headingWeight >= 700 && page.headingFamilies.length > 0
+				page.headingWeight >= 700 && !!page.headingFamilies.length
 		)
 	);
 });
@@ -420,7 +419,7 @@ const frontendClientExtension = scored(async ({result}) => {
 		result.clientExtensions
 	);
 
-	return frontendClientExtensionTypes.length > 0;
+	return !!frontendClientExtensionTypes.length;
 });
 
 /**
@@ -434,10 +433,10 @@ const themeAssetsServe = scored(async ({result}) => {
 	const {pages} = await inspectSite(result.site, result.clientExtensions);
 
 	return (
-		pages.length > 0 &&
+		!!pages.length &&
 		pages.every(
 			(page) =>
-				page.stylesheetCount > 0 && page.brokenStylesheets.length === 0
+				page.stylesheetCount > 0 && !page.brokenStylesheets.length
 		)
 	);
 });
@@ -464,7 +463,7 @@ const faviconClientExtension = scored(async ({result}) => {
 		result.clientExtensions
 	);
 
-	return faviconIcons.length > 0;
+	return !!faviconIcons.length;
 });
 
 /** No Liferay stylesheets, no Liferay favicon, no "Liferay" anywhere a visitor can read. */
@@ -489,10 +488,10 @@ const noStockBranding = scored(async ({result}) => {
 	const {pages} = await inspectSite(result.site, result.clientExtensions);
 
 	return (
-		pages.length > 0 &&
+		!!pages.length &&
 		pages.every(
 			(page) =>
-				page.stockChrome.length === 0 && page.productLogos.length === 0
+				!page.stockChrome.length && !page.productLogos.length
 		)
 	);
 });
@@ -511,10 +510,10 @@ const headerAndFooterOnEveryPage = scored(async ({result}) => {
 	const fingerprints = new Set(pages.map((page) => page.chrome));
 
 	return (
-		pages.length > 0 &&
-		masterPageNames.length > 0 &&
+		!!pages.length &&
+		!!masterPageNames.length &&
 		fingerprints.size === 1 &&
-		pages[0].chrome.length > 0
+		!!pages[0].chrome.length
 	);
 });
 
