@@ -323,25 +323,6 @@ const findSite = async (siteName: string) => {
 	return sitesResponse.items.find((site) => site.name === siteName);
 };
 
-/**
- * Reads the built site once and derives every signal the checks below need: each page's
- * rendered HTML, the site's own fragments and which of them each page is built from, and
- * the two precondition objects with their entries.
- *
- * Memoized because the agent has already finished by the time any evaluator runs, so one
- * reading serves them all — and because re-rendering every page per check is slow enough
- * to matter.
- */
-const inspections = new Map();
-
-const inspectSite = (siteName: string) => {
-	if (!inspections.has(siteName)) {
-		inspections.set(siteName, readSite(siteName));
-	}
-
-	return inspections.get(siteName);
-};
-
 const readSite = async (siteName: string) => {
 	const site = await findSite(siteName);
 
@@ -430,6 +411,25 @@ const readSite = async (siteName: string) => {
 		registrationDefinition,
 		siteFound: true,
 	};
+};
+
+/**
+ * Reads the built site once and derives every signal the checks below need: each page's
+ * rendered HTML, the site's own fragments and which of them each page is built from, and
+ * the two precondition objects with their entries.
+ *
+ * Memoized because the agent has already finished by the time any evaluator runs, so one
+ * reading serves them all — and because re-rendering every page per check is slow enough
+ * to matter.
+ */
+const inspections = new Map();
+
+const inspectSite = (siteName: string) => {
+	if (!inspections.has(siteName)) {
+		inspections.set(siteName, readSite(siteName));
+	}
+
+	return inspections.get(siteName);
 };
 
 /** Only the pages the agent says it created, so an initializer's extras cannot fail a check. */
@@ -707,16 +707,16 @@ evaluate({
 	config,
 	data,
 	evaluators: {
-		'Skills invoked': skillsInvokedEvaluator,
-		'Site initializer created': siteInitializerCreatedEvaluator,
-		'Site created': siteCreatedEvaluator,
-		'Pages created': pagesCreatedEvaluator,
+		'Event details rendered': eventDetailsRenderedEvaluator,
+		'Events rendered': eventsRenderedEvaluator,
 		'Fragments created': fragmentsCreatedEvaluator,
 		'Fragments on pages': fragmentsOnPagesEvaluator,
-		'Events rendered': eventsRenderedEvaluator,
-		'Event details rendered': eventDetailsRenderedEvaluator,
-		'Registration form rendered': registrationFormRenderedEvaluator,
 		'Menu links resolve': menuLinksEvaluator,
+		'Pages created': pagesCreatedEvaluator,
+		'Registration form rendered': registrationFormRenderedEvaluator,
+		'Site created': siteCreatedEvaluator,
+		'Site initializer created': siteInitializerCreatedEvaluator,
+		'Skills invoked': skillsInvokedEvaluator,
 	},
 	executor: createAgentTask(STRUCTURED_OUTPUT_SCHEMA),
 	groupName: 'Create registration site',
