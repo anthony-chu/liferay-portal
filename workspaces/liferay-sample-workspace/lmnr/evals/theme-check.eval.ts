@@ -151,18 +151,6 @@ const headingTypography = (styled: string) => {
 	return {families, weight};
 };
 
-/** What a visitor reads: scripts dropped first, since Liferay's JS names itself constantly. */
-const visibleText = (html: string) => {
-	const withoutScripts = html.replace(/<script[\s\S]*?<\/script>/gi, ' ');
-
-	const withoutStyles = withoutScripts.replace(
-		/<style[\s\S]*?<\/style>/gi,
-		' '
-	);
-
-	return withoutStyles.replace(/<[^>]*>/g, ' ');
-};
-
 /** Every favicon the page points at, in declaration order. */
 const faviconHrefs = (html: string) => {
 	const links = html.match(FAVICON_LINK) ?? [];
@@ -262,22 +250,6 @@ const faviconIcons = (clientExtensions: string[]) => {
 	return icons;
 };
 
-/**
- * Reads the themed site once and derives every signal the checks below need.
- *
- * Memoized: the agent has finished by the time any evaluator runs, so one reading serves
- * them all, and re-rendering every page per check would dominate the run.
- */
-const inspections = new Map();
-
-const inspectSite = (siteName: string, clientExtensions: string[]) => {
-	if (!inspections.has(siteName)) {
-		inspections.set(siteName, readSite(siteName, clientExtensions));
-	}
-
-	return inspections.get(siteName);
-};
-
 const readSite = async (siteName: string, clientExtensions: string[]) => {
 	const {data: sites} = await liferay.get(
 		'/o/headless-admin-site/v1.0/sites',
@@ -338,9 +310,9 @@ const readSite = async (siteName: string, clientExtensions: string[]) => {
 				favicons: faviconHrefs(html),
 				headingFamilies: typography.families,
 				headingWeight: typography.weight,
+				primary: tokens.get('--primary') ?? null,
 				productLogos,
 				stockChrome: stockChrome.map(String),
-				primary: tokens.get('--primary') ?? null,
 				stylesheetCount: stylesheets.length,
 				title: sitePage.title,
 				url,
@@ -362,6 +334,22 @@ const readSite = async (siteName: string, clientExtensions: string[]) => {
 		pages,
 		siteFound: true,
 	};
+};
+
+/**
+ * Reads the themed site once and derives every signal the checks below need.
+ *
+ * Memoized: the agent has finished by the time any evaluator runs, so one reading serves
+ * them all, and re-rendering every page per check would dominate the run.
+ */
+const inspections = new Map();
+
+const inspectSite = (siteName: string, clientExtensions: string[]) => {
+	if (!inspections.has(siteName)) {
+		inspections.set(siteName, readSite(siteName, clientExtensions));
+	}
+
+	return inspections.get(siteName);
 };
 
 /** Turns a plain true/false check into a score, so an unexpected shape reads as 0. */
@@ -407,8 +395,7 @@ const headingTypeface = scored(async ({result}) => {
 	return (
 		!!pages.length &&
 		pages.every(
-			(page) =>
-				page.headingWeight >= 700 && !!page.headingFamilies.length
+			(page) => page.headingWeight >= 700 && !!page.headingFamilies.length
 		)
 	);
 });
@@ -435,8 +422,7 @@ const themeAssetsServe = scored(async ({result}) => {
 	return (
 		!!pages.length &&
 		pages.every(
-			(page) =>
-				page.stylesheetCount > 0 && !page.brokenStylesheets.length
+			(page) => page.stylesheetCount > 0 && !page.brokenStylesheets.length
 		)
 	);
 });
@@ -490,8 +476,7 @@ const noStockBranding = scored(async ({result}) => {
 	return (
 		!!pages.length &&
 		pages.every(
-			(page) =>
-				!page.stockChrome.length && !page.productLogos.length
+			(page) => !page.stockChrome.length && !page.productLogos.length
 		)
 	);
 });
@@ -521,15 +506,15 @@ evaluate({
 	config,
 	data,
 	evaluators: {
-		'Skills invoked': skillsInvokedEvaluator,
-		'Theme assets serve': themeAssetsServe,
 		'Brand colors': brandColors,
 		'Consistent throughout': consistentThroughout,
-		'Heading typeface': headingTypeface,
 		'Favicon client extension': faviconClientExtension,
 		'Frontend client extension': frontendClientExtension,
-		'No stock branding': noStockBranding,
 		'Header and footer on every page': headerAndFooterOnEveryPage,
+		'Heading typeface': headingTypeface,
+		'No stock branding': noStockBranding,
+		'Skills invoked': skillsInvokedEvaluator,
+		'Theme assets serve': themeAssetsServe,
 	},
 	executor: createAgentTask(STRUCTURED_OUTPUT_SCHEMA),
 	groupName: 'Theme check',
