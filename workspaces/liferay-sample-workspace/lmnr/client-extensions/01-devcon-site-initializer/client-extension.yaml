@@ -1,10 +1,10 @@
-lpd-12345-devcon-site-init:
+devcon-site-init:
     name: DEVCON Site Initializer
-    oAuthApplicationHeadlessServer: lpd-12345-devcon-site-oauth
-    siteExternalReferenceCode: lpd-12345-devcon
+    oAuthApplicationHeadlessServer: devcon-site-oauth
+    siteExternalReferenceCode: devcon
     siteName: DEVCON
     type: siteInitializer
-lpd-12345-devcon-site-oauth:
+devcon-site-oauth:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     name: DEVCON Site OAuth
