@@ -38,7 +38,7 @@ const data = [
 	{
 		data: "Implement @conference-site.md for my Liferay install. Work only from this workspace's skills and rules, and the documentation and samples they point to. You should not have to restart the portal instance for any reason.",
 		target: {
-			skillsInvoked: ['build-site', 'manage-objects', 'theme-and-design'],
+			skillsInvoked: ['build-site'],
 		},
 	},
 ];
