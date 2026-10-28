@@ -34,7 +34,7 @@ const data = [
 	{
 		data: "Last piece: make the signup form actually work. When someone fills it in, their details should be saved against the event they picked and start out as pending, and they should land on a thank-you page. Don't build anything for sending email — we'll connect our mailing tool later. Same as before: this is the demo I'll be walking through signed in as the administrator, so it doesn't need to work for the public or deal with who's allowed to do what. Then run through it yourself from start to finish and tell me what worked and what didn't. You do not need to confirm scope with me. You may not consult any `liferay-portal` repository files (remotely or locally). You should not have to restart the portal instance for any reason.",
 		target: {
-			skillsInvoked: ['manage-pages'],
+			skillsInvoked: ['manage-form-containers'],
 		},
 	},
 ];
