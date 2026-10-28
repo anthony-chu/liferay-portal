@@ -8,7 +8,8 @@ import {evaluate} from '@lmnr-ai/lmnr';
 import {createAgentTask} from './lib/agent-task.ts';
 import {projectApiKey} from './lib/bootstrap.ts';
 import {skillsInvokedEvaluator} from './lib/evaluators.ts';
-import {liferay} from './lib/liferay.ts';
+import {fetchObjectEntries, liferay} from './lib/liferay.ts';
+import {words} from './lib/words.ts';
 
 const config = {
 	baseUrl: 'http://localhost',
@@ -62,73 +63,173 @@ const STRUCTURED_OUTPUT_SCHEMA = {
 	type: 'object',
 };
 
-const objectsCreatedEvaluator = async (output, _) => {
-	try {
-		const {objects} = output.result;
+/**
+ * The fields the prompt asks each object for, as the words that identify them. A field
+ * counts when its name or label carries every word of one alternative, however cased or
+ * separated, so `startDate`, `eventStartDate` and "Start Date" all satisfy the start date.
+ * Name comes last because it is the least specific: `companyName` is the company.
+ *
+ * Every field has to exist, but only a `required` one has to hold a value. An entry without
+ * a name or a start date says nothing, while a registration with no company or no dietary
+ * restrictions is an ordinary one: the reference seed data leaves both empty.
+ */
+const EVENT_FIELDS = [
+	{alternatives: [['description']]},
+	{alternatives: [['start']], required: true},
+	{alternatives: [['end']]},
+	{alternatives: [['location'], ['venue']]},
+	{alternatives: [['capacity']]},
+	{alternatives: [['name'], ['title']], required: true},
+];
 
-		if (objects.length < 2) {
-			return 0.0;
-		}
+const PICKLIST_TYPES = ['MultiselectPicklist', 'Picklist'];
 
-		const definitions = [];
+const REGISTRATION_FIELDS = [
+	{alternatives: [['email']], required: true},
+	{alternatives: [['company'], ['organization']]},
+	{alternatives: [['dietary']], businessTypes: PICKLIST_TYPES},
+	{alternatives: [['status']]},
+	{alternatives: [['name']], required: true},
+];
 
-		for (const {entries, fields, name} of objects) {
-			const {data: definitionsResponse} = await liferay.get(
-				'/o/object-admin/v1.0/object-definitions',
-				{
-					params: {filter: `name eq '${name}'`},
-				}
-			);
-			const definition = definitionsResponse.items[0];
+const fieldWords = (field) =>
+	new Set([...words(field.name), ...words(field.label?.en_US ?? '')]);
 
-			if (!definition) {
-				return 0.0;
+/**
+ * The definition's fields that satisfy each requirement, in order, or null when one is
+ * missing. Each field satisfies one requirement at most, so `endDate` cannot stand in for
+ * the start date as well.
+ */
+const matchFields = (definition, requirements) => {
+	const candidates = definition.objectFields.filter(
+		(field) => !field.system && field.businessType !== 'Relationship'
+	);
+
+	const matched = [];
+
+	for (const {alternatives, businessTypes} of requirements) {
+		const field = candidates.find((candidate) => {
+			if (
+				matched.includes(candidate) ||
+				(businessTypes &&
+					!businessTypes.includes(candidate.businessType))
+			) {
+				return false;
 			}
 
-			definitions.push(definition);
+			const candidateWords = fieldWords(candidate);
 
-			const actualFieldNames = definition.objectFields
-				.filter((field) => !field.system)
-				.map((field) => field.name);
-
-			const {data: entriesResponse} = await liferay.get(
-				definition.restContextPath,
-				{
-					params: {pageSize: 200},
-				}
-			);
-			const actualEntries = entriesResponse.items;
-
-			const pass =
-				fields.every((field) => actualFieldNames.includes(field)) &&
-				actualEntries.length >= entries.length &&
-				actualEntries.every((entry) =>
-					fields.every((field) => Boolean(entry[field]))
-				);
-
-			if (!pass) {
-				return 0.0;
-			}
-		}
-
-		const definitionNames = definitions.map(
-			(definition) => definition.name
-		);
-
-		const related = definitions.some((definition) => {
-			const objectRelationships = definition.objectRelationships ?? [];
-
-			return objectRelationships.some(
-				(objectRelationship) =>
-					!objectRelationship.reverse &&
-					objectRelationship.type === 'oneToMany' &&
-					definitionNames.includes(
-						objectRelationship.objectDefinitionName2
-					)
+			return alternatives.some((alternative) =>
+				alternative.every((word) => candidateWords.has(word))
 			);
 		});
 
-		return related ? 1.0 : 0.0;
+		if (!field) {
+			return null;
+		}
+
+		matched.push(field);
+	}
+
+	return matched;
+};
+
+/** Present rather than truthy, so a value such as 0 counts. */
+const hasValue = (value) =>
+	value !== null && value !== undefined && value !== '';
+
+/** Entries holding a value in every field whose requirement is `required`. */
+const completeEntries = (entries, fields, requirements) => {
+	const requiredFields = fields.filter(
+		(_, index) => requirements[index].required
+	);
+
+	return entries.filter((entry) =>
+		requiredFields.every((field) => hasValue(entry[field.name]))
+	);
+};
+
+/**
+ * Read from the portal rather than from what the agent reports, so the score follows what
+ * was built: an Event object and a Registration object with the fields the prompt lists,
+ * the dietary restrictions from a set list, a one to many relationship from Event to
+ * Registration, and an event with a registration that belongs to it.
+ */
+const objectsCreatedEvaluator = async () => {
+	try {
+		const {data: definitionsResponse} = await liferay.get(
+			'/o/object-admin/v1.0/object-definitions',
+			{params: {pageSize: 200}}
+		);
+
+		const definitions = (definitionsResponse.items ?? []).filter(
+			(definition) => !definition.system
+		);
+
+		for (const eventDefinition of definitions) {
+			const eventFields = matchFields(eventDefinition, EVENT_FIELDS);
+
+			if (!eventFields) {
+				continue;
+			}
+
+			const relationships = (
+				eventDefinition.objectRelationships ?? []
+			).filter(
+				(relationship) =>
+					!relationship.reverse && relationship.type === 'oneToMany'
+			);
+
+			for (const relationship of relationships) {
+				const registrationDefinition = definitions.find(
+					(definition) =>
+						definition.name === relationship.objectDefinitionName2
+				);
+
+				if (!registrationDefinition) {
+					continue;
+				}
+
+				const registrationFields = matchFields(
+					registrationDefinition,
+					REGISTRATION_FIELDS
+				);
+
+				const eventField = registrationDefinition.objectFields.find(
+					(field) =>
+						field.businessType === 'Relationship' &&
+						field.name.startsWith(`r_${relationship.name}_`)
+				);
+
+				if (!registrationFields || !eventField) {
+					continue;
+				}
+
+				const events = completeEntries(
+					await fetchObjectEntries(eventDefinition),
+					eventFields,
+					EVENT_FIELDS
+				);
+
+				const eventIds = events.map((event) => event.id);
+
+				const registrations = completeEntries(
+					await fetchObjectEntries(registrationDefinition),
+					registrationFields,
+					REGISTRATION_FIELDS
+				);
+
+				if (
+					registrations.some((registration) =>
+						eventIds.includes(Number(registration[eventField.name]))
+					)
+				) {
+					return 1.0;
+				}
+			}
+		}
+
+		return 0.0;
 	}
 	catch (error) {
 		return 0.0;

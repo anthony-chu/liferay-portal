@@ -12,6 +12,7 @@ import {projectApiKey} from './lib/bootstrap';
 import {skillsInvokedEvaluator} from './lib/evaluators';
 import {LIFERAY_URL, liferay} from './lib/liferay';
 import {fetchRenderedPage} from './lib/rendered-page';
+import {words} from './lib/words';
 
 const config = {
 	baseUrl: 'http://localhost',
@@ -72,15 +73,6 @@ const normalize = (value: string) => {
 };
 
 const stripTags = (html: string) => html.replace(/<[^>]*>/g, ' ');
-
-const IDENTIFIER_WORD = /[A-Z]?[a-z]+|[A-Z]+(?![a-z])|[0-9]+/g;
-
-/** Words in an identifier, however cased or separated: `dietaryRestrictions` -> dietary, restrictions. */
-const words = (value: string) => {
-	const matched = String(value ?? '').match(IDENTIFIER_WORD) ?? [];
-
-	return matched.map((word) => word.toLowerCase());
-};
 
 /** Words too common to identify anything on their own. */
 const GENERIC_WORDS = new Set([
