@@ -5,12 +5,14 @@
 
 import {evaluate} from '@lmnr-ai/lmnr';
 import {readFileSync} from 'node:fs';
+import {chromium} from 'playwright';
+import tinycolor from 'tinycolor2';
 
 import {createAgentTask} from './lib/agent-task.ts';
 import {projectApiKey} from './lib/bootstrap.ts';
 import {isAmber, isDeepNavy} from './lib/color.ts';
 import {skillsInvokedEvaluator} from './lib/evaluators.ts';
-import {liferay} from './lib/liferay.ts';
+import {LIFERAY_URL, liferay} from './lib/liferay.ts';
 import {fetchRenderedPage} from './lib/rendered-page.ts';
 
 /**
@@ -46,15 +48,13 @@ const STRUCTURED_OUTPUT_SCHEMA = {
 			items: {type: 'string'},
 			type: 'array',
 		},
-		site: {
-			description:
-				"Exact display name of the site that was themed, copied verbatim from the site list — e.g. 'DEVCON'. Not its friendly URL and not its external reference code.",
-			type: 'string',
-		},
 	},
-	required: ['site', 'clientExtensions'],
+	required: ['clientExtensions'],
 	type: 'object',
 };
+
+/** The site `01-devcon-site-initializer` provisions before the agent runs. */
+const SITE_EXTERNAL_REFERENCE_CODE = 'devcon';
 
 /** Liferay's default primary. Still in effect means nothing was rebranded. */
 const DEFAULT_PRIMARY = '#0b5fff';
@@ -91,59 +91,79 @@ const PRODUCT_LOGO =
 const PALETTE_TOKEN =
 	/^--(?:black|blue|cyan|gray|green|grey|indigo|orange|pink|purple|red|teal|white|yellow)(?:-|$)/;
 
-const HEADING_SELECTOR = /h[1-6]\b|__title|__heading/i;
+const HEADING_SELECTOR =
+	'h1, h2, h3, h4, h5, h6, [class*="__title"], [class*="__heading"]';
 
-const NAMED_WEIGHTS = {bold: 700, bolder: 800};
+/** Custom properties the page or its stylesheets declare with a hex value. */
+const colorTokenNames = (styled: string) => {
+	const matches = styled.matchAll(
+		/(--[a-z0-9-]+)\s*:\s*#[0-9a-f]{3,8}\s*[;}]/gi
+	);
 
-/** Effective value of every custom property resolving to a hex — last declaration wins. */
-const colorTokens = (styled: string) => {
-	const tokens = new Map<string, string>();
-
-	for (const match of styled.matchAll(
-		/(--[a-z0-9-]+)\s*:\s*(#[0-9a-f]{3,8})\s*[;}]/gi
-	)) {
-		tokens.set(match[1].toLowerCase(), match[2].toLowerCase());
-	}
-
-	return tokens;
+	return [...new Set([...matches].map((match) => match[1].toLowerCase()))];
 };
 
-/** Heaviest weight any rule declares for a heading, and the families they ask for. */
-const headingTypography = (styled: string) => {
-	const rules = styled.split('}');
+/**
+ * The page as the browser renders it for a guest: the value each color token takes on
+ * `:root`, as a hex, and the heaviest weight a visible heading renders at.
+ *
+ * Read from computed styles, not from the stylesheet text. A compiled Clay declares the
+ * same tokens again inside `prefers-color-scheme: dark` and `[data-color-scheme]` blocks,
+ * so the last declaration in the text is not the one in effect, and a heading's weight
+ * comes from the cascade, not from whichever rule happens to name a heading.
+ */
+const renderedStyles = async (browser, url: string, tokenNames: string[]) => {
+	const page = await browser.newPage();
 
-	let weight = 0;
+	try {
+		await page.goto(`${LIFERAY_URL}${url}`, {waitUntil: 'networkidle'});
 
-	const families: string[] = [];
+		const rendered = await page.evaluate(
+			([names, headingSelector]) => {
+				const rootStyle = getComputedStyle(document.documentElement);
 
-	for (const rule of rules) {
-		const [selector, body] = rule.split('{');
+				const headings = [
+					...document.querySelectorAll(headingSelector),
+				].filter((heading) => heading.getClientRects().length);
 
-		if (!body || !HEADING_SELECTOR.test(selector)) {
-			continue;
-		}
+				const headingStyles = headings.map((heading) =>
+					getComputedStyle(heading)
+				);
 
-		const weightMatch = body.match(
-			/font-weight\s*:\s*(\d{3}|bold|bolder)/i
+				return {
+					headingWeight: Math.max(
+						0,
+						...headingStyles.map((style) =>
+							Number(style.fontWeight)
+						)
+					),
+					tokens: names.map((name) => [
+						name,
+						rootStyle.getPropertyValue(name).trim(),
+					]),
+				};
+			},
+			[tokenNames, HEADING_SELECTOR]
 		);
 
-		if (weightMatch) {
-			const declared = weightMatch[1].toLowerCase();
+		const tokens = new Map<string, string>();
 
-			weight = Math.max(
-				weight,
-				NAMED_WEIGHTS[declared] ?? Number(declared)
-			);
+		for (const [name, value] of rendered.tokens) {
+			const color = tinycolor(value);
+
+			if (value && color.isValid()) {
+				tokens.set(name, color.toHexString());
+			}
 		}
 
-		const familyMatch = body.match(/font-family\s*:\s*([^;]+)/i);
-
-		if (familyMatch) {
-			families.push(familyMatch[1].trim());
-		}
+		return {
+			headingWeight: rendered.headingWeight,
+			tokens,
+		};
 	}
-
-	return {families, weight};
+	finally {
+		await page.close();
+	}
 };
 
 /**
@@ -186,17 +206,15 @@ const declaredClientExtensionTypes = (clientExtensions: string[]) => {
 	return types;
 };
 
-const readSite = async (siteName: string, clientExtensions: string[]) => {
-	const {data: sites} = await liferay.get(
-		'/o/headless-admin-site/v1.0/sites',
-		{
-			params: {pageSize: 200},
-		}
-	);
+const readSite = async (clientExtensions: string[]) => {
+	let site;
 
-	const site = sites.items.find((item) => item.name === siteName);
-
-	if (!site) {
+	try {
+		({data: site} = await liferay.get(
+			`/o/headless-admin-site/v1.0/sites/${SITE_EXTERNAL_REFERENCE_CODE}`
+		));
+	}
+	catch (error) {
 		return {pages: [], siteFound: false};
 	}
 
@@ -210,19 +228,23 @@ const readSite = async (siteName: string, clientExtensions: string[]) => {
 		{params: {pageSize: 200}}
 	);
 
+	const browser = await chromium.launch({channel: 'chrome'});
+
 	const pages = await Promise.all(
 		sitePages.items.map(async (sitePage) => {
 			const url = `/web${site.friendlyUrlPath}${sitePage.friendlyUrlPath}`;
 
 			const {html, styled, stylesheets} = await fetchRenderedPage(url);
 
-			const tokens = colorTokens(styled);
+			const {headingWeight, tokens} = await renderedStyles(
+				browser,
+				url,
+				colorTokenNames(styled)
+			);
 
 			const amberTokens = [...tokens].filter(
 				([name, value]) => isAmber(value) && !PALETTE_TOKEN.test(name)
 			);
-
-			const typography = headingTypography(styled);
 
 			const stockChrome = STOCK_CHROME.filter((pattern) =>
 				pattern.test(html)
@@ -243,8 +265,7 @@ const readSite = async (siteName: string, clientExtensions: string[]) => {
 					(stylesheet) => stylesheet.href
 				),
 				chrome: chromeClasses(html),
-				headingFamilies: typography.families,
-				headingWeight: typography.weight,
+				headingWeight,
 				primary: tokens.get('--primary') ?? null,
 				productLogos,
 				stockChrome: stockChrome.map(String),
@@ -253,7 +274,7 @@ const readSite = async (siteName: string, clientExtensions: string[]) => {
 				url,
 			};
 		})
-	);
+	).finally(() => browser.close());
 
 	const types = declaredClientExtensionTypes(clientExtensions);
 
@@ -276,14 +297,12 @@ const readSite = async (siteName: string, clientExtensions: string[]) => {
  * Memoized: the agent has finished by the time any evaluator runs, so one reading serves
  * them all, and re-rendering every page per check would dominate the run.
  */
-const inspections = new Map();
+let inspection;
 
-const inspectSite = (siteName: string, clientExtensions: string[]) => {
-	if (!inspections.has(siteName)) {
-		inspections.set(siteName, readSite(siteName, clientExtensions));
-	}
+const inspectSite = (clientExtensions: string[]) => {
+	inspection ??= readSite(clientExtensions);
 
-	return inspections.get(siteName);
+	return inspection;
 };
 
 /** Turns a plain true/false check into a score, so an unexpected shape reads as 0. */
@@ -298,7 +317,7 @@ const scored = (check) => async (output, _) => {
 
 /** Deep navy leads, with an amber accent the site defines rather than inherits. */
 const brandColors = scored(async ({result}) => {
-	const {pages} = await inspectSite(result.site, result.clientExtensions);
+	const {pages} = await inspectSite(result.clientExtensions);
 
 	const [first] = pages;
 
@@ -313,7 +332,7 @@ const brandColors = scored(async ({result}) => {
 
 /** One scheme site-wide: the same primary and the same heading weight on every page. */
 const consistentThroughout = scored(async ({result}) => {
-	const {pages} = await inspectSite(result.site, result.clientExtensions);
+	const {pages} = await inspectSite(result.clientExtensions);
 
 	const primaries = new Set(pages.map((page) => page.primary));
 
@@ -322,21 +341,18 @@ const consistentThroughout = scored(async ({result}) => {
 	return !!pages.length && primaries.size === 1 && weights.size === 1;
 });
 
-/** Headings ask for a heavy weight and a family of their own. */
+/**
+ * Headings render heavy. Above 700, because Clay's own headings are already bold: the
+ * prompt asks for "a bold, heavy typeface", and a stock page renders its headings at 700.
+ */
 const headingTypeface = scored(async ({result}) => {
-	const {pages} = await inspectSite(result.site, result.clientExtensions);
+	const {pages} = await inspectSite(result.clientExtensions);
 
-	return (
-		!!pages.length &&
-		pages.every(
-			(page) => page.headingWeight >= 700 && !!page.headingFamilies.length
-		)
-	);
+	return !!pages.length && pages.every((page) => page.headingWeight >= 800);
 });
 
 const frontendClientExtension = scored(async ({result}) => {
 	const {frontendClientExtensionTypes} = await inspectSite(
-		result.site,
 		result.clientExtensions
 	);
 
@@ -351,7 +367,7 @@ const frontendClientExtension = scored(async ({result}) => {
  * "the theme never deployed". This separates the two.
  */
 const themeAssetsServe = scored(async ({result}) => {
-	const {pages} = await inspectSite(result.site, result.clientExtensions);
+	const {pages} = await inspectSite(result.clientExtensions);
 
 	return (
 		!!pages.length &&
@@ -378,7 +394,7 @@ const themeAssetsServe = scored(async ({result}) => {
  * reach of a site scoped theme task.
  */
 const noStockBranding = scored(async ({result}) => {
-	const {pages} = await inspectSite(result.site, result.clientExtensions);
+	const {pages} = await inspectSite(result.clientExtensions);
 
 	return (
 		!!pages.length &&
@@ -394,10 +410,7 @@ const noStockBranding = scored(async ({result}) => {
  * not the same one.
  */
 const headerAndFooterOnEveryPage = scored(async ({result}) => {
-	const {masterPageNames, pages} = await inspectSite(
-		result.site,
-		result.clientExtensions
-	);
+	const {masterPageNames, pages} = await inspectSite(result.clientExtensions);
 
 	const fingerprints = new Set(pages.map((page) => page.chrome));
 
