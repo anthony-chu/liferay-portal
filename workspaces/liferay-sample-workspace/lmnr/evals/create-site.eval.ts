@@ -10,7 +10,7 @@ import {chromium} from 'playwright';
 import {createAgentTask} from './lib/agent-task';
 import {projectApiKey} from './lib/bootstrap';
 import {skillsInvokedEvaluator} from './lib/evaluators';
-import {liferay, LIFERAY_URL} from './lib/liferay';
+import {LIFERAY_URL, liferay} from './lib/liferay';
 import {fetchRenderedPage} from './lib/rendered-page';
 
 const config = {
@@ -300,7 +300,11 @@ const dateShown = (text: string, entry) => {
 
 	const monthName = MONTH_NAMES[month - 1];
 
-	const monthNames = [monthName, monthName.slice(0, 4), monthName.slice(0, 3)];
+	const monthNames = [
+		monthName,
+		monthName.slice(0, 4),
+		monthName.slice(0, 3),
+	];
 
 	const named = new RegExp(`\\b(${monthNames.join('|')})\\.?\\b`, 'i').test(
 		text
