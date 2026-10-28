@@ -196,7 +196,22 @@ const fillForm = async (page) => {
 		const name = (await control.getAttribute('name')) ?? '';
 		const type = (await control.getAttribute('type')) ?? 'text';
 
-		if (await control.evaluate((element) => element.tagName === 'SELECT')) {
+		if ((await control.getAttribute('role')) === 'combobox') {
+			await control.locator('xpath=following::button[1]').click();
+
+			await page.locator('[role="option"]:visible').first().click();
+
+			const field = control.locator(
+				'xpath=following::input[@type="hidden"][1]'
+			);
+
+			if (/event/i.test((await field.getAttribute('name')) ?? '')) {
+				selectedEvent = await field.inputValue();
+			}
+		}
+		else if (
+			await control.evaluate((element) => element.tagName === 'SELECT')
+		) {
 			const values = await control
 				.locator('option:not([disabled])')
 				.evaluateAll((options) =>
