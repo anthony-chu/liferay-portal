@@ -4,7 +4,6 @@
  */
 
 import {evaluate} from '@lmnr-ai/lmnr';
-import {execSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
 
 import {createAgentTask} from './lib/agent-task.ts';
@@ -92,10 +91,6 @@ const PRODUCT_LOGO =
 const PALETTE_TOKEN =
 	/^--(?:black|blue|cyan|gray|green|grey|indigo|orange|pink|purple|red|teal|white|yellow)(?:-|$)/;
 
-const FAVICON_LINK = /<link[^>]*\brel=["'][^"']*icon[^"']*["'][^>]*>/gi;
-
-const HREF = /\bhref=["']([^"']+)["']/i;
-
 const HEADING_SELECTOR = /h[1-6]\b|__title|__heading/i;
 
 const NAMED_WEIGHTS = {bold: 700, bolder: 800};
@@ -151,17 +146,6 @@ const headingTypography = (styled: string) => {
 	return {families, weight};
 };
 
-/** Every favicon the page points at, in declaration order. */
-const faviconHrefs = (html: string) => {
-	const links = html.match(FAVICON_LINK) ?? [];
-
-	const matched = links.map((link) => link.match(HREF));
-
-	const hrefs = matched.filter(Boolean).map((match) => match[1]);
-
-	return [...new Set(hrefs)];
-};
-
 /**
  * Header and footer wrapper classes, as a fingerprint of the chrome on a page.
  *
@@ -200,54 +184,6 @@ const declaredClientExtensionTypes = (clientExtensions: string[]) => {
 	}
 
 	return types;
-};
-
-/**
- * Icon files shipped by a `themeFavicon` client extension: the entry's `url` resolved to a
- * file that actually exists under the project. The url is relative to whatever `assemble`
- * copies into place, so the basename is matched rather than the whole path.
- */
-const faviconIcons = (clientExtensions: string[]) => {
-	const icons: string[] = [];
-
-	for (const clientExtension of clientExtensions ?? []) {
-		let yaml;
-
-		try {
-			yaml = readFileSync(
-				`${clientExtension}/client-extension.yaml`,
-				'utf8'
-			);
-		}
-		catch (error) {
-			continue;
-		}
-
-		for (const block of yaml.split(/^(?=\S)/m)) {
-			if (!/^\s+type:\s*themeFavicon\s*$/m.test(block)) {
-				continue;
-			}
-
-			const url = block.match(/^\s+url:\s*["']?([^"'\s]+)/m);
-
-			if (!url) {
-				continue;
-			}
-
-			const [name] = url[1].split('/').reverse();
-
-			const found = execSync(
-				`find ${JSON.stringify(clientExtension)} -type f -name ${JSON.stringify(name)}`,
-				{encoding: 'utf8'}
-			);
-
-			if (found.trim()) {
-				icons.push(`${clientExtension}:${url[1]}`);
-			}
-		}
-	}
-
-	return icons;
 };
 
 const readSite = async (siteName: string, clientExtensions: string[]) => {
@@ -307,7 +243,6 @@ const readSite = async (siteName: string, clientExtensions: string[]) => {
 					(stylesheet) => stylesheet.href
 				),
 				chrome: chromeClasses(html),
-				favicons: faviconHrefs(html),
 				headingFamilies: typography.families,
 				headingWeight: typography.weight,
 				primary: tokens.get('--primary') ?? null,
@@ -324,7 +259,6 @@ const readSite = async (siteName: string, clientExtensions: string[]) => {
 
 	return {
 		clientExtensionTypes: [...new Set(types)],
-		faviconIcons: faviconIcons(clientExtensions),
 		frontendClientExtensionTypes: types.filter((type) =>
 			FRONTEND_CET_TYPES.includes(type)
 		),
@@ -428,33 +362,6 @@ const themeAssetsServe = scored(async ({result}) => {
 });
 
 /**
- * The site has a favicon of its own. Liferay's being absent is not the same thing —
- * a site with no favicon at all satisfies "no Liferay branding" and still looks unfinished.
- */
-
-/**
- * The site ships a browser tab icon of its own.
- *
- * Asserted on the deliverable, not on the rendered page, because nothing can attach a
- * `themeFavicon` on this build — every route is either inert or unavailable, see
- * `skills/theme-and-design/SKILL.md` → "Apply to Site". Checking the rendered `<link>`
- * would fail every correct answer, and the only way to pass it would be swapping Classic
- * for another stock theme, which is not a rebrand. So: a `themeFavicon` client extension
- * exists and carries a real icon file. Whether it renders is a question for a build where
- * attaching works.
- */
-const faviconClientExtension = scored(async ({result}) => {
-	const {faviconIcons} = await inspectSite(
-		result.site,
-		result.clientExtensions
-	);
-
-	return !!faviconIcons.length;
-});
-
-/** No Liferay stylesheets, no Liferay favicon, no "Liferay" anywhere a visitor can read. */
-
-/**
  * No stock product furniture reaches the visitor: no product header or footer, no product
  * menu, no "Powered by" line, and no Liferay logo.
  *
@@ -462,9 +369,9 @@ const faviconClientExtension = scored(async ({result}) => {
  * exists to advertise are Liferay's own — "Liferay DEVCON", "the Liferay engineering team",
  * a `@liferay.com` contact address — so that search fails a perfectly rebranded site for
  * saying what it is about. Nor is it a search for `classic-theme` asset paths: the only way
- * to remove those is a theme client extension, which cannot be attached on this build, while
- * swapping Classic for another bundled Liferay theme would satisfy the letter of it and
- * rebrand nothing.
+ * to remove those is a `themeCSS` client extension, which the skills call for only when the
+ * look needs Clay level overrides, while swapping Classic for another bundled Liferay theme
+ * would satisfy the letter of it and rebrand nothing.
  *
  * The `<title>` suffix is a third thing this cannot check — a page renders as
  * "Home - DEVCON - Liferay" because the *instance* is named Liferay, which is outside the
@@ -508,7 +415,6 @@ evaluate({
 	evaluators: {
 		'Brand colors': brandColors,
 		'Consistent throughout': consistentThroughout,
-		'Favicon client extension': faviconClientExtension,
 		'Frontend client extension': frontendClientExtension,
 		'Header and footer on every page': headerAndFooterOnEveryPage,
 		'Heading typeface': headingTypeface,
