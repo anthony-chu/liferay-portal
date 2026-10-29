@@ -58,12 +58,13 @@ instead and the deploy quietly applies to the wrong projects. See
 design pack generates from the SCSS under `src/css`. Those files are build output and are not
 committed, so a deploy without a build registers a client extension whose stylesheets 404.
 
-**Deploying a theme client extension does not apply it.** Liferay attaches one through a
-`ClientExtensionEntryRel`, and nothing in a site initializer writes that row. The extension
-registers and stays inert until someone selects it in Site Administration → Design → Theme,
-and that selection is lost on every reprovision. Everything visible in the theming comes from
-the style book, the master page and fragment CSS, all of which apply on their own. See
-`.agents/skills/theme-and-design/SKILL.md` → "Apply to Site".
+**Deploying a theme client extension does not apply it; the master page does.** The master's
+`page-definition.json` binds a `themeCSS` extension through `settings.themeCSSClientExtension`
+and a `themeFavicon` extension through `settings.favIcon`, each as
+`{"externalReferenceCode": "LXC:<config-erc>", "name": "<CET Name>"}`. Every page that uses
+the master picks both up, and the binding survives reprovision. Deploy the extension before
+the initializer, or the importer skips the binding. See
+`.agents/skills/theme-and-design/SKILL.md` → "Apply to Site" and "Favicon and Spritemap".
 
 ## Reprovisioning
 

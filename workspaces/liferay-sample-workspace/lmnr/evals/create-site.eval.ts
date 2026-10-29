@@ -10,8 +10,9 @@ import {chromium} from 'playwright';
 import {createAgentTask} from './lib/agent-task';
 import {projectApiKey} from './lib/bootstrap';
 import {skillsInvokedEvaluator} from './lib/evaluators';
-import {liferay, LIFERAY_URL} from './lib/liferay';
+import {LIFERAY_URL, liferay} from './lib/liferay';
 import {fetchRenderedPage} from './lib/rendered-page';
+import {words} from './lib/words';
 
 const config = {
 	baseUrl: 'http://localhost',
@@ -72,15 +73,6 @@ const normalize = (value: string) => {
 };
 
 const stripTags = (html: string) => html.replace(/<[^>]*>/g, ' ');
-
-const IDENTIFIER_WORD = /[A-Z]?[a-z]+|[A-Z]+(?![a-z])|[0-9]+/g;
-
-/** Words in an identifier, however cased or separated: `dietaryRestrictions` -> dietary, restrictions. */
-const words = (value: string) => {
-	const matched = String(value ?? '').match(IDENTIFIER_WORD) ?? [];
-
-	return matched.map((word) => word.toLowerCase());
-};
 
 /** Words too common to identify anything on their own. */
 const GENERIC_WORDS = new Set([
@@ -147,20 +139,49 @@ const visibleText = (html: string) => {
 	return stripTags(withoutStyles);
 };
 
+const escapeRegExp = (value: string) =>
+	value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 /**
- * BEM class names from a fragment's own markup, used as its fingerprint in a rendered
- * page. FreeMarker interpolations are dropped because the deployed HTML resolves them.
+ * Class names from a fragment's own markup. FreeMarker interpolations are dropped because
+ * the deployed HTML resolves them.
  */
-const fragmentSelectors = (html: string) => {
+const classNames = (html: string) => {
 	const classAttributes = [...html.matchAll(/class="([^"]*)"/gi)];
 
 	const tokens = classAttributes.flatMap((match) => match[1].split(/\s+/));
 
-	const selectors = tokens.filter(
-		(token) => /__|--/.test(token) && !token.includes('$')
-	);
+	const names = tokens.filter((token) => token && !token.includes('$'));
 
-	return [...new Set(selectors)];
+	return [...new Set(names)];
+};
+
+/**
+ * A fragment's fingerprint in a rendered page: the classes from its markup that no other
+ * fragment on the site uses and that its own CSS declares. Not a naming convention, since
+ * agents name classes as they please, and not every class either, since a framework class
+ * such as `sr-only` appears on any page whether the fragment rendered or not.
+ */
+const fragmentSelectors = (fragment, fragments) => {
+	const others = fragments.filter((other) => other !== fragment);
+
+	const shared = new Set(others.flatMap((other) => other.classNames));
+
+	return fragment.classNames.filter(
+		(name) =>
+			!shared.has(name) &&
+			new RegExp(`\\.${escapeRegExp(name)}(?![\\w-])`).test(fragment.css)
+	);
+};
+
+/**
+ * Whether fragment code calls an object's REST endpoint: from the browser at
+ * `/o/c/<plural>`, or from FreeMarker through `restClient` at `/c/<plural>`.
+ */
+const callsEndpoint = (source: string, restContextPath: string) => {
+	const path = restContextPath.replace(/^\/o(?=\/)/, '');
+
+	return new RegExp(`${escapeRegExp(path)}(?![\\w-])`).test(source);
 };
 
 /** Every fragment key a page definition references, at any nesting depth. */
@@ -192,10 +213,21 @@ const formControls = (html: string) => {
 	});
 };
 
+/**
+ * Elements Clay hides with `d-none`, such as the "(Read Only)" note every input fragment
+ * writes into its label and reveals only for a read only field.
+ */
+const HIDDEN_ELEMENT =
+	/<(span|div)\b[^>]*\bclass="[^"]*\bd-none\b[^"]*"[^>]*>[\s\S]*?<\/\1>/gi;
+
 const labelTexts = (html: string) => {
 	const matches = [...html.matchAll(/<label\b[^>]*>([\s\S]*?)<\/label>/gi)];
 
-	return matches.map((match) => stripTags(match[1]).trim());
+	return matches.map((match) => {
+		const visible = match[1].replace(HIDDEN_ELEMENT, ' ');
+
+		return stripTags(visible).trim();
+	});
 };
 
 const fetchObjectDefinition = async (name: string) => {
@@ -300,7 +332,11 @@ const dateShown = (text: string, entry) => {
 
 	const monthName = MONTH_NAMES[month - 1];
 
-	const monthNames = [monthName, monthName.slice(0, 4), monthName.slice(0, 3)];
+	const monthNames = [
+		monthName,
+		monthName.slice(0, 4),
+		monthName.slice(0, 3),
+	];
 
 	const named = new RegExp(`\\b(${monthNames.join('|')})\\.?\\b`, 'i').test(
 		text
@@ -417,16 +453,22 @@ const fetchSiteFragments = async (siteExternalReferenceCode: string) => {
 				const [version] = fragment.fragmentVersions ?? [];
 
 				return {
+					classNames: classNames(version?.html ?? ''),
+					css: version?.css ?? '',
 					key: fragment.key,
 					name: fragment.name,
-					selectors: fragmentSelectors(version?.html ?? ''),
 					source: `${version?.html ?? ''}\n${version?.js ?? ''}`,
 				};
 			});
 		})
 	);
 
-	return nested.flat();
+	const fragments = nested.flat();
+
+	return fragments.map((fragment) => ({
+		...fragment,
+		selectors: fragmentSelectors(fragment, fragments),
+	}));
 };
 
 const findSite = async (siteName: string) => {
@@ -631,11 +673,14 @@ const fragmentsOnPagesEvaluator = scored(async ({result}) => {
 });
 
 /**
- * The events reach the page. Two implementations are both legitimate, and both count:
- * a collection display mapped to the Event object puts the entry data straight into the
- * HTML, while a fragment calling the object's REST endpoint puts it there only once the
- * browser runs the script. Fetched HTML cannot watch the second one paint, so its wiring
- * is what gets credit here; proving it paints belongs to the integration eval.
+ * The upcoming events reach the page. Only the upcoming ones, because the prompt asks for
+ * upcoming events and the seed data's dates are fixed, so a page that rightly leaves past
+ * events out would otherwise fail as the calendar moves on. Two implementations are both
+ * legitimate, and both count: a collection display mapped to the Event object puts the
+ * entry data straight into the HTML, while a fragment calling the object's REST endpoint
+ * puts it there only once the browser runs the script. Fetched HTML cannot watch the
+ * second one paint, so its wiring is what gets credit here; proving it paints belongs to
+ * the integration eval.
  */
 const eventsRenderedEvaluator = scored(async ({result}) => {
 	const {eventDefinition, eventEntries, pages} = await inspectSite(
@@ -650,19 +695,21 @@ const eventsRenderedEvaluator = scored(async ({result}) => {
 
 	const titleField = eventDefinition.titleObjectFieldName ?? 'name';
 
-	const titles = eventEntries.map((entry) => String(entry[titleField]));
+	const titles = upcomingEntries(eventEntries).map((entry) =>
+		String(entry[titleField])
+	);
 
 	const serverRendered = candidates.some((page) =>
 		titles.every((title) => page.text.includes(title))
 	);
 
-	const clientWired = candidates.some((page) =>
+	const wired = candidates.some((page) =>
 		page.sources.some((source) =>
-			source.includes(eventDefinition.restContextPath)
+			callsEndpoint(source, eventDefinition.restContextPath)
 		)
 	);
 
-	return serverRendered || clientWired;
+	return serverRendered || wired;
 });
 
 /**
@@ -755,7 +802,9 @@ const registrationFormRenderedEvaluator = scored(async ({result}) => {
 		return (
 			named ||
 			(Boolean(restContextPath) &&
-				page.sources.some((source) => source.includes(restContextPath)))
+				page.sources.some((source) =>
+					callsEndpoint(source, restContextPath)
+				))
 		);
 	};
 
