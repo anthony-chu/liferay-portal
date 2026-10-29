@@ -67,7 +67,7 @@ Whatever the choice:
 
 - **Check that a restart is really needed first.** Many changes take effect live (a flag toggled in the Feature Flags UI, OSGi `.config` files, CET redeploys). A change that did not work is more often the wrong endpoint or a stale zip than a missing restart. A Deprecation flag that a new database stored as off is not changed by a restart either (`rules/feature-flags-catalog.md`).
 - **Never stop a process this session did not start** — another workspace holding port 8080, for example — without asking, even under permission 2.
-- **Non-local environments always need confirmation** (dev, UAT, prod, Liferay Cloud), whatever was chosen; see `production-standards`.
+- **Every environment except local always needs confirmation** (dev, UAT, prod, Liferay Cloud), whatever was chosen; see `production-standards`.
 - **After any restart,** wait for the server to answer, then prompt the user to reconnect MCP if it is in use (`skills/mcp-server/SKILL.md`).
 
 Skills that restart the server (`feature-flags`, `deploy-and-verify`, `build-site`, `workspace-init`, `manage-environments`) apply this policy instead of restarting on their own.

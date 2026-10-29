@@ -52,9 +52,9 @@ A microservice handler normally calls back into Liferay with the token Liferay s
     .serviceScheme: http
     name: <WorkspaceId> Action OAuth (headless server)
     scopes:
+        - Liferay.Headless.Admin.User.everything.read
         - c_<objecta>.everything
         - c_<objectb>.everything
-        - Liferay.Headless.Admin.User.everything.read
     type: oAuthApplicationHeadlessServer
 
 <workspace-id>-action:
