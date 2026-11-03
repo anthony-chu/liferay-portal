@@ -1,0 +1,24 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.admin.rest.dto.v1_0.ObjectRelationship",
+		"multiCompany": true,
+		"parameters": {
+			"createStrategy": "UPSERT",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		}
+	},
+	"items": [
+		{
+			"deletionType": "cascade",
+			"externalReferenceCode": "EVENT_REGISTRATIONS",
+			"label": {
+				"en_US": "Registrations"
+			},
+			"name": "eventRegistrations",
+			"objectDefinitionExternalReferenceCode1": "EVENT",
+			"objectDefinitionExternalReferenceCode2": "REGISTRATION",
+			"type": "oneToMany"
+		}
+	]
+}
