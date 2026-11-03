@@ -1,0 +1,65 @@
+#wrapper .devcon-hero-banner {
+	align-items: center;
+	background-color: var(--gray-900);
+	color: var(--white);
+	display: flex;
+	min-height: 420px;
+	overflow: hidden;
+	padding: var(--spacer-8) var(--spacer-6);
+	position: relative;
+}
+
+#wrapper .devcon-hero-banner__media {
+	background-color: var(--gray-800);
+	background-position: center;
+	background-size: cover;
+	inset: 0;
+	opacity: 0.55;
+	position: absolute;
+}
+
+#wrapper .devcon-hero-banner__content {
+	max-width: 720px;
+	position: relative;
+	z-index: 1;
+}
+
+#wrapper .devcon-hero-banner--align-center .devcon-hero-banner__content {
+	margin: 0 auto;
+	text-align: center;
+}
+
+#wrapper .devcon-hero-banner__eyebrow {
+	color: var(--brand-color-1);
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	margin-bottom: var(--spacer-2);
+	text-transform: uppercase;
+}
+
+#wrapper .devcon-hero-banner__title h1 {
+	color: var(--white);
+	font-size: 3rem;
+	font-weight: 700;
+	margin-bottom: var(--spacer-3);
+}
+
+#wrapper .devcon-hero-banner__meta {
+	color: var(--gray-100);
+	font-size: 1.125rem;
+	font-weight: 500;
+	margin-bottom: var(--spacer-4);
+}
+
+#wrapper .devcon-hero-banner__description {
+	color: var(--gray-100);
+	margin-bottom: var(--spacer-6);
+}
+
+#wrapper .devcon-hero-banner__cta {
+	border-radius: 0.25rem;
+	display: inline-block;
+	font-weight: 600;
+	padding: var(--spacer-3) var(--spacer-6);
+	text-decoration: none;
+}
