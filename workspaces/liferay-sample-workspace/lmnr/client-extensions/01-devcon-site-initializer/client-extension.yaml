@@ -1,0 +1,17 @@
+devcon-site-init:
+    name: DEVCON Site Initializer
+    oAuthApplicationHeadlessServer: devcon-site-oauth
+    siteExternalReferenceCode: devcon
+    siteName: DEVCON
+    type: siteInitializer
+devcon-site-oauth:
+    .serviceAddress: localhost:8080
+    .serviceScheme: http
+    name: DEVCON Site OAuth
+    scopes:
+        -   Liferay.Headless.Admin.Site.everything
+        -   Liferay.Headless.Admin.Content.everything
+        -   Liferay.Object.Admin.REST.everything
+        -   Liferay.Headless.Object.everything
+        -   Liferay.Headless.Admin.User.everything
+    type: oAuthApplicationHeadlessServer
