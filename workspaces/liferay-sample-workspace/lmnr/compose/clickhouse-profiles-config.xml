@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<!--
+SPDX-FileCopyrightText: 2024 LMNR AI, Inc.
+SPDX-License-Identifier: Apache-2.0
+
+Source: https://github.com/lmnr-ai/lmnr/blob/615dc130da78cdbe8507dc8a91a7ef34ba0c0978/clickhouse-profiles-config.xml
+Modifications: 2026-09-25 by Liferay, Inc.: added a read-only profile and a
+read-only ClickHouse user (ch_ro_user), and reformatted.
+-->
+
+<clickhouse>
+	<profiles>
+		<default>
+			<date_time_input_format replace="replace">best_effort</date_time_input_format>
+		</default>
+		<ro_profile>
+			<profile>default</profile>
+			<readonly>2</readonly>
+		</ro_profile>
+	</profiles>
+	<users>
+		<ch_ro_user>
+			<grants>
+				<query>GRANT SELECT, dictGet ON default.*</query>
+			</grants>
+			<networks>
+				<host>app-server</host>
+			</networks>
+			<password from_env="CLICKHOUSE_RO_PASSWORD" />
+			<profile>ro_profile</profile>
+		</ch_ro_user>
+	</users>
+</clickhouse>
