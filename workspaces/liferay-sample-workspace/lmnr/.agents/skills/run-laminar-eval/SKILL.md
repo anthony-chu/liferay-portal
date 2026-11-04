@@ -20,7 +20,7 @@ Every eval is a folder under `lmnr/evals/<eval>` with its `<eval>.eval.ts`. The 
 
 | Variable | Needed for | Where it comes from |
 | --- | --- | --- |
-| `LICENSE_XML_URL` | A DXP `liferay.workspace.product` | An `http(s):/` URL is downloaded; anything else is copied as a local path (`~` is expanded). Every run needs it, since every run starts from a new bundle. Ask the user when it is not set. Never copy the key into `configs/local/deploy`, which is not gitignored |
+| `LICENSE_XML_URL` | A DXP `liferay.workspace.product` | An `http(s):` URL is downloaded; anything else is copied as a local path (`~` is expanded). Every run needs it, since every run starts from a new bundle. Ask the user when it is not set. Never copy the key into `configs/local/deploy`, which is not gitignored |
 | `CLAUDE_CODE_OAUTH_TOKEN` | The eval's agent | `claude setup-token`. Export it in the shell, or put `CLAUDE_CODE_OAUTH_TOKEN=<token>` in `.env` at the workspace root (the Laminar SDK loads it; the workspace `.gitignore` excludes it). The environment wins over `.env` |
 
 Check the token before starting anything, and ask the user for it when neither is set:
