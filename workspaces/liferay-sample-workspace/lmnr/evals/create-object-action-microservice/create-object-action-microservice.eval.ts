@@ -8,10 +8,10 @@ import {randomUUID} from 'node:crypto';
 import {existsSync, readFileSync, readdirSync, statSync} from 'node:fs';
 import {basename} from 'node:path';
 
-import {createAgentTask} from './lib/agent-task';
-import {projectApiKey} from './lib/bootstrap';
-import {skillsInvokedEvaluator} from './lib/evaluators';
-import {liferay} from './lib/liferay';
+import {createAgentTask} from '../lib/agent-task';
+import {projectApiKey} from '../lib/bootstrap';
+import {skillsInvokedEvaluator} from '../lib/evaluators';
+import {liferay} from '../lib/liferay';
 
 const config = {
 	baseUrl: 'http://localhost',

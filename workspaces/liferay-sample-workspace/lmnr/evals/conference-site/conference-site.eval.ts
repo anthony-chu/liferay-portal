@@ -11,19 +11,19 @@ import {join} from 'node:path';
 import {chromium} from 'playwright';
 import tinycolor from 'tinycolor2';
 
-import {createAgentTask} from './lib/agent-task.ts';
-import {projectApiKey} from './lib/bootstrap.ts';
-import {isAmber, isDeepNavy} from './lib/color.ts';
-import {runMetricsEvaluator, skillsInvokedEvaluator} from './lib/evaluators.ts';
+import {createAgentTask} from '../lib/agent-task.ts';
+import {projectApiKey} from '../lib/bootstrap.ts';
+import {isAmber, isDeepNavy} from '../lib/color.ts';
+import {runMetricsEvaluator, skillsInvokedEvaluator} from '../lib/evaluators.ts';
 import {
 	LIFERAY_URL,
 	fetchObjectDefinition,
 	fetchObjectEntries,
 	liferay,
-} from './lib/liferay.ts';
+} from '../lib/liferay.ts';
 
 /**
- * The whole conference site from `specs/conference-site.md` and a single prompt. One check
+ * The whole conference site from `conference-site.md` and a single prompt. One check
  * per "Done when" line in the spec, run against a fresh bundle with nothing deployed.
  */
 
@@ -646,7 +646,7 @@ const executor = async (prompt: string) => {
 	}
 
 	copyFileSync(
-		new URL('./specs/conference-site.md', import.meta.url),
+		new URL('./conference-site.md', import.meta.url),
 		'conference-site.md'
 	);
 

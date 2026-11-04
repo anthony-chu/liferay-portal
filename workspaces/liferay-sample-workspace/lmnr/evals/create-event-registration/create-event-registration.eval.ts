@@ -5,11 +5,11 @@
 
 import {evaluate} from '@lmnr-ai/lmnr';
 
-import {createAgentTask} from './lib/agent-task.ts';
-import {projectApiKey} from './lib/bootstrap.ts';
-import {skillsInvokedEvaluator} from './lib/evaluators.ts';
-import {fetchObjectEntries, liferay} from './lib/liferay.ts';
-import {words} from './lib/words.ts';
+import {createAgentTask} from '../lib/agent-task.ts';
+import {projectApiKey} from '../lib/bootstrap.ts';
+import {skillsInvokedEvaluator} from '../lib/evaluators.ts';
+import {fetchObjectEntries, liferay} from '../lib/liferay.ts';
+import {words} from '../lib/words.ts';
 
 const config = {
 	baseUrl: 'http://localhost',
