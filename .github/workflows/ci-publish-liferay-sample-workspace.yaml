@@ -3,6 +3,7 @@ jobs:
         secrets: inherit
         uses: ./.github/workflows/ci-publish-workspace.yaml
         with:
+            workspace-excludes: lmnr/**
             workspace-name: liferay-sample-workspace
 on:
     push:
@@ -10,3 +11,4 @@ on:
             -   master
         paths:
             -   workspaces/liferay-sample-workspace/**
+            -   "!workspaces/liferay-sample-workspace/lmnr/**"
