@@ -8,18 +8,11 @@ import {existsSync} from 'node:fs';
 import {chromium} from 'playwright';
 
 import {createAgentTask} from '../lib/agent-task';
-import {projectApiKey} from '../lib/bootstrap';
+import {config} from '../lib/bootstrap';
 import {skillsInvokedEvaluator} from '../lib/evaluators';
 import {LIFERAY_URL, liferay} from '../lib/liferay';
 import {fetchRenderedPage} from '../lib/rendered-page';
 import {words} from '../lib/words';
-
-const config = {
-	baseUrl: 'http://localhost',
-	grpcPort: 9001,
-	httpPort: 9000,
-	projectApiKey: projectApiKey.value,
-};
 
 const data = [
 	{

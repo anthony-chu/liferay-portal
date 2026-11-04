@@ -6,17 +6,10 @@
 import {evaluate} from '@lmnr-ai/lmnr';
 
 import {createAgentTask} from '../lib/agent-task.ts';
-import {projectApiKey} from '../lib/bootstrap.ts';
+import {config} from '../lib/bootstrap.ts';
 import {skillsInvokedEvaluator} from '../lib/evaluators.ts';
 import {fetchObjectEntries, liferay} from '../lib/liferay.ts';
 import {words} from '../lib/words.ts';
-
-const config = {
-	baseUrl: 'http://localhost',
-	grpcPort: 9001,
-	httpPort: 9000,
-	projectApiKey: projectApiKey.value,
-};
 
 const data = [
 	{

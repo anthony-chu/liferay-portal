@@ -7,7 +7,7 @@ import {evaluate} from '@lmnr-ai/lmnr';
 import {chromium} from 'playwright';
 
 import {createAgentTask} from '../lib/agent-task.ts';
-import {projectApiKey} from '../lib/bootstrap.ts';
+import {config} from '../lib/bootstrap.ts';
 import {skillsInvokedEvaluator} from '../lib/evaluators.ts';
 import {LIFERAY_URL, liferay} from '../lib/liferay.ts';
 
@@ -22,13 +22,6 @@ import {LIFERAY_URL, liferay} from '../lib/liferay.ts';
  * Preconditions are the deployables numbered 00, 02 and 03 — the objects and the themed
  * site. See `lmnr/client-extensions/README.md`.
  */
-
-const config = {
-	baseUrl: 'http://localhost',
-	grpcPort: 9001,
-	httpPort: 9000,
-	projectApiKey: projectApiKey.value,
-};
 
 const data = [
 	{

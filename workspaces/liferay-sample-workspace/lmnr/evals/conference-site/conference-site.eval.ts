@@ -12,7 +12,7 @@ import {chromium} from 'playwright';
 import tinycolor from 'tinycolor2';
 
 import {createAgentTask} from '../lib/agent-task.ts';
-import {projectApiKey} from '../lib/bootstrap.ts';
+import {config} from '../lib/bootstrap.ts';
 import {isAmber, isDeepNavy} from '../lib/color.ts';
 import {runMetricsEvaluator, skillsInvokedEvaluator} from '../lib/evaluators.ts';
 import {
@@ -26,13 +26,6 @@ import {
  * The whole conference site from `conference-site.md` and a single prompt. One check
  * per "Done when" line in the spec, run against a fresh bundle with nothing deployed.
  */
-
-const config = {
-	baseUrl: 'http://localhost',
-	grpcPort: 9001,
-	httpPort: 9000,
-	projectApiKey: projectApiKey.value,
-};
 
 const data = [
 	{

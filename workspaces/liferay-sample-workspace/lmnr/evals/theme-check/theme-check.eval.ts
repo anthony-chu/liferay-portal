@@ -9,18 +9,11 @@ import {chromium} from 'playwright';
 import tinycolor from 'tinycolor2';
 
 import {createAgentTask} from '../lib/agent-task.ts';
-import {projectApiKey} from '../lib/bootstrap.ts';
+import {config} from '../lib/bootstrap.ts';
 import {isAmber, isDeepNavy} from '../lib/color.ts';
 import {skillsInvokedEvaluator} from '../lib/evaluators.ts';
 import {LIFERAY_URL, liferay} from '../lib/liferay.ts';
 import {fetchRenderedPage} from '../lib/rendered-page.ts';
-
-const config = {
-	baseUrl: 'http://localhost',
-	grpcPort: 9001,
-	httpPort: 9000,
-	projectApiKey: projectApiKey.value,
-};
 
 const data = [
 	{

@@ -9,16 +9,9 @@ import {existsSync, readFileSync, readdirSync, statSync} from 'node:fs';
 import {basename} from 'node:path';
 
 import {createAgentTask} from '../lib/agent-task';
-import {projectApiKey} from '../lib/bootstrap';
+import {config} from '../lib/bootstrap';
 import {skillsInvokedEvaluator} from '../lib/evaluators';
 import {liferay} from '../lib/liferay';
-
-const config = {
-	baseUrl: 'http://localhost',
-	grpcPort: 9001,
-	httpPort: 9000,
-	projectApiKey: projectApiKey.value,
-};
 
 const data = [
 	{
