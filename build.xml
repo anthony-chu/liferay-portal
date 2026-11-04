@@ -1004,6 +1004,7 @@ This target has been renamed to "snapshot-bundle". Please call "snapshot-bundle"
 		<mkdir dir="${project.dir}/dist" />
 
 		<property name="workspace.artifact.id.suffix" value="" />
+		<property name="workspace.excludes" value="" />
 		<property name="workspace.includes" value="**/*" />
 		<property name="workspace.repository.url" value="https://repository-cdn.liferay.com/nexus/content/repositories/liferay-public-releases" />
 
@@ -1051,6 +1052,7 @@ This target has been renamed to "snapshot-bundle". Please call "snapshot-bundle"
 				>
 					<zipfileset
 						dir="@{workspace.dir}"
+						excludes="${workspace.excludes}"
 						includes="${workspace.includes}"
 					/>
 				</zip>
