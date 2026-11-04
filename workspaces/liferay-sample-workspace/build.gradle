@@ -10,3 +10,7 @@ allprojects {
 createDockerContainer {
 	hostConfig.network = "host"
 }
+
+setUpYarn {
+	excludes "lmnr"
+}
