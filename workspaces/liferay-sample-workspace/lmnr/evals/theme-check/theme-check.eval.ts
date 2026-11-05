@@ -3,17 +3,16 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {evaluate} from '@lmnr-ai/lmnr';
 import {readFileSync} from 'node:fs';
 import {chromium} from 'playwright';
 import tinycolor from 'tinycolor2';
 
 import {createAgentTask} from '../lib/agent-task.ts';
-import {config} from '../lib/bootstrap.ts';
 import {isAmber, isDeepNavy} from '../lib/color.ts';
 import {skillsInvokedEvaluator} from '../lib/evaluators.ts';
 import {LIFERAY_URL, liferay} from '../lib/liferay.ts';
 import {fetchRenderedPage} from '../lib/rendered-page.ts';
+import {runEvaluation} from '../lib/run-evaluation.ts';
 
 const data = [
 	{
@@ -338,8 +337,7 @@ const headerAndFooterOnEveryPage = scored(async ({result}) => {
 	);
 });
 
-evaluate({
-	config,
+await runEvaluation({
 	data,
 	evaluators: {
 		'Brand colors': brandColors,

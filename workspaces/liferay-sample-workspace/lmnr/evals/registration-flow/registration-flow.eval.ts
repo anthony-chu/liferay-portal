@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {evaluate} from '@lmnr-ai/lmnr';
 import {chromium} from 'playwright';
 
 import {createAgentTask} from '../lib/agent-task.ts';
-import {config} from '../lib/bootstrap.ts';
 import {skillsInvokedEvaluator} from '../lib/evaluators.ts';
 import {LIFERAY_URL, liferay} from '../lib/liferay.ts';
+import {runEvaluation} from '../lib/run-evaluation.ts';
 
 /**
  * Prompt 4 — making the signup form actually submit.
@@ -380,8 +379,7 @@ const thankYouPageShown = scored('Thank you page shown', async ({result}) => {
 	return null;
 });
 
-evaluate({
-	config,
+await runEvaluation({
 	data,
 	evaluators: {
 		'Registration saved': registrationSaved,

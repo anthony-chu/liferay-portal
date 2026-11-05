@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {evaluate} from '@lmnr-ai/lmnr';
 import {randomUUID} from 'node:crypto';
 import {existsSync, readFileSync, readdirSync, statSync} from 'node:fs';
 import {basename} from 'node:path';
 
 import {createAgentTask} from '../lib/agent-task';
-import {config} from '../lib/bootstrap';
 import {skillsInvokedEvaluator} from '../lib/evaluators';
 import {liferay} from '../lib/liferay';
+import {runEvaluation} from '../lib/run-evaluation';
 
 const data = [
 	{
@@ -298,8 +297,7 @@ const leadWrittenEvaluator = async (output, _) => {
 	}
 };
 
-evaluate({
-	config,
+await runEvaluation({
 	data,
 	evaluators: {
 		'Client extensions created': clientExtensionsCreatedEvaluator,

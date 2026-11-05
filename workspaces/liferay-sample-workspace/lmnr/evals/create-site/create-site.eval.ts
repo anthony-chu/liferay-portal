@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {evaluate} from '@lmnr-ai/lmnr';
 import {existsSync} from 'node:fs';
 import {chromium} from 'playwright';
 
 import {createAgentTask} from '../lib/agent-task';
-import {config} from '../lib/bootstrap';
 import {skillsInvokedEvaluator} from '../lib/evaluators';
 import {LIFERAY_URL, liferay} from '../lib/liferay';
 import {fetchRenderedPage} from '../lib/rendered-page';
+import {runEvaluation} from '../lib/run-evaluation';
 import {words} from '../lib/words';
 
 const data = [
@@ -848,8 +847,7 @@ const menuLinksEvaluator = scored(async ({result}) => {
 	return linkedEverywhere && resolved.every(Boolean);
 });
 
-evaluate({
-	config,
+await runEvaluation({
 	data,
 	evaluators: {
 		'Event details rendered': eventDetailsRenderedEvaluator,

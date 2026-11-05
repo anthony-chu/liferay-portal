@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {evaluate} from '@lmnr-ai/lmnr';
 import {execFileSync} from 'node:child_process';
 import {copyFileSync, readFileSync, renameSync, rmSync} from 'node:fs';
 import {homedir} from 'node:os';
@@ -12,7 +11,6 @@ import {chromium} from 'playwright';
 import tinycolor from 'tinycolor2';
 
 import {createAgentTask} from '../lib/agent-task.ts';
-import {config} from '../lib/bootstrap.ts';
 import {isAmber, isDeepNavy} from '../lib/color.ts';
 import {runMetricsEvaluator, skillsInvokedEvaluator} from '../lib/evaluators.ts';
 import {
@@ -21,6 +19,7 @@ import {
 	fetchObjectEntries,
 	liferay,
 } from '../lib/liferay.ts';
+import {runEvaluation} from '../lib/run-evaluation.ts';
 
 /**
  * The whole conference site from `conference-site.md` and a single prompt. One check
@@ -663,8 +662,7 @@ const executor = async (prompt: string) => {
 	}
 };
 
-evaluate({
-	config,
+await runEvaluation({
 	data,
 	evaluators: {
 		'Skills invoked': skillsInvokedEvaluator,

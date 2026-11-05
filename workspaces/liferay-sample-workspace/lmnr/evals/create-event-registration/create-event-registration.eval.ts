@@ -3,12 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {evaluate} from '@lmnr-ai/lmnr';
-
 import {createAgentTask} from '../lib/agent-task.ts';
-import {config} from '../lib/bootstrap.ts';
 import {skillsInvokedEvaluator} from '../lib/evaluators.ts';
 import {fetchObjectEntries, liferay} from '../lib/liferay.ts';
+import {runEvaluation} from '../lib/run-evaluation.ts';
 import {words} from '../lib/words.ts';
 
 const data = [
@@ -229,8 +227,7 @@ const objectsCreatedEvaluator = async () => {
 	}
 };
 
-evaluate({
-	config,
+await runEvaluation({
 	data,
 	evaluators: {
 		'Objects created': objectsCreatedEvaluator,
