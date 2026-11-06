@@ -24,6 +24,7 @@ export async function runEvaluation({
 		evaluators,
 		executor,
 		groupName,
+		name: new Date().toISOString(),
 	});
 
 	if (!result) {
