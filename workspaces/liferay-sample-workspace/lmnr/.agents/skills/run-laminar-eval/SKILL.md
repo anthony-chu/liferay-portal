@@ -20,7 +20,7 @@ Every eval is a folder under `lmnr/evals/<eval>` with its `<eval>.eval.ts`. The 
 
 | Variable | Needed for | Where it comes from |
 | --- | --- | --- |
-| `LICENSE_XML_URL` | A DXP `liferay.workspace.product` | An `http(s):` URL is downloaded; anything else is copied as a local path (`~` is expanded). Every run needs it, since every run starts from a new bundle. Ask the user when it is not set. Never copy the key into `configs/local/deploy`, which is not gitignored |
+| `LICENSE_XML_URL` | A DXP `liferay.workspace.product` | An `http(s):/` URL is downloaded; anything else is copied as a local path (`~` is expanded). Every run needs it, since every run starts from a new bundle. Ask the user when it is not set. Never copy the key into `configs/local/deploy`, which is not gitignored |
 | `CLAUDE_CODE_OAUTH_TOKEN` | The eval's agent | `claude setup-token`. Export it in the shell, or put `CLAUDE_CODE_OAUTH_TOKEN=<token>` in `.env` at the workspace root (the Laminar SDK loads it; the workspace `.gitignore` excludes it). The environment wins over `.env` |
 
 Check the token before starting anything, and ask the user for it when neither is set:
@@ -59,6 +59,7 @@ LICENSE_XML_URL=<url or path> lmnr/env/set_up.sh <eval>
 | Leftovers | When the last run was never torn down, deletes what its eval generated first (see Tear Down) |
 | Eval hook | When `lmnr/evals/<eval>/env/set_up.sh` exists, it runs **instead of** every step below |
 | New bundle | `blade server stop` if running, `rm -fr bundles`, `blade server init`, then remove the seeded `data` and `osgi/state`, and `portal-env.properties` (it points at a Docker host name that does not resolve from Tomcat on the host) |
+| Database | Starts the workspace's own `database` service (`docker-compose.yaml`, Postgres 16 on `localhost:5432`) through the `docker_compose` function in `scripts/_common.sh`, waiting for its healthcheck. Then drops and creates `lportal`, so each run boots on an empty database. Never `scripts/bootstrap/start.sh`: it also starts the `liferay` container on 8080 |
 | License | Copied to `bundles/deploy/license.xml` before the first boot |
 | Properties | Merged into `bundles/portal-ext.properties` (see Configuration), then printed |
 | OSGi configs | Each level's `env/osgi/configs` copied into `bundles/osgi/configs` |
@@ -87,7 +88,7 @@ Give the user the per evaluator scores from the run output and the `Check result
 
 ### Tear Down
 
-Leave Laminar running between runs; the next `set_up.sh` starts from a new bundle anyway.
+Leave Laminar and the `database` service running between runs; the next `set_up.sh` starts from a new bundle and an empty `lportal` anyway. Neither command below stops `database`; stop it from the workspace root with `docker compose stop database`.
 
 | Command | Effect |
 | --- | --- |
@@ -116,6 +117,7 @@ The global level sets what every eval needs:
 | Setting | Why |
 | --- | --- |
 | BasicAuth verifier on `/api/*,/xmlrpc/*,/o/*` | The evaluators call the headless APIs with Basic auth |
+| `jdbc.default.*` for `jdbc:postgresql://localhost:5432/lportal`, user `postgres`, no password | The workspace `database` service, reached from Tomcat on the host. The workspace's own `portal-env.properties` names the host `database`, which resolves only inside Compose |
 | Instance and admin properties (`company.default.web.id=liferay.com`, `test@liferay.com`, no setup wizard, no terms of use, no reminder queries, no forced password change) | No first login steps, so nothing waits on a person |
 | `feature.flag.LPD-35443` | The page API that `build-site` and `manage-pages` drive |
 | `feature.flag.LPD-39244` | The fragment API that `build-site` and `scaffold-fragment` drive |
@@ -135,6 +137,8 @@ Laminar is self hosted from `lmnr/compose/docker-compose.yml`. Its one shot `ini
 | Quickwit REST | 9280 |
 | Postgres | 9433 |
 
+This Postgres is Laminar's own. Liferay's is the workspace `database` service on 5432; the two share no port, container name, network, or volume.
+
 The harness treats Laminar as ready when the sign-in call that `lmnr/evals/lib/bootstrap.ts` makes returns a `token`. The dashboard itself answers `307` well before that.
 
 ## Troubleshooting
@@ -143,6 +147,7 @@ The harness treats Laminar as ready when the sign-in call that `lmnr/evals/lib/b
 | --- | --- |
 | `Set the environment variable LICENSE_XML_URL` | The product is DXP and no license was given. Ask the user for it |
 | `Timed out after …s waiting until …` | The step named did not finish. Check `bundles/logs/liferay.<date>.log`; for a client extension, also its `blade gw` output above the message |
+| `Unable to start the database service …` | Port 5432 or the container name `database` is taken, often by the same service from another workspace generated from this template. Check `docker ps` and `ss --listening --tcp` |
 | `Unable to find an eval in lmnr/evals/<eval>` | The name is not a folder with a `*.eval.ts`. List the folders in `lmnr/evals` |
 | `Unable to find the client extension …` | A `client-extensions.list` names a folder missing from `lmnr/client-extensions` |
 | `401` from Laminar during the eval | The SDK defaulted to `api.lmnr.ai`. Every eval must pass `config` from `lmnr/evals/lib/bootstrap.ts` to `evaluate`; it sets `baseUrl: 'http://localhost'`, `httpPort: 9000`, `grpcPort: 9001` |

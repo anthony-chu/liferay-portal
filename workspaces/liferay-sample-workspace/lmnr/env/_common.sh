@@ -116,6 +116,8 @@ function create_directories {
 function default_set_up {
 	init_bundle
 
+	init_database
+
 	deploy_license
 
 	update_env_portal_ext_properties
@@ -531,6 +533,27 @@ function init_bundle {
 	fi
 }
 
+function init_database {
+	if ! run_workspace_docker_compose up --detach --wait database
+	then
+		echo "Unable to start the database service with docker compose in ${_WORKSPACE_DIR}." >&2
+
+		exit 1
+	fi
+
+	if ! run_workspace_docker_compose exec --no-TTY database \
+			psql \
+				--command "DROP DATABASE IF EXISTS lportal WITH (FORCE);" \
+				--command "CREATE DATABASE lportal;" \
+				--dbname postgres \
+				--username postgres
+	then
+		echo "Unable to recreate the lportal database in the database service." >&2
+
+		exit 1
+	fi
+}
+
 function is_laminar_ready {
 	curl \
 		--data '{"email": "test@liferay.com", "name": "Test"}' \
@@ -603,6 +626,13 @@ function replace_text {
 	else
 		sed --expression "${1}"
 	fi
+}
+
+function run_workspace_docker_compose {
+	(
+		source "${_WORKSPACE_DIR}/scripts/_common.sh" && \
+			docker_compose "${@}"
+	)
 }
 
 function set_variables {
