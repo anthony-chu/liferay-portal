@@ -25,7 +25,7 @@ function main {
 
 	echo "Building Docker image."
 
-	../../gradlew --project-dir ../.. buildDockerImage
+	../../gradlew --project-dir ../.. buildDockerImage "${@}"
 
 	local workspace_name
 
