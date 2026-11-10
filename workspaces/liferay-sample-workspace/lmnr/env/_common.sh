@@ -1,5 +1,25 @@
 #!/bin/bash
 
+function build_liferay_image {
+	local client_extension_names
+
+	client_extension_names=$(echo "${1}" | paste --delimiters "," --serial -)
+
+	echo "Building the Liferay image with these client extensions: ${client_extension_names:-none}."
+
+	if ! env \
+			"ORG_GRADLE_PROJECT_liferay.workspace.client-extension.dir=lmnr/client-extensions" \
+			"ORG_GRADLE_PROJECT_liferay.workspace.configs.dir=${_CONFIGS_DIR}" \
+			"${_WORKSPACE_DIR}/scripts/bootstrap/build.sh" \
+				--init-script "${_LMNR_DIR}/env/exclude-client-extensions.gradle" \
+				"-Pclient.extensions.include=${client_extension_names}"
+	then
+		echo "Unable to build the Liferay image with ${_WORKSPACE_DIR}/scripts/bootstrap/build.sh." >&2
+
+		exit 1
+	fi
+}
+
 function combine_properties_files {
 	local target_file=${1}
 
@@ -42,12 +62,10 @@ function combine_properties_files {
 
 			property_name=$( \
 				echo "${property_name}" | \
-					replace_text "s/^[[:space:]]*//" | \
-					replace_text "s/[[:space:]]*$//")
+					sed --expression "s/^[[:space:]]*//" --expression "s/[[:space:]]*$//")
 			property_value=$( \
 				echo "${property_value}" | \
-					replace_text "s/^[[:space:]]*//" | \
-					replace_text "s/[[:space:]]*$//")
+					sed --expression "s/^[[:space:]]*//" --expression "s/[[:space:]]*$//")
 
 			local property_value_next
 
@@ -65,9 +83,9 @@ function combine_properties_files {
 
 			local escaped_property_name
 
-			escaped_property_name=$(echo "${property_name}" | replace_text "s/[][\.*^$/]/\\\\&/g")
+			escaped_property_name=$(echo "${property_name}" | sed --expression "s/[][\.*^$/]/\\\\&/g")
 
-			if ! delete_property_line "${escaped_property_name}" "${temp_properties_file}"
+			if ! sed --expression "/^${escaped_property_name}=/d" --in-place "${temp_properties_file}"
 			then
 				echo "Unable to replace ${property_name} while combining the properties into ${target_file}." >&2
 
@@ -86,47 +104,27 @@ function combine_properties_files {
 	fi
 }
 
-function copy_directory_contents {
-	if [[ $(uname) == Darwin ]]
-	then
-		cp -R "${1}/." "${2}"
-	else
-		cp --recursive "${1}/." "${2}"
-	fi
-}
-
-function count_lines {
-	if [[ $(uname) == Darwin ]]
-	then
-		wc -l
-	else
-		wc --lines
-	fi
-}
-
-function create_directories {
-	if [[ $(uname) == Darwin ]]
-	then
-		mkdir -p "${@}"
-	else
-		mkdir --parents "${@}"
-	fi
-}
-
 function default_set_up {
-	init_bundle
+	_TEMPORARY_DIR=$(mktemp --directory)
 
-	init_database
+	trap 'rm --force --recursive "${_TEMPORARY_DIR}"' EXIT
 
-	deploy_license
+	_CONFIGS_DIR=${_TEMPORARY_DIR}/configs
+	_EMPTY_CLIENT_EXTENSIONS_DIR=${_TEMPORARY_DIR}/empty-client-extensions
 
-	update_env_portal_ext_properties
+	local client_extension_names
 
-	deploy_env_osgi_configs
+	client_extension_names=$(get_env_client_extension_names)
+
+	stop_liferay
+
+	update_env_configs
+
+	build_liferay_image "${client_extension_names}"
 
 	start_liferay
 
-	deploy_env_client_extensions
+	wait_for_client_extensions "${client_extension_names}"
 }
 
 function default_tear_down {
@@ -134,43 +132,41 @@ function default_tear_down {
 }
 
 function delete_eval_generated_paths {
-	if [[ ! -f ${_GENERATED_PATHS_FILE} ]]
+	if [[ -f ${_GENERATED_PATHS_FILE} ]]
 	then
-		echo "Unable to find ${_GENERATED_PATHS_FILE}, so no generated files are deleted."
+		local generated_path
 
-		return 0
+		for generated_path in $( \
+			get_generated_paths | \
+				grep \
+					--file="${_GENERATED_PATHS_FILE}" \
+					--fixed-strings \
+					--invert-match \
+					--line-regexp)
+		do
+			echo "Deleting ${_WORKSPACE_DIR}/${generated_path}."
+
+			if ! rm --force --recursive "${_WORKSPACE_DIR:?}/${generated_path}"
+			then
+				echo "Unable to delete ${_WORKSPACE_DIR}/${generated_path}." >&2
+
+				exit 1
+			fi
+		done
+	else
+		echo "Unable to find ${_GENERATED_PATHS_FILE}, so no generated client extensions are deleted."
 	fi
 
-	local generated_path
-
-	for generated_path in $( \
-		get_generated_paths | \
-			grep \
-				--file="${_GENERATED_PATHS_FILE}" \
-				--fixed-strings \
-				--invert-match \
-				--line-regexp)
-	do
-		echo "Deleting ${_WORKSPACE_DIR}/${generated_path}."
-
-		if ! delete_paths "${_WORKSPACE_DIR:?}/${generated_path}"
-		then
-			echo "Unable to delete ${_WORKSPACE_DIR}/${generated_path}." >&2
-
-			exit 1
-		fi
-	done
-
-	if ! rm "${_GENERATED_PATHS_FILE}"
+	if ! rm --force --recursive "${_WORKSPACE_DIR}/build/docker" "${_GENERATED_PATHS_FILE}"
 	then
-		echo "Unable to delete ${_GENERATED_PATHS_FILE}." >&2
+		echo "Unable to delete ${_WORKSPACE_DIR}/build/docker and ${_GENERATED_PATHS_FILE}." >&2
 
 		exit 1
 	fi
 }
 
 function delete_osgi_config {
-	local osgi_config_file=${LIFERAY_HOME}/osgi/configs/${1}
+	local osgi_config_file=${_CONFIGS_DIR}/local/osgi/configs/${1}
 
 	if [[ ! -f ${osgi_config_file} ]]
 	then
@@ -194,24 +190,10 @@ function delete_osgi_configs {
 
 	local osgi_config_file_name
 
-	for osgi_config_file_name in $( \
-		grep \
-			--extended-regexp \
-			--invert-match \
-			"^[[:space:]]*(#|$)" \
-			"${delete_osgi_configs_list_file}")
+	for osgi_config_file_name in $(get_list_entries "${delete_osgi_configs_list_file}")
 	do
 		delete_osgi_config "${osgi_config_file_name}"
 	done
-}
-
-function delete_paths {
-	if [[ $(uname) == Darwin ]]
-	then
-		rm -fr "${@}"
-	else
-		rm --force --recursive "${@}"
-	fi
 }
 
 function delete_properties {
@@ -219,24 +201,19 @@ function delete_properties {
 
 	local property_name
 
-	for property_name in $( \
-		grep \
-			--extended-regexp \
-			--invert-match \
-			"^[[:space:]]*(#|$)" \
-			"${delete_properties_list_file}")
+	for property_name in $(get_list_entries "${delete_properties_list_file}")
 	do
 		delete_property "${property_name}"
 	done
 }
 
 function delete_property {
-	local properties_file=${LIFERAY_HOME}/portal-ext.properties
+	local properties_file=${_CONFIGS_DIR}/local/portal-ext.properties
 	local property_name=${1}
 
 	local escaped_property_name
 
-	escaped_property_name=$(echo "${property_name}" | replace_text "s/[][\.*^$/]/\\\\&/g")
+	escaped_property_name=$(echo "${property_name}" | sed --expression "s/[][\.*^$/]/\\\\&/g")
 
 	if ! grep --quiet "^${escaped_property_name}=" "${properties_file}"
 	then
@@ -245,7 +222,7 @@ function delete_property {
 		exit 1
 	fi
 
-	if ! delete_property_line "${escaped_property_name}" "${properties_file}"
+	if ! sed --expression "/^${escaped_property_name}=/d" --in-place "${properties_file}"
 	then
 		echo "Unable to delete ${property_name} from ${properties_file}." >&2
 
@@ -255,55 +232,7 @@ function delete_property {
 	echo "${property_name} was deleted from ${properties_file}."
 }
 
-function delete_property_line {
-	local escaped_property_name=${1}
-	local properties_file=${2}
-
-	if [[ $(uname) == Darwin ]]
-	then
-		sed -e "/^${escaped_property_name}=/d" -i "" "${properties_file}"
-	else
-		sed \
-			--expression "/^${escaped_property_name}=/d" \
-			--in-place \
-			"${properties_file}"
-	fi
-}
-
-function deploy_client_extensions {
-	echo "Deploying client extensions."
-
-	local client_extensions_list_file=${1}
-
-	local client_extensions_relative_dir
-
-	client_extensions_relative_dir=$(echo "${_CLIENT_EXTENSIONS_DIR}" | replace_text "s|^${_WORKSPACE_DIR}/||")
-
-	local client_extension_dir
-
-	for client_extension_dir in $(get_client_extension_dirs "${client_extensions_list_file}")
-	do
-		if [[ ! -d ${client_extension_dir} ]]
-		then
-			echo "Unable to find client extension in ${client_extension_dir}." >&2
-
-			exit 1
-		fi
-
-		echo "Deploying ${client_extension_dir}."
-
-		if ! (cd "${client_extension_dir}" && blade gw clean deploy "-Pliferay.workspace.client-extension.dir=${client_extensions_relative_dir}")
-		then
-			echo "Unable to deploy ${client_extension_dir}." >&2
-
-			exit 1
-		fi
-
-		wait_for_portal_log_inactivity
-	done
-}
-
-function deploy_env_client_extensions {
+function get_env_client_extension_names {
 	local env_dir
 
 	for env_dir in $(get_env_dirs)
@@ -312,122 +241,8 @@ function deploy_env_client_extensions {
 
 		if [[ -f ${client_extensions_list_file} ]]
 		then
-			deploy_client_extensions "${client_extensions_list_file}"
-
-			wait_for_client_extensions "${client_extensions_list_file}"
+			get_list_entries "${client_extensions_list_file}"
 		fi
-	done
-}
-
-function deploy_env_osgi_configs {
-	local env_dir
-
-	for env_dir in $(get_env_dirs)
-	do
-		deploy_osgi_configs "${env_dir}"
-
-		local delete_osgi_configs_list_file=${env_dir}/delete-osgi-configs.list
-
-		if [[ -f ${delete_osgi_configs_list_file} ]]
-		then
-			delete_osgi_configs "${delete_osgi_configs_list_file}"
-		fi
-	done
-}
-
-function deploy_license {
-	if [[ ! $(get_workspace_product) =~ dxp ]]
-	then
-		return 0
-	fi
-
-	if [[ -z ${LICENSE_XML_URL} ]]
-	then
-		echo "Set the environment variable LICENSE_XML_URL to the URL or path of a DXP license." >&2
-
-		exit 1
-	fi
-
-	local deploy_dir=${LIFERAY_HOME}/deploy
-
-	if ! create_directories "${deploy_dir}"
-	then
-		echo "Unable to create ${deploy_dir}." >&2
-
-		exit 1
-	fi
-
-	local deployed_license_xml_file=${deploy_dir}/license.xml
-
-	if [[ ${LICENSE_XML_URL} =~ ^https?:// ]]
-	then
-		if ! curl \
-				--fail \
-				--location \
-				--output "${deployed_license_xml_file}" \
-				--silent \
-				"${LICENSE_XML_URL}"
-		then
-			echo "Unable to download the license from ${LICENSE_XML_URL}." >&2
-
-			exit 1
-		fi
-	else
-		local license_xml_file
-
-		license_xml_file=$(echo "${LICENSE_XML_URL}" | replace_text "s|^~|${HOME}|")
-
-		if ! cp "${license_xml_file}" "${deployed_license_xml_file}"
-		then
-			echo "Unable to copy the license from ${license_xml_file}." >&2
-
-			exit 1
-		fi
-	fi
-
-	echo "Deployed the license to ${deployed_license_xml_file}."
-}
-
-function deploy_osgi_configs {
-	local osgi_configs_dir=${LIFERAY_HOME}/osgi/configs
-
-	if ! create_directories "${osgi_configs_dir}"
-	then
-		echo "Unable to create ${osgi_configs_dir}." >&2
-
-		exit 1
-	fi
-
-	local env_osgi_configs_dir=${1}/osgi/configs
-
-	if [[ ! -d ${env_osgi_configs_dir} ]]
-	then
-		return 0
-	fi
-
-	echo "Deploying OSGi configs in ${env_osgi_configs_dir}."
-
-	if ! copy_directory_contents "${env_osgi_configs_dir}" "${osgi_configs_dir}"
-	then
-		echo "Unable to copy the OSGi configs in ${env_osgi_configs_dir}." >&2
-
-		exit 1
-	fi
-}
-
-function get_client_extension_dirs {
-	local client_extensions_list_file=${1}
-
-	local client_extension_name
-
-	for client_extension_name in $( \
-		grep \
-			--extended-regexp \
-			--invert-match \
-			"^[[:space:]]*(#|$)" \
-			"${client_extensions_list_file}")
-	do
-		echo "${_CLIENT_EXTENSIONS_DIR}/${client_extension_name}"
 	done
 }
 
@@ -437,11 +252,11 @@ function get_env_dirs {
 	local current_dir=${_EVALS_DIR}
 	local relative_path
 
-	relative_path=$(echo "${EVAL_DIR}" | replace_text "s|^${_EVALS_DIR}/||")
+	relative_path=${EVAL_DIR#"${_EVALS_DIR}/"}
 
 	local segment
 
-	for segment in $(echo "${relative_path}" | replace_text "s|/| |g")
+	for segment in ${relative_path//\// }
 	do
 		current_dir=${current_dir}/${segment}
 
@@ -464,6 +279,19 @@ function get_generated_paths {
 				-- \
 				client-extensions
 	)
+
+	if [[ -d ${_WORKSPACE_DIR}/bundles ]]
+	then
+		echo "bundles"
+	fi
+}
+
+function get_list_entries {
+	grep \
+		--extended-regexp \
+		--invert-match \
+		"^[[:space:]]*(#|$)" \
+		"${1}"
 }
 
 function get_object_definition_external_reference_codes {
@@ -478,81 +306,6 @@ function get_object_definition_external_reference_codes {
 		-exec jq --raw-output 'select(.configuration.className == "com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition") | .items[].externalReferenceCode' {} +
 }
 
-function get_portal_log_line_count {
-	cat "${LIFERAY_HOME}"/logs/liferay.*.log 2> /dev/null | count_lines
-}
-
-function get_values_after_prefix {
-	local file=${1}
-	local prefix=${2}
-
-	if [[ $(uname) == Darwin ]]
-	then
-		sed \
-			-e "s/^[[:space:]]*${prefix}//p" \
-			-n \
-			"${file}"
-	else
-		grep \
-			--only-matching \
-			--perl-regexp \
-			"^[[:space:]]*${prefix}\K.*" \
-			"${file}"
-	fi
-}
-
-function get_workspace_product {
-	get_values_after_prefix "${_WORKSPACE_DIR}/gradle.properties" "liferay\.workspace\.product="
-}
-
-function init_bundle {
-	stop_liferay
-
-	echo "Removing ${LIFERAY_HOME}."
-
-	if ! delete_paths "${LIFERAY_HOME:?}"
-	then
-		echo "Unable to remove ${LIFERAY_HOME}." >&2
-
-		exit 1
-	fi
-
-	if ! (cd "${_WORKSPACE_DIR}" && blade server init)
-	then
-		echo "Unable to initialize the bundle in ${LIFERAY_HOME} with blade server init." >&2
-
-		exit 1
-	fi
-
-	if ! delete_paths "${LIFERAY_HOME}/data" "${LIFERAY_HOME}/osgi/state" "${LIFERAY_HOME}/portal-env.properties"
-	then
-		echo "Unable to clear the seeded database and portal-env.properties from ${LIFERAY_HOME}." >&2
-
-		exit 1
-	fi
-}
-
-function init_database {
-	if ! run_workspace_docker_compose up --detach --wait database
-	then
-		echo "Unable to start the database service with docker compose in ${_WORKSPACE_DIR}." >&2
-
-		exit 1
-	fi
-
-	if ! run_workspace_docker_compose exec --no-TTY database \
-			psql \
-				--command "DROP DATABASE IF EXISTS lportal WITH (FORCE);" \
-				--command "CREATE DATABASE lportal;" \
-				--dbname postgres \
-				--username postgres
-	then
-		echo "Unable to recreate the lportal database in the database service." >&2
-
-		exit 1
-	fi
-}
-
 function is_laminar_ready {
 	curl \
 		--data '{"email": "test@liferay.com", "name": "Test"}' \
@@ -563,25 +316,6 @@ function is_laminar_ready {
 		grep --quiet '"token"'
 }
 
-function is_liferay_available {
-	curl \
-		--fail \
-		--output /dev/null \
-		--silent \
-		"${LIFERAY_PORTAL_URL}"
-}
-
-function is_liferay_running {
-	is_process_running "${LIFERAY_HOME}/tomcat"
-}
-
-function is_liferay_stopped {
-	! is_liferay_running && ! curl \
-		--output /dev/null \
-		--silent \
-		"${LIFERAY_PORTAL_URL}"
-}
-
 function is_object_definition_published {
 	curl \
 		--fail \
@@ -589,15 +323,6 @@ function is_object_definition_published {
 		--user "${LIFERAY_USER_CREDENTIALS}" \
 		"${LIFERAY_PORTAL_URL}/o/object-admin/v1.0/object-definitions/by-external-reference-code/${1}" | \
 		jq --exit-status ".status.code == 0" > /dev/null
-}
-
-function is_process_running {
-	if [[ $(uname) == Darwin ]]
-	then
-		pgrep -f "${1}" > /dev/null
-	else
-		pgrep --full "${1}" > /dev/null
-	fi
 }
 
 function is_site_present {
@@ -618,15 +343,6 @@ function record_generated_paths {
 	fi
 }
 
-function replace_text {
-	if [[ $(uname) == Darwin ]]
-	then
-		sed -e "${1}"
-	else
-		sed --expression "${1}"
-	fi
-}
-
 function run_workspace_docker_compose {
 	(
 		source "${_WORKSPACE_DIR}/scripts/_common.sh" && \
@@ -644,7 +360,6 @@ function set_variables {
 	_WORKSPACE_DIR=$(dirname "${_LMNR_DIR}")
 
 	LAMINAR_URL=${LAMINAR_URL:-http://localhost:9667}
-	LIFERAY_HOME=${_WORKSPACE_DIR}/bundles
 	LIFERAY_PORTAL_URL=${LIFERAY_PORTAL_URL:-http://localhost:8080}
 	LIFERAY_USER_CREDENTIALS=${LIFERAY_USER_CREDENTIALS:-test@liferay.com:test}
 }
@@ -668,16 +383,14 @@ function start_laminar {
 }
 
 function start_liferay {
-	if ! (cd "${_WORKSPACE_DIR}" && blade server start)
+	if ! env \
+			"ORG_GRADLE_PROJECT_liferay.workspace.client-extension.dir=${_EMPTY_CLIENT_EXTENSIONS_DIR}" \
+			"${_WORKSPACE_DIR}/scripts/bootstrap/start.sh"
 	then
-		echo "Unable to start Liferay with blade server start." >&2
+		echo "Unable to start Liferay with ${_WORKSPACE_DIR}/scripts/bootstrap/start.sh." >&2
 
 		exit 1
 	fi
-
-	wait_for "${LIFERAY_PORTAL_URL} is available" 1200 is_liferay_available
-
-	wait_for_portal_log_inactivity
 }
 
 function stop_laminar {
@@ -690,44 +403,51 @@ function stop_laminar {
 }
 
 function stop_liferay {
-	if ! is_liferay_running
+	if ! run_workspace_docker_compose down --volumes
 	then
-		echo "Liferay is not running."
-
-		return 0
-	fi
-
-	if ! (cd "${_WORKSPACE_DIR}" && blade server stop)
-	then
-		echo "Unable to stop Liferay with blade server stop." >&2
+		echo "Unable to remove the Liferay containers and volumes with docker compose in ${_WORKSPACE_DIR}." >&2
 
 		exit 1
 	fi
-
-	wait_for "Liferay is stopped" 300 is_liferay_stopped
 }
 
-function update_env_portal_ext_properties {
-	local properties_file=${LIFERAY_HOME}/portal-ext.properties
-
-	if ! touch "${properties_file}"
+function update_env_configs {
+	if ! mkdir --parents "${_CONFIGS_DIR}/local/osgi/configs" "${_EMPTY_CLIENT_EXTENSIONS_DIR}"
 	then
-		echo "Unable to create ${properties_file}." >&2
+		echo "Unable to create ${_CONFIGS_DIR} and ${_EMPTY_CLIENT_EXTENSIONS_DIR}." >&2
 
 		exit 1
 	fi
+
+	local properties_file=${_CONFIGS_DIR}/local/portal-ext.properties
+
+	touch "${properties_file}"
 
 	local env_dir
 
 	for env_dir in $(get_env_dirs)
 	do
-		update_portal_ext_properties "${env_dir}"
-
-		local delete_properties_list_file=${env_dir}/delete-properties.list
-
-		if [[ -f ${delete_properties_list_file} ]]
+		if [[ -f ${env_dir}/portal-ext.properties ]]
 		then
-			delete_properties "${delete_properties_list_file}"
+			combine_properties_files "${properties_file}" "${env_dir}/portal-ext.properties"
+		fi
+
+		if [[ -f ${env_dir}/delete-properties.list ]]
+		then
+			delete_properties "${env_dir}/delete-properties.list"
+		fi
+
+		if [[ -d ${env_dir}/osgi/configs ]] &&
+		   ! cp --recursive "${env_dir}/osgi/configs/." "${_CONFIGS_DIR}/local/osgi/configs"
+		then
+			echo "Unable to copy the OSGi configs in ${env_dir}/osgi/configs." >&2
+
+			exit 1
+		fi
+
+		if [[ -f ${env_dir}/delete-osgi-configs.list ]]
+		then
+			delete_osgi_configs "${env_dir}/delete-osgi-configs.list"
 		fi
 	done
 
@@ -740,15 +460,6 @@ function update_env_portal_ext_properties {
 	cat "${properties_file}"
 
 	echo ""
-}
-
-function update_portal_ext_properties {
-	local env_portal_ext_properties_file=${1}/portal-ext.properties
-
-	if [[ -f ${env_portal_ext_properties_file} ]]
-	then
-		combine_properties_files "${LIFERAY_HOME}/portal-ext.properties" "${env_portal_ext_properties_file}"
-	fi
 }
 
 function validate_eval {
@@ -797,59 +508,38 @@ function wait_for {
 }
 
 function wait_for_client_extensions {
-	local client_extensions_list_file=${1}
+	local client_extension_name
 
-	local client_extension_dir
-
-	for client_extension_dir in $(get_client_extension_dirs "${client_extensions_list_file}")
+	for client_extension_name in ${1}
 	do
-		local client_extension_name
+		local client_extension_dir=${_CLIENT_EXTENSIONS_DIR}/${client_extension_name}
 
-		client_extension_name=$(basename "${client_extension_dir}")
+		if [[ ! -d ${client_extension_dir} ]]
+		then
+			echo "Unable to find client extension in ${client_extension_dir}." >&2
 
-		wait_for "${client_extension_name}.zip is in osgi/client-extensions" 300 test -f "${LIFERAY_HOME}/osgi/client-extensions/${client_extension_name}.zip"
+			exit 1
+		fi
 
 		local object_definition_external_reference_code
 
 		for object_definition_external_reference_code in $(get_object_definition_external_reference_codes "${client_extension_dir}")
 		do
-			wait_for "Object definition ${object_definition_external_reference_code} is published" 300 is_object_definition_published "${object_definition_external_reference_code}"
+			wait_for "Object definition ${object_definition_external_reference_code} is published" 600 is_object_definition_published "${object_definition_external_reference_code}"
 		done
 
 		local site_external_reference_code
 
-		for site_external_reference_code in $(get_values_after_prefix "${client_extension_dir}/client-extension.yaml" "siteExternalReferenceCode: ")
+		for site_external_reference_code in $( \
+			grep \
+				--only-matching \
+				--perl-regexp \
+				"^[[:space:]]*siteExternalReferenceCode: \K.*" \
+				"${client_extension_dir}/client-extension.yaml")
 		do
-			wait_for "Site ${site_external_reference_code} exists" 300 is_site_present "${site_external_reference_code}"
+			wait_for "Site ${site_external_reference_code} exists" 600 is_site_present "${site_external_reference_code}"
 		done
 	done
-}
-
-function wait_for_portal_log_inactivity {
-	local elapsed=0
-	local line_count
-
-	line_count=$(get_portal_log_line_count)
-
-	sleep 15
-
-	while [[ ${line_count} != $(get_portal_log_line_count) ]]
-	do
-		line_count=$(get_portal_log_line_count)
-
-		if [ ${elapsed} -ge 180 ]
-		then
-			break
-		fi
-
-		echo "Waiting for portal log inactivity..."
-
-		sleep 15
-
-		elapsed=$((elapsed + 15))
-	done
-
-	echo "No portal log activity in 15s."
 }
 
 set_variables

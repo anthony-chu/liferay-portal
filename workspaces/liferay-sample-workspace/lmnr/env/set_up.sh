@@ -33,7 +33,7 @@ function main {
 
 	for eval_file in "${EVAL_DIR}"/*.eval.ts
 	do
-		echo "    lmnr/evals/node_modules/.bin/tsx $(echo "${eval_file}" | replace_text "s|^${_WORKSPACE_DIR}/||")"
+		echo "    lmnr/evals/node_modules/.bin/tsx ${eval_file#"${_WORKSPACE_DIR}/"}"
 	done
 }
 
