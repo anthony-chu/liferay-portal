@@ -134,36 +134,36 @@ function default_tear_down {
 }
 
 function delete_eval_generated_paths {
-	if [[ ! -f ${_UNTRACKED_PATHS_FILE} ]]
+	if [[ ! -f ${_GENERATED_PATHS_FILE} ]]
 	then
-		echo "Unable to find ${_UNTRACKED_PATHS_FILE}, so no generated files are deleted."
+		echo "Unable to find ${_GENERATED_PATHS_FILE}, so no generated files are deleted."
 
 		return 0
 	fi
 
-	local untracked_path
+	local generated_path
 
-	for untracked_path in $( \
-		get_untracked_paths | \
+	for generated_path in $( \
+		get_generated_paths | \
 			grep \
-				--file="${_UNTRACKED_PATHS_FILE}" \
+				--file="${_GENERATED_PATHS_FILE}" \
 				--fixed-strings \
 				--invert-match \
 				--line-regexp)
 	do
-		echo "Deleting ${_WORKSPACE_DIR}/${untracked_path}."
+		echo "Deleting ${_WORKSPACE_DIR}/${generated_path}."
 
-		if ! delete_paths "${_WORKSPACE_DIR:?}/${untracked_path}"
+		if ! delete_paths "${_WORKSPACE_DIR:?}/${generated_path}"
 		then
-			echo "Unable to delete ${_WORKSPACE_DIR}/${untracked_path}." >&2
+			echo "Unable to delete ${_WORKSPACE_DIR}/${generated_path}." >&2
 
 			exit 1
 		fi
 	done
 
-	if ! rm "${_UNTRACKED_PATHS_FILE}"
+	if ! rm "${_GENERATED_PATHS_FILE}"
 	then
-		echo "Unable to delete ${_UNTRACKED_PATHS_FILE}." >&2
+		echo "Unable to delete ${_GENERATED_PATHS_FILE}." >&2
 
 		exit 1
 	fi
@@ -454,6 +454,18 @@ function get_env_dirs {
 	done
 }
 
+function get_generated_paths {
+	(
+		cd "${_WORKSPACE_DIR}" && \
+			git ls-files \
+				--directory \
+				--exclude-standard \
+				--others \
+				-- \
+				client-extensions
+	)
+}
+
 function get_object_definition_external_reference_codes {
 	local client_extension_dir=${1}
 
@@ -468,19 +480,6 @@ function get_object_definition_external_reference_codes {
 
 function get_portal_log_line_count {
 	cat "${LIFERAY_HOME}"/logs/liferay.*.log 2> /dev/null | count_lines
-}
-
-function get_untracked_paths {
-	(
-		cd "${_WORKSPACE_DIR}" && \
-			git ls-files \
-				--directory \
-				--exclude-standard \
-				--others \
-				-- \
-				. \
-				":!lmnr"
-	)
 }
 
 function get_values_after_prefix {
@@ -610,10 +609,10 @@ function is_site_present {
 		"${LIFERAY_PORTAL_URL}/o/headless-admin-site/v1.0/sites/${1}"
 }
 
-function record_untracked_paths {
-	if ! get_untracked_paths > "${_UNTRACKED_PATHS_FILE}"
+function record_generated_paths {
+	if ! get_generated_paths > "${_GENERATED_PATHS_FILE}"
 	then
-		echo "Unable to record the untracked paths in ${_UNTRACKED_PATHS_FILE}, so tear down could not delete what the eval generates." >&2
+		echo "Unable to record the generated paths in ${_GENERATED_PATHS_FILE}, so tear down could not delete what the eval generates." >&2
 
 		exit 1
 	fi
@@ -641,7 +640,7 @@ function set_variables {
 	_CLIENT_EXTENSIONS_DIR=${_LMNR_DIR}/client-extensions
 	_COMPOSE_DIR=${_LMNR_DIR}/compose
 	_EVALS_DIR=${_LMNR_DIR}/evals
-	_UNTRACKED_PATHS_FILE=${_LMNR_DIR}/untracked-paths.list
+	_GENERATED_PATHS_FILE=${_LMNR_DIR}/generated-paths.list
 	_WORKSPACE_DIR=$(dirname "${_LMNR_DIR}")
 
 	LAMINAR_URL=${LAMINAR_URL:-http://localhost:9667}

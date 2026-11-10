@@ -23,7 +23,7 @@ function main {
 		default_set_up
 	fi
 
-	record_untracked_paths
+	record_generated_paths
 
 	echo ""
 	echo "Ready. From ${_WORKSPACE_DIR}, run:"
