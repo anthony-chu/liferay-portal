@@ -1,13 +1,13 @@
 ---
 
-description: Shut down the local eval stack through the harness in `lmnr/env` — stop the Liferay server, and optionally Laminar. Use when the user asks to stop the eval environment, shut down Liferay and Laminar, or clean up after a run.
+description: Shut down the local eval stack through the harness in `lmnr/env` — remove the Liferay and PostgreSQL containers, and optionally stop Laminar. Use when the user asks to stop the eval environment, shut down Liferay and Laminar, or clean up after a run.
 name: stop-laminar-eval
 
 ---
 
 # Stop Laminar Eval
 
-Take down what `run-laminar-eval` brought up: the Liferay server, and Laminar only when the user asks for it.
+Take down what `run-laminar-eval` brought up: the Liferay and PostgreSQL containers, and Laminar only when the user asks for it.
 
 ## When to Invoke
 
@@ -20,15 +20,17 @@ Every step is a no-op when its target is already down, so the skill is safe to r
 
 ### Stop the Liferay Server
 
-Stopping the server counts as a restart under the workspace's restart policy: say so before running it. From the workspace root:
+Removing the Liferay containers counts as a restart under the workspace's restart policy: say so before running it. From the workspace root:
 
 ```bash
 lmnr/env/tear_down.sh [<eval>]
 ```
 
-With `<eval>`, the eval's own `lmnr/evals/<eval>/env/tear_down.sh` runs when it has one. Otherwise, and without `<eval>`, the script runs `blade server stop` and waits up to 5 minutes for the Tomcat process to exit and port 8080 to stop answering. It prints `Liferay is not running.` when there was nothing to stop.
+With `<eval>`, the eval's own `lmnr/evals/<eval>/env/tear_down.sh` runs when it has one. Otherwise, and without `<eval>`, the script runs `docker compose down --volumes` for the workspace's `liferay` and `database`, so the environment and its data are gone; the next `run-laminar-eval` builds a new one.
 
-`bundles` is left in place. The next `run-laminar-eval` deletes it and starts from a new bundle.
+It then deletes what the run generated: the client extensions the agent wrote under `client-extensions`, `bundles` when the run created it, and `build/docker`. Read what the agent built first if it matters.
+
+To pause instead, keeping the containers and data to resume later, run `docker compose stop` in the workspace root (and in `lmnr/compose` for Laminar), then `docker compose start`. `liferay` may need more than Compose's default 10 seconds to stop cleanly: `docker compose stop --timeout 60`.
 
 ### Stop Laminar
 
