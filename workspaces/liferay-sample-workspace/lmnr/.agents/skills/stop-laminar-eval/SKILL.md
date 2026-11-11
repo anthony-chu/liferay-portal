@@ -30,7 +30,7 @@ With `<eval>`, the eval's own `lmnr/evals/<eval>/env/tear_down.sh` runs when it 
 
 It then deletes what the run generated: the client extensions the agent wrote under `client-extensions`, `bundles` when the run created it, and `build/docker`. Read what the agent built first if it matters.
 
-To pause instead, keeping the containers and data to resume later, run `docker compose stop` in the workspace root (and in `lmnr/compose` for Laminar), then `docker compose start`. `liferay` may need more than Compose's default 10 seconds to stop cleanly: `docker compose stop --timeout 60`.
+To pause instead, keeping the containers and data to resume later, run `docker compose --file docker-compose.yaml --file docker-compose-lmnr.yaml stop` in the workspace root, then `docker compose --file docker-compose.yaml --file docker-compose-lmnr.yaml start`. That pauses Laminar too; name `database liferay` after `stop` to pause only Liferay. `liferay` may need more than Compose's default 10 seconds to stop cleanly: `docker compose stop --timeout 60`.
 
 ### Stop Laminar
 
@@ -40,25 +40,25 @@ Leave Laminar running unless the user asks to stop it; the next run reuses it. T
 lmnr/env/tear_down.sh [<eval>] --laminar
 ```
 
-This adds `docker compose down` in `lmnr/compose`. It stops the containers and keeps the volumes, so every recorded trace and eval run survives.
+This adds `docker compose down` for the Laminar services in `docker-compose-lmnr.yaml`. It stops the containers and keeps the volumes, so every recorded trace and eval run survives.
 
 ### Delete Laminar's Data
 
 Only when the user explicitly asks to wipe the history. **Confirm before running it — it destroys data.** From the workspace root:
 
 ```bash
-cd lmnr/compose && docker compose down --volumes
+docker compose --file docker-compose.yaml --file docker-compose-lmnr.yaml down --volumes app-server clickhouse frontend init postgres quickwit
 ```
 
-`--volumes` deletes the stack's Postgres and ClickHouse volumes, so every recorded trace and eval run is gone for good. The next run still works: `lmnr/evals/lib/bootstrap.ts` recreates the Laminar workspace, project, and API key at import time.
+`--volumes` deletes Laminar's Postgres, ClickHouse, and Quickwit volumes and its secrets, so every recorded trace and eval run is gone for good. The next run still works: `lmnr/evals/lib/bootstrap.ts` recreates the Laminar workspace, project, and API key at import time.
 
 ### Verify
 
 ```bash
-cd lmnr/compose && docker compose ps
+docker compose --file docker-compose.yaml --file docker-compose-lmnr.yaml ps
 ```
 
-No containers listed means Laminar is down.
+No Laminar service listed means Laminar is down.
 
 ## Related Skills
 

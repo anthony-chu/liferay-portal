@@ -10,14 +10,16 @@
 # Laminar telemetry; remove the LLM/cloud provider settings,
 # SHARED_SECRET_TOKEN, settings left at their default values, and the
 # ClickHouse ulimits (not permitted under rootless Docker); reorder keys;
-# reword the comments.
+# reword the comments; make it an override of the workspace's
+# docker-compose.yaml, with paths relative to the workspace; add the eval
+# portal properties and OSGi configs to the liferay service as environment
+# variables.
 
 # This compose file is a lightweight version of docker-compose-full.yml.
 # It is intended to be used for local quickstarts.
 # It includes the frontend, app-server, ClickHouse, PostgreSQL, Quickwit, and
 # init services, but not RabbitMQ.
 
-name: lmnr
 services:
     app-server:
         command:
@@ -74,10 +76,10 @@ services:
         image: clickhouse/clickhouse-server:26.5
         pull_policy: always
         volumes:
-            -   source: ./clickhouse-profiles-config.xml
+            -   source: ./lmnr/compose/clickhouse-profiles-config.xml
                 target: /etc/clickhouse-server/users.d/lmnr.xml
                 type: bind
-            -   source: ./clickhouse-server-config.xml
+            -   source: ./lmnr/compose/clickhouse-server-config.xml
                 target: /etc/clickhouse-server/config.d/lmnr.xml
                 type: bind
             -   source: clickhouse-data
@@ -154,6 +156,26 @@ services:
         image: alpine:3
         volumes:
             -   init-secrets:/secrets
+    liferay:
+        environment:
+            LIFERAY_ADMIN_PERIOD_EMAIL_PERIOD_FROM_PERIOD_ADDRESS: test@liferay.com
+            LIFERAY_ADMIN_PERIOD_EMAIL_PERIOD_FROM_PERIOD_NAME: Test Test
+            LIFERAY_AUTH_PERIOD_VERIFIER_PERIOD__UPPERCASEB_ASIC_UPPERCASEA_UTH_UPPERCASEH_EADER_UPPERCASEA_UTH_UPPERCASEV_ERIFIER_PERIOD_URLS_PERIOD_INCLUDES: /api/*,/xmlrpc/*,/o/*
+            LIFERAY_COMPANY_PERIOD_DEFAULT_PERIOD_TIME_PERIOD_ZONE: UTC
+            LIFERAY_COMPANY_PERIOD_DEFAULT_PERIOD_WEB_PERIOD_ID: liferay.com
+            LIFERAY_CONFIGURATION_PERIOD_OVERRIDE_PERIOD_COM_PERIOD_LIFERAY_PERIOD_MCP_PERIOD_SERVER_PERIOD_REST_PERIOD_INTERNAL_PERIOD_CONFIGURATION_PERIOD__UPPERCASEM__UPPERCASEC__UPPERCASEP__UPPERCASES_ERVER_UPPERCASEC_ONFIGURATION_UNDERLINE_ENABLED: B"true"
+            LIFERAY_DEFAULT_PERIOD_ADMIN_PERIOD_EMAIL_PERIOD_ADDRESS_PERIOD_PREFIX: test
+            LIFERAY_FEATURE_PERIOD_FLAG_PERIOD__UPPERCASEL__UPPERCASEP__UPPERCASED__MINUS__NUMBER3__NUMBER5__NUMBER4__NUMBER4__NUMBER3_: "true"
+            LIFERAY_FEATURE_PERIOD_FLAG_PERIOD__UPPERCASEL__UPPERCASEP__UPPERCASED__MINUS__NUMBER3__NUMBER9__NUMBER2__NUMBER4__NUMBER4_: "true"
+            LIFERAY_FEATURE_PERIOD_FLAG_PERIOD__UPPERCASEL__UPPERCASEP__UPPERCASED__MINUS__NUMBER6__NUMBER3__NUMBER3__NUMBER1__NUMBER1_: "true"
+            LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME: org.postgresql.Driver
+            LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_PASSWORD: ""
+            LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL: jdbc:postgresql://database:5432/lportal
+            LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_USERNAME: postgres
+            LIFERAY_PASSWORDS_PERIOD_DEFAULT_PERIOD_POLICY_PERIOD_CHANGE_PERIOD_REQUIRED: "false"
+            LIFERAY_SETUP_PERIOD_WIZARD_PERIOD_ENABLED: "false"
+            LIFERAY_TERMS_PERIOD_OF_PERIOD_USE_PERIOD_REQUIRED: "false"
+            LIFERAY_USERS_PERIOD_REMINDER_PERIOD_QUERIES_PERIOD_ENABLED: "false"
     postgres:
         depends_on:
             init:
@@ -179,7 +201,7 @@ services:
             -   init-secrets:/run/lmnr-secrets:ro
             -   postgres-data:/var/lib/postgresql/data
     quickwit:
-        build: ./quickwit
+        build: ./lmnr/compose/quickwit
         command:
             -   run
         healthcheck:

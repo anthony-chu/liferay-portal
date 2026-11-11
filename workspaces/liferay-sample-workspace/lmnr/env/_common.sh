@@ -20,90 +20,6 @@ function build_liferay_image {
 	fi
 }
 
-function combine_properties_files {
-	local target_file=${1}
-
-	local temp_properties_file
-
-	temp_properties_file=$(mktemp)
-
-	if [[ ! -f ${temp_properties_file} ]]
-	then
-		echo "Unable to create a temporary file to combine the properties into ${target_file}." >&2
-
-		exit 1
-	fi
-
-	echo "" > "${temp_properties_file}"
-
-	local properties_file
-
-	for properties_file in "${@}"
-	do
-		if [[ ! -f ${properties_file} ]]
-		then
-			continue
-		fi
-
-		echo -e "\n# From ${properties_file}\n" >> "${temp_properties_file}"
-
-		local property_name
-		local property_value
-
-		while IFS="=" read -r property_name property_value || [[ -n ${property_name} ]]
-		do
-			property_name=${property_name%$'\r'}
-			property_value=${property_value%$'\r'}
-
-			if [[ ${property_name} =~ ^[[:space:]]*(#|!|//|$) ]]
-			then
-				continue
-			fi
-
-			property_name=$( \
-				echo "${property_name}" | \
-					sed --expression "s/^[[:space:]]*//" --expression "s/[[:space:]]*$//")
-			property_value=$( \
-				echo "${property_value}" | \
-					sed --expression "s/^[[:space:]]*//" --expression "s/[[:space:]]*$//")
-
-			local property_value_next
-
-			while [[ ${property_value} =~ \\$ ]]
-			do
-				property_value=${property_value%\\}
-
-				if ! read -r property_value_next && [[ -z ${property_value_next} ]]
-				then
-					break
-				fi
-
-				property_value=${property_value}${property_value_next%$'\r'}
-			done
-
-			local escaped_property_name
-
-			escaped_property_name=$(echo "${property_name}" | sed --expression "s/[][\.*^$/]/\\\\&/g")
-
-			if ! sed --expression "/^${escaped_property_name}=/d" --in-place "${temp_properties_file}"
-			then
-				echo "Unable to replace ${property_name} while combining the properties into ${target_file}." >&2
-
-				exit 1
-			fi
-
-			echo "${property_name}=${property_value}" >> "${temp_properties_file}"
-		done < "${properties_file}"
-	done
-
-	if ! mv "${temp_properties_file}" "${target_file}"
-	then
-		echo "Unable to write the combined properties to ${target_file}." >&2
-
-		exit 1
-	fi
-}
-
 function default_set_up {
 	_TEMPORARY_DIR=$(mktemp --directory)
 
@@ -118,7 +34,12 @@ function default_set_up {
 
 	stop_liferay
 
-	update_env_configs
+	if ! mkdir --parents "${_CONFIGS_DIR}/local" "${_EMPTY_CLIENT_EXTENSIONS_DIR}"
+	then
+		echo "Unable to create ${_CONFIGS_DIR} and ${_EMPTY_CLIENT_EXTENSIONS_DIR}." >&2
+
+		exit 1
+	fi
 
 	build_liferay_image "${client_extension_names}"
 
@@ -163,73 +84,6 @@ function delete_eval_generated_paths {
 
 		exit 1
 	fi
-}
-
-function delete_osgi_config {
-	local osgi_config_file=${_CONFIGS_DIR}/local/osgi/configs/${1}
-
-	if [[ ! -f ${osgi_config_file} ]]
-	then
-		echo "Unable to find ${osgi_config_file}." >&2
-
-		exit 1
-	fi
-
-	if ! rm "${osgi_config_file}"
-	then
-		echo "Unable to delete ${osgi_config_file}." >&2
-
-		exit 1
-	fi
-
-	echo "${osgi_config_file} was deleted."
-}
-
-function delete_osgi_configs {
-	local delete_osgi_configs_list_file=${1}
-
-	local osgi_config_file_name
-
-	for osgi_config_file_name in $(get_list_entries "${delete_osgi_configs_list_file}")
-	do
-		delete_osgi_config "${osgi_config_file_name}"
-	done
-}
-
-function delete_properties {
-	local delete_properties_list_file=${1}
-
-	local property_name
-
-	for property_name in $(get_list_entries "${delete_properties_list_file}")
-	do
-		delete_property "${property_name}"
-	done
-}
-
-function delete_property {
-	local properties_file=${_CONFIGS_DIR}/local/portal-ext.properties
-	local property_name=${1}
-
-	local escaped_property_name
-
-	escaped_property_name=$(echo "${property_name}" | sed --expression "s/[][\.*^$/]/\\\\&/g")
-
-	if ! grep --quiet "^${escaped_property_name}=" "${properties_file}"
-	then
-		echo "Unable to find ${property_name} in ${properties_file}." >&2
-
-		exit 1
-	fi
-
-	if ! sed --expression "/^${escaped_property_name}=/d" --in-place "${properties_file}"
-	then
-		echo "Unable to delete ${property_name} from ${properties_file}." >&2
-
-		exit 1
-	fi
-
-	echo "${property_name} was deleted from ${properties_file}."
 }
 
 function get_env_client_extension_names {
@@ -350,11 +204,23 @@ function run_workspace_docker_compose {
 	)
 }
 
+function set_compose_overrides {
+	LIFERAY_COMPOSE_OVERRIDES=lmnr
+
+	local eval_compose_file=${EVAL_DIR}/env/docker-compose.yaml
+
+	if [[ -n ${EVAL_DIR} ]] && [[ -f ${eval_compose_file} ]]
+	then
+		LIFERAY_COMPOSE_OVERRIDES=${LIFERAY_COMPOSE_OVERRIDES},${eval_compose_file#"${_WORKSPACE_DIR}/"}
+	fi
+
+	export LIFERAY_COMPOSE_OVERRIDES
+}
+
 function set_variables {
 	_LMNR_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 
 	_CLIENT_EXTENSIONS_DIR=${_LMNR_DIR}/client-extensions
-	_COMPOSE_DIR=${_LMNR_DIR}/compose
 	_EVALS_DIR=${_LMNR_DIR}/evals
 	_GENERATED_PATHS_FILE=${_LMNR_DIR}/generated-paths.list
 	_WORKSPACE_DIR=$(dirname "${_LMNR_DIR}")
@@ -372,9 +238,9 @@ function start_laminar {
 		return 0
 	fi
 
-	if ! (cd "${_COMPOSE_DIR}" && docker compose up --detach)
+	if ! run_workspace_docker_compose up --detach app-server frontend
 	then
-		echo "Unable to start Laminar with docker compose in ${_COMPOSE_DIR}." >&2
+		echo "Unable to start Laminar with docker compose in ${_WORKSPACE_DIR}." >&2
 
 		exit 1
 	fi
@@ -394,72 +260,21 @@ function start_liferay {
 }
 
 function stop_laminar {
-	if ! (cd "${_COMPOSE_DIR}" && docker compose down)
+	if ! run_workspace_docker_compose down
 	then
-		echo "Unable to stop Laminar with docker compose in ${_COMPOSE_DIR}." >&2
+		echo "Unable to stop Laminar with docker compose in ${_WORKSPACE_DIR}." >&2
 
 		exit 1
 	fi
 }
 
 function stop_liferay {
-	if ! run_workspace_docker_compose down --volumes
+	if ! run_workspace_docker_compose down --volumes database liferay
 	then
 		echo "Unable to remove the Liferay containers and volumes with docker compose in ${_WORKSPACE_DIR}." >&2
 
 		exit 1
 	fi
-}
-
-function update_env_configs {
-	if ! mkdir --parents "${_CONFIGS_DIR}/local/osgi/configs" "${_EMPTY_CLIENT_EXTENSIONS_DIR}"
-	then
-		echo "Unable to create ${_CONFIGS_DIR} and ${_EMPTY_CLIENT_EXTENSIONS_DIR}." >&2
-
-		exit 1
-	fi
-
-	local properties_file=${_CONFIGS_DIR}/local/portal-ext.properties
-
-	touch "${properties_file}"
-
-	local env_dir
-
-	for env_dir in $(get_env_dirs)
-	do
-		if [[ -f ${env_dir}/portal-ext.properties ]]
-		then
-			combine_properties_files "${properties_file}" "${env_dir}/portal-ext.properties"
-		fi
-
-		if [[ -f ${env_dir}/delete-properties.list ]]
-		then
-			delete_properties "${env_dir}/delete-properties.list"
-		fi
-
-		if [[ -d ${env_dir}/osgi/configs ]] &&
-		   ! cp --recursive "${env_dir}/osgi/configs/." "${_CONFIGS_DIR}/local/osgi/configs"
-		then
-			echo "Unable to copy the OSGi configs in ${env_dir}/osgi/configs." >&2
-
-			exit 1
-		fi
-
-		if [[ -f ${env_dir}/delete-osgi-configs.list ]]
-		then
-			delete_osgi_configs "${env_dir}/delete-osgi-configs.list"
-		fi
-	done
-
-	echo ""
-	echo "##"
-	echo "## ${properties_file}"
-	echo "##"
-	echo ""
-
-	cat "${properties_file}"
-
-	echo ""
 }
 
 function validate_eval {
@@ -480,6 +295,8 @@ function validate_eval {
 	fi
 
 	export EVAL_DIR EVAL_NAME
+
+	set_compose_overrides
 }
 
 function wait_for {
@@ -543,3 +360,5 @@ function wait_for_client_extensions {
 }
 
 set_variables
+
+set_compose_overrides
