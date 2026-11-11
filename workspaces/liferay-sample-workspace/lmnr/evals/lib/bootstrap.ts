@@ -3,28 +3,39 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import axios from 'axios';
-
 const baseURL = 'http://localhost:9667';
 
-const {
-	data: {token},
-} = await axios.post(`${baseURL}/api/auth/sign-in/local-email`, {
-	email: 'test@liferay.com',
-	name: 'Test',
+const signInResponse = await fetch(`${baseURL}/api/auth/sign-in/local-email`, {
+	body: JSON.stringify({email: 'test@liferay.com', name: 'Test'}),
+	headers: {'Content-Type': 'application/json'},
+	method: 'POST',
 });
 
-const client = axios.create({
-	baseURL,
-	headers: {
-		Authorization: `Bearer ${token}`,
-	},
-});
+const {token} = await signInResponse.json();
+
+const request = async (method: string, path: string, body?) => {
+	const response = await fetch(`${baseURL}${path}`, {
+		body: body && JSON.stringify(body),
+		headers: {
+			'Authorization': `Bearer ${token}`,
+			'Content-Type': 'application/json',
+		},
+		method,
+	});
+
+	if (!response.ok) {
+		throw new Error(`${response.status} from ${method} ${path}`);
+	}
+
+	const text = await response.text();
+
+	return text ? JSON.parse(text) : undefined;
+};
 
 const lmnrApi = {
-	delete: async (url, body?) => (await client.delete(url, {data: body})).data,
-	get: async (url, body?) => (await client.get(url, body)).data,
-	post: async (url, body?) => (await client.post(url, body)).data,
+	delete: (path: string, body?) => request('DELETE', path, body),
+	get: (path: string) => request('GET', path),
+	post: (path: string, body?) => request('POST', path, body),
 };
 
 const workspaces = await lmnrApi.get('/api/workspaces');
