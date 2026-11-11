@@ -1,0 +1,450 @@
+import groovy.json.JsonException
+import groovy.json.JsonSlurper
+
+import java.nio.file.Path
+
+String evalName = gradle.startParameter.projectProperties["lmnr.eval"]
+
+if (!evalName) {
+	throw new GradleException("Pass the eval name, for example: \"-Plmnr.eval=create-site\"")
+}
+
+File rootDir = buildscript.sourceFile.parentFile
+
+File evalDir = new File(rootDir, "lmnr/evals/${evalName}")
+
+File[] evalDirFiles = evalDir.listFiles() ?: []
+
+if (!evalDirFiles.any {it.name.endsWith(".eval.ts")}) {
+	throw new GradleException("Unable to find an eval in ${evalDir}")
+}
+
+File configsDir = new File(rootDir, "build/lmnr/configs")
+
+new File(configsDir, "local").mkdirs()
+
+beforeSettings {
+	Settings settings ->
+
+	settings.ext["liferay.workspace.client-extension.dir"] = "lmnr/client-extensions"
+	settings.ext["liferay.workspace.configs.dir"] = configsDir.absolutePath
+}
+
+File clientExtensionsDir = new File(rootDir, "lmnr/client-extensions")
+
+File clientExtensionsListFile = new File(evalDir, "env/client-extensions.list")
+
+List<String> clientExtensionNames = []
+
+if (clientExtensionsListFile.exists()) {
+	List<String> lines = clientExtensionsListFile.readLines()
+
+	List<String> trimmedLines = lines.collect {
+		it.trim()
+	}
+
+	clientExtensionNames = trimmedLines.findAll {
+		!it.isEmpty() && !it.startsWith("#")
+	}
+}
+
+String composeOverrides = "lmnr"
+
+File evalComposeFile = new File(evalDir, "env/docker-compose.yaml")
+
+if (evalComposeFile.exists()) {
+	Path rootPath = rootDir.toPath()
+
+	Path evalComposePath = rootPath.relativize(evalComposeFile.toPath())
+
+	composeOverrides = "${composeOverrides},${evalComposePath}"
+}
+
+File generatedPathsFile = new File(rootDir, "lmnr/generated-paths.list")
+
+String laminarURL = "http://localhost:9667"
+String liferayCredentials = "test@liferay.com:test"
+String liferayURL = "http://localhost:8080"
+
+Closure<HttpURLConnection> openConnection = {
+	String urlString ->
+
+	URL url = new URL(urlString)
+
+	HttpURLConnection connection = (HttpURLConnection)url.openConnection()
+
+	connection.connectTimeout = 5000
+	connection.readTimeout = 10000
+
+	return connection
+}
+
+Closure<String> getLiferayResponse = {
+	String path ->
+
+	HttpURLConnection connection = openConnection("${liferayURL}${path}")
+
+	byte[] credentialBytes = liferayCredentials.bytes
+
+	connection.setRequestProperty("Authorization", "Basic ${credentialBytes.encodeBase64()}")
+
+	try {
+		if (connection.responseCode != 200) {
+			return null
+		}
+
+		return connection.inputStream.text
+	}
+	catch (IOException ioException) {
+		return null
+	}
+}
+
+Closure<Boolean> isLaminarReady = {
+	HttpURLConnection connection = openConnection("${laminarURL}/api/auth/sign-in/local-email")
+
+	connection.doOutput = true
+	connection.requestMethod = "POST"
+
+	connection.setRequestProperty("Content-Type", "application/json")
+
+	try {
+		connection.outputStream.withWriter {
+			it << '{"email": "test@liferay.com", "name": "Test"}'
+		}
+
+		String response = connection.inputStream.text
+
+		JsonSlurper jsonSlurper = new JsonSlurper()
+
+		Map signIn = (Map)jsonSlurper.parseText(response)
+
+		String token = signIn.token
+
+		return (token != null) && !token.isEmpty()
+	}
+	catch (IOException | JsonException exception) {
+		return false
+	}
+}
+
+Closure waitFor = {
+	Closure<Boolean> condition, String description, int timeout ->
+
+	int elapsed = 0
+
+	while (!condition()) {
+		if (elapsed >= timeout) {
+			throw new GradleException("Timed out after ${timeout}s waiting until ${description}")
+		}
+
+		sleep(5000)
+
+		elapsed += 5
+	}
+
+	println "${description}"
+}
+
+Closure runDockerCompose = {
+	Project project, List<String> arguments ->
+
+	project.exec {
+		commandLine(["bash", "-c", "source scripts/_common.sh && docker_compose \"\${@}\"", "bash"] + arguments)
+		environment "LIFERAY_COMPOSE_OVERRIDES", composeOverrides
+		workingDir rootDir
+	}
+}
+
+Closure<List<String>> getGeneratedPaths = {
+	Project project ->
+
+	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
+
+	project.exec {
+		commandLine "git", "ls-files", "--directory", "--exclude-standard", "--others", "--", "client-extensions"
+		standardOutput = byteArrayOutputStream
+		workingDir rootDir
+	}
+
+	List<String> generatedPaths = byteArrayOutputStream.toString().readLines()
+
+	if (new File(rootDir, "bundles").exists()) {
+		generatedPaths.add("bundles")
+	}
+
+	return generatedPaths
+}
+
+Closure<List<String>> getObjectDefinitionExternalReferenceCodes = {
+	File clientExtensionDir, Project project ->
+
+	FileTree batchFileTree = project.fileTree(clientExtensionDir) {
+		exclude "**/build/**", "**/dist/**", "**/node_modules/**"
+		include "**/*.batch-engine-data.json"
+	}
+
+	List<String> externalReferenceCodes = []
+
+	batchFileTree.each {
+		File batchFile ->
+
+		JsonSlurper jsonSlurper = new JsonSlurper()
+
+		Map batch = (Map)jsonSlurper.parse(batchFile)
+
+		if (batch.configuration?.className == "com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition") {
+			externalReferenceCodes.addAll(batch.items*.externalReferenceCode)
+		}
+	}
+
+	return externalReferenceCodes
+}
+
+Closure<List<String>> getSiteExternalReferenceCodes = {
+	File clientExtensionDir ->
+
+	List<String> lines = new File(clientExtensionDir, "client-extension.yaml").readLines()
+
+	List<String> siteLines = lines.findAll {
+		it.matches(/\s*siteExternalReferenceCode: .+/)
+	}
+
+	return siteLines.collect {
+		String value = it.split(":", 2)[1]
+
+		value.trim()
+	}
+}
+
+gradle.rootProject {
+	Project project ->
+
+	TaskProvider<Task> deleteEvalGeneratedPathsTaskProvider = project.tasks.register("deleteEvalGeneratedPaths") {
+		doLast {
+			if (generatedPathsFile.exists()) {
+				List<String> recordedPaths = generatedPathsFile.readLines()
+
+				getGeneratedPaths(project).each {
+					String generatedPath ->
+
+					if (recordedPaths.contains(generatedPath)) {
+						return
+					}
+
+					println "Deleting ${rootDir}/${generatedPath}."
+
+					project.delete(new File(rootDir, generatedPath))
+				}
+			}
+			else {
+				println "Unable to find ${generatedPathsFile}, so no generated client extensions are deleted."
+			}
+
+			project.delete(new File(rootDir, "build/docker"), generatedPathsFile)
+		}
+	}
+
+	TaskProvider<Task> startLaminarTaskProvider = project.tasks.register("startLaminar") {
+		doLast {
+			if (isLaminarReady()) {
+				println "Laminar is already running"
+
+				return
+			}
+
+			runDockerCompose(project, ["up", "--detach", "app-server", "frontend"])
+
+			waitFor(isLaminarReady, "Laminar is ready at ${laminarURL}", 900)
+		}
+	}
+
+	project.tasks.register("stopLaminar") {
+		doLast {
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
+
+			project.exec {
+				commandLine "bash", "-c", "source scripts/_common.sh && docker_compose config --services"
+				environment "LIFERAY_COMPOSE_OVERRIDES", composeOverrides
+				standardOutput = byteArrayOutputStream
+				workingDir rootDir
+			}
+
+			String output = byteArrayOutputStream.toString()
+
+			List<String> serviceNames = output.readLines()
+
+			List<String> laminarServiceNames = serviceNames.findAll {
+				!["database", "liferay"].contains(it)
+			}
+
+			runDockerCompose(project, ["down"] + laminarServiceNames.sort())
+		}
+	}
+
+	TaskProvider<Task> stopLiferayTaskProvider = project.tasks.register("stopLiferay") {
+		doLast {
+			runDockerCompose(project, ["down", "--volumes", "database", "liferay"])
+		}
+	}
+
+	TaskProvider<Task> extractDockerFilesTaskProvider = project.tasks.register("extractDockerFiles") {
+		doLast {
+			["extract_hotfix.sh", "extract_license.sh"].each {
+				String scriptName ->
+
+				project.exec {
+					commandLine "bash", new File(rootDir, "scripts/bootstrap/${scriptName}")
+				}
+			}
+		}
+
+		mustRunAfter deleteEvalGeneratedPathsTaskProvider, stopLiferayTaskProvider
+	}
+
+	TaskProvider<Task> tagLiferayImageTaskProvider = project.tasks.register("tagLiferayImage") {
+		dependsOn "buildDockerImage"
+
+		doLast {
+			String product = gradle.liferayWorkspace.product
+
+			String versionTag = product.replaceFirst(/^dxp-/, "")
+
+			project.exec {
+				commandLine "docker", "tag", "${rootDir.name}-liferay:${versionTag}", "liferay:local"
+			}
+		}
+	}
+
+	TaskProvider<Task> startLiferayTaskProvider = project.tasks.register("startLiferay") {
+		doLast {
+			runDockerCompose(project, ["up", "--detach", "database", "liferay"])
+
+			waitFor(
+				{
+					getLiferayResponse("/c/portal/status") != null
+				},
+				"Liferay is ready at ${liferayURL}", 600)
+		}
+
+		mustRunAfter startLaminarTaskProvider, stopLiferayTaskProvider, tagLiferayImageTaskProvider
+	}
+
+	TaskProvider<Task> waitForClientExtensionsTaskProvider = project.tasks.register("waitForClientExtensions") {
+		doLast {
+			clientExtensionNames.each {
+				String clientExtensionName ->
+
+				File clientExtensionDir = new File(clientExtensionsDir, clientExtensionName)
+
+				List<String> objectDefinitionExternalReferenceCodes = getObjectDefinitionExternalReferenceCodes(clientExtensionDir, project)
+
+				objectDefinitionExternalReferenceCodes.each {
+					String externalReferenceCode ->
+
+					waitFor(
+						{
+							String response = getLiferayResponse("/o/object-admin/v1.0/object-definitions/by-external-reference-code/${externalReferenceCode}")
+
+							if (response == null) {
+								return false
+							}
+
+							JsonSlurper jsonSlurper = new JsonSlurper()
+
+							Map objectDefinition = (Map)jsonSlurper.parseText(response)
+
+							return objectDefinition.status?.code == 0
+						},
+						"Object definition ${externalReferenceCode} is published", 600)
+				}
+
+				List<String> siteExternalReferenceCodes = getSiteExternalReferenceCodes(clientExtensionDir)
+
+				siteExternalReferenceCodes.each {
+					String externalReferenceCode ->
+
+					waitFor(
+						{
+							getLiferayResponse("/o/headless-admin-site/v1.0/sites/${externalReferenceCode}") != null
+						},
+						"Site ${externalReferenceCode} exists", 600)
+				}
+			}
+		}
+
+		mustRunAfter startLiferayTaskProvider
+	}
+
+	project.tasks.register("setUpEval") {
+		dependsOn deleteEvalGeneratedPathsTaskProvider, extractDockerFilesTaskProvider, startLaminarTaskProvider, startLiferayTaskProvider, stopLiferayTaskProvider, tagLiferayImageTaskProvider, waitForClientExtensionsTaskProvider
+
+		doLast {
+			generatedPathsFile.text = getGeneratedPaths(project).join("\n")
+
+			println ""
+			println "Ready. From ${rootDir}, run:"
+			println ""
+
+			List<File> evalFiles = evalDirFiles.findAll {
+				it.name.endsWith(".eval.ts")
+			}
+
+			Path rootPath = rootDir.toPath()
+
+			evalFiles.each {
+				Path evalPath = rootPath.relativize(it.toPath())
+
+				println "    lmnr/evals/node_modules/.bin/tsx ${evalPath}"
+			}
+		}
+	}
+
+	project.tasks.register("tearDownEval") {
+		dependsOn deleteEvalGeneratedPathsTaskProvider, stopLiferayTaskProvider
+	}
+
+	deleteEvalGeneratedPathsTaskProvider.configure {
+		mustRunAfter stopLiferayTaskProvider
+	}
+
+	stopLiferayTaskProvider.configure {
+		mustRunAfter startLaminarTaskProvider
+	}
+}
+
+gradle.projectsEvaluated {
+	Project rootProject = gradle.rootProject
+
+	rootProject.tasks.named("buildDockerImage") {
+		outputs.upToDateWhen {
+			false
+		}
+	}
+
+	TaskProvider<Task> extractDockerFilesTaskProvider = rootProject.tasks.named("extractDockerFiles")
+
+	rootProject.allprojects {
+		Project project ->
+
+		project.tasks.configureEach {
+			Task task ->
+
+			if (!["deleteEvalGeneratedPaths", "extractDockerFiles", "setUpEval", "startLaminar", "startLiferay", "stopLaminar", "stopLiferay", "tagLiferayImage", "tearDownEval", "waitForClientExtensions"].contains(task.name)) {
+				task.mustRunAfter extractDockerFilesTaskProvider
+			}
+		}
+
+		if ((project.projectDir.parentFile != clientExtensionsDir) || clientExtensionNames.contains(project.name)) {
+			return
+		}
+
+		["buildDockerImage", "dockerDeploy"].each {
+			String taskName ->
+
+			if (project.tasks.findByName(taskName) != null) {
+				gradle.startParameter.excludedTaskNames.add("${project.path}:${taskName}")
+			}
+		}
+	}
+}

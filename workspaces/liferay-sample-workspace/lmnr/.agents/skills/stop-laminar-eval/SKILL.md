@@ -1,6 +1,6 @@
 ---
 
-description: Shut down the local eval stack through the harness in `lmnr/env` — remove the Liferay and PostgreSQL containers, and optionally stop Laminar. Use when the user asks to stop the eval environment, shut down Liferay and Laminar, or clean up after a run.
+description: Shut down the local eval stack through the harness tasks in `lmnr.gradle` — remove the Liferay and PostgreSQL containers, and optionally stop Laminar. Use when the user asks to stop the eval environment, shut down Liferay and Laminar, or clean up after a run.
 name: stop-laminar-eval
 
 ---
@@ -23,10 +23,10 @@ Every step does nothing when its target is already down, so the skill is safe to
 Removing the Liferay containers counts as a restart under the workspace's restart policy: say so before running it. From the workspace root:
 
 ```bash
-lmnr/env/tear_down.sh [<eval>]
+./gradlew --init-script lmnr.gradle tearDownEval -Plmnr.eval=<eval>
 ```
 
-With `<eval>`, the eval's own `lmnr/evals/<eval>/env/tear_down.sh` runs when it has one. Otherwise, and without `<eval>`, the script runs `docker compose down --volumes` for the workspace's `liferay` and `database`, so the environment and its data are gone; the next `run-laminar-eval` builds a new one.
+`<eval>` is the eval that was set up; its `env/docker-compose.yaml`, if any, is part of the stack. The task runs `docker compose down --volumes database liferay`, so the environment and its data are gone; the next `run-laminar-eval` builds a new one.
 
 It then deletes what the run generated: the client extensions the agent wrote under `client-extensions`, `bundles` when the run created it, and `build/docker`. Read what the agent built first if it matters.
 
@@ -37,10 +37,10 @@ To pause instead, keeping the containers and data to resume later, run `docker c
 Leave Laminar running unless the user asks to stop it; the next run reuses it. To stop it as well:
 
 ```bash
-lmnr/env/tear_down.sh [<eval>] --laminar
+./gradlew --init-script lmnr.gradle tearDownEval stopLaminar -Plmnr.eval=<eval>
 ```
 
-This adds `docker compose down` for the Laminar services in `docker-compose-lmnr.yaml`. It stops the containers and keeps the volumes, so every recorded trace and eval run survives.
+`stopLaminar` runs `docker compose down` for every service except `database` and `liferay`. It stops the containers and keeps the volumes, so every recorded trace and eval run survives.
 
 ### Delete Laminar's Data
 
