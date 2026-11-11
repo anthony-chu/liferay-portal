@@ -29,6 +29,18 @@ function docker_compose {
 
 	for override in ${overrides//,/ }
 	do
+		if [[ ${override} == */* ]]
+		then
+			if [[ ! -f "${dir}/${override}" ]]
+			then
+				_die "No compose override file found at \"${override}\"."
+			fi
+
+			compose_files+=(--file "${dir}/${override}")
+
+			continue
+		fi
+
 		dot_override_file="${dir}/docker-compose.${override}.yaml"
 
 		if [[ -f "${dot_override_file}" ]]

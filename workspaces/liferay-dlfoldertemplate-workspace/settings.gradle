@@ -25,4 +25,8 @@ if (providers.gradleProperty("liferay.workspace.use.test.boms").map(Boolean::par
 	apply from: "unit-tests.gradle"
 }
 
+if (hasProperty("client.extensions.include")) {
+	apply from: "client-extensions.gradle"
+}
+
 include "poshi"

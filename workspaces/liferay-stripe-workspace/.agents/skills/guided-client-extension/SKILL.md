@@ -28,9 +28,7 @@ Beginner friendly mentor walkthrough for creating, deploying, and verifying a fi
 ## Deployment Workflow
 
 - **Mechanism**: explain that Blade uses the Gradle Wrapper (`blade gw`) to package the code into a `.zip` file.
-- **Prerequisites**:
-  - **Tomcat**: verify that a `bundles` folder exists. Ensure the server is running (`http://localhost:${PORT}`).
-  - **Docker**: verify the Liferay container is running and healthy (`curl --fail http://localhost:${PORT}/c/portal/status`). Do not check for the `bundles` directory — it may not exist in a Docker workspace.
+- **Prerequisites**: find the running Liferay and its port as `liferay-rules.md` → "Running Liferay" describes, which also tells you whether this workspace uses Tomcat or Docker.
 - **Execution**:
   - **Tomcat**: run `blade gw deploy`. This compiles the assets and copies the zip to `bundles/osgi/client-extensions`.
   - **Docker**: run `./gradlew deploy "-Ddeploy.docker.container.id=$(docker compose ps --quiet liferay)"`. This deploys directly into the running container with no restart needed.

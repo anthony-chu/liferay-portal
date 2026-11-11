@@ -17,7 +17,15 @@ Before answering, identify three things:
 
 1. **DXP version**: read `liferay.workspace.product` from `gradle.properties`. Quarterly releases (`-Qx`) and 7.4 lines use the modern path (Client Extensions, Objects, Fragments). Versions below 7.4 use legacy OSGi modules. **This pack is the same for every release**, so a 2026.Q1 workspace reads text verified on later quarters. Each skill states a release difference where it describes the feature ("on 2026.Q1 and 2026.Q2", or a heading prefixed `DXP 2026.Q3+:`); compare it with this version before acting. A `Verified on 2026.QN` note means unverified on any earlier quarter, and `Verified on 2026.Q2.7` means that patch only. "From source" means read from master source, not run.
 
-1. **Bundle state**: the `bundles` directory exists when `blade server init` has run. The Tomcat install lives at `bundles/tomcat*`. The active HTTP port is the `port` attribute on the `<Connector protocol="HTTP/1.1">` element in `bundles/tomcat*/conf/server.xml`. The default is 8080.
+1. **Running Liferay**: find the Liferay this workspace runs against. Check in this order and stop at the first that answers. A missing `bundles` directory does not mean no Liferay is running: a workspace that runs Liferay in Docker has none.
+
+	1. **Local bundle**: `bundles/tomcat*` exists (`blade server init` creates it). `${PORT}` is the `port` attribute on the `<Connector protocol="HTTP/1.1">` element in `bundles/tomcat*/conf/server.xml`, 8080 by default. The bundle is running when `curl --fail --output /dev/null --silent http://localhost:${PORT}/c/portal/status` succeeds.
+
+	1. **The workspace's Compose service**: `docker compose ps liferay`, run from the workspace root, lists a running container. `${PORT}` is a host port that its `PORTS` column maps to `8080`. More than one can appear (the sample workspace maps both `80` and `8080`); any of them reaches the same Liferay.
+
+	1. **Any other Liferay container**: `docker ps` lists a running container whose image is `liferay/dxp`, `liferay/portal`, or a workspace build of them (`liferay:local`, `<workspace>-liferay`). `${PORT}` is the host port its `PORTS` column maps to `8080`.
+
+	Probe `/c/portal/status` on that port before relying on it. When none of the three answers, no Liferay is running; use `workspace-init` to start one.
 
 ## Project Paths
 

@@ -1,0 +1,29 @@
+String includeProperty = settings.getProperty("client.extensions.include")
+
+String[] includeEntries = includeProperty.split(",")
+
+List<String> trimmedEntries = includeEntries.collect {
+	it.trim()
+}
+
+List<String> includedClientExtensionNames = trimmedEntries.findAll {
+	!it.isEmpty()
+}
+
+gradle.projectsEvaluated {
+	gradle.rootProject.allprojects {
+		Project project ->
+
+		if (!project.file("client-extension.yaml").exists() || includedClientExtensionNames.contains(project.name)) {
+			return
+		}
+
+		["buildDockerImage", "deploy", "dockerDeploy"].each {
+			String taskName ->
+
+			if (project.tasks.findByName(taskName) != null) {
+				gradle.startParameter.excludedTaskNames.add(project.path + ":" + taskName)
+			}
+		}
+	}
+}
