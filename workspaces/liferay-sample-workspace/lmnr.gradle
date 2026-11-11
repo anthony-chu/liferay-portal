@@ -23,15 +23,6 @@ File configsDir = new File(rootDir, "build/lmnr/configs")
 
 new File(configsDir, "local").mkdirs()
 
-beforeSettings {
-	Settings settings ->
-
-	settings.ext["liferay.workspace.client-extension.dir"] = "lmnr/client-extensions"
-	settings.ext["liferay.workspace.configs.dir"] = configsDir.absolutePath
-}
-
-File clientExtensionsDir = new File(rootDir, "lmnr/client-extensions")
-
 File clientExtensionsListFile = new File(evalDir, "env/client-extensions.list")
 
 List<String> clientExtensionNames = []
@@ -46,6 +37,14 @@ if (clientExtensionsListFile.exists()) {
 	clientExtensionNames = trimmedLines.findAll {
 		!it.isEmpty() && !it.startsWith("#")
 	}
+}
+
+beforeSettings {
+	Settings settings ->
+
+	settings.ext["client.extensions.include"] = clientExtensionNames.join(",")
+	settings.ext["liferay.workspace.client-extension.dir"] = "lmnr/client-extensions"
+	settings.ext["liferay.workspace.configs.dir"] = configsDir.absolutePath
 }
 
 String composeOverrides = "lmnr"
@@ -332,6 +331,8 @@ gradle.rootProject {
 
 	TaskProvider<Task> waitForClientExtensionsTaskProvider = project.tasks.register("waitForClientExtensions") {
 		doLast {
+			File clientExtensionsDir = new File(rootDir, "lmnr/client-extensions")
+
 			clientExtensionNames.each {
 				String clientExtensionName ->
 
@@ -432,18 +433,6 @@ gradle.projectsEvaluated {
 
 			if (!["deleteEvalGeneratedPaths", "extractDockerFiles", "setUpEval", "startLaminar", "startLiferay", "stopLaminar", "stopLiferay", "tagLiferayImage", "tearDownEval", "waitForClientExtensions"].contains(task.name)) {
 				task.mustRunAfter extractDockerFilesTaskProvider
-			}
-		}
-
-		if ((project.projectDir.parentFile != clientExtensionsDir) || clientExtensionNames.contains(project.name)) {
-			return
-		}
-
-		["buildDockerImage", "dockerDeploy"].each {
-			String taskName ->
-
-			if (project.tasks.findByName(taskName) != null) {
-				gradle.startParameter.excludedTaskNames.add("${project.path}:${taskName}")
 			}
 		}
 	}

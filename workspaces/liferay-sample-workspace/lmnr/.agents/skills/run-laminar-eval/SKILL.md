@@ -62,7 +62,7 @@ From the workspace root:
 | `stopLiferay` | `docker compose down --volumes database liferay` |
 | `deleteEvalGeneratedPaths` | When the last run was never torn down, deletes what it generated first (see Tear Down) |
 | `extractDockerFiles` | `scripts/bootstrap/extract_hotfix.sh` and `extract_license.sh`, as `build.sh` runs them |
-| `buildDockerImage` | Builds the image. `dockerDeploy` and `buildDockerImage` are excluded for every client extension not in the eval's `env/client-extensions.list`, so only the listed ones are staged into `build/docker/client-extensions` |
+| `buildDockerImage` | Builds the image. `lmnr.gradle` passes the eval's `env/client-extensions.list` as `client.extensions.include`, so the workspace's `client-extensions.gradle` excludes `buildDockerImage`, `deploy`, and `dockerDeploy` for every other client extension, and only the listed ones are staged into `build/docker/client-extensions` |
 | `tagLiferayImage` | Tags `<workspace>-liferay:<product>` as `liferay:local` |
 | `startLiferay` | `docker compose up --detach database liferay`, then a wait for `/c/portal/status`. Laminar is left alone, and no client extension is deployed after start: they are in the image |
 | `waitForClientExtensions` | For each listed client extension: a wait for every object definition it ships to be published and every site it creates to exist |
