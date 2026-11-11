@@ -60,14 +60,15 @@ From the workspace root:
 | --- | --- |
 | `startLaminar` | Skipped when the sign in endpoint already answers. Otherwise `docker compose up --detach app-server frontend`, then a wait of up to 15 minutes (a new Postgres volume runs migrations first) |
 | `stopLiferay` | `docker compose down --volumes database liferay` |
-| `deleteEvalGeneratedPaths` | When the last run was never torn down, deletes what it generated first (see Tear Down) |
+| `listEvalGeneratedPaths`, `deleteEvalGeneratedPaths` | When the last run was never torn down, lists what it generated against its baseline into `build/lmnr/generated-paths.list` and deletes those paths (see Tear Down). Without a baseline the list is empty, so nothing is deleted |
 | `extractDockerFiles` | `scripts/bootstrap/extract_hotfix.sh` and `extract_license.sh`, as `build.sh` runs them |
 | `buildDockerImage` | Builds the image. `lmnr.gradle` passes the eval's `env/client-extensions.list` as `client.extensions.include`, so the workspace's `client-extensions.gradle` excludes `buildDockerImage`, `deploy`, and `dockerDeploy` for every other client extension, and only the listed ones are staged into `build/docker/client-extensions` |
 | `tagLiferayImage` | Tags `<workspace>-liferay:<product>` as `liferay:local` |
 | `startLiferay` | `docker compose up --detach database liferay`, then a wait for `/c/portal/status`. Laminar is left alone, and no client extension is deployed after start: they are in the image |
 | `waitForClientExtensions` | For each listed client extension: a wait for every object definition it ships to be published and every site it creates to exist |
+| `recordEvalBaseline` | Writes every path `listGeneratedPaths` finds to `lmnr/baseline-paths.list` |
 
-`setUpEval` ends by recording the untracked paths under `client-extensions` (and `bundles`, if present) in `lmnr/generated-paths.list`, gitignored, then printing the command that runs the eval.
+`setUpEval` then prints the command that runs the eval. `lmnr/baseline-paths.list` is gitignored.
 
 Every Compose call goes through `docker_compose` in `scripts/_common.sh` with `LIFERAY_COMPOSE_OVERRIDES=lmnr`, plus the eval's `env/docker-compose.yaml` when it exists.
 
@@ -98,7 +99,16 @@ Leave Laminar running between runs.
 | `./gradlew --init-script lmnr.gradle tearDownEval -Plmnr.eval=<eval>` | `docker compose down --volumes database liferay`, then deletes what the run generated |
 | `./gradlew --init-script lmnr.gradle tearDownEval stopLaminar -Plmnr.eval=<eval>` | Also `docker compose down` for the Laminar services. Never removes Laminar's volumes |
 
-What the run generated: every untracked path under `client-extensions` that was not in `lmnr/generated-paths.list` when `setUpEval` finished (the client extensions the agent wrote), `bundles` when it was not there (container deploys leave an empty `bundles/osgi/client-extensions`), and `build/docker` (the image's staging, with the trial license). Changes to tracked files and anything outside `client-extensions` stay; check `git status`. Read what the agent built before tearing down.
+What the run generated: every path `listGeneratedPaths` finds that is not in `lmnr/baseline-paths.list`, written to `build/lmnr/generated-paths.list` and then deleted, plus `build/docker` (the image's staging, with the trial license). By default that covers new untracked paths under `client-extensions` (the client extensions the agent wrote) and `bundles` when it was not there (container deploys leave an empty `bundles/osgi/client-extensions`). Changes to tracked files and anything outside those folders stay; check `git status`. Read what the agent built before tearing down.
+
+#### Generated Paths
+
+| Task | Effect |
+| --- | --- |
+| `listGeneratedPaths` | Lists the untracked paths in each folder of `-Plmnr.generated.paths.dirs` (default `bundles,client-extensions`, from the workspace root). A folder with no tracked file, like `bundles`, is listed as itself. `-Plmnr.generated.paths.baseline=<file>` leaves out the paths in that file. Prints the list, or writes it to `-Plmnr.generated.paths.output=<file>` |
+| `deleteGeneratedPaths` | Deletes every path listed in `-Plmnr.generated.paths.file=<file>` |
+
+Both need `--init-script lmnr.gradle -Plmnr.eval=<eval>`, and file paths are from the workspace root. To delete only what something added, list a baseline first, then list against it into a file, read the file, and pass it to `deleteGeneratedPaths`. A list made without a baseline includes untracked files that were there before.
 
 To stop the stack without losing it, for example to resume later, use `docker compose --file docker-compose.yaml --file docker-compose-lmnr.yaml stop` in the workspace root, then `docker compose --file docker-compose.yaml --file docker-compose-lmnr.yaml start`. Never `docker compose down` without meaning to: the `database` service keeps PostgreSQL in an anonymous volume, which `down` does not reattach.
 

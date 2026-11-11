@@ -3,6 +3,120 @@ import groovy.json.JsonSlurper
 
 import java.nio.file.Path
 
+class DeleteGeneratedPathsTask extends DefaultTask {
+
+	@TaskAction
+	void deleteGeneratedPaths() {
+		if (!pathsFile.exists()) {
+			println "Unable to find ${pathsFile}, so no generated paths are deleted"
+
+			return
+		}
+
+		List<String> lines = pathsFile.readLines()
+
+		List<String> generatedPaths = lines.findAll {
+			!it.isBlank()
+		}
+
+		generatedPaths.each {
+			String generatedPath ->
+
+			File generatedFile = project.file(generatedPath)
+
+			println "Deleting ${generatedFile}"
+
+			project.delete(generatedFile)
+		}
+	}
+
+	@Internal
+	File pathsFile
+
+}
+
+class ListGeneratedPathsTask extends DefaultTask {
+
+	@TaskAction
+	void listGeneratedPaths() {
+		List<String> generatedPaths = []
+
+		if ((baselineFile != null) && !baselineFile.exists()) {
+			println "Unable to find ${baselineFile}, so no generated paths are listed"
+
+			writeGeneratedPaths(generatedPaths)
+
+			return
+		}
+
+		dirNames.each {
+			String dirName ->
+
+			File dir = project.file(dirName)
+
+			if (!dir.exists()) {
+				return
+			}
+
+			List<String> trackedPaths = runGit(["ls-files", "--", dirName])
+
+			if (trackedPaths.isEmpty()) {
+				generatedPaths.add(dirName)
+
+				return
+			}
+
+			generatedPaths.addAll(runGit(["ls-files", "--directory", "--exclude-standard", "--others", "--", dirName]))
+		}
+
+		if (baselineFile != null) {
+			generatedPaths.removeAll(baselineFile.readLines())
+		}
+
+		writeGeneratedPaths(generatedPaths)
+	}
+
+	@Internal
+	File baselineFile
+
+	@Internal
+	List<String> dirNames = []
+
+	@Internal
+	File outputFile
+
+	protected List<String> runGit(List<String> arguments) {
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
+
+		project.exec {
+			commandLine(["git"] + arguments)
+			standardOutput = byteArrayOutputStream
+			workingDir project.rootDir
+		}
+
+		String output = byteArrayOutputStream.toString()
+
+		return output.readLines()
+	}
+
+	protected void writeGeneratedPaths(List<String> generatedPaths) {
+		if (outputFile == null) {
+			generatedPaths.each {
+				println it
+			}
+
+			return
+		}
+
+		outputFile.parentFile.mkdirs()
+
+		outputFile.text = generatedPaths.join("\n")
+
+		println "${generatedPaths.size()} generated paths were written to ${outputFile}"
+	}
+
+}
+
 String evalName = gradle.startParameter.projectProperties["lmnr.eval"]
 
 if (!evalName) {
@@ -59,7 +173,20 @@ if (evalComposeFile.exists()) {
 	composeOverrides = "${composeOverrides},${evalComposePath}"
 }
 
-File generatedPathsFile = new File(rootDir, "lmnr/generated-paths.list")
+File baselinePathsFile = new File(rootDir, "lmnr/baseline-paths.list")
+File generatedPathsFile = new File(rootDir, "build/lmnr/generated-paths.list")
+
+String generatedPathsDirsProperty = gradle.startParameter.projectProperties["lmnr.generated.paths.dirs"] ?: "bundles,client-extensions"
+
+String[] generatedPathsDirsEntries = generatedPathsDirsProperty.split(",")
+
+List<String> trimmedGeneratedPathsDirNames = generatedPathsDirsEntries.collect {
+	it.trim()
+}
+
+List<String> generatedPathsDirNames = trimmedGeneratedPathsDirNames.findAll {
+	!it.isEmpty()
+}
 
 String laminarURL = "http://localhost:9667"
 String liferayCredentials = "test@liferay.com:test"
@@ -155,26 +282,6 @@ Closure runDockerCompose = {
 	}
 }
 
-Closure<List<String>> getGeneratedPaths = {
-	Project project ->
-
-	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
-
-	project.exec {
-		commandLine "git", "ls-files", "--directory", "--exclude-standard", "--others", "--", "client-extensions"
-		standardOutput = byteArrayOutputStream
-		workingDir rootDir
-	}
-
-	List<String> generatedPaths = byteArrayOutputStream.toString().readLines()
-
-	if (new File(rootDir, "bundles").exists()) {
-		generatedPaths.add("bundles")
-	}
-
-	return generatedPaths
-}
-
 Closure<List<String>> getObjectDefinitionExternalReferenceCodes = {
 	File clientExtensionDir, Project project ->
 
@@ -219,29 +326,55 @@ Closure<List<String>> getSiteExternalReferenceCodes = {
 gradle.rootProject {
 	Project project ->
 
-	TaskProvider<Task> deleteEvalGeneratedPathsTaskProvider = project.tasks.register("deleteEvalGeneratedPaths") {
-		doLast {
-			if (generatedPathsFile.exists()) {
-				List<String> recordedPaths = generatedPathsFile.readLines()
-
-				getGeneratedPaths(project).each {
-					String generatedPath ->
-
-					if (recordedPaths.contains(generatedPath)) {
-						return
-					}
-
-					println "Deleting ${rootDir}/${generatedPath}."
-
-					project.delete(new File(rootDir, generatedPath))
-				}
+	project.tasks.register("deleteGeneratedPaths", DeleteGeneratedPathsTask) {
+		doFirst {
+			if (pathsFile == null) {
+				throw new GradleException("Pass the file that lists the paths to delete, for example: \"-Plmnr.generated.paths.file=build/lmnr/generated-paths.list\"")
 			}
-			else {
-				println "Unable to find ${generatedPathsFile}, so no generated client extensions are deleted."
-			}
-
-			project.delete(new File(rootDir, "build/docker"), generatedPathsFile)
 		}
+
+		group = "lmnr"
+
+		Object fileProperty = project.findProperty("lmnr.generated.paths.file")
+
+		if (fileProperty != null) {
+			pathsFile = project.file(fileProperty)
+		}
+	}
+
+	project.tasks.register("listGeneratedPaths", ListGeneratedPathsTask) {
+		Object baselineProperty = project.findProperty("lmnr.generated.paths.baseline")
+
+		if (baselineProperty != null) {
+			baselineFile = project.file(baselineProperty)
+		}
+
+		dirNames = generatedPathsDirNames
+		group = "lmnr"
+
+		Object outputProperty = project.findProperty("lmnr.generated.paths.output")
+
+		if (outputProperty != null) {
+			outputFile = project.file(outputProperty)
+		}
+	}
+
+	TaskProvider<ListGeneratedPathsTask> listEvalGeneratedPathsTaskProvider = project.tasks.register("listEvalGeneratedPaths", ListGeneratedPathsTask) {
+		baselineFile = baselinePathsFile
+		dirNames = generatedPathsDirNames
+		group = "lmnr"
+		outputFile = generatedPathsFile
+	}
+
+	TaskProvider<DeleteGeneratedPathsTask> deleteEvalGeneratedPathsTaskProvider = project.tasks.register("deleteEvalGeneratedPaths", DeleteGeneratedPathsTask) {
+		dependsOn listEvalGeneratedPathsTaskProvider
+
+		doLast {
+			project.delete(new File(rootDir, "build/docker"), baselinePathsFile, generatedPathsFile)
+		}
+
+		group = "lmnr"
+		pathsFile = generatedPathsFile
 	}
 
 	TaskProvider<Task> startLaminarTaskProvider = project.tasks.register("startLaminar") {
@@ -256,6 +389,8 @@ gradle.rootProject {
 
 			waitFor(isLaminarReady, "Laminar is ready at ${laminarURL}", 900)
 		}
+
+		group = "lmnr"
 	}
 
 	project.tasks.register("stopLaminar") {
@@ -279,12 +414,16 @@ gradle.rootProject {
 
 			runDockerCompose(project, ["down"] + laminarServiceNames.sort())
 		}
+
+		group = "lmnr"
 	}
 
 	TaskProvider<Task> stopLiferayTaskProvider = project.tasks.register("stopLiferay") {
 		doLast {
 			runDockerCompose(project, ["down", "--volumes", "database", "liferay"])
 		}
+
+		group = "lmnr"
 	}
 
 	TaskProvider<Task> extractDockerFilesTaskProvider = project.tasks.register("extractDockerFiles") {
@@ -298,6 +437,7 @@ gradle.rootProject {
 			}
 		}
 
+		group = "lmnr"
 		mustRunAfter deleteEvalGeneratedPathsTaskProvider, stopLiferayTaskProvider
 	}
 
@@ -313,6 +453,8 @@ gradle.rootProject {
 				commandLine "docker", "tag", "${rootDir.name}-liferay:${versionTag}", "liferay:local"
 			}
 		}
+
+		group = "lmnr"
 	}
 
 	TaskProvider<Task> startLiferayTaskProvider = project.tasks.register("startLiferay") {
@@ -326,6 +468,7 @@ gradle.rootProject {
 				"Liferay is ready at ${liferayURL}", 600)
 		}
 
+		group = "lmnr"
 		mustRunAfter startLaminarTaskProvider, stopLiferayTaskProvider, tagLiferayImageTaskProvider
 	}
 
@@ -374,15 +517,21 @@ gradle.rootProject {
 			}
 		}
 
+		group = "lmnr"
 		mustRunAfter startLiferayTaskProvider
 	}
 
+	TaskProvider<ListGeneratedPathsTask> recordEvalBaselineTaskProvider = project.tasks.register("recordEvalBaseline", ListGeneratedPathsTask) {
+		dirNames = generatedPathsDirNames
+		group = "lmnr"
+		mustRunAfter waitForClientExtensionsTaskProvider
+		outputFile = baselinePathsFile
+	}
+
 	project.tasks.register("setUpEval") {
-		dependsOn deleteEvalGeneratedPathsTaskProvider, extractDockerFilesTaskProvider, startLaminarTaskProvider, startLiferayTaskProvider, stopLiferayTaskProvider, tagLiferayImageTaskProvider, waitForClientExtensionsTaskProvider
+		dependsOn deleteEvalGeneratedPathsTaskProvider, extractDockerFilesTaskProvider, recordEvalBaselineTaskProvider, startLaminarTaskProvider, startLiferayTaskProvider, stopLiferayTaskProvider, tagLiferayImageTaskProvider, waitForClientExtensionsTaskProvider
 
 		doLast {
-			generatedPathsFile.text = getGeneratedPaths(project).join("\n")
-
 			println ""
 			println "Ready. From ${rootDir}, run:"
 			println ""
@@ -399,13 +548,16 @@ gradle.rootProject {
 				println "    lmnr/evals/node_modules/.bin/tsx ${evalPath}"
 			}
 		}
+
+		group = "lmnr"
 	}
 
 	project.tasks.register("tearDownEval") {
 		dependsOn deleteEvalGeneratedPathsTaskProvider, stopLiferayTaskProvider
+		group = "lmnr"
 	}
 
-	deleteEvalGeneratedPathsTaskProvider.configure {
+	listEvalGeneratedPathsTaskProvider.configure {
 		mustRunAfter stopLiferayTaskProvider
 	}
 
@@ -431,7 +583,7 @@ gradle.projectsEvaluated {
 		project.tasks.configureEach {
 			Task task ->
 
-			if (!["deleteEvalGeneratedPaths", "extractDockerFiles", "setUpEval", "startLaminar", "startLiferay", "stopLaminar", "stopLiferay", "tagLiferayImage", "tearDownEval", "waitForClientExtensions"].contains(task.name)) {
+			if (task.group != "lmnr") {
 				task.mustRunAfter extractDockerFilesTaskProvider
 			}
 		}
