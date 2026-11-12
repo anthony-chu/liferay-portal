@@ -1,0 +1,17 @@
+assemble:
+    -   from: batch
+        into: batch
+event-registration-batch:
+    name: Event Registration Batch
+    oAuthApplicationHeadlessServer: event-registration-batch-oauth
+    type: batch
+event-registration-batch-oauth:
+    .serviceAddress: localhost:8080
+    .serviceScheme: http
+    name: Event Registration Batch OAuth
+    scopes:
+        -   Liferay.Headless.Admin.List.Type.everything
+        -   Liferay.Headless.Batch.Engine.everything
+        -   Liferay.Headless.Object.everything
+        -   Liferay.Object.Admin.REST.everything
+    type: oAuthApplicationHeadlessServer
