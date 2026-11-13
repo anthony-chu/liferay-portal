@@ -7,7 +7,7 @@ name: stop-laminar-eval
 
 # Stop Laminar Eval
 
-Take down what `run-laminar-eval` brought up: the Liferay and PostgreSQL containers, and Laminar only when the user asks for it.
+Take down what `run-laminar-eval` brought up: the Liferay and PostgreSQL containers, and Laminar only when the user asks for it. `runEval` already tears its Liferay down after each run, so this is for a run kept with `-Plmnr.eval.keep=true`, a build that failed during setup, or stopping Laminar.
 
 ## When to Invoke
 

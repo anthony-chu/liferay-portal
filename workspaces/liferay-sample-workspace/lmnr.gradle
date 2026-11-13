@@ -127,10 +127,10 @@ File rootDir = buildscript.sourceFile.parentFile
 
 File evalDir = new File(rootDir, "lmnr/evals/${evalName}")
 
-File[] evalDirFiles = evalDir.listFiles() ?: []
+File evalFile = new File(evalDir, "${evalName}.eval.ts")
 
-if (!evalDirFiles.any {it.name.endsWith(".eval.ts")}) {
-	throw new GradleException("Unable to find an eval in ${evalDir}")
+if (!evalFile.exists()) {
+	throw new GradleException("Unable to find ${evalFile}")
 }
 
 File configsDir = new File(rootDir, "build/lmnr/configs")
@@ -323,6 +323,42 @@ Closure<List<String>> getSiteExternalReferenceCodes = {
 	}
 }
 
+Closure<TaskProvider<Task>> registerCleanupEvalTasks = {
+	String deleteGeneratedPathsTaskName, String listGeneratedPathsTaskName, Project project, String stopLiferayTaskName, String taskName ->
+
+	TaskProvider<Task> stopLiferayTaskProvider = project.tasks.register(stopLiferayTaskName) {
+		doLast {
+			runDockerCompose(project, ["down", "--volumes", "database", "liferay"])
+		}
+
+		group = "lmnr"
+	}
+
+	TaskProvider<ListGeneratedPathsTask> listGeneratedPathsTaskProvider = project.tasks.register(listGeneratedPathsTaskName, ListGeneratedPathsTask) {
+		baselineFile = baselinePathsFile
+		dirNames = generatedPathsDirNames
+		group = "lmnr"
+		mustRunAfter stopLiferayTaskProvider
+		outputFile = generatedPathsFile
+	}
+
+	TaskProvider<DeleteGeneratedPathsTask> deleteGeneratedPathsTaskProvider = project.tasks.register(deleteGeneratedPathsTaskName, DeleteGeneratedPathsTask) {
+		dependsOn listGeneratedPathsTaskProvider
+
+		doLast {
+			project.delete(new File(rootDir, "build/docker"), baselinePathsFile, generatedPathsFile)
+		}
+
+		group = "lmnr"
+		pathsFile = generatedPathsFile
+	}
+
+	return project.tasks.register(taskName) {
+		dependsOn deleteGeneratedPathsTaskProvider, stopLiferayTaskProvider
+		group = "lmnr"
+	}
+}
+
 gradle.rootProject {
 	Project project ->
 
@@ -357,24 +393,6 @@ gradle.rootProject {
 		if (outputProperty != null) {
 			outputFile = project.file(outputProperty)
 		}
-	}
-
-	TaskProvider<ListGeneratedPathsTask> listEvalGeneratedPathsTaskProvider = project.tasks.register("listEvalGeneratedPaths", ListGeneratedPathsTask) {
-		baselineFile = baselinePathsFile
-		dirNames = generatedPathsDirNames
-		group = "lmnr"
-		outputFile = generatedPathsFile
-	}
-
-	TaskProvider<DeleteGeneratedPathsTask> deleteEvalGeneratedPathsTaskProvider = project.tasks.register("deleteEvalGeneratedPaths", DeleteGeneratedPathsTask) {
-		dependsOn listEvalGeneratedPathsTaskProvider
-
-		doLast {
-			project.delete(new File(rootDir, "build/docker"), baselinePathsFile, generatedPathsFile)
-		}
-
-		group = "lmnr"
-		pathsFile = generatedPathsFile
 	}
 
 	TaskProvider<Task> startLaminarTaskProvider = project.tasks.register("startLaminar") {
@@ -418,13 +436,7 @@ gradle.rootProject {
 		group = "lmnr"
 	}
 
-	TaskProvider<Task> stopLiferayTaskProvider = project.tasks.register("stopLiferay") {
-		doLast {
-			runDockerCompose(project, ["down", "--volumes", "database", "liferay"])
-		}
-
-		group = "lmnr"
-	}
+	TaskProvider<Task> resetEvalTaskProvider = registerCleanupEvalTasks("deletePreviousEvalGeneratedPaths", "listPreviousEvalGeneratedPaths", project, "resetLiferay", "resetEval")
 
 	TaskProvider<Task> extractDockerFilesTaskProvider = project.tasks.register("extractDockerFiles") {
 		doLast {
@@ -438,7 +450,7 @@ gradle.rootProject {
 		}
 
 		group = "lmnr"
-		mustRunAfter deleteEvalGeneratedPathsTaskProvider, stopLiferayTaskProvider
+		mustRunAfter resetEvalTaskProvider
 	}
 
 	TaskProvider<Task> tagLiferayImageTaskProvider = project.tasks.register("tagLiferayImage") {
@@ -469,7 +481,7 @@ gradle.rootProject {
 		}
 
 		group = "lmnr"
-		mustRunAfter startLaminarTaskProvider, stopLiferayTaskProvider, tagLiferayImageTaskProvider
+		mustRunAfter resetEvalTaskProvider, startLaminarTaskProvider, tagLiferayImageTaskProvider
 	}
 
 	TaskProvider<Task> waitForClientExtensionsTaskProvider = project.tasks.register("waitForClientExtensions") {
@@ -529,40 +541,18 @@ gradle.rootProject {
 	}
 
 	project.tasks.register("setUpEval") {
-		dependsOn deleteEvalGeneratedPathsTaskProvider, extractDockerFilesTaskProvider, "installEvalDependencies", recordEvalBaselineTaskProvider, startLaminarTaskProvider, startLiferayTaskProvider, stopLiferayTaskProvider, tagLiferayImageTaskProvider, waitForClientExtensionsTaskProvider
-
-		doLast {
-			println ""
-			println "Ready. From ${rootDir}, run:"
-			println ""
-
-			List<File> evalFiles = evalDirFiles.findAll {
-				it.name.endsWith(".eval.ts")
-			}
-
-			Path rootPath = rootDir.toPath()
-
-			evalFiles.each {
-				Path evalPath = rootPath.relativize(it.toPath())
-
-				println "    lmnr/evals/node_modules/.bin/tsx ${evalPath}"
-			}
-		}
-
+		dependsOn extractDockerFilesTaskProvider, "installEvalDependencies", recordEvalBaselineTaskProvider, resetEvalTaskProvider, startLaminarTaskProvider, startLiferayTaskProvider, tagLiferayImageTaskProvider, waitForClientExtensionsTaskProvider
 		group = "lmnr"
 	}
 
-	project.tasks.register("tearDownEval") {
-		dependsOn deleteEvalGeneratedPathsTaskProvider, stopLiferayTaskProvider
-		group = "lmnr"
-	}
+	registerCleanupEvalTasks("deleteEvalGeneratedPaths", "listEvalGeneratedPaths", project, "stopLiferay", "tearDownEval")
 
-	listEvalGeneratedPathsTaskProvider.configure {
-		mustRunAfter stopLiferayTaskProvider
-	}
-
-	stopLiferayTaskProvider.configure {
+	project.tasks.named("resetLiferay") {
 		mustRunAfter startLaminarTaskProvider
+	}
+
+	project.tasks.named("stopLiferay") {
+		mustRunAfter "runEval"
 	}
 }
 
@@ -579,6 +569,28 @@ gradle.projectsEvaluated {
 		frozenLockFile = true
 		group = "lmnr"
 		workingDir = evalsDir
+	}
+
+	Class<Task> executeNodeScriptTaskClass = classLoader.loadClass("com.liferay.gradle.plugins.node.task.ExecuteNodeScriptTask")
+
+	boolean keepEval = Boolean.parseBoolean(gradle.startParameter.projectProperties["lmnr.eval.keep"])
+
+	rootProject.tasks.register("runEval", executeNodeScriptTaskClass) {
+		args = [evalFile]
+		dependsOn "setUpEval"
+
+		if (keepEval) {
+			doLast {
+				println "The eval environment was kept. Remove it with the \"tearDownEval\" task."
+			}
+		}
+		else {
+			finalizedBy "tearDownEval"
+		}
+
+		group = "lmnr"
+		scriptFile = new File(evalsDir, "node_modules/tsx/dist/cli.mjs")
+		workingDir = rootDir
 	}
 
 	rootProject.tasks.named("buildDockerImage") {

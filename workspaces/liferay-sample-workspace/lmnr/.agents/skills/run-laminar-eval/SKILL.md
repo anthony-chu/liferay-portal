@@ -1,6 +1,6 @@
 ---
 
-description: Bring up the local eval stack — Laminar via Docker Compose, and a new Liferay and PostgreSQL built by the workspace's own Docker bootstrap scripts with the eval's configuration and client extensions baked into the image — through the harness tasks in `lmnr.gradle`, then run the eval. Use when the user asks to run an eval, run the Laminar/lmnr evals, or start the eval environment from scratch.
+description: Bring up the local eval stack — Laminar via Docker Compose, and a new Liferay and PostgreSQL built by the workspace's own Docker bootstrap scripts with the eval's configuration and client extensions baked into the image — through the harness tasks in `lmnr.gradle`, then run the eval and tear the Liferay down again. Use when the user asks to run an eval, run the Laminar/lmnr evals, or start the eval environment from scratch.
 name: run-laminar-eval
 
 ---
@@ -32,25 +32,26 @@ Check the token before starting anything, and ask the user for it when neither i
 
 ## Workflow
 
-### Set Up the Environment
+### Run the Eval
 
 From the workspace root:
 
 ```bash
-./gradlew --init-script lmnr.gradle setUpEval -Plmnr.eval=<eval>
+./gradlew --init-script lmnr.gradle runEval -Plmnr.eval=<eval>
 ```
 
-`<eval>` is the folder name under `lmnr/evals`, for example `create-site`. The build fails on the first failure or timeout, naming the task that failed. It takes about three minutes once Laminar is up.
+`<eval>` is the folder name under `lmnr/evals`, for example `create-site`, which holds `<eval>.eval.ts`. One build sets up a new Liferay, runs the eval, and tears the Liferay down again. The build fails on the first failure or timeout, naming the task that failed. Setup takes about three minutes once Laminar is up.
+
+To keep the environment after the run, for example to read what the agent built, add `-Plmnr.eval.keep=true`. Remove it later with `tearDownEval` (see Tear Down).
 
 `lmnr.gradle` is an init script, so it runs only when passed with `--init-script`, and `settings.gradle` does not know about it. In `beforeSettings` it sets `liferay.workspace.client-extension.dir` to `lmnr/client-extensions` and `liferay.workspace.configs.dir` to the empty `build/lmnr/configs`, before the workspace plugin reads them, so in that build only the harness's client extensions are projects and the workspace's own `configs/local` never reaches the image.
 
-`setUpEval` removes the workspace's `liferay` and `database` containers and their volumes (`docker compose down --volumes`), so any running Liferay from this workspace and its data are gone. Under the workspace's restart policy this counts as a restart: say so before running it. If port 8080 is held by something else, ask first.
+`runEval` removes the workspace's `liferay` and `database` containers and their volumes (`docker compose down --volumes`), so any running Liferay from this workspace and its data are gone. Under the workspace's restart policy this counts as a restart: say so before running it. If port 8080 is held by something else, ask first.
 
 | Task, in order | What happens |
 | --- | --- |
 | `startLaminar` | Skipped when the sign in endpoint already answers. Otherwise `docker compose up --detach app-server frontend`, then a wait of up to 15 minutes (a new Postgres volume runs migrations first) |
-| `stopLiferay` | `docker compose down --volumes database liferay` |
-| `listEvalGeneratedPaths`, `deleteEvalGeneratedPaths` | When the last run was never torn down, lists what it generated against its baseline into `build/lmnr/generated-paths.list` and deletes those paths (see Tear Down). Without a baseline the list is empty, so nothing is deleted |
+| `resetEval` | Clears whatever the previous run left: `resetLiferay` runs `docker compose down --volumes database liferay`, then `listPreviousEvalGeneratedPaths` and `deletePreviousEvalGeneratedPaths` list what that run generated against its baseline into `build/lmnr/generated-paths.list` and delete those paths (see Tear Down). Without a baseline the list is empty, so nothing is deleted |
 | `extractDockerFiles` | `scripts/bootstrap/extract_hotfix.sh` and `extract_license.sh`, as `build.sh` runs them |
 | `installEvalDependencies` | `yarn install` in `lmnr/evals`, with the Node and Yarn the workspace downloads for its own `yarnInstall`. `lmnr/evals` stays its own Yarn project: the workspace's `setUpYarn` excludes `lmnr`, so nothing under it reaches the root `package.json` or `yarn.lock` |
 | `buildDockerImage` | Builds the image. `lmnr.gradle` passes the eval's `env/client-extensions.list` as `client.extensions.include`, so the workspace's `client-extensions.gradle` excludes `buildDockerImage`, `deploy`, and `dockerDeploy` for every other client extension, and only the listed ones are staged into `build/docker/client-extensions` |
@@ -58,22 +59,17 @@ From the workspace root:
 | `startLiferay` | `docker compose up --detach database liferay`, then a wait for `/c/portal/status`. Laminar is left alone, and no client extension is deployed after start: they are in the image |
 | `waitForClientExtensions` | For each listed client extension: a wait for every object definition it ships to be published and every site it creates to exist |
 | `recordEvalBaseline` | Writes every path `listGeneratedPaths` finds to `lmnr/baseline-paths.list` |
+| `setUpEval` | Groups the tasks above. Run it alone to build the environment without running the eval |
+| `runEval` | Runs `lmnr/evals/<eval>/<eval>.eval.ts` with `tsx`, on the same downloaded Node, from the workspace root |
+| `tearDownEval` | Runs after `runEval`, whether the eval passed or failed, unless `-Plmnr.eval.keep=true` is set (see Tear Down) |
 
-`setUpEval` then prints the command that runs the eval. `lmnr/baseline-paths.list` is gitignored.
+`lmnr/baseline-paths.list` is gitignored.
 
 Every Compose call goes through `docker_compose` in `scripts/_common.sh` with `LIFERAY_COMPOSE_OVERRIDES=lmnr`, plus the eval's `env/docker-compose.yaml` when it exists.
 
-### Run the Eval
+`lmnr/evals/lib/agent-task.ts` reads `.claude/skills` relative to the working directory and throws when it finds nothing, which is why `runEval` runs from the workspace root and calls `tsx` directly rather than through Yarn.
 
-From the workspace root, not from `lmnr/evals`:
-
-```bash
-lmnr/evals/node_modules/.bin/tsx lmnr/evals/<eval>/<eval>.eval.ts
-```
-
-`lmnr/evals/lib/agent-task.ts` reads `.claude/skills` relative to the working directory and throws when it finds nothing. That is also why the command calls `tsx` directly: `yarn --cwd lmnr/evals tsx` would move the working directory.
-
-Use `tsx`, not `yarn lmnr eval`. The CLI bundles the eval with esbuild and runs it in a sandbox, which breaks the Claude Agent SDK's `createRequire(import.meta.url)`.
+`runEval` uses `tsx`, not `yarn lmnr eval`. The CLI bundles the eval with esbuild and runs it in a sandbox, which breaks the Claude Agent SDK's `createRequire(import.meta.url)`.
 
 The eval's agent may not edit `.agents` or `.claude` (`disallowedTools` in `agent-task.ts`), so every run tests the same skills, and may not read or edit `lmnr`.
 
@@ -83,14 +79,17 @@ Give the user the per evaluator scores from the run output and the `Check result
 
 ### Tear Down
 
-Leave Laminar running between runs.
+`runEval` tears its environment down on its own. Run `tearDownEval` yourself only after a run with `-Plmnr.eval.keep=true`, or after a build that failed during setup:
 
-| Command | Effect |
-| --- | --- |
-| `./gradlew --init-script lmnr.gradle tearDownEval -Plmnr.eval=<eval>` | `docker compose down --volumes database liferay`, then deletes what the run generated |
-| `./gradlew --init-script lmnr.gradle tearDownEval stopLaminar -Plmnr.eval=<eval>` | Also `docker compose down` for the Laminar services. Never removes Laminar's volumes |
+```bash
+./gradlew --init-script lmnr.gradle tearDownEval -Plmnr.eval=<eval>
+```
 
-What the run generated: every path `listGeneratedPaths` finds that is not in `lmnr/baseline-paths.list`, written to `build/lmnr/generated-paths.list` and then deleted, plus `build/docker` (the image's staging, with the trial license). By default that covers new untracked paths under `client-extensions` (the client extensions the agent wrote) and `bundles` when it was not there (container deploys leave an empty `bundles/osgi/client-extensions`). Changes to tracked files and anything outside those folders stay; check `git status`. Read what the agent built before tearing down.
+It runs `stopLiferay` (`docker compose down --volumes database liferay`), then `listEvalGeneratedPaths` and `deleteEvalGeneratedPaths`. A kept environment does not block the next run either: `resetEval` clears it first.
+
+What the run generated: every path `listGeneratedPaths` finds that is not in `lmnr/baseline-paths.list`, written to `build/lmnr/generated-paths.list` and then deleted, plus `build/docker` (the image's staging, with the trial license). By default that covers new untracked paths under `client-extensions` (the client extensions the agent wrote) and `bundles` when it was not there (container deploys leave an empty `bundles/osgi/client-extensions`). Changes to tracked files and anything outside those folders stay; check `git status`.
+
+Leave Laminar running between runs. Stop it only when the user asks, with `stopLaminar` (see `stop-laminar-eval`).
 
 #### Generated Paths
 
@@ -155,7 +154,7 @@ The harness treats Laminar as ready when the sign in call that `lmnr/evals/lib/b
 | `Timed out after …s waiting until …` | The step named did not finish. Check `docker compose logs liferay` |
 | `Unable to build the Liferay image …` | The `build.sh` output above the message. A listed CET that fails to build stops it here |
 | `Unable to find client extension in …` | A `client-extensions.list` names a folder missing from `lmnr/client-extensions` |
-| `Unable to find an eval in lmnr/evals/<eval>` | The name is not a folder with a `*.eval.ts`. List the folders in `lmnr/evals` |
+| `Unable to find …/lmnr/evals/<eval>/<eval>.eval.ts` | The name is not a folder with a matching `<eval>.eval.ts`. List the folders in `lmnr/evals` |
 | `401` from Laminar during the eval | The SDK defaulted to `api.lmnr.ai`. Every eval must pass `config` from `lmnr/evals/lib/bootstrap.ts` to `evaluate`; it sets `baseUrl: 'http://localhost'`, `httpPort: 9000`, `grpcPort: 9001` |
 | `401` with the config correct | The project API key in that `config` comes from a sign in at import time, so that sign in failed: check Laminar is up. Never hardcode a key; it goes stale when the Postgres volume is recreated |
 | The `Check results at` link does not open | The link uses `frontendPort` from the same `config`, which must match the dashboard's host port (9667). The SDK default is 5667 |
