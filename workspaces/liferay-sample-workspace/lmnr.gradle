@@ -529,7 +529,7 @@ gradle.rootProject {
 	}
 
 	project.tasks.register("setUpEval") {
-		dependsOn deleteEvalGeneratedPathsTaskProvider, extractDockerFilesTaskProvider, recordEvalBaselineTaskProvider, startLaminarTaskProvider, startLiferayTaskProvider, stopLiferayTaskProvider, tagLiferayImageTaskProvider, waitForClientExtensionsTaskProvider
+		dependsOn deleteEvalGeneratedPathsTaskProvider, extractDockerFilesTaskProvider, "installEvalDependencies", recordEvalBaselineTaskProvider, startLaminarTaskProvider, startLiferayTaskProvider, stopLiferayTaskProvider, tagLiferayImageTaskProvider, waitForClientExtensionsTaskProvider
 
 		doLast {
 			println ""
@@ -568,6 +568,18 @@ gradle.rootProject {
 
 gradle.projectsEvaluated {
 	Project rootProject = gradle.rootProject
+
+	ClassLoader classLoader = rootProject.buildscript.classLoader
+
+	Class<Task> yarnInstallTaskClass = classLoader.loadClass("com.liferay.gradle.plugins.node.task.YarnInstallTask")
+
+	File evalsDir = new File(rootDir, "lmnr/evals")
+
+	rootProject.tasks.register("installEvalDependencies", yarnInstallTaskClass) {
+		frozenLockFile = true
+		group = "lmnr"
+		workingDir = evalsDir
+	}
 
 	rootProject.tasks.named("buildDockerImage") {
 		outputs.upToDateWhen {

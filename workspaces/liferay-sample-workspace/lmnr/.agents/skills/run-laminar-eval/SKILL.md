@@ -16,7 +16,7 @@ Every eval is a folder under `lmnr/evals/<eval>` with its `<eval>.eval.ts`. The 
 
 ## Prerequisites
 
-`docker`, `node`, `yarn`, and `curl` on the path, and bash 4.4 or newer (the workspace's `scripts` need it).
+`docker` and `curl` on the path, and bash 4.4 or newer (the workspace's `scripts` need it). Node and Yarn come from the workspace's own Gradle setup.
 
 | Variable | Needed for | Where it comes from |
 | --- | --- | --- |
@@ -31,16 +31,6 @@ Check the token before starting anything, and ask the user for it when neither i
 ```
 
 ## Workflow
-
-### Install Eval Dependencies
-
-`lmnr/evals` is its own Yarn project, separate from the workspace root. From the workspace root:
-
-```bash
-yarn --cwd lmnr/evals install
-```
-
-Skip only when `lmnr/evals/node_modules` is already present and current.
 
 ### Set Up the Environment
 
@@ -62,6 +52,7 @@ From the workspace root:
 | `stopLiferay` | `docker compose down --volumes database liferay` |
 | `listEvalGeneratedPaths`, `deleteEvalGeneratedPaths` | When the last run was never torn down, lists what it generated against its baseline into `build/lmnr/generated-paths.list` and deletes those paths (see Tear Down). Without a baseline the list is empty, so nothing is deleted |
 | `extractDockerFiles` | `scripts/bootstrap/extract_hotfix.sh` and `extract_license.sh`, as `build.sh` runs them |
+| `installEvalDependencies` | `yarn install` in `lmnr/evals`, with the Node and Yarn the workspace downloads for its own `yarnInstall`. `lmnr/evals` stays its own Yarn project: the workspace's `setUpYarn` excludes `lmnr`, so nothing under it reaches the root `package.json` or `yarn.lock` |
 | `buildDockerImage` | Builds the image. `lmnr.gradle` passes the eval's `env/client-extensions.list` as `client.extensions.include`, so the workspace's `client-extensions.gradle` excludes `buildDockerImage`, `deploy`, and `dockerDeploy` for every other client extension, and only the listed ones are staged into `build/docker/client-extensions` |
 | `tagLiferayImage` | Tags `<workspace>-liferay:<product>` as `liferay:local` |
 | `startLiferay` | `docker compose up --detach database liferay`, then a wait for `/c/portal/status`. Laminar is left alone, and no client extension is deployed after start: they are in the image |
