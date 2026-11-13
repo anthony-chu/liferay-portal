@@ -117,41 +117,54 @@ class ListGeneratedPathsTask extends DefaultTask {
 
 }
 
-String evalName = gradle.startParameter.projectProperties["lmnr.eval"]
-
-if (!evalName) {
-	throw new GradleException("Pass the eval name, for example: \"-Plmnr.eval=create-site\"")
-}
-
 File rootDir = buildscript.sourceFile.parentFile
 
-File evalDir = new File(rootDir, "lmnr/evals/${evalName}")
+File evalFile = null
+String evalName = gradle.startParameter.projectProperties["lmnr.eval"]
+String laminarComposeOverrides = "lmnr"
 
-File evalFile = new File(evalDir, "${evalName}.eval.ts")
+List<String> clientExtensionNames = []
+String evalComposeOverrides = laminarComposeOverrides
 
-if (!evalFile.exists()) {
-	throw new GradleException("Unable to find ${evalFile}")
+if (evalName) {
+	File evalDir = new File(rootDir, "lmnr/evals/${evalName}")
+
+	evalFile = new File(evalDir, "${evalName}.eval.ts")
+
+	if (!evalFile.exists()) {
+		throw new GradleException("Unable to find ${evalFile}")
+	}
+
+	File clientExtensionsListFile = new File(evalDir, "env/client-extensions.list")
+
+	if (clientExtensionsListFile.exists()) {
+		List<String> lines = clientExtensionsListFile.readLines()
+
+		List<String> trimmedLines = lines.collect {
+			it.trim()
+		}
+
+		clientExtensionNames = trimmedLines.findAll {
+			!it.isEmpty() && !it.startsWith("#")
+		}
+	}
+
+	File evalComposeFile = new File(evalDir, "env/docker-compose.yaml")
+
+	if (evalComposeFile.exists()) {
+		Path rootPath = rootDir.toPath()
+
+		Path evalComposePath = rootPath.relativize(evalComposeFile.toPath())
+
+		evalComposeOverrides = "${evalComposeOverrides},${evalComposePath}"
+	}
 }
 
 File configsDir = new File(rootDir, "build/lmnr/configs")
 
-new File(configsDir, "local").mkdirs()
+File localConfigsDir = new File(configsDir, "local")
 
-File clientExtensionsListFile = new File(evalDir, "env/client-extensions.list")
-
-List<String> clientExtensionNames = []
-
-if (clientExtensionsListFile.exists()) {
-	List<String> lines = clientExtensionsListFile.readLines()
-
-	List<String> trimmedLines = lines.collect {
-		it.trim()
-	}
-
-	clientExtensionNames = trimmedLines.findAll {
-		!it.isEmpty() && !it.startsWith("#")
-	}
-}
+localConfigsDir.mkdirs()
 
 beforeSettings {
 	Settings settings ->
@@ -161,16 +174,22 @@ beforeSettings {
 	settings.ext["liferay.workspace.configs.dir"] = configsDir.absolutePath
 }
 
-String composeOverrides = "lmnr"
+gradle.taskGraph.whenReady {
+	TaskExecutionGraph taskExecutionGraph ->
 
-File evalComposeFile = new File(evalDir, "env/docker-compose.yaml")
+	if (evalName) {
+		return
+	}
 
-if (evalComposeFile.exists()) {
-	Path rootPath = rootDir.toPath()
+	List<Task> allTasks = taskExecutionGraph.allTasks
 
-	Path evalComposePath = rootPath.relativize(evalComposeFile.toPath())
+	List<Task> evalTasks = allTasks.findAll {
+		["buildDockerImage", "runEval", "setUpEval", "startLiferay"].contains(it.name)
+	}
 
-	composeOverrides = "${composeOverrides},${evalComposePath}"
+	if (!evalTasks.isEmpty()) {
+		throw new GradleException("Pass the eval name, for example: \"-Plmnr.eval=create-site\"")
+	}
 }
 
 File baselinePathsFile = new File(rootDir, "lmnr/baseline-paths.list")
@@ -273,7 +292,7 @@ Closure waitFor = {
 }
 
 Closure runDockerCompose = {
-	Project project, List<String> arguments ->
+	List<String> arguments, String composeOverrides, Project project ->
 
 	project.exec {
 		commandLine(["bash", "-c", "source scripts/_common.sh && docker_compose \"\${@}\"", "bash"] + arguments)
@@ -328,7 +347,7 @@ Closure<TaskProvider<Task>> registerCleanupEvalTasks = {
 
 	TaskProvider<Task> stopLiferayTaskProvider = project.tasks.register(stopLiferayTaskName) {
 		doLast {
-			runDockerCompose(project, ["down", "--volumes", "database", "liferay"])
+			runDockerCompose(["down", "--volumes", "database", "liferay"], evalComposeOverrides, project)
 		}
 
 		group = "lmnr"
@@ -403,7 +422,7 @@ gradle.rootProject {
 				return
 			}
 
-			runDockerCompose(project, ["up", "--detach", "app-server", "frontend"])
+			runDockerCompose(["up", "--detach", "app-server", "frontend"], laminarComposeOverrides, project)
 
 			waitFor(isLaminarReady, "Laminar is ready at ${laminarURL}", 900)
 		}
@@ -417,7 +436,7 @@ gradle.rootProject {
 
 			project.exec {
 				commandLine "bash", "-c", "source scripts/_common.sh && docker_compose config --services"
-				environment "LIFERAY_COMPOSE_OVERRIDES", composeOverrides
+				environment "LIFERAY_COMPOSE_OVERRIDES", laminarComposeOverrides
 				standardOutput = byteArrayOutputStream
 				workingDir rootDir
 			}
@@ -430,10 +449,21 @@ gradle.rootProject {
 				!["database", "liferay"].contains(it)
 			}
 
-			runDockerCompose(project, ["down"] + laminarServiceNames.sort())
+			runDockerCompose(["down"] + laminarServiceNames.sort(), laminarComposeOverrides, project)
 		}
 
 		group = "lmnr"
+	}
+
+	TaskProvider<Task> checkLaminarTaskProvider = project.tasks.register("checkLaminar") {
+		doLast {
+			if (!isLaminarReady()) {
+				throw new GradleException("Unable to reach Laminar at ${laminarURL}. Start it with the \"startLaminar\" task.")
+			}
+		}
+
+		group = "lmnr"
+		mustRunAfter startLaminarTaskProvider
 	}
 
 	TaskProvider<Task> resetEvalTaskProvider = registerCleanupEvalTasks("deletePreviousEvalGeneratedPaths", "listPreviousEvalGeneratedPaths", project, "resetLiferay", "resetEval")
@@ -471,7 +501,7 @@ gradle.rootProject {
 
 	TaskProvider<Task> startLiferayTaskProvider = project.tasks.register("startLiferay") {
 		doLast {
-			runDockerCompose(project, ["up", "--detach", "database", "liferay"])
+			runDockerCompose(["up", "--detach", "database", "liferay"], evalComposeOverrides, project)
 
 			waitFor(
 				{
@@ -481,7 +511,7 @@ gradle.rootProject {
 		}
 
 		group = "lmnr"
-		mustRunAfter resetEvalTaskProvider, startLaminarTaskProvider, tagLiferayImageTaskProvider
+		mustRunAfter resetEvalTaskProvider, tagLiferayImageTaskProvider
 	}
 
 	TaskProvider<Task> waitForClientExtensionsTaskProvider = project.tasks.register("waitForClientExtensions") {
@@ -541,14 +571,14 @@ gradle.rootProject {
 	}
 
 	project.tasks.register("setUpEval") {
-		dependsOn extractDockerFilesTaskProvider, "installEvalDependencies", recordEvalBaselineTaskProvider, resetEvalTaskProvider, startLaminarTaskProvider, startLiferayTaskProvider, tagLiferayImageTaskProvider, waitForClientExtensionsTaskProvider
+		dependsOn extractDockerFilesTaskProvider, "installEvalDependencies", recordEvalBaselineTaskProvider, resetEvalTaskProvider, startLiferayTaskProvider, tagLiferayImageTaskProvider, waitForClientExtensionsTaskProvider
 		group = "lmnr"
 	}
 
 	registerCleanupEvalTasks("deleteEvalGeneratedPaths", "listEvalGeneratedPaths", project, "stopLiferay", "tearDownEval")
 
 	project.tasks.named("resetLiferay") {
-		mustRunAfter startLaminarTaskProvider
+		mustRunAfter checkLaminarTaskProvider
 	}
 
 	project.tasks.named("stopLiferay") {
@@ -577,7 +607,7 @@ gradle.projectsEvaluated {
 
 	rootProject.tasks.register("runEval", executeNodeScriptTaskClass) {
 		args = [evalFile]
-		dependsOn "setUpEval"
+		dependsOn "checkLaminar", "setUpEval"
 
 		if (keepEval) {
 			doLast {

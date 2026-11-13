@@ -23,10 +23,10 @@ Every step does nothing when its target is already down, so the skill is safe to
 Removing the Liferay containers counts as a restart under the workspace's restart policy: say so before running it. From the workspace root:
 
 ```bash
-./gradlew --init-script lmnr.gradle tearDownEval -Plmnr.eval=<eval>
+./gradlew --init-script lmnr.gradle tearDownEval
 ```
 
-`<eval>` is the eval that was set up; its `env/docker-compose.yaml`, if any, is part of the stack. The task runs `docker compose down --volumes database liferay`, so the environment and its data are gone; the next `run-laminar-eval` builds a new one.
+The task runs `docker compose down --volumes database liferay`, so the environment and its data are gone; the next `run-laminar-eval` builds a new one.
 
 It then deletes what the run generated: the client extensions the agent wrote under `client-extensions`, `bundles` when the run created it, and `build/docker`. Read what the agent built first if it matters.
 
@@ -34,10 +34,10 @@ To pause instead, keeping the containers and data to resume later, run `docker c
 
 ### Stop Laminar
 
-Leave Laminar running unless the user asks to stop it; the next run reuses it. To stop it as well:
+Leave Laminar running unless the user asks to stop it; the next run reuses it. Laminar's lifecycle is separate from the eval's, so stopping it needs no eval and leaves Liferay alone:
 
 ```bash
-./gradlew --init-script lmnr.gradle tearDownEval stopLaminar -Plmnr.eval=<eval>
+./gradlew --init-script lmnr.gradle stopLaminar
 ```
 
 `stopLaminar` runs `docker compose down` for every service except `database` and `liferay`. It stops the containers and keeps the volumes, so every recorded trace and eval run survives.
